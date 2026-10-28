@@ -161,3 +161,9 @@ test("diff fence scaffolding stays literal while its panel label translates", ()
 	const result=new Function("changed","diff",`${code};return [item.label,sections[0]];`)("2026-10-28","- old\n+ new");
 	expect(result).toEqual(["历史记录","### 2026-10-28\n\n```diff\n- old\n+ new\n```"]);
 });
+
+test("shell completion generators preserve executable fish syntax", () => {
+	const source='function generateFish(bin){const lines=[];lines.push(`function __fish_${bin}`);lines.push("return 0");lines.push("end");return lines.join("\\n");}';
+	const code=translate(source,"agent","src/cli/completion-gen.ts",{});
+	expect(new Function(`${code};return generateFish("omp");`)()).toBe("function __fish_omp\nreturn 0\nend");
+});

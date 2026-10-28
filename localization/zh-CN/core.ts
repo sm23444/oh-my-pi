@@ -162,6 +162,8 @@ export function literalParts(node: StringLiteral | TemplateLiteral, code: string
 
 export function extractCandidates(code: string, pkg: PackageId, file: string): Candidate[] {
 	if (!inScope(pkg, file)) return [];
+	// Generated shell programs are executable source; their descriptions come from the command registry.
+	if (pkg === "agent" && file === "src/cli/completion-gen.ts") return [];
 	if (pkg === "tui" && file === "src/prompt/tips.txt") {
 		return [...code.matchAll(/[^\r\n]+/g)].flatMap(match => {
 			const source = match[0];

@@ -203,3 +203,10 @@ test("unrelated modules keep interrupt sentinel equality and original control va
 	expect(aborted("aborted")).toBe(true);
 	expect(aborted("已中断")).toBe(false);
 });
+
+test("generated shell help descriptions translate while flags and quoting stay executable", () => {
+	const source='function completion(){return "\\\"(-h --help)[Show help] (-v --version)[Show version]\\\"";}';
+	const translated=patchDisplayBoundaries("agent","src/cli/completion-gen.ts",source);
+	expect(new Function(`${translated};return completion();`)()).toBe('"(-h --help)[显示帮助] (-v --version)[显示版本]"');
+	expect(patchDisplayBoundaries("agent","src/cli/completion-gen.ts",translated)).toBe(translated);
+});

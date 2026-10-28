@@ -113,6 +113,9 @@ function __ompZhConfiguredThinking(value: string | undefined): string | undefine
 			[/\$\{((?:runtime\.ctx\.viewSession|session)\.configuredThinkingLevel\(\)) \?\?/g, "${__ompZhConfiguredThinking($1) ??"],
 			["${resolved.level}", "${__ompZhValue(resolved.level)}"],
 		];
+	} else if (pkg === "agent" && normalized === "src/cli/completion-gen.ts") {
+		helpers = "";
+		replacements = [["[Show help]", "[显示帮助]"], ["[Show version]", "[显示版本]"]];
 	} else {
 		return code;
 	}
@@ -124,7 +127,7 @@ function __ompZhConfiguredThinking(value: string | undefined): string | undefine
 	if (patched === code) return code;
 	// Helpers are appended so directive prologues, shebangs and imports keep their
 	// original positions. These four modules call the helpers only after loading.
-	const result = code.includes("const __ompZhValueLabels:") ? patched : `${patched}\n${helpers}`;
+	const result = !helpers || code.includes("const __ompZhValueLabels:") ? patched : `${patched}\n${helpers}`;
 	parse(result, { sourceType: "module", plugins: ["typescript"] });
 	return result;
 }

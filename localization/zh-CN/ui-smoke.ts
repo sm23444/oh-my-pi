@@ -1,6 +1,7 @@
 // Copied into the portable package root by build-windows.ps1 so all imports
 // exercise the translated modules and dependencies that users actually receive.
 import { BUILTIN_SLASH_COMMAND_DEFS } from "./node_modules/@oh-my-pi/pi-coding-agent/src/slash-commands/builtin-registry";
+import { generateCompletion, type CompletionSpec } from "./node_modules/@oh-my-pi/pi-coding-agent/src/cli/completion-gen";
 import { Settings } from "./node_modules/@oh-my-pi/pi-coding-agent/src/config/settings";
 import type { SlashCommandRuntime, TuiSlashCommandRuntime } from "./node_modules/@oh-my-pi/pi-coding-agent/src/slash-commands/types";
 import { CombinedAutocompleteProvider } from "./node_modules/@oh-my-pi/pi-tui/src/autocomplete";
@@ -198,3 +199,11 @@ for (const state of ["running", "paused", "waiting"] as const) {
 	if (/\b(?:Loop|running|paused|waiting|next prompt repeats)\b/.test(ansi + native.spans.map(span => span.t).join("")) || native.icon !== (state === "paused" ? "pause" : "loop") || native.spans[0]?.s !== (state === "paused" ? "warning" : "customMessageLabel") || statusContext.loopMode.state !== state) throw new Error("Loop state display, icon or color changed");
 }
 process.stdout.write(`Portable Chinese UI verified: ${defs.length} settings; thinking parsers, hotkeys, settings controls, /fast, /model and both statusline variants.\n`);
+
+const completionSpec: CompletionSpec = { bin: "omp", root: {flags:[],args:[]}, commands:[{name:"session",aliases:["s"],description:"会话管理",flags:[],args:[]}] };
+const fishCompletion = generateCompletion("fish",completionSpec);
+if (!fishCompletion.includes("\nfunction __fish_omp_no_subcommand\n") || !fishCompletion.includes("\tfor i in (commandline -opc)\n") || !fishCompletion.includes("\nend\n") || !fishCompletion.includes("complete -c omp -f -n '__fish_omp_no_subcommand' -a 'session' -d '会话管理'")) throw new Error("Generated fish program keywords or completion arguments changed");
+const zshCompletion = generateCompletion("zsh",completionSpec);
+if (!zshCompletion.includes("[显示帮助]") || !zshCompletion.includes("[显示版本]")) throw new Error("Generated zsh help descriptions remain English");
+if (!generateCompletion("bash",completionSpec).includes("session")) throw new Error("Generated bash command completion changed");
+process.stdout.write("Shell completion verified: executable fish keywords, command tokens and Chinese descriptions.\n");
