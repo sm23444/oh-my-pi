@@ -56,8 +56,8 @@ const keepEnglish = new Set([
 export function inScope(pkg: PackageId, file: string): boolean {
 	if (pkg === "tui" && file === "src/prompt/tips.txt") return true;
 	if (!/\.tsx?$/.test(file) || /(?:\.d\.ts|\.test\.tsx?)$/.test(file)) return false;
+	if (file.startsWith("src/") && /(?:^|\/)[^/]*settings\.ts$/.test(file)) return true;
 	if (/(?:^|\/)(?:test|(?:[\w-]+-)?fixtures|prompts|export|protocol|rpc|acp)(?:\/|$)/.test(file)) return false;
-	if (/(?:^|\/)(?:test|fixtures|prompts|export|protocol|rpc|acp)(?:\/|$)/.test(file)) return false;
 	if (pkg === "utils") return file.startsWith("src/cli/") || file === "src/cli.ts";
 	if (pkg === "tui") return isUiModule(pkg, file);
 	return file.startsWith("src/");
@@ -118,13 +118,20 @@ function roleOf(node: Node, ancestors: Node[], pkg: PackageId, file: string): st
 	return undefined;
 }
 
-const tokenPattern = /\[(?:NO-TERN|NEW)\]|\{(?:key|keys|tap|action):[^{}]+\}|`[^`\n]+`|https?:\/\/[^\s<>"')]+|\b(?:Ctrl|Alt|Shift|Cmd|Meta)(?:\+[A-Za-z0-9]+)+\b|[A-Za-z]:\\[^\s<>"']+|(?<![\w/])(?:~|\.{1,2})?\/[A-Za-z0-9_@.][A-Za-z0-9_@./*-]*|\b[\w.-]+\/[\w./@*-]+|\b[A-Z][A-Z0-9_]{2,}\b|--[a-z][a-z0-9-]*(?:=[^\s,;)]+)?|\b[a-z][\w-]*(?:\.[a-z][\w-]*)+\b|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[sdifjoOc%]|\{\{[^{}]+\}\}|\r\n|[\n\r\t]/g;
+const tokenPattern = /\[(?:NO-TERN|NEW)\]|\{(?:key|keys|tap|action):[^{}]+\}|`[^`\n]+`|https?:\/\/[^\s<>"')]+|\b(?:Ctrl|Alt|Shift|Cmd|Meta)(?:\+[A-Za-z0-9]+)+\b|[A-Za-z]:\\[^\s<>"']+|(?<![\w/])(?:~|\.{1,2})?\/[A-Za-z0-9_@.][A-Za-z0-9_@./*-]*|\b[\w.-]+\/[\w./@*-]+|\b[A-Z][A-Z0-9_]{2,}\b|--[a-z][a-z0-9-]*(?:=[^\s,;)]+)?|\b[a-z][\w-]*(?:\.[a-z][\w-]*)+\b|\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[sdifjoOc%]|\{\{[^{}]+\}\}|\r\n|[\n\r\t]/g;
 
 function protectText(text: string, tokens: string[]): string {
 	return text.replace(tokenPattern, value => {
+		if (["Hide/show", "Start/stop", "issue/PR"].includes(value)) return value;
 		const index = tokens.push(value) - 1;
 		return `__OMP_TOKEN_${index}__`;
 	});
+}
+
+function translationId(pkg: PackageId, file: string, role: string, source: string, tokens: string[]): string {
+	const changedProtection = tokens.some(token => /^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/.test(token));
+	const protectionVersion = /(?:Hide\/show|Start\/stop|issue\/PR)/.test(source) ? "display-slashes-v1" : changedProtection ? "protected-identifiers-v1" : undefined;
+	return new Bun.CryptoHasher("sha256").update(JSON.stringify([pkg, file, role, source, ...(protectionVersion ? [protectionVersion] : [])])).digest("hex");
 }
 
 export function literalParts(node: StringLiteral | TemplateLiteral, code: string): { source: string; text: string; tokens: string[]; expressions: string[]; expressionRanges: { start: number; end: number }[] } {
@@ -163,7 +170,8 @@ export function extractCandidates(code: string, pkg: PackageId, file: string): C
 			const tokens: string[] = [];
 			const start = match.index;
 			const role = "welcome:tip";
-			return [{ id: new Bun.CryptoHasher("sha256").update(JSON.stringify([pkg, file, role, source])).digest("hex"), pkg, file, role, source, text: protectText(source, tokens), tokens, expressions: [], start, end: start + source.length, raw: source, quote: "", line: code.slice(0, start).split("\n").length, context: source }];
+			const text = protectText(source, tokens);
+			return [{ id: translationId(pkg, file, role, source, tokens), pkg, file, role, source, text, tokens, expressions: [], start, end: start + source.length, raw: source, quote: "", line: code.slice(0, start).split("\n").length, context: source }];
 		});
 	}
 	const tree = parse(code, { sourceType: "module", plugins: ["typescript", ...(file.endsWith(".tsx") ? ["jsx" as const] : [])] });
@@ -177,12 +185,12 @@ export function extractCandidates(code: string, pkg: PackageId, file: string): C
 				const parts = literalParts(node, code);
 				const visible = parts.text.replace(/__OMP_TOKEN_\d+__/g, "").trim();
 				const technicalVariable = role === "display:variable" && /^[a-z0-9_.:/-]+$/.test(parts.source);
-				if (/[a-zA-Z]{2}/.test(visible) && !/[\u3400-\u9fff]/.test(visible) && !keepEnglish.has(parts.source.trim()) && !technicalVariable && !/^[~ *-]*[a-z][\w+.-]*:\/\//.test(parts.source)) {
+				if ((/[a-zA-Z]{2}/.test(visible) || role === "display:plural") && !/[\u3400-\u9fff]/.test(visible) && !keepEnglish.has(parts.source.trim()) && !technicalVariable && !/^[~ *-]*[a-z][\w+.-]*:\/\//.test(parts.source)) {
 					if (/__OMP_TOKEN_\d+__/.test(parts.source)) throw new Error(`Reserved placeholder found in ${pkg}:${file}`);
 					const start = node.start ?? 0;
 					const end = node.end ?? 0;
 					const raw = code.slice(start + 1, end - 1);
-					const id = new Bun.CryptoHasher("sha256").update(JSON.stringify([pkg, file, role, parts.source])).digest("hex");
+					const id = translationId(pkg, file, role, parts.source, parts.tokens);
 					const lineStart = code.lastIndexOf("\n", start) + 1;
 					const lineEnd = code.indexOf("\n", end);
 					candidates.push({ id, pkg, file, role, ...parts, start, end, raw, quote: code[start], line: node.loc?.start.line ?? 0, context: code.slice(lineStart, lineEnd === -1 ? code.length : lineEnd).slice(0, 1000) });
@@ -203,7 +211,8 @@ function isNode(value: unknown): value is Node {
 	return typeof value === "object" && value !== null && "type" in value && typeof value.type === "string";
 }
 
-export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"> & { expressions?: string[] }, translation: string): void {
+export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"> & { expressions?: string[]; role?: string }, translation: string): void {
+	if (candidate.role === "display:plural" && candidate.text === "s" && candidate.tokens.length === 0 && translation === "") return;
 	if (!translation.trim() || translation.includes("\u0000")) throw new Error("Empty or invalid translation");
 	const expected = candidate.text.match(/__OMP_TOKEN_\d+__/g) ?? [];
 	const actual = translation.match(/__OMP_TOKEN_\d+__/g) ?? [];

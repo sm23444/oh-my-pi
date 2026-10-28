@@ -2,6 +2,7 @@ import type { Node } from "@babel/types";
 import type { PackageId } from "./core";
 
 function name(node: Node | null | undefined): string {
+	if (node?.type === "PrivateName") return node.id.name;
 	return node?.type === "Identifier" ? node.name : node?.type === "StringLiteral" ? node.value : "";
 }
 
@@ -28,12 +29,16 @@ function displayFunction(ancestors: Node[], pkg: PackageId, file: string): boole
 	const fn = ancestors[index];
 	if (!fn || !isUiModule(pkg, file)) return false;
 	const identifier = functionName(fn, ancestors[index - 1]);
-	// These helpers return operator-facing text. Parsers, identifiers, persisted
-	// sentinels, and generic command handlers are deliberately not return sinks.
+	// Parsers, lookup helpers and persisted sentinels are not return sinks.
 	if (file === "src/chat/messages.ts") return identifier === "resolveAbortLabel";
-	return /^(?:format|describe|render|build).*(?:Label|Message|Status|Summary|Report|Help|Usage|Text|Description|Title|Hint|Notice|Tooltip)$/.test(identifier)
-		|| /^(?:thoughtLabel|runFastCommand|runSlowCommand|applyExtendedContextCommand|applyComputerUseToggle)$/.test(identifier)
+	return /^(?:format|describe|render|build).*(?:Label|Message|Status|Summary|Report|Help|Usage|Text|Description|Title|Hint|Notice|Tooltip|Result|Outcome|Line)$/.test(identifier)
+		|| /^(?:thoughtLabel|noThinkingMessage|runFastCommand|runSlowCommand|applyExtendedContextCommand|applyComputerUseToggle)$/.test(identifier)
 		|| (pkg === "tui" && /^(?:render|describe)(?:[A-Z]|$)/.test(identifier));
+}
+
+function displayVariable(variable: string): boolean {
+	return /^(?:label|title|message|description|hint|header|footer|emptyText|errorText|statusText|empty|lines|bodyLines|helpLines|infoLines|metaLines|notice|warning)$/.test(variable)
+		|| /(?:^|_)(?:USAGE|LABEL|TITLE|MESSAGE|HINT|HELP|DESCRIPTION|UNSUPPORTED)$/.test(variable);
 }
 
 export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: PackageId, file: string): string | undefined {
@@ -59,36 +64,30 @@ export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: Packag
 		}
 		if (parent.type === "ObjectProperty" && parent.value === child && !parent.computed) {
 			const field = name(parent.key);
-			if (ui && ["text", "tooltip", "emptyText", "errorText", "warning", "explanation", "noMatchText", "statusText"].includes(field)) return `field:${field}`;
+			if (ui && ["text", "tooltip", "emptyText", "errorText", "explanation", "noMatchText", "statusText", "head", "lead", "noun", "note", "subhead"].includes(field)) return `field:${field}`;
 			if (pkg === "tui" && file === "src/hotkeys-markdown.ts" && field === "action") return "hotkey:action";
 		}
-		if (parent.type === "ReturnStatement" && parent.argument === child) {
-			return displayFunction(ancestors.slice(0, index), pkg, file) ? "display:return" : undefined;
-		}
-		if (parent.type === "ArrowFunctionExpression" && parent.body === child) {
-			return displayFunction(ancestors.slice(0, index + 1), pkg, file) ? "display:return" : undefined;
-		}
-		if (parent.type === "VariableDeclarator" && parent.init === child && ui && file !== "src/chat/messages.ts") {
-			const variable = name(parent.id);
-			if (/^(?:label|title|message|description|hint|header|footer|emptyText|errorText|statusText)$/.test(variable)
-				|| /(?:^|_)(?:USAGE|LABEL|TITLE|MESSAGE|HINT|HELP|DESCRIPTION)$/.test(variable)) return "display:variable";
-		}
+		if (parent.type === "ReturnStatement" && parent.argument === child) return displayFunction(ancestors.slice(0, index), pkg, file) ? "display:return" : undefined;
+		if (parent.type === "ArrowFunctionExpression" && parent.body === child) return displayFunction(ancestors.slice(0, index + 1), pkg, file) ? "display:return" : undefined;
+		if (parent.type === "VariableDeclarator" && parent.init === child && ui && file !== "src/chat/messages.ts" && displayVariable(name(parent.id))) return "display:variable";
 		if (parent.type === "CallExpression" && parent.arguments.some(argument => argument === child)) {
 			const position = parent.arguments.findIndex(argument => argument === child);
 			const callee = parent.callee;
 			if (callee.type === "MemberExpression" && !callee.computed) {
 				const method = name(callee.property);
 				const owner = name(callee.object);
+				if (ui && ((["fg", "bg"].includes(method) && position === 1) || (["bold", "italic", "dim", "strikethrough"].includes(method) && position === 0)) && (pkg === "tui" || /theme|chalk/i.test(owner))) return `theme:${method}`;
+				if (ui && callee.object.type === "MemberExpression" && !callee.object.computed && ["stdout", "stderr"].includes(name(callee.object.property)) && method === "write" && position === 0) return "display:stream";
 				if (position === 0 && ["showStatus", "showInfo", "showWarning", "showError", "showSuccess"].includes(method)) return `call:${method}`;
 				if (position === 0 && method === "output" && owner === "runtime" && file.startsWith("src/slash-commands/")) return "call:output";
-				if (ui && method === "push" && /^(?:lines|rows|parts|sections|messages)$/.test(owner)) return "display:line";
+				if (ui && method === "push" && /^(?:lines|rows|sections|messages|body|bodyLines|extraLines|remainder|meta|statsParts)$/.test(owner)) return "display:line";
 			}
 			if (ui && callee.type === "Identifier") {
 				const method = callee.name;
-				if (pkg === "tui" && position === 0 && ["text", "span", "plainText", "styledSpans", "compactText", "muted", "heading", "labelled"].includes(method)) return `display:${method}`;
+				if (pkg === "tui" && position === 0 && ["text", "span", "plainText", "styledSpans", "compactText", "muted", "heading", "labelled", "toolHead", "noteText", "formatEmptyMessage", "formatErrorMessage", "actionHint"].includes(method)) return `display:${method}`;
 				if (pkg === "tui" && method === "button" && [1, 3].includes(position)) return "display:button";
-				if (pkg === "tui" && method === "actionButton" && position === 1) return "display:button";
-				if (pkg === "agent" && position === 0 && ["usage", "commandConsumed", "errorMessage"].includes(method) && file.startsWith("src/slash-commands/")) return `display:${method}`;
+				if (pkg === "tui" && method === "actionButton" && position === 0) return "display:button";
+				if (pkg === "agent" && position === 0 && ["usage", "commandConsumed", "errorMessage", "output"].includes(method) && file.startsWith("src/slash-commands/")) return `display:${method}`;
 			}
 		}
 		return undefined;
@@ -96,13 +95,16 @@ export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: Packag
 	return undefined;
 }
 
-/** Only value branches and display-only padding inside a visible interpolation
- * inherit its display role; conditions, lookup keys and arbitrary call arguments do not. */
+/** Conditions, lookup keys and arbitrary call arguments stay executable data. */
 export function nestedDisplayRole(node: Node, ancestors: Node[], templates: Set<Node>): string | undefined {
+	const branch = ancestors.at(-1);
+	const plural = node.type === "StringLiteral" && node.value === "s" && branch?.type === "ConditionalExpression"
+		&& ((branch.consequent === node && branch.alternate.type === "StringLiteral" && branch.alternate.value === "")
+			|| (branch.alternate === node && branch.consequent.type === "StringLiteral" && branch.consequent.value === ""));
 	let child = node;
 	for (let index = ancestors.length - 1; index >= 0; index--) {
 		const parent = ancestors[index];
-		if (parent.type === "TemplateLiteral") return templates.has(parent) ? "display:expression" : undefined;
+		if (parent.type === "TemplateLiteral") return templates.has(parent) ? (plural ? "display:plural" : "display:expression") : undefined;
 		if (["TSAsExpression", "TSSatisfiesExpression", "ParenthesizedExpression"].includes(parent.type)
 			|| (parent.type === "ConditionalExpression" && parent.test !== child)
 			|| (parent.type === "LogicalExpression" && parent.right === child)

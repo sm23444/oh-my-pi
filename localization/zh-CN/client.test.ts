@@ -433,3 +433,46 @@ describe("translation client", () => {
 		expect(fetcher).not.toHaveBeenCalled();
 	});
 });
+
+describe("translation request deadlines", () => {
+	test("splits an expired batch and checkpoints successful subbatches after aborting each expired request", async () => {
+		let aborted = 0;
+		const submitted: number[] = [];
+		spyOn(globalThis,"fetch").mockImplementation(async (_input,init) => {
+			const messages = request(init).messages as {content: string}[];
+			const sent = (JSON.parse(messages[1].content) as {items: TranslationRequest[]}).items;
+			submitted.push(sent.length);
+			if(sent.length > 1){
+				const pending = Promise.withResolvers<Response>();
+				init?.signal?.addEventListener("abort",()=>{aborted++;pending.reject(new Error("aborted-test-request"));},{once:true});
+				return pending.promise;
+			}
+			return response({translations:translations.filter(result=>result.id===sent[0].id)},"openai");
+		});
+		const checkpoints: string[][] = [];
+		const result = await translateAll(items,{...config,provider:"openai",requestTimeoutMs:2},async batch=>{checkpoints.push(batch.map(entry=>entry.id));});
+		expect(submitted).toEqual([2,2,2,1,1]);
+		expect(aborted).toBe(3);
+		expect(checkpoints).toEqual([["first"],["second"]]);
+		expect(result).toEqual(translations);
+	});
+
+	test("reports an expired singleton and still checkpoints the following translation", async () => {
+		spyOn(globalThis,"fetch").mockImplementation(async (_input,init) => {
+			const messages = request(init).messages as {content: string}[];
+			const sent = (JSON.parse(messages[1].content) as {items: TranslationRequest[]}).items;
+			if(sent[0].id==="first"){
+				const pending = Promise.withResolvers<Response>();
+				init?.signal?.addEventListener("abort",()=>pending.reject(new Error("aborted-test-request")),{once:true});
+				return pending.promise;
+			}
+			return response({translations:[translations[1]]},"openai");
+		});
+		const failures: TranslationFailure[] = [];
+		const checkpoints: TranslationResult[][] = [];
+		const result = await translateAll(items,{...config,provider:"openai",batchSize:1,requestTimeoutMs:2,onFailure:async failure=>{failures.push(failure);}},async batch=>{checkpoints.push(batch);});
+		expect(failures).toEqual([{id:"first",reason:"Translation request timed out."}]);
+		expect(checkpoints).toEqual([[translations[1]]]);
+		expect(result).toEqual([translations[1]]);
+	});
+});

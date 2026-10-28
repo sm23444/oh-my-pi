@@ -25,17 +25,18 @@ export interface TranslationConfig {
 	apiKey: string;
 	batchSize?: number;
 	concurrency?: number;
+	requestTimeoutMs?: number;
 	validateResult?: (result: TranslationResult) => void;
 	onFailure?: (failure: TranslationFailure) => Promise<void>;
 	onRetry?: (attempt: number, delayMs: number, reason: string) => void;
 }
 
 const MAX_ATTEMPTS = 3;
-const REQUEST_TIMEOUT_MS = 90_000;
+const REQUEST_TIMEOUT_MS = 180_000;
 const MAX_RETRY_DELAY_MS = 60_000;
 
 class TranslationError extends Error {
-	constructor(message: string, readonly retryable: boolean, readonly invalidOutput = false, readonly retryAfterMs?: number) {
+	constructor(message: string, readonly retryable: boolean, readonly invalidOutput = false, readonly retryAfterMs?: number, readonly timedOut = false) {
 		super(message);
 		this.name = "TranslationError";
 	}
@@ -192,9 +193,9 @@ async function attempt(
 	const controller = new AbortController();
 	const deadline = Promise.withResolvers<never>();
 	const timer = setTimeout(() => {
-		deadline.reject(new TranslationError("Translation request timed out.", true));
+		deadline.reject(new TranslationError("Translation request timed out.", true, false, undefined, true));
 		controller.abort();
-	}, REQUEST_TIMEOUT_MS);
+	}, config.requestTimeoutMs ?? REQUEST_TIMEOUT_MS);
 	try {
 		const operation = async (): Promise<TranslationResult[]> => {
 			const response = await fetcher(url, {
@@ -243,6 +244,7 @@ export async function translateBatch(
 	validateItems(items);
 	if (items.length === 0) return [];
 	const url = endpoint(config);
+	if (!Number.isSafeInteger(config.requestTimeoutMs ?? REQUEST_TIMEOUT_MS) || (config.requestTimeoutMs ?? REQUEST_TIMEOUT_MS) < 1 || (config.requestTimeoutMs ?? REQUEST_TIMEOUT_MS) > 600_000) throw new TranslationError("Translation request timeout must be an integer from 1 to 600000 milliseconds.", false);
 	for (let index = 0; index < MAX_ATTEMPTS; index++) {
 		try {
 			return await attempt(items, config, url, fetcher);
@@ -285,7 +287,7 @@ export async function translateAll(
 	};
 	const defer = async (request: TranslationRequest, error: unknown): Promise<void> => {
 		const onFailure = config.onFailure;
-		if (!(error instanceof TranslationError) || !error.invalidOutput || !onFailure) throw error;
+		if (!(error instanceof TranslationError) || !(error.invalidOutput || error.timedOut) || !onFailure) throw error;
 		await persistence.run(() => onFailure({ id: request.id, reason: error.message }));
 	};
 	const processBatch = async (requests: TranslationRequest[]): Promise<void> => {
@@ -294,7 +296,7 @@ export async function translateAll(
 		try {
 			batch = await translateBatch(requests, { ...config, validateResult: undefined });
 		} catch (error: unknown) {
-			if (!(error instanceof TranslationError) || !error.invalidOutput) throw error;
+			if (!(error instanceof TranslationError) || !(error.invalidOutput || error.timedOut)) throw error;
 			if (requests.length === 1) { await defer(requests[0], error); return; }
 			const middle = Math.floor(requests.length / 2);
 			await processBatch(requests.slice(0, middle));
