@@ -87,8 +87,15 @@ try {
 			provider, apiKey, model: Bun.env.TRANSLATION_MODEL || settings.model,
 			baseUrl: Bun.env.TRANSLATION_BASE_URL || (provider === settings.provider ? settings.baseUrl : provider === "google" ? "https://generativelanguage.googleapis.com/v1beta" : "https://api.openai.com/v1"),
 			batchSize: settings.batchSize,
+			validateResult: result => {
+				const candidate = byId.get(result.id);
+				if (!candidate) throw new Error("Translation returned an unknown entry ID");
+				toEntry(candidate, result.text, "model");
+			},
 		};
-		const queue = missing().slice(0, settings.maxNewEntries);
+		const requestedMax = Number(Bun.env.TRANSLATION_MAX_ENTRIES || 0);
+		if (!Number.isSafeInteger(requestedMax) || requestedMax < 0 || requestedMax > settings.maxNewEntries) throw new Error(`TRANSLATION_MAX_ENTRIES must be an integer from 0 to ${settings.maxNewEntries}`);
+		const queue = missing().slice(0, requestedMax || settings.maxNewEntries);
 		console.log(`Translating ${queue.length} pending strings, checkpointing each batch.`);
 		await translateAll(queue.map(candidate => ({ id: candidate.id, text: candidate.text, context: `${candidate.pkg}:${candidate.file}:${candidate.line} ${candidate.role}\n${candidate.context}` })), config, async results => {
 			const updates: Catalog = {};

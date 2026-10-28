@@ -13,6 +13,10 @@ on:
         description: '即使官方版本未变化也重新检查'
         type: boolean
         default: false
+      max_entries:
+        description: '本轮最多翻译条数；0 使用默认上限，首次验证可填 20'
+        type: number
+        default: 0
   push:
     branches: [main]
     paths:
@@ -98,6 +102,7 @@ jobs:
           TRANSLATION_PROVIDER: ${{ vars.TRANSLATION_PROVIDER }}
           TRANSLATION_BASE_URL: ${{ vars.TRANSLATION_BASE_URL }}
           TRANSLATION_MODEL: ${{ vars.TRANSLATION_MODEL }}
+          TRANSLATION_MAX_ENTRIES: ${{ inputs.max_entries || 0 }}
           VERSION: ${{ steps.detect.outputs.version }}
         run: |
           if test -z "$TRANSLATION_API_KEY"; then

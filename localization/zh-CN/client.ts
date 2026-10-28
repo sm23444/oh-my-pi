@@ -17,6 +17,7 @@ export interface TranslationConfig {
 	baseUrl: string;
 	apiKey: string;
 	batchSize?: number;
+	validateResult?: (result: TranslationResult) => void;
 }
 
 const MAX_ATTEMPTS = 3;
@@ -202,7 +203,9 @@ async function attempt(
 				);
 			}
 			const body: unknown = await response.json();
-			return validateOutput(outputText(body, config.provider), items);
+			const results = validateOutput(outputText(body, config.provider), items);
+			for (const result of results) config.validateResult?.(result);
+			return results;
 		};
 		return await Promise.race([operation(), deadline.promise]);
 	} catch (error: unknown) {
@@ -243,11 +246,31 @@ export async function translateAll(
 	if (!Number.isSafeInteger(batchSize) || batchSize < 1) {
 		throw new TranslationError("Translation batch size must be a positive safe integer.", false);
 	}
-	const results: TranslationResult[] = [];
-	for (let index = 0; index < items.length; index += batchSize) {
-		const batch = await translateBatch(items.slice(index, index + batchSize), config);
+	const results = new Map<string, TranslationResult>();
+	const checkpoint = async (batch: TranslationResult[]) => {
+		if (batch.length === 0) return;
 		if (onBatch) await onBatch(batch);
-		results.push(...batch);
+		for (const result of batch) results.set(result.id, result);
+	};
+	for (let index = 0; index < items.length; index += batchSize) {
+		const requests = items.slice(index, index + batchSize);
+		const batch = await translateBatch(requests, { ...config, validateResult: undefined });
+		const accepted: TranslationResult[] = [];
+		const rejected = new Set<string>();
+		for (const result of batch) {
+			try {
+				config.validateResult?.(result);
+				accepted.push(result);
+			} catch {
+				rejected.add(result.id);
+			}
+		}
+		// Checkpoint good items before spending any requests on an invalid neighbor.
+		await checkpoint(accepted);
+		for (const request of requests) {
+			if (!rejected.has(request.id)) continue;
+			await checkpoint(await translateBatch([request], config));
+		}
 	}
-	return results;
+	return items.map(item => results.get(item.id)!);
 }

@@ -6,6 +6,7 @@ import {
 	type TranslationRequest,
 	type TranslationResult,
 } from "./client";
+import { extractCandidates, toEntry } from "./core";
 
 const config: TranslationConfig = {
 	provider: "google",
@@ -212,5 +213,38 @@ describe("translation client", () => {
 		expect(await translateAll([], config)).toEqual([]);
 		await expect(translateAll(items, { ...config, batchSize: 0 })).rejects.toThrow("positive safe integer");
 		expect(fetcher).toHaveBeenCalledTimes(0);
+	});
+
+	test("checkpoints valid neighbors before retrying reordered template expressions", async () => {
+		const candidates = extractCandidates('const view={label:`First ${next()} then ${last()}`,description:"Close"};', "agent", "src/commands/example.ts");
+		const source = candidates.map(candidate => ({ id: candidate.id, text: candidate.text, context: "menu" }));
+		const correct = { id: source[0].id, text: "先 __OMP_TOKEN_0__ 再 __OMP_TOKEN_1__" };
+		const neighbor = { id: source[1].id, text: "关闭" };
+		const events: string[] = [];
+		const fetcher = spyOn(globalThis, "fetch").mockImplementation(async () => {
+			events.push("request");
+			return response({ translations: events.length === 1 ? [{ ...correct, text: "先 __OMP_TOKEN_1__ 再 __OMP_TOKEN_0__" }, neighbor] : [correct] });
+		});
+		const result = await translateAll(source, { ...config, validateResult: item => {
+			toEntry(candidates.find(candidate => candidate.id === item.id)!, item.text, "model");
+		} }, async batch => { events.push(`checkpoint:${batch.map(item => item.id === source[0].id ? "template" : "neighbor").join()}`); });
+		expect(events).toEqual(["request", "checkpoint:neighbor", "request", "checkpoint:template"]);
+		expect(result).toEqual([correct, neighbor]);
+		expect(fetcher).toHaveBeenCalledTimes(2);
+	});
+
+	test("retains a valid checkpoint when isolated semantic retries are exhausted", async () => {
+		const candidates = extractCandidates('const view={label:`First ${next()} then ${last()}`,description:"Close"};', "agent", "src/commands/example.ts");
+		const source = candidates.map(candidate => ({ id: candidate.id, text: candidate.text, context: "menu" }));
+		let requests = 0;
+		const invalid = { id: source[0].id, text: "先 __OMP_TOKEN_1__ 再 __OMP_TOKEN_0__" };
+		const neighbor = { id: source[1].id, text: "关闭" };
+		spyOn(globalThis, "fetch").mockImplementation(async () => response({ translations: ++requests === 1 ? [invalid, neighbor] : [invalid] }));
+		const saved: TranslationResult[] = [];
+		await expect(translateAll(source, { ...config, validateResult: item => {
+			toEntry(candidates.find(candidate => candidate.id === item.id)!, item.text, "model");
+		} }, async batch => { saved.push(...batch); })).rejects.toThrow("Translation request failed");
+		expect(saved).toEqual([neighbor]);
+		expect(requests).toBe(4);
 	});
 });
