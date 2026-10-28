@@ -62,6 +62,15 @@
     "translation": "提供商",
     "origin": "seed"
   },
+  "02259c48c16dfdc15834ecb7e2f5f0b53ba5559fccd60f6cff51b05d2a0cc276": {
+    "pkg": "agent",
+    "file": "src/cli/config-cli.ts",
+    "role": "console:0",
+    "source": "Valid commands: ${VALID_ACTIONS.join(\", \")}",
+    "text": "Valid commands: __OMP_TOKEN_0__",
+    "translation": "有效命令：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "023bd26a899bcb0731154d1d2886440587cddf9434eb387ac175ef45facba5fe": {
     "pkg": "agent",
     "file": "src/commands/launch-help.ts",
@@ -160,6 +169,15 @@
     "text": "Solid blocks",
     "translation": "实心方块",
     "origin": "seed"
+  },
+  "06252860e3b079f8aea0f1f08064e98e228a0328a3af0fb3e0f8c9c858c75410": {
+    "pkg": "agent",
+    "file": "src/cli/ps-cli.ts",
+    "role": "console:0",
+    "source": "  cwd:      ${result.spec.cwd}",
+    "text": "  cwd:      __OMP_TOKEN_0__",
+    "translation": "  工作目录：__OMP_TOKEN_0__",
+    "origin": "model"
   },
   "062ed27cfd0075f3c1d4b9dde73fee887104e60b91b047d5becb08e14f29af36": {
     "pkg": "agent",
@@ -673,6 +691,15 @@
     "text": "Show Token Usage",
     "translation": "显示 Token 用量",
     "origin": "seed"
+  },
+  "18a34ec0083c6589055af1f20f006374f735008f4c9dde928086507043be002d": {
+    "pkg": "agent",
+    "file": "src/cli/config-cli.ts",
+    "role": "field:message",
+    "source": "$${name} is used as a fallback while the saved value is blank.",
+    "text": "$__OMP_TOKEN_0__ is used as a fallback while the saved value is blank.",
+    "translation": "已保存的值为空时，将使用 $__OMP_TOKEN_0__ 作为回退。",
+    "origin": "model"
   },
   "1924e9336bbe5de5b0059b9de10bc620cc0cfaeedbb867da5bd37ffc5f371319": {
     "pkg": "tui",
@@ -1240,6 +1267,15 @@
     "text": "Update channel used by omp update and the startup update check",
     "translation": "omp update 与启动时更新检查所用的通道",
     "origin": "seed"
+  },
+  "2dad73488511bc396b0f80d8dc47240715ae8469056be80a1bf500d9164abeff": {
+    "pkg": "agent",
+    "file": "src/cli/ps-cli.ts",
+    "role": "console:0",
+    "source": "  exit:     ${daemon.exitReason}",
+    "text": "  exit:     __OMP_TOKEN_0__",
+    "translation": "  退出状态：__OMP_TOKEN_0__",
+    "origin": "model"
   },
   "2db310db361b54a3058ee68ea54ef44c80b96fa03e583563278b59561cbee06d": {
     "pkg": "agent",
@@ -2492,6 +2528,15 @@
     "translation": "仅输出文件名",
     "origin": "seed"
   },
+  "61e673ae17141aa0f604380a9f5aa17954d2551575f0814fd98c8447ed0c24f8": {
+    "pkg": "agent",
+    "file": "src/cli/plugin-cli.ts",
+    "role": "console:0",
+    "source": "Valid commands: ${VALID_ACTIONS.join(\", \")}",
+    "text": "Valid commands: __OMP_TOKEN_0__",
+    "translation": "有效命令：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "61f5d0cec2888a6dcddf0af9deeb2d9519b2be2ff392e497e5be2cc53d60ed40": {
     "pkg": "tui",
     "file": "src/setup/scenes/theme.ts",
@@ -2789,6 +2834,15 @@
     "translation": "浅色主题",
     "origin": "seed"
   },
+  "6a132959a9cb17600c9acfe72813b8e7d781adb26d3a34230a4e47d9eac89b07": {
+    "pkg": "agent",
+    "file": "src/cli/config-cli.ts",
+    "role": "field:message",
+    "source": "Project settings override this value here; edit or remove it there for the saved value to apply.",
+    "text": "Project settings override this value here; edit or remove it there for the saved value to apply.",
+    "translation": "项目设置在此处覆盖了该值；请在项目设置中修改或删除它以应用已保存的值。",
+    "origin": "model"
+  },
   "6a688b6380343f076239366d3055639a4b3e237b0ef66a50a02d01d84ade8f99": {
     "pkg": "agent",
     "file": "src/modes/controllers/mcp-command-controller.ts",
@@ -2797,6 +2851,15 @@
     "text": "Commands:",
     "translation": "命令:",
     "origin": "seed"
+  },
+  "6af0a7c7c8161573e5cb2ad21e4e9b2d65d15882e071438d9abe3a129995d831": {
+    "pkg": "agent",
+    "file": "src/cli/config-cli.ts",
+    "role": "console:0",
+    "source": "${chalk.bold(`${APP_NAME} config`)} - Manage settings\n\n${chalk.bold(\"Commands:\")}\n  list               List all settings with current values\n  get <key>          Get a specific setting value\n  set <key> <value>  Set a setting value\n  reset <key>        Remove a setting from config.yml so its default applies\n  path               Print the config directory path\n  init-xdg           Initialize XDG Base Directory structure\n\n${chalk.bold(\"Options:\")}\n  --json             Output as JSON\n\n${chalk.bold(\"Examples:\")}\n  ${APP_NAME} config list\n  ${APP_NAME} config get theme\n  ${APP_NAME} config set theme catppuccin-mocha\n  ${APP_NAME} config set compaction.enabled false\n  ${APP_NAME} config set defaultThinkingLevel medium\n  ${APP_NAME} config reset steeringMode\n  ${APP_NAME} config list --json\n  ${APP_NAME} config init-xdg\n\n${chalk.bold(\"Boolean Values:\")}\n  true, false, yes, no, on, off, 1, 0\n",
+    "text": "__OMP_TOKEN_0__ - Manage settings__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  list               List all settings with current values__OMP_TOKEN_5__  get <key>          Get a specific setting value__OMP_TOKEN_6__  set <key> <value>  Set a setting value__OMP_TOKEN_7__  reset <key>        Remove a setting from __OMP_TOKEN_8__ so its default applies__OMP_TOKEN_9__  path               Print the config directory path__OMP_TOKEN_10__  init-xdg           Initialize __OMP_TOKEN_11__ Base Directory structure__OMP_TOKEN_12____OMP_TOKEN_13____OMP_TOKEN_14____OMP_TOKEN_15__  __OMP_TOKEN_16__             Output as __OMP_TOKEN_17____OMP_TOKEN_18____OMP_TOKEN_19____OMP_TOKEN_20____OMP_TOKEN_21__  __OMP_TOKEN_22__ config list__OMP_TOKEN_23__  __OMP_TOKEN_24__ config get theme__OMP_TOKEN_25__  __OMP_TOKEN_26__ config set theme catppuccin-mocha__OMP_TOKEN_27__  __OMP_TOKEN_28__ config set __OMP_TOKEN_29__ false__OMP_TOKEN_30__  __OMP_TOKEN_31__ config set defaultThinkingLevel medium__OMP_TOKEN_32__  __OMP_TOKEN_33__ config reset steeringMode__OMP_TOKEN_34__  __OMP_TOKEN_35__ config list __OMP_TOKEN_36____OMP_TOKEN_37__  __OMP_TOKEN_38__ config init-xdg__OMP_TOKEN_39____OMP_TOKEN_40____OMP_TOKEN_41____OMP_TOKEN_42__  true, false, yes, no, on, off, 1, 0__OMP_TOKEN_43__",
+    "translation": "__OMP_TOKEN_0__ - 管理设置__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  list               列出所有设置及其当前值__OMP_TOKEN_5__  get <key>          获取指定设置的值__OMP_TOKEN_6__  set <key> <value>  修改设置的值__OMP_TOKEN_7__  reset <key>        从 __OMP_TOKEN_8__ 中移除设置以应用默认值__OMP_TOKEN_9__  path               输出配置目录路径__OMP_TOKEN_10__  init-xdg           初始化 __OMP_TOKEN_11__ 基本目录结构__OMP_TOKEN_12____OMP_TOKEN_13____OMP_TOKEN_14____OMP_TOKEN_15__  __OMP_TOKEN_16__             以 __OMP_TOKEN_17__ 格式输出__OMP_TOKEN_18____OMP_TOKEN_19____OMP_TOKEN_20____OMP_TOKEN_21__  __OMP_TOKEN_22__ config list__OMP_TOKEN_23__  __OMP_TOKEN_24__ config get theme__OMP_TOKEN_25__  __OMP_TOKEN_26__ config set theme catppuccin-mocha__OMP_TOKEN_27__  __OMP_TOKEN_28__ config set __OMP_TOKEN_29__ false__OMP_TOKEN_30__  __OMP_TOKEN_31__ config set defaultThinkingLevel medium__OMP_TOKEN_32__  __OMP_TOKEN_33__ config reset steeringMode__OMP_TOKEN_34__  __OMP_TOKEN_35__ config list __OMP_TOKEN_36____OMP_TOKEN_37__  __OMP_TOKEN_38__ config init-xdg__OMP_TOKEN_39____OMP_TOKEN_40____OMP_TOKEN_41____OMP_TOKEN_42__  true, false, yes, no, on, off, 1, 0__OMP_TOKEN_43__",
+    "origin": "model"
   },
   "6af8f336d7fd4079b6d9ead4d8e4564f526d7aa6cbf98d89052fa4575791781d": {
     "pkg": "agent",
@@ -2987,6 +3050,15 @@
     "translation": "分享存储",
     "origin": "seed"
   },
+  "738a6513919a1fe3b7b69246b97f6588acf40c9cd0982242ea9701a50301a2ec": {
+    "pkg": "agent",
+    "file": "src/cli/ps-cli.ts",
+    "role": "console:0",
+    "source": "  pty: ${result.spec.pty}  persist: ${result.spec.persist}  detached: ${result.spec.detached}  owner: ${daemon.owner ?? \"-\"}",
+    "text": "  pty: __OMP_TOKEN_0__  persist: __OMP_TOKEN_1__  detached: __OMP_TOKEN_2__  owner: __OMP_TOKEN_3__",
+    "translation": "  pty: __OMP_TOKEN_0__  persist: __OMP_TOKEN_1__  detached: __OMP_TOKEN_2__  所有者: __OMP_TOKEN_3__",
+    "origin": "model"
+  },
   "7405ef9c39558fa40499d149336cd061e4a3b357d86d70bfc3794790d3bf3dc6": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -3039,6 +3111,15 @@
     "source": "${chalk.cyan(displayPath)}: ${match.matchCount ?? 0} matches",
     "text": "__OMP_TOKEN_0__: __OMP_TOKEN_1__ matches",
     "translation": "__OMP_TOKEN_0__：__OMP_TOKEN_1__ 个匹配项",
+    "origin": "model"
+  },
+  "75c26e43adc7241ca5357dd15deb9980d309f6f2f131056c530c898736841180": {
+    "pkg": "agent",
+    "file": "src/cli/config-cli.ts",
+    "role": "field:message",
+    "source": "$${name} overrides this value; unset it for the saved value to apply.",
+    "text": "$__OMP_TOKEN_0__ overrides this value; unset it for the saved value to apply.",
+    "translation": "$__OMP_TOKEN_0__ 会覆盖此值；取消设置该环境变量以应用已保存的值。",
     "origin": "model"
   },
   "75c792761769d5772284deb6c135be5bacf3f75ca629cb302fdb15f84bce0d6b": {
@@ -3212,6 +3293,15 @@
     "translation": "额外添加工作区目录(可重复)",
     "origin": "seed"
   },
+  "7b34c07931f4f127a401a6bf91b74d6970017d4914f334a4b574c50b9c82e2ab": {
+    "pkg": "agent",
+    "file": "src/cli/config-cli.ts",
+    "role": "field:message",
+    "source": "A --config / PI_CONFIG_FILES overlay overrides this value for this process.",
+    "text": "A __OMP_TOKEN_0__ / __OMP_TOKEN_1__ overlay overrides this value for this process.",
+    "translation": "__OMP_TOKEN_0__ / __OMP_TOKEN_1__ 覆盖层为当前进程覆盖了此值。",
+    "origin": "model"
+  },
   "7b3e36e6562881127dba6e0d9065e59ab2cf9aff770a2d07a10a1b1704b5af6a": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -3292,6 +3382,15 @@
     "text": "follow",
     "translation": "跟随",
     "origin": "seed"
+  },
+  "7db523fcd80582d89858123f841d840c3150276b99f15b2e2b11ad8508d039c1": {
+    "pkg": "agent",
+    "file": "src/cli/plugin-cli.ts",
+    "role": "console:0",
+    "source": "All marketplace plugins are up to date.",
+    "text": "All marketplace plugins are up to date.",
+    "translation": "所有市场插件均为最新版本。",
+    "origin": "model"
   },
   "7dc65b7d1ebe4f1ce656c428ae62d3b76440427687083dbddaaf7698be298a7e": {
     "pkg": "agent",
@@ -3527,6 +3626,15 @@
     "translation": "列出前加载扩展文件(可重复)",
     "origin": "seed"
   },
+  "860f4e6ae0944377de0a74d4bbfa688c65df3e30a62e3cacb136f79720eeb448": {
+    "pkg": "agent",
+    "file": "src/cli/plugin-cli.ts",
+    "role": "console:0",
+    "source": "Summary: ${ok} ok, ${warnings} warnings, ${errors} errors${fixed > 0 ? `, ${fixed} fixed` : \"\"}",
+    "text": "Summary: __OMP_TOKEN_0__ ok, __OMP_TOKEN_1__ warnings, __OMP_TOKEN_2__ errors__OMP_TOKEN_3__",
+    "translation": "摘要：__OMP_TOKEN_0__ 正常，__OMP_TOKEN_1__ 警告，__OMP_TOKEN_2__ 错误__OMP_TOKEN_3__",
+    "origin": "model"
+  },
   "864b19a64824e2ca7a35118fc4299b1437ceb66b1ece5620bca4c74a0d299cf6": {
     "pkg": "agent",
     "file": "src/commands/ps.ts",
@@ -3752,6 +3860,15 @@
     "translation": "日志行数，最多 1000（logs）",
     "origin": "seed"
   },
+  "90cb1cd3f53c2eea43d57b76e9cd126fc097e710ba463c8c39b0a30b5b755186": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "console:0",
+    "source": "run `omp browser-relay` yourself only for --token or --no-group.",
+    "text": "run __OMP_TOKEN_0__ yourself only for __OMP_TOKEN_1__ or __OMP_TOKEN_2__.",
+    "translation": "仅在需要 __OMP_TOKEN_1__ 或 __OMP_TOKEN_2__ 时才需自行运行 __OMP_TOKEN_0__。",
+    "origin": "model"
+  },
   "90e01d0fb540b2e19a8e9dde66dbd9bb05f7fa90dae66c1c88085ab76d0a50c5": {
     "pkg": "agent",
     "file": "src/cli/images-cli.ts",
@@ -3778,6 +3895,15 @@
     "text": "10 items",
     "translation": "10 项",
     "origin": "seed"
+  },
+  "9298b7c16c1876e6763333bced02ee5e1cb72038d3c3abbcea4248e26deb7730": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "List active local Collab host metadata without URLs; use collab link <instanceId|pid> to retrieve a control link (--view for view-only)",
+    "text": "List active local Collab host metadata without URLs; use collab link <instanceId|pid> to retrieve a control link (__OMP_TOKEN_0__ for view-only)",
+    "translation": "列出本地活动 Collab 主机的元数据（不含网址）；使用 collab link <instanceId|pid> 获取控制链接（__OMP_TOKEN_0__ 表示只读访问）",
+    "origin": "model"
   },
   "9343407634f7c3a0366956199a0ae0e06e982ababa2910363704a086ab97f6ab": {
     "pkg": "agent",
@@ -4085,6 +4211,15 @@
     "translation": "只读",
     "origin": "seed"
   },
+  "9fb03bea9df69d988e255d3af272b199d3f7df930bab108876424bb71cf86e69": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "console:0",
+    "source": "omp starts the relay automatically when the browser prelude needs it;",
+    "text": "omp starts the relay automatically when the browser prelude needs it;",
+    "translation": "omp 会在浏览器前置脚本需要时自动启动中继；",
+    "origin": "model"
+  },
   "9febb0ca8d679ef7a9383e70f3f1287c9b23eb56b8c10b1f3a4ac8fb4523551d": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -4263,6 +4398,15 @@
     "source": "${chalk.bold(`${APP_NAME} setup`)} - Run onboarding or install dependencies for optional features\n\n${chalk.bold(\"Usage:\")}\n  ${APP_NAME} setup                     Run the onboarding wizard\n  ${APP_NAME} setup <component> [options]\n\n${chalk.bold(\"Components:\")}\n  python    Verify a Python 3 interpreter is reachable for code execution\n  speech    Pick and download speech-to-text and text-to-speech models\n\n${chalk.bold(\"Options:\")}\n  -c, --check   Check if dependencies are installed without installing\n  --json        Output status as JSON\n\n${chalk.bold(\"Examples:\")}\n  ${APP_NAME} setup                  Run the onboarding wizard\n  ${APP_NAME} setup python           Check Python execution dependencies\n  ${APP_NAME} setup speech           Pick and download the STT and TTS models\n  ${APP_NAME} setup speech --check   Check if speech dependencies are available\n  ${APP_NAME} setup python --check   Check if Python execution is available\n",
     "text": "__OMP_TOKEN_0__ - Run onboarding or install dependencies for optional features__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ setup                     Run the onboarding wizard__OMP_TOKEN_6__  __OMP_TOKEN_7__ setup <component> [options]__OMP_TOKEN_8____OMP_TOKEN_9____OMP_TOKEN_10____OMP_TOKEN_11__  python    Verify a Python 3 interpreter is reachable for code execution__OMP_TOKEN_12__  speech    Pick and download speech-to-text and text-to-speech models__OMP_TOKEN_13____OMP_TOKEN_14____OMP_TOKEN_15____OMP_TOKEN_16__  -c, __OMP_TOKEN_17__   Check if dependencies are installed without installing__OMP_TOKEN_18__  __OMP_TOKEN_19__        Output status as __OMP_TOKEN_20____OMP_TOKEN_21____OMP_TOKEN_22____OMP_TOKEN_23____OMP_TOKEN_24__  __OMP_TOKEN_25__ setup                  Run the onboarding wizard__OMP_TOKEN_26__  __OMP_TOKEN_27__ setup python           Check Python execution dependencies__OMP_TOKEN_28__  __OMP_TOKEN_29__ setup speech           Pick and download the __OMP_TOKEN_30__ and __OMP_TOKEN_31__ models__OMP_TOKEN_32__  __OMP_TOKEN_33__ setup speech __OMP_TOKEN_34__   Check if speech dependencies are available__OMP_TOKEN_35__  __OMP_TOKEN_36__ setup python __OMP_TOKEN_37__   Check if Python execution is available__OMP_TOKEN_38__",
     "translation": "__OMP_TOKEN_0__ - 运行入门引导或为可选功能安装依赖项__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ setup                     运行入门引导向导__OMP_TOKEN_6__  __OMP_TOKEN_7__ setup <component> [options]__OMP_TOKEN_8____OMP_TOKEN_9____OMP_TOKEN_10____OMP_TOKEN_11__  python    验证 Python 3 解释器是否可访问以执行代码__OMP_TOKEN_12__  speech    选择并下载语音转文本和文本转语音模型__OMP_TOKEN_13____OMP_TOKEN_14____OMP_TOKEN_15____OMP_TOKEN_16__  -c, __OMP_TOKEN_17__   检查是否已安装依赖项但不执行安装__OMP_TOKEN_18__  __OMP_TOKEN_19__        以 __OMP_TOKEN_20__ 格式输出状态__OMP_TOKEN_21____OMP_TOKEN_22____OMP_TOKEN_23____OMP_TOKEN_24__  __OMP_TOKEN_25__ setup                  运行入门引导向导__OMP_TOKEN_26__  __OMP_TOKEN_27__ setup python           检查 Python 执行依赖项__OMP_TOKEN_28__  __OMP_TOKEN_29__ setup speech           选择并下载 __OMP_TOKEN_30__ 和 __OMP_TOKEN_31__ 模型__OMP_TOKEN_32__  __OMP_TOKEN_33__ setup speech __OMP_TOKEN_34__   检查语音依赖项是否可用__OMP_TOKEN_35__  __OMP_TOKEN_36__ setup python __OMP_TOKEN_37__   检查 Python 执行是否可用__OMP_TOKEN_38__",
+    "origin": "model"
+  },
+  "a41752794965370cbcf2652c35343c17603611733041959793eeb3a6d2f36e17": {
+    "pkg": "agent",
+    "file": "src/cli/config-cli.ts",
+    "role": "field:message",
+    "source": "A runtime override supplies the effective value for this process.",
+    "text": "A runtime override supplies the effective value for this process.",
+    "translation": "运行时覆盖为当前进程提供了实际生效的值。",
     "origin": "model"
   },
   "a5049a8cca25ecaa76cb91a6caabf27bbb80d9b504fd85699c188046cfa8a553": {
@@ -4472,6 +4616,15 @@
     "translation": "主题",
     "origin": "seed"
   },
+  "ac3f8ceabc5fd0d95c86f6088188907b6120c526fffca0a8574f6bf0be865dcc": {
+    "pkg": "agent",
+    "file": "src/cli/ps-cli.ts",
+    "role": "console:0",
+    "source": "  restarts: ${daemon.restartCount} (policy: ${result.spec.restart})",
+    "text": "  restarts: __OMP_TOKEN_0__ (policy: __OMP_TOKEN_1__)",
+    "translation": "  重启次数：__OMP_TOKEN_0__（策略：__OMP_TOKEN_1__）",
+    "origin": "model"
+  },
   "ac8c2144361633bd156de122e63f55db0f2b147c2a91a0cd8f0d3d73448a16a7": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -4516,6 +4669,15 @@
     "text": "Thin chevron",
     "translation": "细箭头",
     "origin": "seed"
+  },
+  "aebe5c996c243642da291ad6658fd981d7106d80257b84276a16076f151dc595": {
+    "pkg": "agent",
+    "file": "src/cli/ps-cli.ts",
+    "role": "console:0",
+    "source": "  uptime:   ${formatDuration(Date.now() - daemon.startedAt)}",
+    "text": "  uptime:   __OMP_TOKEN_0__",
+    "translation": "  运行时间：__OMP_TOKEN_0__",
+    "origin": "model"
   },
   "afe015186cee2e93bc89f39203c3d704d92b2f31400f69e036ec69627f8b7b90": {
     "pkg": "agent",
@@ -4930,6 +5092,15 @@
     "text": "Check on startup and notify when updates are available",
     "translation": "启动时检查,有更新时通知",
     "origin": "seed"
+  },
+  "c0d0c736a63054589077197d5aa7dc8ac0f06712972a1ca0fd4cfb1243f6ab87": {
+    "pkg": "agent",
+    "file": "src/cli/plugin-cli.ts",
+    "role": "console:0",
+    "source": "${chalk.bold(`${APP_NAME} plugin`)} - Plugin lifecycle management\n\n${chalk.bold(\"Commands:\")}\n  install <source>[features]     Install plugins from npm, GitHub, or git URL\n  uninstall <pkg>                Remove plugins\n  list                           Show installed plugins\n  link <path>                    Link local plugin for development\n  doctor                         Check plugin health\n  features <pkg>                 View/modify enabled features\n  config <cmd> <pkg> [key] [val] Manage plugin settings\n  enable <pkg>                   Enable a disabled plugin\n  disable <pkg>                  Disable plugin without uninstalling\n  marketplace <cmd>            Manage marketplace sources (add, remove, update, list)\n  discover [marketplace]        Browse available marketplace plugins\n\n${chalk.bold(\"Feature Syntax:\")}\n  pkg                Install with default features\n  pkg[feat1,feat2]   Install with specific features\n  pkg[*]             Install with all features\n  pkg[]              Install with no optional features\n\n${chalk.bold(\"Sources:\")}\n  pkg, pkg@1.2.3                  npm package (optionally pinned)\n  github:user/repo[#ref]          GitHub shorthand (also gitlab:, bitbucket:, codeberg:, sourcehut:)\n  https://github.com/user/repo    Full git URL (https, ssh, or git protocol)\n  name@marketplace                Marketplace plugin (see marketplace command)\n  ./path, ../path, /abs, ~/path   Local plugin directory (symlinked, same as plugin link)\n\n${chalk.bold(\"Config Subcommands:\")}\n  config list <pkg>              List all settings\n  config get <pkg> <key>         Get a setting value\n  config set <pkg> <key> <val>   Set a setting value\n  config delete <pkg> <key>      Delete a setting\n  config validate                Validate all plugin settings\n\n${chalk.bold(\"Options:\")}\n  --json           Output as JSON\n  --fix            Attempt automatic fixes (doctor)\n  --force          Overwrite without prompting (install)\n  --scope <scope>  Install scope: user (default) or project (install name@marketplace)\n  --dry-run        Preview changes without applying (install, uninstall, link, upgrade of marketplace plugins)\n  -l, --local      Use project-local overrides\n\n${chalk.bold(\"Examples:\")}\n  ${APP_NAME} plugin install @oh-my-pi/exa[search]\n  ${APP_NAME} plugin list --json\n  ${APP_NAME} plugin features my-plugin --enable search,web\n  ${APP_NAME} plugin config set my-plugin apiKey sk-xxx\n  ${APP_NAME} plugin doctor --fix\n  ${APP_NAME} plugin install --scope project name@marketplace\n  ${APP_NAME} plugin install github:user/repo#v1.0\n",
+    "text": "__OMP_TOKEN_0__ - Plugin lifecycle management__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  install <source>[features]     Install plugins from npm, GitHub, or git __OMP_TOKEN_5____OMP_TOKEN_6__  uninstall <pkg>                Remove plugins__OMP_TOKEN_7__  list                           Show installed plugins__OMP_TOKEN_8__  link <path>                    Link local plugin for development__OMP_TOKEN_9__  doctor                         Check plugin health__OMP_TOKEN_10__  features <pkg>                 __OMP_TOKEN_11__ enabled features__OMP_TOKEN_12__  config <cmd> <pkg> [key] [val] Manage plugin settings__OMP_TOKEN_13__  enable <pkg>                   Enable a disabled plugin__OMP_TOKEN_14__  disable <pkg>                  Disable plugin without uninstalling__OMP_TOKEN_15__  marketplace <cmd>            Manage marketplace sources (add, remove, update, list)__OMP_TOKEN_16__  discover [marketplace]        Browse available marketplace plugins__OMP_TOKEN_17____OMP_TOKEN_18____OMP_TOKEN_19____OMP_TOKEN_20__  pkg                Install with default features__OMP_TOKEN_21__  pkg[feat1,feat2]   Install with specific features__OMP_TOKEN_22__  pkg[*]             Install with all features__OMP_TOKEN_23__  pkg[]              Install with no optional features__OMP_TOKEN_24____OMP_TOKEN_25____OMP_TOKEN_26____OMP_TOKEN_27__  pkg, pkg@1.2.3                  npm package (optionally pinned)__OMP_TOKEN_28__  github:__OMP_TOKEN_29__[#ref]          GitHub shorthand (also gitlab:, bitbucket:, codeberg:, sourcehut:)__OMP_TOKEN_30__  __OMP_TOKEN_31__    Full git __OMP_TOKEN_32__ (https, ssh, or git protocol)__OMP_TOKEN_33__  name@marketplace                Marketplace plugin (see marketplace command)__OMP_TOKEN_34__  __OMP_TOKEN_35__, __OMP_TOKEN_36__, __OMP_TOKEN_37__, __OMP_TOKEN_38__   Local plugin directory (symlinked, same as plugin link)__OMP_TOKEN_39____OMP_TOKEN_40____OMP_TOKEN_41____OMP_TOKEN_42__  config list <pkg>              List all settings__OMP_TOKEN_43__  config get <pkg> <key>         Get a setting value__OMP_TOKEN_44__  config set <pkg> <key> <val>   Set a setting value__OMP_TOKEN_45__  config delete <pkg> <key>      Delete a setting__OMP_TOKEN_46__  config validate                Validate all plugin settings__OMP_TOKEN_47____OMP_TOKEN_48____OMP_TOKEN_49____OMP_TOKEN_50__  __OMP_TOKEN_51__           Output as __OMP_TOKEN_52____OMP_TOKEN_53__  __OMP_TOKEN_54__            Attempt automatic fixes (doctor)__OMP_TOKEN_55__  __OMP_TOKEN_56__          Overwrite without prompting (install)__OMP_TOKEN_57__  __OMP_TOKEN_58__ <scope>  Install scope: user (default) or project (install name@marketplace)__OMP_TOKEN_59__  __OMP_TOKEN_60__        Preview changes without applying (install, uninstall, link, upgrade of marketplace plugins)__OMP_TOKEN_61__  -l, __OMP_TOKEN_62__      Use project-local overrides__OMP_TOKEN_63____OMP_TOKEN_64____OMP_TOKEN_65____OMP_TOKEN_66__  __OMP_TOKEN_67__ plugin install @__OMP_TOKEN_68__[search]__OMP_TOKEN_69__  __OMP_TOKEN_70__ plugin list __OMP_TOKEN_71____OMP_TOKEN_72__  __OMP_TOKEN_73__ plugin features my-plugin __OMP_TOKEN_74__ search,web__OMP_TOKEN_75__  __OMP_TOKEN_76__ plugin config set my-plugin apiKey sk-xxx__OMP_TOKEN_77__  __OMP_TOKEN_78__ plugin doctor __OMP_TOKEN_79____OMP_TOKEN_80__  __OMP_TOKEN_81__ plugin install __OMP_TOKEN_82__ project name@marketplace__OMP_TOKEN_83__  __OMP_TOKEN_84__ plugin install github:__OMP_TOKEN_85__#v1.0__OMP_TOKEN_86__",
+    "translation": "__OMP_TOKEN_0__ - 插件生命周期管理__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  install <source>[features]     从 npm、GitHub 或 git __OMP_TOKEN_5__ 安装插件__OMP_TOKEN_6__  uninstall <pkg>                移除插件__OMP_TOKEN_7__  list                           显示已安装的插件__OMP_TOKEN_8__  link <path>                    链接本地插件用于开发__OMP_TOKEN_9__  doctor                         检查插件健康状况__OMP_TOKEN_10__  features <pkg>                 __OMP_TOKEN_11__已启用的特性__OMP_TOKEN_12__  config <cmd> <pkg> [key] [val] 管理插件设置__OMP_TOKEN_13__  enable <pkg>                   启用已禁用的插件__OMP_TOKEN_14__  disable <pkg>                  禁用插件但不卸载__OMP_TOKEN_15__  marketplace <cmd>            管理插件市场源（add、remove、update、list）__OMP_TOKEN_16__  discover [marketplace]        浏览可用的市场插件__OMP_TOKEN_17____OMP_TOKEN_18____OMP_TOKEN_19____OMP_TOKEN_20__  pkg                使用默认特性安装__OMP_TOKEN_21__  pkg[feat1,feat2]   安装指定特性__OMP_TOKEN_22__  pkg[*]             安装所有特性__OMP_TOKEN_23__  pkg[]              不安装任何可选特性__OMP_TOKEN_24____OMP_TOKEN_25____OMP_TOKEN_26____OMP_TOKEN_27__  pkg, pkg@1.2.3                  npm 包（可选锁定版本）__OMP_TOKEN_28__  github:__OMP_TOKEN_29__[#ref]          GitHub 简写（亦支持 gitlab:、bitbucket:、codeberg:、sourcehut:）__OMP_TOKEN_30__  __OMP_TOKEN_31__    完整 git __OMP_TOKEN_32__（https、ssh 或 git 协议）__OMP_TOKEN_33__  name@marketplace                市场插件（参见 marketplace 命令）__OMP_TOKEN_34__  __OMP_TOKEN_35__, __OMP_TOKEN_36__, __OMP_TOKEN_37__, __OMP_TOKEN_38__   本地插件目录（符号链接，等同于 plugin link）__OMP_TOKEN_39____OMP_TOKEN_40____OMP_TOKEN_41____OMP_TOKEN_42__  config list <pkg>              列出所有设置__OMP_TOKEN_43__  config get <pkg> <key>         获取设置的值__OMP_TOKEN_44__  config set <pkg> <key> <val>   修改设置的值__OMP_TOKEN_45__  config delete <pkg> <key>      删除设置__OMP_TOKEN_46__  config validate                验证所有插件设置__OMP_TOKEN_47____OMP_TOKEN_48____OMP_TOKEN_49____OMP_TOKEN_50__  __OMP_TOKEN_51__           以 __OMP_TOKEN_52__ 格式输出__OMP_TOKEN_53__  __OMP_TOKEN_54__            尝试自动修复（doctor）__OMP_TOKEN_55__  __OMP_TOKEN_56__          不提示直接覆盖（install）__OMP_TOKEN_57__  __OMP_TOKEN_58__ <scope>  安装范围：user（默认）或 project（install name@marketplace）__OMP_TOKEN_59__  __OMP_TOKEN_60__        仅预览变更而不实际应用（市场插件的 install、uninstall、link、upgrade）__OMP_TOKEN_61__  -l, __OMP_TOKEN_62__      使用项目本地覆盖__OMP_TOKEN_63____OMP_TOKEN_64____OMP_TOKEN_65____OMP_TOKEN_66__  __OMP_TOKEN_67__ plugin install @__OMP_TOKEN_68__[search]__OMP_TOKEN_69__  __OMP_TOKEN_70__ plugin list __OMP_TOKEN_71____OMP_TOKEN_72__  __OMP_TOKEN_73__ plugin features my-plugin __OMP_TOKEN_74__ search,web__OMP_TOKEN_75__  __OMP_TOKEN_76__ plugin config set my-plugin apiKey sk-xxx__OMP_TOKEN_77__  __OMP_TOKEN_78__ plugin doctor __OMP_TOKEN_79____OMP_TOKEN_80__  __OMP_TOKEN_81__ plugin install __OMP_TOKEN_82__ project name@marketplace__OMP_TOKEN_83__  __OMP_TOKEN_84__ plugin install github:__OMP_TOKEN_85__#v1.0__OMP_TOKEN_86__",
+    "origin": "model"
   },
   "c0e55bfdbd30fb76f6b401c85acc76b1a6ea495452f32cde6aea2f9ff9da32cf": {
     "pkg": "agent",
@@ -5587,6 +5758,15 @@
     "text": "4 minutes",
     "translation": "4 分钟",
     "origin": "seed"
+  },
+  "d6771185f5cd75ae54fcb5652af7e44e760e5795d1696e68c9053c969a514f3d": {
+    "pkg": "agent",
+    "file": "src/cli/ps-cli.ts",
+    "role": "console:0",
+    "source": "  command:  ${formatCommand(result.spec)}",
+    "text": "  command:  __OMP_TOKEN_0__",
+    "translation": "  命令：    __OMP_TOKEN_0__",
+    "origin": "model"
   },
   "d6853cf9a3b19108e70d37b7ada2f453bb6e48dc77dbe2b4ae1adb5c7a1aad43": {
     "pkg": "agent",
