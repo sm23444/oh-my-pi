@@ -34,8 +34,10 @@ function isObject(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function invalidOutput(): never {
-	throw new TranslationError("Translation provider returned invalid structured output.", true);
+type OutputFailure = "provider-shape" | "openai-choices" | "openai-content" | "google-candidates" | "google-content" | "google-part" | "json-code-fence" | "invalid-json" | "translations-shape" | "translation-count" | "entry-shape" | "entry-id" | "entry-placeholders" | "output-truncated";
+
+function invalidOutput(reason: OutputFailure): never {
+	throw new TranslationError(`Translation provider returned invalid structured output. Reason: ${reason}.`, true);
 }
 
 function validateItems(items: TranslationRequest[]): void {
@@ -115,25 +117,26 @@ function requestBody(items: TranslationRequest[], config: TranslationConfig): ob
 }
 
 function outputText(body: unknown, provider: TranslationConfig["provider"]): string {
-	if (!isObject(body)) return invalidOutput();
+	if (!isObject(body)) return invalidOutput("provider-shape");
 	if (provider === "openai") {
-		if (!Array.isArray(body.choices) || body.choices.length !== 1) return invalidOutput();
+		if (!Array.isArray(body.choices) || body.choices.length !== 1) return invalidOutput("openai-choices");
 		const choice: unknown = body.choices[0];
 		if (!isObject(choice) || !isObject(choice.message) || typeof choice.message.content !== "string") {
-			return invalidOutput();
+			return invalidOutput("openai-content");
 		}
+		if (choice.finish_reason === "length") return invalidOutput("output-truncated");
 		return choice.message.content;
 	}
-	if (!Array.isArray(body.candidates) || body.candidates.length !== 1) return invalidOutput();
+	if (!Array.isArray(body.candidates) || body.candidates.length !== 1) return invalidOutput("google-candidates");
 	const candidate: unknown = body.candidates[0];
 	if (!isObject(candidate) || !isObject(candidate.content) || !Array.isArray(candidate.content.parts)) {
-		return invalidOutput();
+		return invalidOutput("google-content");
 	}
 	const texts: string[] = [];
 	for (const part of candidate.content.parts as unknown[]) {
-		if (!isObject(part)) return invalidOutput();
+		if (!isObject(part)) return invalidOutput("google-part");
 		if (part.thought === true) continue;
-		if (typeof part.text !== "string") return invalidOutput();
+		if (typeof part.text !== "string") return invalidOutput("google-part");
 		texts.push(part.text);
 	}
 	return texts.join("");
@@ -148,24 +151,24 @@ function validateOutput(text: string, items: TranslationRequest[]): TranslationR
 	try {
 		output = JSON.parse(text);
 	} catch {
-		return invalidOutput();
+		return invalidOutput(text.trimStart().startsWith("```") ? "json-code-fence" : "invalid-json");
 	}
 	if (!isObject(output) || Object.keys(output).length !== 1 || !Array.isArray(output.translations)) {
-		return invalidOutput();
+		return invalidOutput("translations-shape");
 	}
-	if (output.translations.length !== items.length) return invalidOutput();
+	if (output.translations.length !== items.length) return invalidOutput("translation-count");
 	const sources = new Map(items.map(item => [item.id, item.text]));
 	const results = new Map<string, TranslationResult>();
 	for (const result of output.translations as unknown[]) {
 		if (
 			!isObject(result) || Object.keys(result).length !== 2 ||
-			typeof result.id !== "string" || typeof result.text !== "string" || !result.text.trim() ||
-			!sources.has(result.id) || results.has(result.id)
+			typeof result.id !== "string" || typeof result.text !== "string" || !result.text.trim()
 		) {
-			return invalidOutput();
+			return invalidOutput("entry-shape");
 		}
+		if (!sources.has(result.id) || results.has(result.id)) return invalidOutput("entry-id");
 		if (JSON.stringify(tokens(sources.get(result.id)!)) !== JSON.stringify(tokens(result.text))) {
-			return invalidOutput();
+			return invalidOutput("entry-placeholders");
 		}
 		results.set(result.id, { id: result.id, text: result.text });
 	}
