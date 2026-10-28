@@ -2222,6 +2222,15 @@
     "translation": "输出原始凭据值,不解析嵌套 __OMP_TOKEN_0__ 结构",
     "origin": "seed"
   },
+  "5c0adeb227fc06b6941735b0c35fa5eb2d4c393297a328715404708a10b5c348": {
+    "pkg": "agent",
+    "file": "src/cli/stats-cli.ts",
+    "role": "console:0",
+    "source": "Press ${formatKeyHint(\"ctrl+c\")} to stop\n",
+    "text": "Press __OMP_TOKEN_0__ to stop__OMP_TOKEN_1__",
+    "translation": "按 __OMP_TOKEN_0__ 停止__OMP_TOKEN_1__",
+    "origin": "model"
+  },
   "5cebccd6c0383010cd426c875c1c104221d6df5e661fdfb3f5e2c2db3d943582": {
     "pkg": "tui",
     "file": "src/overlays/model-hub.ts",
@@ -5812,6 +5821,15 @@
     "text": "turn content",
     "translation": "轮次内容",
     "origin": "seed"
+  },
+  "f3d476c45b9e646f4bea08d539dfb7794008bab2796bca676c8a4278b6de7a65": {
+    "pkg": "agent",
+    "file": "src/cli/stats-cli.ts",
+    "role": "console:0",
+    "source": "\nShutting down...",
+    "text": "__OMP_TOKEN_0__Shutting down...",
+    "translation": "__OMP_TOKEN_0__正在关闭...",
+    "origin": "model"
   },
   "f3e70821be5f7c51d79dba3c1e2ec5c61da404af63f748764716fc226896372d": {
     "pkg": "agent",

@@ -24,7 +24,7 @@ const MAX_ATTEMPTS = 3;
 const REQUEST_TIMEOUT_MS = 90_000;
 
 class TranslationError extends Error {
-	constructor(message: string, readonly retryable: boolean) {
+	constructor(message: string, readonly retryable: boolean, readonly invalidOutput = false) {
 		super(message);
 		this.name = "TranslationError";
 	}
@@ -37,7 +37,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 type OutputFailure = "provider-shape" | "openai-choices" | "openai-content" | "google-candidates" | "google-content" | "google-part" | "json-code-fence" | "invalid-json" | "translations-shape" | "translation-count" | "entry-shape" | "entry-id" | "entry-placeholders" | "output-truncated";
 
 function invalidOutput(reason: OutputFailure): never {
-	throw new TranslationError(`Translation provider returned invalid structured output. Reason: ${reason}.`, true);
+	throw new TranslationError(`Translation provider returned invalid structured output. Reason: ${reason}.`, true, true);
 }
 
 function validateItems(items: TranslationRequest[]): void {
@@ -255,9 +255,17 @@ export async function translateAll(
 		if (onBatch) await onBatch(batch);
 		for (const result of batch) results.set(result.id, result);
 	};
-	for (let index = 0; index < items.length; index += batchSize) {
-		const requests = items.slice(index, index + batchSize);
-		const batch = await translateBatch(requests, { ...config, validateResult: undefined });
+	const processBatch = async (requests: TranslationRequest[]): Promise<void> => {
+		let batch: TranslationResult[];
+		try {
+			batch = await translateBatch(requests, { ...config, validateResult: undefined });
+		} catch (error: unknown) {
+			if (!(error instanceof TranslationError) || !error.invalidOutput || requests.length === 1) throw error;
+			const middle = Math.floor(requests.length / 2);
+			await processBatch(requests.slice(0, middle));
+			await processBatch(requests.slice(middle));
+			return;
+		}
 		const accepted: TranslationResult[] = [];
 		const rejected = new Set<string>();
 		for (const result of batch) {
@@ -274,6 +282,9 @@ export async function translateAll(
 			if (!rejected.has(request.id)) continue;
 			await checkpoint(await translateBatch([request], config));
 		}
+	};
+	for (let index = 0; index < items.length; index += batchSize) {
+		await processBatch(items.slice(index, index + batchSize));
 	}
 	return items.map(item => results.get(item.id)!);
 }

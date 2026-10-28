@@ -247,4 +247,19 @@ describe("translation client", () => {
 		expect(saved).toEqual([neighbor]);
 		expect(requests).toBe(4);
 	});
+
+	test("splits a malformed batch into validated subbatches and checkpoints each before continuing", async () => {
+		const events: string[] = [];
+		spyOn(globalThis, "fetch").mockImplementation(async (_input, init) => {
+			const body = request(init);
+			const contents = body.contents as { parts: { text: string }[] }[];
+			const requested = JSON.parse(contents[0].parts[0].text) as { items: TranslationRequest[] };
+			events.push(`request:${requested.items.length}`);
+			if (requested.items.length > 1) return response({ translations: [translations[0]] });
+			return response({ translations: translations.filter(item => item.id === requested.items[0].id) });
+		});
+		const result = await translateAll(items, config, async batch => { events.push(`checkpoint:${batch[0].id}`); });
+		expect(result).toEqual(translations);
+		expect(events).toEqual(["request:2", "request:2", "request:2", "request:1", "checkpoint:first", "request:1", "checkpoint:second"]);
+	});
 });
