@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, mock, spyOn, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test";
 import {
 	translateAll,
 	translateBatch,
@@ -39,6 +39,7 @@ function request(init?: RequestInit): Record<string, unknown> {
 	if (typeof init?.body !== "string") throw new Error("Expected a JSON request body");
 	return JSON.parse(init.body) as Record<string, unknown>;
 }
+beforeEach(() => { spyOn(Bun, "sleep").mockResolvedValue(undefined); });
 
 afterEach(() => mock.restore());
 
@@ -319,5 +320,40 @@ describe("translation client", () => {
 		const fetcher = spyOn(globalThis, "fetch").mockImplementation(async () => response("invalid JSON"));
 		await expect(translateAll([items[0]], { ...config, onFailure: async () => { throw new Error("report write failed"); } })).rejects.toThrow("report write failed");
 		expect(fetcher).toHaveBeenCalledTimes(3);
+	});
+
+	test("transient service failures wait with exponential backoff before a successful retry", async () => {
+		let calls = 0;
+		const retries: number[] = [];
+		const fetcher = mockedFetch(async () => ++calls < 3 ? new Response("private service error", { status: 503 }) : response({ translations }));
+		expect(await translateBatch(items, { ...config, onRetry: (_attempt, delayMs) => { retries.push(delayMs); } }, fetcher)).toEqual(translations);
+		expect(retries).toEqual([10_000, 20_000]);
+		expect(Bun.sleep).toHaveBeenNthCalledWith(1, 10_000);
+		expect(Bun.sleep).toHaveBeenNthCalledWith(2, 20_000);
+		expect(fetcher).toHaveBeenCalledTimes(3);
+	});
+
+	for (const hint of [
+		{ name: "seconds", value: "7", expectedMs: 7_000 },
+		{ name: "HTTP date", value: "Wed, 28 Oct 2026 12:00:25 GMT", expectedMs: 25_000 },
+	]) {
+		test(`waits for the provider Retry-After ${hint.name} before sending the next request`, async () => {
+			spyOn(Date, "now").mockReturnValue(Date.parse("2026-10-28T12:00:00Z"));
+			let calls = 0;
+			const fetcher = mockedFetch(async () => ++calls === 1
+				? new Response("private service error", { status: 503, headers: { "Retry-After": hint.value } })
+				: response({ translations }));
+			expect(await translateBatch(items, config, fetcher)).toEqual(translations);
+			expect(Bun.sleep).toHaveBeenCalledTimes(1);
+			expect(Bun.sleep).toHaveBeenCalledWith(hint.expectedMs);
+			expect(fetcher).toHaveBeenCalledTimes(2);
+		});
+	}
+
+	test("a retry hint beyond the wait budget aborts without sending an early retry", async () => {
+		const fetcher = mockedFetch(async () => new Response("private service error", { status: 503, headers: { "Retry-After": "120" } }));
+		await expect(translateBatch(items, config, fetcher)).rejects.toThrow("HTTP 503");
+		expect(fetcher).toHaveBeenCalledTimes(1);
+		expect(Bun.sleep).not.toHaveBeenCalled();
 	});
 });

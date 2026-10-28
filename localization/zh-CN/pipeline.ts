@@ -96,6 +96,7 @@ try {
 			provider, apiKey, model: Bun.env.TRANSLATION_MODEL || settings.model,
 			baseUrl: Bun.env.TRANSLATION_BASE_URL || (provider === settings.provider ? settings.baseUrl : provider === "google" ? "https://generativelanguage.googleapis.com/v1beta" : "https://api.openai.com/v1"),
 			batchSize: settings.batchSize,
+			onRetry: (attempt, delayMs, reason) => console.warn(`Translation retry ${attempt}: ${reason} Waiting ${delayMs / 1000}s.`),
 			validateResult: result => {
 				const candidate = byId.get(result.id);
 				if (!candidate) throw new Error("Translation returned an unknown entry ID");

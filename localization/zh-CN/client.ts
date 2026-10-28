@@ -1,3 +1,4 @@
+import { extractRetryHint } from "../../packages/utils/src/fetch-retry";
 import translationPrompt from "./translation-prompt.md" with { type: "text" };
 
 export interface TranslationRequest {
@@ -24,13 +25,15 @@ export interface TranslationConfig {
 	batchSize?: number;
 	validateResult?: (result: TranslationResult) => void;
 	onFailure?: (failure: TranslationFailure) => Promise<void>;
+	onRetry?: (attempt: number, delayMs: number, reason: string) => void;
 }
 
 const MAX_ATTEMPTS = 3;
 const REQUEST_TIMEOUT_MS = 90_000;
+const MAX_RETRY_DELAY_MS = 60_000;
 
 class TranslationError extends Error {
-	constructor(message: string, readonly retryable: boolean, readonly invalidOutput = false) {
+	constructor(message: string, readonly retryable: boolean, readonly invalidOutput = false, readonly retryAfterMs?: number) {
 		super(message);
 		this.name = "TranslationError";
 	}
@@ -209,6 +212,7 @@ async function attempt(
 				throw new TranslationError(
 					`Translation provider HTTP ${response.status}.`,
 					response.status === 408 || response.status === 429 || response.status >= 500,
+					false, extractRetryHint(response),
 				);
 			}
 			let body: unknown;
@@ -245,7 +249,10 @@ export async function translateBatch(
 				throw new TranslationError("Translation request failed.", false);
 			}
 			if (!error.retryable || index === MAX_ATTEMPTS - 1) throw error;
-			await Bun.sleep(250 * 2 ** index);
+			if (error.retryAfterMs !== undefined && error.retryAfterMs > MAX_RETRY_DELAY_MS) throw error;
+			const delayMs = error.retryAfterMs ?? (error.invalidOutput ? 250 : 10_000) * 2 ** index;
+			config.onRetry?.(index + 1, delayMs, error.message);
+			await Bun.sleep(delayMs);
 		}
 	}
 	throw new TranslationError("Translation attempts exhausted.", false);
