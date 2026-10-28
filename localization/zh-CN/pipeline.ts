@@ -7,6 +7,7 @@ interface Settings {
 	provider: "google" | "openai";
 	baseUrl: string;
 	batchSize: number;
+	concurrency: number;
 	maxNewEntries: number;
 }
 interface SourceFile { absolute: string; pkg: PackageId; file: string; code: string; candidates: Candidate[]; }
@@ -96,6 +97,7 @@ try {
 			provider, apiKey, model: Bun.env.TRANSLATION_MODEL || settings.model,
 			baseUrl: Bun.env.TRANSLATION_BASE_URL || (provider === settings.provider ? settings.baseUrl : provider === "google" ? "https://generativelanguage.googleapis.com/v1beta" : "https://api.openai.com/v1"),
 			batchSize: settings.batchSize,
+			concurrency: settings.concurrency,
 			onRetry: (attempt, delayMs, reason) => console.warn(`Translation retry ${attempt}: ${reason} Waiting ${delayMs / 1000}s.`),
 			validateResult: result => {
 				const candidate = byId.get(result.id);
@@ -117,7 +119,7 @@ try {
 		const requestedMax = Number(Bun.env.TRANSLATION_MAX_ENTRIES || 0);
 		if (!Number.isSafeInteger(requestedMax) || requestedMax < 0 || requestedMax > settings.maxNewEntries) throw new Error(`TRANSLATION_MAX_ENTRIES must be an integer from 0 to ${settings.maxNewEntries}`);
 		const queue = missing().slice(0, requestedMax || settings.maxNewEntries);
-		console.log(`Translating ${queue.length} pending strings, checkpointing each batch.`);
+		console.log(`Translating ${queue.length} pending strings (${config.batchSize} per batch, ${config.concurrency} concurrent batches), checkpointing each batch.`);
 		await translateAll(queue.map(candidate => ({ id: candidate.id, text: candidate.text, context: `${candidate.pkg}:${candidate.file}:${candidate.line} ${candidate.role}\n${candidate.context}` })), config, async results => {
 			const updates: Catalog = {};
 			for (const result of results) {

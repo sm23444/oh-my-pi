@@ -356,4 +356,80 @@ describe("translation client", () => {
 		expect(fetcher).toHaveBeenCalledTimes(1);
 		expect(Bun.sleep).not.toHaveBeenCalled();
 	});
+
+	test("parallel batches finish out of order while checkpoint writes stay serial and results retain input order", async () => {
+		const source = Array.from({ length: 4 }, (_, index) => ({ id: String(index), text: "Open", context: "menu" }));
+		const started = source.map(() => Promise.withResolvers<void>());
+		const replies = source.map(() => Promise.withResolvers<Response>());
+		const firstWrite = Promise.withResolvers<void>();
+		const releaseWrite = Promise.withResolvers<void>();
+		const firstValidated = Promise.withResolvers<void>();
+		const requested: number[] = [];
+		const saved: string[] = [];
+		let active = 0;
+		let peak = 0;
+		let writes = 0;
+		spyOn(globalThis, "fetch").mockImplementation(async (_input, init) => {
+			const contents = request(init).contents as { parts: { text: string }[] }[];
+			const batch = JSON.parse(contents[0].parts[0].text) as { items: TranslationRequest[] };
+			const index = Number(batch.items[0].id);
+			requested.push(index);
+			peak = Math.max(peak, ++active);
+			started[index].resolve();
+			try { return await replies[index].promise; }
+			finally { active--; }
+		});
+		const resultTask = translateAll(source, {
+			...config, batchSize: 1, concurrency: 2,
+			validateResult: result => { if (result.id === "0") firstValidated.resolve(); },
+		}, async batch => {
+			expect(++writes).toBe(1);
+			if (batch[0].id === "1") { firstWrite.resolve(); await releaseWrite.promise; }
+			saved.push(batch[0].id);
+			writes--;
+		});
+		await Promise.all([started[0].promise, started[1].promise]);
+		expect(requested).toEqual([0, 1]);
+		replies[1].resolve(response({ translations: [{ id: "1", text: "打开" }] }));
+		await firstWrite.promise;
+		replies[0].resolve(response({ translations: [{ id: "0", text: "打开" }] }));
+		await firstValidated.promise;
+		expect(saved).toEqual([]);
+		releaseWrite.resolve();
+		for (const index of [2, 3]) replies[index].resolve(response({ translations: [{ id: String(index), text: "打开" }] }));
+		const result = await resultTask;
+		expect(peak).toBe(2);
+		expect(saved).toEqual(["1", "0", "2", "3"]);
+		expect(result.map(item => item.id)).toEqual(["0", "1", "2", "3"]);
+		expect(requested).toEqual([0, 1, 2, 3]);
+	});
+
+	test("a fatal parallel request stops queued batches and drains valid in-flight checkpoints before rejecting", async () => {
+		const source = [...items, { id: "third", text: "Review", context: "menu" }];
+		const neighborStarted = Promise.withResolvers<void>();
+		const neighborReply = Promise.withResolvers<Response>();
+		const requested: string[] = [];
+		const saved: TranslationResult[] = [];
+		spyOn(globalThis, "fetch").mockImplementation(async (_input, init) => {
+			const contents = request(init).contents as { parts: { text: string }[] }[];
+			const batch = JSON.parse(contents[0].parts[0].text) as { items: TranslationRequest[] };
+			const id = batch.items[0].id;
+			requested.push(id);
+			if (id === "first") return new Response("private auth error", { status: 401 });
+			neighborStarted.resolve();
+			return neighborReply.promise;
+		});
+		const resultTask = translateAll(source, { ...config, batchSize: 1, concurrency: 2 }, async batch => { saved.push(...batch); });
+		await neighborStarted.promise;
+		neighborReply.resolve(response({ translations: [translations[1]] }));
+		await expect(resultTask).rejects.toThrow("HTTP 401");
+		expect(saved).toEqual([translations[1]]);
+		expect(requested).toEqual(["first", "second"]);
+	});
+
+	test("invalid parallelism is rejected before any translation request", async () => {
+		const fetcher = spyOn(globalThis, "fetch").mockImplementation(async () => response({ translations }));
+		for (const concurrency of [0, 9, 1.5]) await expect(translateAll(items, { ...config, concurrency })).rejects.toThrow("integer from 1 to 8");
+		expect(fetcher).not.toHaveBeenCalled();
+	});
 });

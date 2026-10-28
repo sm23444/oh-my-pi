@@ -96,7 +96,7 @@ jobs:
         env:
           VERSION: ${{ steps.detect.outputs.version }}
         run: bun localization/zh-CN/pipeline.ts scan --source official --version "$VERSION" --report "$RUNNER_TEMP/zh-report"
-      - name: Translate missing strings with Gemini
+      - name: Translate missing strings with configured model
         if: steps.detect.outputs.needed == 'true' && !inputs.audit_only
         env:
           TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}

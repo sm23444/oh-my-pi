@@ -14,9 +14,13 @@ interface Summary {
 }
 interface DeferredEntry { id: string; reason: string; pkg: string; file: string; line: number; source: string; }
 
-async function runPipeline(acceptNeighbor: boolean) {
+async function runPipeline(acceptNeighbor: boolean, parallel = false) {
 	const directory = await fs.mkdtemp(path.join(Bun.env.PI_SCRATCH_DIR || os.tmpdir(), "omp-zh-pipeline-"));
-	const source = 'const view = { description: "Review outstanding zirconium translations", label: "Open the cobalt control panel" };';
+	const source = parallel
+		? `const views = ${JSON.stringify(Array.from({ length: 30 }, (_, index) => ({ description: `Open the cobalt control panel ${index}` })))};`
+		: 'const view = { description: "Review outstanding zirconium translations", label: "Open the cobalt control panel" };';
+	let active = 0;
+	let peak = 0;
 	const server = Bun.serve({
 		hostname: "127.0.0.1", port: 0,
 		async fetch(request) {
@@ -26,6 +30,9 @@ async function runPipeline(acceptNeighbor: boolean) {
 				id: item.id,
 				text: acceptNeighbor && item.text.startsWith("Open") ? "打开控制面板" : "Still untranslated English",
 			}));
+			peak = Math.max(peak, ++active);
+			if (parallel) await Bun.sleep(30);
+			active--;
 			return Response.json({ choices: [{ message: { content: JSON.stringify({ translations }) } }] });
 		},
 	});
@@ -43,7 +50,7 @@ async function runPipeline(acceptNeighbor: boolean) {
 			TRANSLATION_BASE_URL: `http://127.0.0.1:${server.port}/v1`,
 			TRANSLATION_API_KEY: "pipeline-test-key",
 			TRANSLATION_MODEL: "test-model",
-			TRANSLATION_MAX_ENTRIES: "2",
+			TRANSLATION_MAX_ENTRIES: parallel ? "30" : "2",
 			GITHUB_STEP_SUMMARY: "",
 		}).quiet().nothrow();
 		return {
@@ -54,6 +61,7 @@ async function runPipeline(acceptNeighbor: boolean) {
 			catalog: await Bun.file(catalogPath).json() as Catalog,
 			remainingSource: await Bun.file(fixture).text(),
 			source,
+			peak,
 		};
 	} finally {
 		server.stop(true);
@@ -80,4 +88,14 @@ test("pipeline fails a run with no acceptable translations and retains every rej
 	expect(result.summary).toMatchObject({ modelTranslatedThisRun: 0, deferredThisRun: 2, pendingDisplayStrings: 2, completeWithinScannerScope: false });
 	expect(result.catalog).toEqual({});
 	expect(result.deferred.map(entry => entry.source).sort()).toEqual(["Open the cobalt control panel", "Review outstanding zirconium translations"]);
+});
+
+test("pipeline merges overlapping translation batches into one complete persisted catalog", async () => {
+	const result = await runPipeline(true, true);
+	expect(result.exitCode).toBe(0);
+	expect(result.peak).toBe(3);
+	expect(result.summary).toMatchObject({ modelTranslatedThisRun: 30, deferredThisRun: 0, pendingDisplayStrings: 0, completeWithinScannerScope: true });
+	expect(Object.keys(result.catalog)).toHaveLength(30);
+	expect(new Set(Object.values(result.catalog).map(entry => entry.source)).size).toBe(30);
+	expect(result.remainingSource).toBe(result.source);
 });

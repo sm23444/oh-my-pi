@@ -1,3 +1,4 @@
+import { Serial } from "../../packages/utils/src/async";
 import { extractRetryHint } from "../../packages/utils/src/fetch-retry";
 import translationPrompt from "./translation-prompt.md" with { type: "text" };
 
@@ -23,6 +24,7 @@ export interface TranslationConfig {
 	baseUrl: string;
 	apiKey: string;
 	batchSize?: number;
+	concurrency?: number;
 	validateResult?: (result: TranslationResult) => void;
 	onFailure?: (failure: TranslationFailure) => Promise<void>;
 	onRetry?: (attempt: number, delayMs: number, reason: string) => void;
@@ -267,17 +269,27 @@ export async function translateAll(
 	if (!Number.isSafeInteger(batchSize) || batchSize < 1) {
 		throw new TranslationError("Translation batch size must be a positive safe integer.", false);
 	}
+	const concurrency = config.concurrency ?? 1;
+	if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 8) {
+		throw new TranslationError("Translation concurrency must be an integer from 1 to 8.", false);
+	}
+	const persistence = new Serial();
+	let stopped = false;
 	const results = new Map<string, TranslationResult>();
 	const checkpoint = async (batch: TranslationResult[]) => {
 		if (batch.length === 0) return;
-		if (onBatch) await onBatch(batch);
-		for (const result of batch) results.set(result.id, result);
+		await persistence.run(async () => {
+			if (onBatch) await onBatch(batch);
+			for (const result of batch) results.set(result.id, result);
+		});
 	};
 	const defer = async (request: TranslationRequest, error: unknown): Promise<void> => {
-		if (!(error instanceof TranslationError) || !error.invalidOutput || !config.onFailure) throw error;
-		await config.onFailure({ id: request.id, reason: error.message });
+		const onFailure = config.onFailure;
+		if (!(error instanceof TranslationError) || !error.invalidOutput || !onFailure) throw error;
+		await persistence.run(() => onFailure({ id: request.id, reason: error.message }));
 	};
 	const processBatch = async (requests: TranslationRequest[]): Promise<void> => {
+		if (stopped) return;
 		let batch: TranslationResult[];
 		try {
 			batch = await translateBatch(requests, { ...config, validateResult: undefined });
@@ -302,6 +314,7 @@ export async function translateAll(
 		// Checkpoint good items before spending any requests on an invalid neighbor.
 		await checkpoint(accepted);
 		for (const request of requests) {
+			if (stopped) return;
 			if (!rejected.has(request.id)) continue;
 			let retry: TranslationResult[];
 			try { retry = await translateBatch([request], config); }
@@ -309,8 +322,18 @@ export async function translateAll(
 			await checkpoint(retry);
 		}
 	};
-	for (let index = 0; index < items.length; index += batchSize) {
-		await processBatch(items.slice(index, index + batchSize));
-	}
+	let next = 0;
+	const worker = async (): Promise<void> => {
+		while (!stopped && next < items.length) {
+			const start = next;
+			next += batchSize;
+			try { await processBatch(items.slice(start, start + batchSize)); }
+			catch (error: unknown) { stopped = true; throw error; }
+		}
+	};
+	// Drain requests already in flight so their valid checkpoints finish before reporting failure.
+	const outcomes = await Promise.allSettled(Array.from({ length: Math.min(concurrency, Math.ceil(items.length / batchSize)) }, worker));
+	const failure = outcomes.find(outcome => outcome.status === "rejected");
+	if (failure?.status === "rejected") throw failure.reason;
 	return items.flatMap(item => { const result = results.get(item.id); return result ? [result] : []; });
 }

@@ -2,6 +2,7 @@
   "model": "gemini-3.1-pro-preview",
   "provider": "google",
   "baseUrl": "https://generativelanguage.googleapis.com/v1beta",
-  "batchSize": 5,
+  "batchSize": 10,
+  "concurrency": 3,
   "maxNewEntries": 1000
 }
