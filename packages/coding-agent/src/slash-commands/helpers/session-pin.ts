@@ -9,7 +9,7 @@ export function toSessionPinAccounts(accounts: readonly OAuthAccountSummary[]): 
 		const enterpriseUrl = account.enterpriseUrl?.trim();
 		return {
 			...account,
-			label: (formatActiveAccountLabel(account) ?? enterpriseUrl) || `OAuth credential #${account.credentialId}`,
+			label: (formatActiveAccountLabel(account) ?? enterpriseUrl) || `OAuth 凭据 #${account.credentialId}`,
 		};
 	});
 }

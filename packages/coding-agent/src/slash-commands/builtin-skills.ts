@@ -65,14 +65,14 @@ export const BUILTIN_SKILLS_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "skills",
 		icon: "skill",
-		description: "Search, install, and update skills from the skills.omp.sh registry",
+		description: "从 skills.omp.sh 注册表搜索、安装和更新技能",
 		subcommands: [
-			{ name: "search", description: "Search the skill registry", usage: "<query>" },
-			{ name: "install", description: "Install registry skills", usage: "<@scope/name[@range]>… [--global]" },
-			{ name: "installed", description: "List installed registry skills" },
+			{ name: "search", description: "搜索技能注册表", usage: "<query>" },
+			{ name: "install", description: "安装注册表技能", usage: "<@scope/name[@range]>… [--global]" },
+			{ name: "installed", description: "列出已安装的注册表技能" },
 			{
 				name: "update",
-				description: "Update registry skills within their ranges",
+				description: "在版本范围内更新注册表技能",
 				usage: "[@scope/name…] [--global]",
 			},
 		],
@@ -86,7 +86,7 @@ export const BUILTIN_SKILLS_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				switch (verb) {
 					case "search": {
 						if (!rest) {
-							ctx.showError("Usage: /skills search <query>");
+							ctx.showError("用法：/skills search <query>");
 							return;
 						}
 						const response = await withClient(client => client.search(rest));
@@ -100,7 +100,7 @@ export const BUILTIN_SKILLS_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 							return;
 						}
 						if (targets.names.length === 0) {
-							ctx.showError("Usage: /skills install <@scope/name[@range]>… [--global]");
+							ctx.showError("用法：/skills install <@scope/name[@range]>… [--global]");
 							return;
 						}
 						ctx.showStatus(`Installing ${targets.names.join(", ")}…`, { dim: true });
@@ -136,11 +136,13 @@ export const BUILTIN_SKILLS_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 						ctx.showStatus(USAGE);
 						return;
 					default:
-						ctx.showError(`Unknown /skills subcommand: ${verb}\n\n${USAGE}`);
+						ctx.showError(`未知 /skills 子命令：${verb}
+
+${USAGE}`);
 						return;
 				}
 			} catch (error) {
-				ctx.showError(`Skills: ${errorMessage(error)}`);
+				ctx.showError(`技能：${errorMessage(error)}`);
 			}
 		},
 	},

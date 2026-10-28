@@ -80,4 +80,59 @@ describe("display translation contracts", () => {
 		const result = applyCatalog(source, [candidate], { [candidate.id]: toEntry(candidate, "使用 __OMP_TOKEN_1__ 打开 __OMP_TOKEN_0__", "model") });
 		expect(new Function(`${result.code}; return item.label;`)()).toBe("使用 Ctrl+O 打开 " + String.raw`C:\work\file.txt`);
 	});
+
+	test("translates slash menu descriptions and dynamic model labels without changing commands or runtime model IDs", () => {
+		const source = 'const commands = [{name: "settings", description: "Open settings menu", handle: () => "settings"}, {name: "model", get description() {return "Choose model";}, getTuiAutocompleteDescription: runtime => { const model = runtime.model; return model ? `Model: ${model.provider}/${model.id}` : "Model: none selected"; }}];';
+		const candidates = extractCandidates(source, "agent", "src/slash-commands/builtin-modes.ts");
+		const translations = ["打开设置菜单", "选择模型", "模型：__OMP_TOKEN_0__/__OMP_TOKEN_1__", "模型：尚未选择"];
+		const catalog: Catalog = Object.fromEntries(candidates.map((candidate, index) => [candidate.id, toEntry(candidate, translations[index], "human")]));
+		const commands = new Function(`${applyCatalog(source, candidates, catalog).code}; return commands;`)();
+		expect(commands[0].name).toBe("settings");
+		expect(commands[0].description).toBe("打开设置菜单");
+		expect(commands[0].handle()).toBe("settings");
+		expect(commands[1].description).toBe("选择模型");
+		expect(commands[1].getTuiAutocompleteDescription({model: {provider: "gateway", id: "model-v1"}})).toBe("模型：gateway/model-v1");
+		expect(commands[1].getTuiAutocompleteDescription({})).toBe("模型：尚未选择");
+	});
+
+	test("translates expression-bodied autocomplete callbacks but leaves command handler return values unchanged", () => {
+		const source = 'const command = {name: "plan", getTuiAutocompleteDescription: runtime => runtime.enabled ? "Plan: on" : "Plan: off", handle: () => "Plan: on"};';
+		const candidates = extractCandidates(source, "agent", "src/slash-commands/builtin-modes.ts");
+		const catalog: Catalog = Object.fromEntries(candidates.map(candidate => [candidate.id, toEntry(candidate, candidate.source.endsWith("on") ? "计划：已开启" : "计划：已关闭", "human")]));
+		const command = new Function(`${applyCatalog(source, candidates, catalog).code}; return command;`)();
+		expect(command.getTuiAutocompleteDescription({enabled: true})).toBe("计划：已开启");
+		expect(command.getTuiAutocompleteDescription({enabled: false})).toBe("计划：已关闭");
+		expect(command.handle()).toBe("Plan: on");
+	});
+
+	test("translates the welcome label and font tip while retaining symbol identifiers", () => {
+		const source = 'const label = "Tip: "; class Welcome { get tip() { return "Please use nerdfont 😭."; } get symbol() {return "unicode";} }';
+		const candidates = extractCandidates(source, "tui", "src/prompt/welcome.ts");
+		const catalog: Catalog = Object.fromEntries(candidates.map(candidate => [candidate.id, toEntry(candidate, candidate.source.startsWith("Tip:") ? "提示：" : "请使用 Nerd Font 字体 😭。", "human")]));
+		const output = new Function(`${applyCatalog(source, candidates, catalog).code}; return [label, new Welcome().tip, new Welcome().symbol];`)();
+		expect(output).toEqual(["提示：", "请使用 Nerd Font 字体 😭。", "unicode"]);
+	});
+
+	test("translates line-based welcome tips without quoting or changing key placeholders, markers, links or CRLF boundaries", () => {
+		const source = '[NO-TERN] Press {key:ctrl+p} to switch /model [NEW]\r\n\r\nVisit https://example.com/tips for help\r\n';
+		const candidates = extractCandidates(source, "tui", "src/prompt/tips.txt");
+		const catalog: Catalog = {
+			[candidates[0].id]: toEntry(candidates[0], "__OMP_TOKEN_0__ 按 __OMP_TOKEN_1__ 切换 __OMP_TOKEN_2__ __OMP_TOKEN_3__", "human"),
+			[candidates[1].id]: toEntry(candidates[1], "访问 __OMP_TOKEN_0__ 查看帮助", "human"),
+		};
+		expect(applyCatalog(source, candidates, catalog).code).toBe('[NO-TERN] 按 {key:ctrl+p} 切换 /model [NEW]\r\n\r\n访问 https://example.com/tips 查看帮助\r\n');
+		expect(() => toEntry(candidates[0], "按 __OMP_TOKEN_1__ 切换 __OMP_TOKEN_2__", "model")).toThrow("protected placeholders");
+		expect(() => toEntry(candidates[0], "按 __OMP_TOKEN_1__ 切换 __OMP_TOKEN_2__ __OMP_TOKEN_0__ __OMP_TOKEN_3__", "model")).toThrow("leading welcome marker");
+		expect(() => toEntry(candidates[0], "__OMP_TOKEN_0__ 按 __OMP_TOKEN_1__ 切换 __OMP_TOKEN_2__ __OMP_TOKEN_3__ 新功能", "model")).toThrow("trailing welcome marker");
+		expect(() => extractCandidates("Use __OMP_TOKEN_0__ for help", "tui", "src/prompt/tips.txt")).toThrow("Reserved placeholder");
+	});
+
+	test("renders singular and plural skill counts while retaining the original plural expression", () => {
+		const source = 'const item = {description: `${skillCount} skill${skillCount === 1 ? "" : "s"}`};';
+		const [candidate] = extractCandidates(source, "tui", "src/autocomplete.ts");
+		const catalog = { [candidate.id]: toEntry(candidate, "技能：__OMP_TOKEN_0__（skill__OMP_TOKEN_1__）", "human") };
+		const render = new Function("skillCount", `${applyCatalog(source, [candidate], catalog).code}; return item.description;`);
+		expect(render(1)).toBe("技能：1（skill）");
+		expect(render(3)).toBe("技能：3（skills）");
+	});
 });

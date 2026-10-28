@@ -83,7 +83,7 @@ export function buildEffortArgumentCompletions(
 				return {
 					value: `${level} `,
 					label: level,
-					description: level === current ? `${description} (current)` : description,
+					description: level === current ? `${description}（当前）` : description,
 				};
 			});
 		return matches.length > 0 ? matches : null;
@@ -215,7 +215,7 @@ async function buildMcpRemoveCompletions(
 		.map(name =>
 			projectNameSet.has(name)
 				? { value: `${rawSubcommand} ${name} `, label: name }
-				: { value: `${rawSubcommand} ${name} --scope user `, label: `${name} (user)` },
+				: { value: `${rawSubcommand} ${name} --scope user `, label: `${name}（用户）` },
 		)
 		.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
 	return matches.length > 0 ? matches : null;

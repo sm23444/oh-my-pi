@@ -149,7 +149,7 @@ function tipSpans(tip: string): TspSpan[] {
  * `[]` when `width` leaves no room for a useful line.
  */
 export function renderWelcomeTip(tip: string, width: number, phase = 0): string[] {
-	const label = "Tip: ";
+	const label = "提示：";
 	if (width - visibleWidth(label) < 8) return [];
 
 	const isNew = NEW_TIP_MARKER.test(tip);
@@ -218,7 +218,7 @@ export class WelcomeComponent implements Component {
 		this.#nagRoll ??= Math.random();
 		this.#tipRoll ??= Math.random();
 		if (theme.getSymbolPreset() === "unicode" && this.#nagRoll < 0.1) {
-			return "Please use nerdfont 😭.";
+			return "请使用 Nerd Font 字体 😭。";
 		}
 		return pickWeightedTip(isNativeRendering() ? TSP_TIPS : TIPS, this.#tipRoll) || undefined;
 	}
@@ -279,7 +279,7 @@ export class WelcomeComponent implements Component {
 				node("icon", { name: "lightbulb", role: "omp.welcome.tip-icon" }),
 				text(tipText, { wrap: "word", role: "omp.welcome.tip-text" }),
 			];
-			if (isNew) tipRow.push(node("shimmer", { text: "New", role: "omp.welcome.new" }));
+			if (isNew) tipRow.push(node("shimmer", { text: "新功能", role: "omp.welcome.new" }));
 			body.push(node("row", { gap: "sm", align: "start", role: "omp.welcome.tip" }, tipRow, "tip"));
 		}
 		// No head row or chevron: the card is the hero; the version sits under the wordmark.

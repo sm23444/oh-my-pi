@@ -96,7 +96,7 @@ export async function launchStatsDashboard(
 		? `Dashboard already running at: ${url} (requested ${args.host}:${args.port} ignored)`
 		: `Dashboard available at: ${url}`;
 
-	return { url, message: `${serverLine} (sessions sync in the background)` };
+	return { url, message: `${serverLine}（会话在后台同步）` };
 }
 
 export function stopStatsDashboard(): void {

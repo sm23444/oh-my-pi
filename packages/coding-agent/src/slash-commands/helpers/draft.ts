@@ -34,7 +34,7 @@ export function refuseImages(command: ParsedSlashCommand, runtime: TuiSlashComma
 	const images = runtime.input?.images;
 	if (!images?.length) return false;
 	restoreDetachedDraft(runtime.ctx.editor, command.text, images, runtime.input?.imageLinks);
-	runtime.ctx.showWarning(`/${command.name} takes text only; remove the images to run it`);
+	runtime.ctx.showWarning(`/${command.name} 仅接受文本；请移除图片以运行它`);
 	return true;
 }
 

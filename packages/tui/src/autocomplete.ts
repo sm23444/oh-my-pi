@@ -575,7 +575,7 @@ function collapseSkillNamespace(commands: CommandEntry[], lowerPrefix: string): 
 	if (!SKILL_NAMESPACE.startsWith(lowerPrefix)) return rest;
 	rest.push({
 		name: SKILL_NAMESPACE,
-		description: `${skillCount} skill${skillCount === 1 ? "" : "s"}`,
+		description: `技能：${skillCount}（skill${skillCount === 1 ? "" : "s"}）`,
 		...(skillIcon && { icon: skillIcon }),
 		...(skillIconName && { iconName: skillIconName }),
 	});

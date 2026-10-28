@@ -47,4 +47,14 @@ $taskHelpOutput = & $taskLauncherPath --help
 if ($LASTEXITCODE -ne 0 -or ($taskHelpOutput -join "`n") -notmatch '[\u3400-\u9fff]') { throw 'Portable Chinese help check failed' }
 & $taskLauncherPath --smoke-test
 if ($LASTEXITCODE -ne 0) { throw 'Portable worker smoke test failed' }
+if (-not $Preview) {
+    $taskUiProbe = Join-Path $Destination 'ui-smoke.ts'
+    Copy-Item -LiteralPath (Join-Path $taskRoot 'ui-smoke.ts') -Destination $taskUiProbe
+    try {
+        & $taskBun $taskUiProbe
+        if ($LASTEXITCODE -ne 0) { throw 'Portable Chinese menu and welcome UI check failed' }
+    } finally {
+        Remove-Item -LiteralPath $taskUiProbe -Force
+    }
+}
 Write-Output "CLI package verified: $Version"

@@ -207,34 +207,34 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "todo",
 		icon: "todo",
-		description: "View or modify the agent's todo list",
+		description: "查看或修改智能体的待办事项列表",
 		acpDescription: "Manage todos",
 		acpInputHint: "<subcommand>",
 		subcommands: [
-			{ name: "edit", description: "Open todos in $EDITOR (Markdown round-trip)" },
-			{ name: "copy", description: "Copy todos as Markdown to clipboard" },
-			{ name: "expand", description: "Show every phase and task in the HUD" },
-			{ name: "collapse", description: "Restore the bounded HUD preview" },
-			{ name: "export", description: "Write todos as Markdown to a file (default: TODO.md)", usage: "[<path>]" },
-			{ name: "import", description: "Replace todos from a Markdown file (default: TODO.md)", usage: "[<path>]" },
+			{ name: "edit", description: "在 $EDITOR 中打开待办事项（Markdown 往返）" },
+			{ name: "copy", description: "将待办事项以 Markdown 格式复制到剪贴板" },
+			{ name: "expand", description: "在 HUD 中显示所有阶段和任务" },
+			{ name: "collapse", description: "恢复受限的 HUD 预览" },
+			{ name: "export", description: "将待办事项以 Markdown 格式写入文件（默认：TODO.md）", usage: "[<path>]" },
+			{ name: "import", description: "用 Markdown 文件替换待办事项（默认：TODO.md）", usage: "[<path>]" },
 			{
 				name: "append",
-				description: "Append a task; phase fuzzy-matched or auto-created",
+				description: "追加任务；阶段模糊匹配或自动创建",
 				usage: "[<phase>] <task...>",
 			},
-			{ name: "start", description: "Mark task in_progress (fuzzy-matched)", usage: "<task>" },
-			{ name: "done", description: "Mark task/phase/all completed (fuzzy-matched)", usage: "[<task|phase>]" },
-			{ name: "drop", description: "Mark task/phase/all abandoned (fuzzy-matched)", usage: "[<task|phase>]" },
-			{ name: "rm", description: "Remove task/phase/all (fuzzy-matched)", usage: "[<task|phase>]" },
+			{ name: "start", description: "将任务标记为进行中（模糊匹配）", usage: "<task>" },
+			{ name: "done", description: "将 task/phase/all 标记为已完成（模糊匹配）", usage: "[<task|phase>]" },
+			{ name: "drop", description: "将 task/phase/all 标记为已放弃（模糊匹配）", usage: "[<task|phase>]" },
+			{ name: "rm", description: "移除 task/phase/all（模糊匹配）", usage: "[<task|phase>]" },
 		],
 		allowArgs: true,
 		getTuiAutocompleteDescription: runtime => {
 			const tasks = runtime.ctx.todoPhases.flatMap(phase => phase.tasks);
-			if (tasks.length === 0) return "Todos: none";
+			if (tasks.length === 0) return "待办事项：无";
 			const pending = tasks.filter(task => task.status === "pending").length;
 			const inProgress = tasks.filter(task => task.status === "in_progress").length;
 			const completed = tasks.filter(task => task.status === "completed").length;
-			return `Todos: ${pending + inProgress} open (${inProgress} in progress, ${completed} done)`;
+			return `待办事项：${pending + inProgress} 项未完成（${inProgress} 项进行中，${completed} 项已完成）`;
 		},
 		handle: handleTodoAcp,
 		handleTui: async (command, runtime) => {
@@ -245,15 +245,15 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "session",
 		icon: "session",
-		description: "Session management commands",
+		description: "会话管理命令",
 		acpDescription: "Show or configure the current session",
 		acpInputHint: "[info|delete|pin [account]]",
 		subcommands: [
-			{ name: "info", description: "Show session info and stats" },
-			{ name: "delete", description: "Delete current session and return to selector" },
+			{ name: "info", description: "显示会话信息和统计信息" },
+			{ name: "delete", description: "删除当前会话并返回选择器" },
 			{
 				name: "pin",
-				description: "Pin a stored OAuth account to the current provider for this session",
+				description: "将已存储的 OAuth 账户固定到当前提供商以供此会话使用",
 				usage: "[account]",
 			},
 		],
@@ -323,18 +323,18 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "jobs",
 		icon: "jobs",
-		description: "Show async background jobs status",
+		description: "显示异步后台作业状态",
 		acpDescription: "Show background jobs",
 		acpInputHint: "[full|kill <id>|kill all]",
 		subcommands: [
-			{ name: "full", description: "Show full, untruncated command lines" },
-			{ name: "kill", description: "Cancel a running background job", usage: "<id>|all" },
+			{ name: "full", description: "显示完整、未截断的命令行" },
+			{ name: "kill", description: "取消正在运行的后台作业", usage: "<id>|all" },
 		],
 		allowArgs: true,
 		getTuiAutocompleteDescription: runtime => {
 			const snapshot = runtime.ctx.session.getAsyncJobSnapshot({ recentLimit: 5 });
-			if (!snapshot || (snapshot.running.length === 0 && snapshot.recent.length === 0)) return "Jobs: none";
-			return `Jobs: ${snapshot.running.length} running, ${snapshot.recent.length} recent`;
+			if (!snapshot || (snapshot.running.length === 0 && snapshot.recent.length === 0)) return "作业：无";
+			return `任务：${snapshot.running.length} 个正在运行，${snapshot.recent.length} 个最近`;
 		},
 		handle: async (command, runtime) => {
 			const { verb, rest } = parseSubcommand(command.args);
@@ -393,14 +393,14 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "usage",
 		icon: "gauge",
-		description: "Show provider usage and limits",
+		description: "显示提供商使用情况和限制",
 		acpDescription: "Show token usage",
 		acpInputHint: "[show|reset [provider/credential-id|provider/active]]",
 		subcommands: [
-			{ name: "show", description: "Show provider usage and limits" },
+			{ name: "show", description: "显示提供商使用情况和限制" },
 			{
 				name: "reset",
-				description: "Spend a saved provider rate-limit reset",
+				description: "使用已保存的提供商速率限制重置",
 				usage: "[provider/credential-id|provider/active]",
 			},
 		],
@@ -440,7 +440,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "stats",
 		icon: "stats",
-		description: "Launch the local stats dashboard",
+		description: "打开本地统计面板",
 		inlineHint: "[--port <port>] [--host <host>]",
 		allowArgs: true,
 		handle: async (command, runtime) => {
@@ -471,19 +471,19 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				const result = await launchSessionStatsDashboard(parsed, ctx);
 				ctx.presentCommandOutput(new StatsNotice(result.message, result.url));
 			} catch (error) {
-				ctx.showError(`Stats dashboard failed: ${errorMessage(error)}`);
+				ctx.showError(`统计信息仪表板失败：${errorMessage(error)}`);
 			}
 		},
 	},
 	{
 		name: "changelog",
 		icon: "news",
-		description: "Show changelog entries",
+		description: "显示更新日志条目",
 		acpDescription: "Show changelog",
 		acpInputHint: "[full|last [N]]",
 		subcommands: [
-			{ name: "full", description: "Show complete changelog" },
-			{ name: "last", description: "Show the last N releases (default 1)", usage: "[N]" },
+			{ name: "full", description: "显示完整更新日志" },
+			{ name: "last", description: "显示最近 N 个版本（默认 1）", usage: "[N]" },
 		],
 		allowArgs: true,
 		handle: async (command, runtime) => {
@@ -507,7 +507,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "hotkeys",
 		icon: "keyboard",
-		description: "Show all keyboard shortcuts",
+		description: "显示所有键盘快捷键",
 		handleTui: (_command, runtime) => {
 			runtime.ctx.handleHotkeysCommand();
 			clearSubmittedText(runtime);
@@ -516,12 +516,12 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "tools",
 		icon: "tools",
-		description: "Show tools currently visible to the agent",
+		description: "显示当前对智能体可见的工具",
 		acpDescription: "Show available tools",
 		getTuiAutocompleteDescription: runtime => {
 			const active = runtime.ctx.session.getActiveToolNames().length;
 			const all = runtime.ctx.session.getAllToolNames().length;
-			return all === 0 ? "Tools: none available" : `Tools: ${active} active / ${all} available`;
+			return all === 0 ? "工具：没有可用工具" : `工具：${active} 活跃 / ${all} 可用`;
 		},
 		handle: async (_command, runtime) => {
 			const active = runtime.session.getActiveToolNames();
@@ -545,12 +545,12 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "context",
 		icon: "context",
-		description: "Browse context usage and detailed content",
+		description: "浏览上下文使用情况和详细内容",
 		acpDescription: "Show context usage",
 		getTuiAutocompleteDescription: runtime => {
 			const usage = runtime.ctx.session.getContextUsage();
-			if (!usage) return "Context: unavailable";
-			return `Context: ${Math.round(usage.percent)}% (${formatTokenCount(usage.tokens)}/${formatTokenCount(usage.contextWindow)})`;
+			if (!usage) return "上下文：不可用";
+			return `上下文：${Math.round(usage.percent)}% (${formatTokenCount(usage.tokens)}/${formatTokenCount(usage.contextWindow)})`;
 		},
 		handle: async (_command, runtime) => {
 			await runtime.output(buildContextReportText(runtime));
@@ -565,7 +565,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		name: "extensions",
 		aliases: ["status"],
 		icon: "extension",
-		description: "Open Extension Control Center dashboard",
+		description: "打开扩展控制中心",
 		handleTui: (_command, runtime) => {
 			runtime.ctx.showExtensionsDashboard();
 			clearSubmittedText(runtime);
@@ -574,7 +574,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "agents",
 		icon: "agents",
-		description: "Open the agents hub (per-agent model, prewalk, and advisor)",
+		description: "打开代理中心（查看各代理的模型、预走查和顾问）",
 		handleTui: (_command, runtime) => {
 			runtime.ctx.showAgentsDashboard();
 			clearSubmittedText(runtime);
@@ -583,7 +583,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "git",
 		icon: "branch",
-		description: "Open the git UI (split diff viewer, staging, commit composer)",
+		description: "打开 Git 界面（分栏差异查看器、暂存、提交撰写器）",
 		inlineHint: "[revision]",
 		allowArgs: true,
 		handleTui: (command, runtime) => {
@@ -594,7 +594,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "local",
 		icon: "pencil",
-		description: "Open a session local:// file in $EDITOR (picker when no name given)",
+		description: "在 $EDITOR 中打开会话 local:// 文件（未提供名称时使用选择器）",
 		inlineHint: "[name]",
 		allowArgs: true,
 		handleTui: async (command, runtime) => {
@@ -606,7 +606,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		name: "hub",
 		aliases: ["subagents"],
 		icon: "agents",
-		description: "Open the live Agent Hub (subagents, including finished ones)",
+		description: "打开实时代理中心（子代理，含已完成项）",
 		handleTui: (_command, runtime) => {
 			runtime.ctx.showAgentHub({ initialSection: "activity" });
 			clearSubmittedText(runtime);
@@ -616,7 +616,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		name: "branch",
 		aliases: ["rewind"],
 		icon: "branch",
-		description: "Rewind to a previous message, keeping the old path as a branch",
+		description: "回退到之前的消息，并将旧路径保留为分支",
 		handleTui: (_command, runtime) => {
 			runtime.ctx.showUserMessageSelector();
 			clearSubmittedText(runtime);
@@ -625,11 +625,11 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "fork",
 		icon: "branch",
-		description: "Fork this session, or open it in a multiplexer pane or window",
+		description: "分叉此会话，或在多路复用器窗格或窗口中打开它",
 		subcommands: [
-			{ name: "pane", description: "Open the fork in a new terminal pane" },
-			{ name: "window", description: "Open the fork in a new multiplexer window" },
-			{ name: "tab", description: "Alias for window" },
+			{ name: "pane", description: "在新的终端窗格中打开 fork" },
+			{ name: "window", description: "在新的多路复用器窗口中打开 fork" },
+			{ name: "tab", description: "window 的别名" },
 		],
 		subcommandOptional: true,
 		allowArgs: true,
@@ -640,7 +640,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				const [keyword, ...extra] = args.split(/\s+/);
 				if (extra.length > 0) {
 					clearSubmittedText(runtime);
-					runtime.ctx.showError("Usage: /fork [pane|window|tab]");
+					runtime.ctx.showError("用法：/fork [pane|window|tab]");
 					return;
 				}
 				switch (keyword?.toLowerCase()) {
@@ -653,7 +653,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 						break;
 					default:
 						clearSubmittedText(runtime);
-						runtime.ctx.showError("Usage: /fork [pane|window|tab]");
+						runtime.ctx.showError("用法：/fork [pane|window|tab]");
 						return;
 				}
 			}
@@ -665,7 +665,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "tree",
 		icon: "tree",
-		description: "Navigate session tree (switch branches)",
+		description: "导航会话树（切换分支）",
 		handleTui: (_command, runtime) => {
 			runtime.ctx.showTreeSelector();
 			clearSubmittedText(runtime);
@@ -674,13 +674,13 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "login",
 		icon: "signIn",
-		description: "Login with OAuth provider",
+		description: "使用 OAuth 提供商登录",
 		inlineHint: "[provider|redirect URL]",
 		allowArgs: true,
 		getTuiAutocompleteDescription: runtime =>
 			runtime.ctx.oauthManualInput.hasPending()
-				? `Login: waiting for ${runtime.ctx.oauthManualInput.pendingProviderId ?? "OAuth"} callback`
-				: "Login: choose provider",
+				? `登录：等待 ${runtime.ctx.oauthManualInput.pendingProviderId ?? "OAuth"} 回调`
+				: "登录：选择提供商",
 		handleTui: (command, runtime) => {
 			const manualInput = runtime.ctx.oauthManualInput;
 			const args = command.args.trim();
@@ -704,7 +704,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				if (submitted) {
 					runtime.ctx.showStatus("OAuth callback received; completing login…");
 				} else {
-					runtime.ctx.showWarning("No OAuth login is waiting for a manual callback.");
+					runtime.ctx.showWarning("当前没有等待手动回调的 OAuth 登录。");
 				}
 				clearSubmittedText(runtime);
 				return;
@@ -727,7 +727,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "logout",
 		icon: "signOut",
-		description: "Logout from OAuth provider",
+		description: "从 OAuth 提供商注销登录",
 		inlineHint: "[provider]",
 		allowArgs: true,
 		handleTui: (command, runtime) => {
@@ -735,7 +735,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			if (providerId) {
 				const matchedProvider = getOAuthProviders().find(provider => provider.id === providerId);
 				if (!matchedProvider) {
-					runtime.ctx.showWarning(`Unknown OAuth provider: ${providerId}`);
+					runtime.ctx.showWarning(`未知 OAuth 提供商：${providerId}`);
 					clearSubmittedText(runtime);
 					return;
 				}
@@ -750,35 +750,35 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 	{
 		name: "mcp",
 		icon: "mcp",
-		description: "Manage MCP servers (add, list, remove, test)",
+		description: "管理 MCP 服务器（添加、列出、移除、测试）",
 		acpDescription: "Manage MCP servers",
 		inlineHint: "<subcommand>",
 		subcommands: [
 			{
 				name: "add",
-				description: "Add a new MCP server",
+				description: "添加新的 MCP 服务器",
 				usage: "<name> [--scope project|user] [--url <url>] [-- <command...>]",
 			},
-			{ name: "list", description: "List all configured MCP servers" },
-			{ name: "remove", description: "Remove an MCP server", usage: "<name> [--scope project|user]" },
-			{ name: "test", description: "Test connection to a server", usage: "<name>" },
-			{ name: "reauth", description: "Reauthorize OAuth for a server", usage: "<name>" },
-			{ name: "unauth", description: "Remove OAuth auth from a server", usage: "<name>" },
-			{ name: "enable", description: "Enable an MCP server", usage: "<name>" },
-			{ name: "disable", description: "Disable an MCP server", usage: "<name>" },
+			{ name: "list", description: "列出所有已配置的 MCP 服务器" },
+			{ name: "remove", description: "移除 MCP 服务器", usage: "<name> [--scope project|user]" },
+			{ name: "test", description: "测试服务器连接", usage: "<name>" },
+			{ name: "reauth", description: "为服务器重新授权 OAuth", usage: "<name>" },
+			{ name: "unauth", description: "移除服务器的 OAuth 授权", usage: "<name>" },
+			{ name: "enable", description: "启用 MCP 服务器", usage: "<name>" },
+			{ name: "disable", description: "禁用 MCP 服务器", usage: "<name>" },
 			{
 				name: "smithery-search",
-				description: "Search Smithery registry and deploy an MCP server",
+				description: "搜索 Smithery 注册表并部署一个 MCP 服务器",
 				usage: "<keyword> [--scope project|user] [--limit <1-100>] [--semantic]",
 			},
-			{ name: "smithery-login", description: "Login to Smithery and cache API key" },
-			{ name: "smithery-logout", description: "Remove cached Smithery API key" },
-			{ name: "reconnect", description: "Reconnect to a specific MCP server", usage: "<name>" },
-			{ name: "reload", description: "Force reload MCP runtime tools" },
-			{ name: "resources", description: "List available resources from connected servers" },
-			{ name: "prompts", description: "List available prompts from connected servers" },
-			{ name: "notifications", description: "Show notification capabilities and subscriptions" },
-			{ name: "help", description: "Show help message" },
+			{ name: "smithery-login", description: "登录 Smithery 并缓存 API 密钥" },
+			{ name: "smithery-logout", description: "移除已缓存的 Smithery API 密钥" },
+			{ name: "reconnect", description: "重新连接到指定的 MCP 服务器", usage: "<name>" },
+			{ name: "reload", description: "强制重新加载 MCP 运行时工具" },
+			{ name: "resources", description: "列出已连接服务器上的可用资源" },
+			{ name: "prompts", description: "列出已连接服务器上的可用提示" },
+			{ name: "notifications", description: "显示通知能力与订阅" },
+			{ name: "help", description: "显示帮助消息" },
 		],
 		allowArgs: true,
 		handle: handleMcpAcp,

@@ -52,11 +52,12 @@ const keepEnglish = new Set([
 ]);
 
 export function inScope(pkg: PackageId, file: string): boolean {
+	if (pkg === "tui" && file === "src/prompt/tips.txt") return true;
 	if (!/\.tsx?$/.test(file) || /(?:\.d\.ts|\.test\.tsx?)$/.test(file)) return false;
 	if (/(?:^|\/)(?:test|fixtures|prompts|export|protocol|rpc|acp)(?:\/|$)/.test(file)) return false;
 	if (pkg === "utils") return file.startsWith("src/cli/") || file === "src/cli.ts";
-	if (pkg === "tui") return /^(?:src\/(?:overlays|setup|prompt|apps|components)\/|src\/(?:hotkeys-markdown|settings|editor|loader|tui)\.)/.test(file);
-	return /^(?:src\/(?:cli|commands|modes)\/|src\/config\/settings(?:\/|-|\.))/.test(file);
+	if (pkg === "tui") return /^(?:src\/(?:overlays|setup|prompt|apps|components)\/|src\/(?:autocomplete|hotkeys-markdown|settings|editor|loader|tui)\.)/.test(file);
+	return /^(?:src\/(?:cli|commands|modes|slash-commands)\/|src\/config\/settings(?:\/|-|\.))/.test(file);
 }
 
 function propertyName(node: Node | null | undefined): string | undefined {
@@ -65,7 +66,19 @@ function propertyName(node: Node | null | undefined): string | undefined {
 	return undefined;
 }
 
-function roleOf(node: Node, ancestors: Node[]): string | undefined {
+function displayReturnRole(ancestors: Node[], pkg: PackageId, file: string): string | undefined {
+	const index = ancestors.findLastIndex(node => ["ArrowFunctionExpression", "FunctionExpression", "FunctionDeclaration", "ObjectMethod", "ClassMethod"].includes(node.type));
+	const fn = ancestors[index];
+	const owner = ancestors[index - 1];
+	if (pkg === "agent" && file.startsWith("src/slash-commands/")) {
+		if (fn?.type === "ObjectMethod" && fn.kind === "get" && propertyName(fn.key) === "description") return "field:description";
+		if (owner?.type === "ObjectProperty" && propertyName(owner.key) === "getTuiAutocompleteDescription") return "autocomplete:description";
+	}
+	if (pkg === "tui" && file === "src/prompt/welcome.ts" && fn?.type === "ClassMethod" && fn.kind === "get" && propertyName(fn.key) === "tip") return "welcome:tip";
+	return undefined;
+}
+
+function roleOf(node: Node, ancestors: Node[], pkg: PackageId, file: string): string | undefined {
 	// Transparent TS wrappers and conditional branches may surround a display value.
 	let child = node;
 	for (let index = ancestors.length - 1; index >= 0; index--) {
@@ -76,9 +89,14 @@ function roleOf(node: Node, ancestors: Node[]): string | undefined {
 		}
 		if (parent.type === "ConditionalExpression" && parent.test !== child) { child = parent; continue; }
 		if (parent.type === "LogicalExpression" && parent.right === child) { child = parent; continue; }
+		if ((parent.type === "ReturnStatement" && parent.argument === child) || (parent.type === "ArrowFunctionExpression" && parent.body === child)) {
+			return displayReturnRole(parent.type === "ArrowFunctionExpression" ? ancestors.slice(0, index + 1) : ancestors.slice(0, index), pkg, file);
+		}
+		if (pkg === "tui" && file === "src/prompt/welcome.ts" && parent.type === "VariableDeclarator" && parent.init === child && ["label", "NEW_TAG_TEXT"].includes(propertyName(parent.id) ?? "")) return "welcome:label";
 		if (parent.type === "ObjectProperty" && !parent.computed && parent.value === child) {
 			const field = propertyName(parent.key);
 			if (field && displayFields.has(field)) return `field:${field}`;
+			if (pkg === "tui" && file === "src/prompt/welcome.ts" && field === "text") return "welcome:label";
 		}
 		if (parent.type === "CallExpression" && parent.arguments.includes(child as StringLiteral)) {
 			const position = parent.arguments.indexOf(child as StringLiteral);
@@ -97,7 +115,7 @@ function roleOf(node: Node, ancestors: Node[]): string | undefined {
 	return undefined;
 }
 
-const tokenPattern = /`[^`\n]+`|https?:\/\/[^\s<>"')]+|\b(?:Ctrl|Alt|Shift|Cmd|Meta)(?:\+[A-Za-z0-9]+)+\b|[A-Za-z]:\\[^\s<>"']+|(?<![\w/])(?:~|\.{1,2})?\/[A-Za-z0-9_@.][A-Za-z0-9_@./*-]*|\b[\w.-]+\/[\w./@*-]+|\b[A-Z][A-Z0-9_]{2,}\b|--[a-z][a-z0-9-]*(?:=[^\s,;)]+)?|\b[a-z][\w-]*(?:\.[a-z][\w-]*)+\b|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[sdifjoOc%]|\{\{[^{}]+\}\}|\r\n|[\n\r\t]/g;
+const tokenPattern = /\[(?:NO-TERN|NEW)\]|\{(?:key|keys|tap|action):[^{}]+\}|`[^`\n]+`|https?:\/\/[^\s<>"')]+|\b(?:Ctrl|Alt|Shift|Cmd|Meta)(?:\+[A-Za-z0-9]+)+\b|[A-Za-z]:\\[^\s<>"']+|(?<![\w/])(?:~|\.{1,2})?\/[A-Za-z0-9_@.][A-Za-z0-9_@./*-]*|\b[\w.-]+\/[\w./@*-]+|\b[A-Z][A-Z0-9_]{2,}\b|--[a-z][a-z0-9-]*(?:=[^\s,;)]+)?|\b[a-z][\w-]*(?:\.[a-z][\w-]*)+\b|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[sdifjoOc%]|\{\{[^{}]+\}\}|\r\n|[\n\r\t]/g;
 
 function protectText(text: string, tokens: string[]): string {
 	return text.replace(tokenPattern, value => {
@@ -132,11 +150,22 @@ export function literalParts(node: StringLiteral | TemplateLiteral, code: string
 
 export function extractCandidates(code: string, pkg: PackageId, file: string): Candidate[] {
 	if (!inScope(pkg, file)) return [];
+	if (pkg === "tui" && file === "src/prompt/tips.txt") {
+		return [...code.matchAll(/[^\r\n]+/g)].flatMap(match => {
+			const source = match[0];
+			if (!/[a-zA-Z]{2}/.test(source) || /[\u3400-\u9fff]/.test(source)) return [];
+			if (/__OMP_TOKEN_\d+__/.test(source)) throw new Error(`Reserved placeholder found in ${pkg}:${file}`);
+			const tokens: string[] = [];
+			const start = match.index;
+			const role = "welcome:tip";
+			return [{ id: new Bun.CryptoHasher("sha256").update(JSON.stringify([pkg, file, role, source])).digest("hex"), pkg, file, role, source, text: protectText(source, tokens), tokens, expressions: [], start, end: start + source.length, raw: source, quote: "", line: code.slice(0, start).split("\n").length, context: source }];
+		});
+	}
 	const tree = parse(code, { sourceType: "module", plugins: ["typescript", ...(file.endsWith(".tsx") ? ["jsx" as const] : [])] });
 	const candidates: Candidate[] = [];
 	const visit = (node: Node, ancestors: Node[]) => {
 		if (node.type === "StringLiteral" || node.type === "TemplateLiteral") {
-			const role = roleOf(node, ancestors);
+			const role = roleOf(node, ancestors, pkg, file);
 			if (role) {
 				const parts = literalParts(node, code);
 				const visible = parts.text.replace(/__OMP_TOKEN_\d+__/g, "").trim();
@@ -172,6 +201,11 @@ export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"
 	const expected = candidate.text.match(/__OMP_TOKEN_\d+__/g) ?? [];
 	const actual = translation.match(/__OMP_TOKEN_\d+__/g) ?? [];
 	if (JSON.stringify([...expected].sort()) !== JSON.stringify([...actual].sort())) throw new Error("Translation changed protected placeholders");
+	const restore = (text: string) => text.replace(/__OMP_TOKEN_(\d+)__/g, (_all, index: string) => candidate.tokens[Number(index)]).trim();
+	const original = restore(candidate.text);
+	const restored = restore(translation);
+	if (candidate.tokens.includes("[NO-TERN]") && original.startsWith("[NO-TERN]") !== restored.startsWith("[NO-TERN]")) throw new Error("Translation moved leading welcome marker");
+	if (candidate.tokens.includes("[NEW]") && original.endsWith("[NEW]") !== restored.endsWith("[NEW]")) throw new Error("Translation moved trailing welcome marker");
 	const expressions = new Set(candidate.expressions ?? []);
 	const originalOrder = candidate.tokens.flatMap((token, index) => expressions.has(token) ? [index] : []);
 	const translatedOrder = [...translation.matchAll(/__OMP_TOKEN_(\d+)__/g)].map(match => Number(match[1])).filter(index => expressions.has(candidate.tokens[index]));
@@ -184,6 +218,7 @@ export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"
 
 export function renderLiteral(candidate: Candidate, translation: string): string {
 	validateTranslation(candidate, translation);
+	if (candidate.quote === "") return translation.replace(/__OMP_TOKEN_(\d+)__/g, (_all, index: string) => candidate.tokens[Number(index)]);
 	if (candidate.quote !== "`") {
 		const value = translation.replace(/__OMP_TOKEN_(\d+)__/g, (_all, index: string) => candidate.tokens[Number(index)]);
 		return JSON.stringify(value);
@@ -216,7 +251,7 @@ export function applyCatalog(code: string, candidates: Candidate[], catalog: Cat
 		applied++;
 	}
 	// Reject parse errors before writing any transformed file.
-	parse(result, { sourceType: "module", plugins: ["typescript", ...(candidates[0]?.file.endsWith(".tsx") ? ["jsx" as const] : [])] });
+	if (candidates.length && candidates[0].quote !== "") parse(result, { sourceType: "module", plugins: ["typescript", ...(candidates[0]?.file.endsWith(".tsx") ? ["jsx" as const] : [])] });
 	return { code: result, applied };
 }
 

@@ -45,24 +45,24 @@ export const BUILTIN_MARKETPLACE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec>
 	{
 		name: "marketplace",
 		icon: "cart",
-		description: "Manage marketplace plugin sources and installed plugins",
+		description: "管理插件市场源和已安装插件",
 		acpDescription: "Manage plugins from marketplaces",
 		acpInputHint: "<subcommand>",
 		subcommands: [
-			{ name: "add", description: "Add a marketplace source", usage: "<source>" },
-			{ name: "remove", description: "Remove a marketplace source", usage: "<name>" },
-			{ name: "update", description: "Update marketplace catalog(s)", usage: "[name]" },
-			{ name: "list", description: "List configured marketplaces" },
-			{ name: "discover", description: "Browse available plugins", usage: "[marketplace]" },
+			{ name: "add", description: "添加插件市场源", usage: "<source>" },
+			{ name: "remove", description: "移除插件市场源", usage: "<name>" },
+			{ name: "update", description: "更新插件市场目录", usage: "[name]" },
+			{ name: "list", description: "列出已配置的插件市场" },
+			{ name: "discover", description: "浏览可用插件", usage: "[marketplace]" },
 			{
 				name: "install",
-				description: "Install a plugin (interactive browser if no args)",
+				description: "安装插件（无参数时使用交互式浏览器）",
 				usage: "[--force] [name@marketplace]",
 			},
-			{ name: "uninstall", description: "Uninstall a plugin (selector if no args)", usage: "[name@marketplace]" },
-			{ name: "installed", description: "List installed marketplace plugins" },
-			{ name: "upgrade", description: "Upgrade outdated plugins", usage: "[name@marketplace]" },
-			{ name: "help", description: "Show usage guide" },
+			{ name: "uninstall", description: "卸载插件（无参数时使用选择器）", usage: "[name@marketplace]" },
+			{ name: "installed", description: "列出已安装的市场插件" },
+			{ name: "upgrade", description: "升级过期的插件", usage: "[name@marketplace]" },
+			{ name: "help", description: "显示使用指南" },
 		],
 		allowArgs: true,
 		handle: async (command, runtime) => {
@@ -426,13 +426,13 @@ export const BUILTIN_MARKETPLACE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec>
 		name: "plugins",
 		aliases: ["plugin"],
 		icon: "package",
-		description: "View and manage installed plugins",
+		description: "查看和管理已安装插件",
 		acpDescription: "Manage plugins",
 		acpInputHint: "[list|enable|disable]",
 		subcommands: [
-			{ name: "list", description: "List all installed plugins (npm + marketplace)" },
-			{ name: "enable", description: "Enable an installed plugin", usage: "<plugin>" },
-			{ name: "disable", description: "Disable an installed plugin", usage: "<plugin>" },
+			{ name: "list", description: "列出所有已安装插件（npm + 市场）" },
+			{ name: "enable", description: "启用已安装插件", usage: "<plugin>" },
+			{ name: "disable", description: "禁用已安装插件", usage: "<plugin>" },
 		],
 		allowArgs: true,
 		handle: async (command, runtime) => {
@@ -489,7 +489,7 @@ export const BUILTIN_MARKETPLACE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec>
 	{
 		name: "reload-plugins",
 		icon: "restart",
-		description: "Reload all plugins (skills, commands, hooks, tools, agents, MCP)",
+		description: "重新加载所有插件（技能、命令、钩子、工具、智能体、MCP）",
 		acpDescription: "Reload all plugins",
 		handle: async (_command, runtime) => {
 			await runtime.reloadPlugins();

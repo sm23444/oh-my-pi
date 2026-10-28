@@ -65,8 +65,8 @@ export async function buildAvailableSlashCommands(
 		for (const skill of session.skills) {
 			appendCommand({
 				name: getSkillSlashCommandName(skill),
-				description: skill.description || `Run ${skill.name} skill`,
-				input: { hint: "arguments" },
+				description: skill.description || `运行 ${skill.name} 技能`,
+				input: { hint: "参数" },
 				source: "skill",
 			});
 		}
@@ -78,8 +78,8 @@ export async function buildAvailableSlashCommands(
 			if (isAcpBuiltinShadowedName(command.name)) continue;
 			appendCommand({
 				name: command.name,
-				description: command.description ?? "(extension command)",
-				input: { hint: "arguments" },
+				description: command.description ?? "(扩展命令)",
+				input: { hint: "参数" },
 				source: "extension",
 			});
 		}
@@ -90,7 +90,7 @@ export async function buildAvailableSlashCommands(
 		appendCommand({
 			name: command.command.name,
 			description: command.command.description,
-			input: { hint: "arguments" },
+			input: { hint: "参数" },
 			source,
 		});
 	}

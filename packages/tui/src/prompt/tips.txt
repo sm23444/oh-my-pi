@@ -1,34 +1,34 @@
-Tired of typing "keep going"? Just send a '.'
-Type `#` anywhere in your prompt for quick actions — copy the line or the whole prompt, undo, jump the cursor
-Type `/` at the start of your prompt to browse every command
-Start your prompt with `!` to run it as bash — `!!` runs it without adding the output to context
-Start your prompt with `$ ` to run Python — `$$ ` runs it without adding the output to context
-You can /btw to ask a side question
-Use /tan to fork the current conversation into a background agent
-With default keybindings, {key:ctrl+d} deletes the character under the cursor instead of quitting your draft — see /hotkeys for your exit key
-Find out which model you emotionally abuse the most with `omp stats`
-Try task isolation to create CoW worktrees
-Need a cheap nested model call? Use `completion(x...)`. Have a big batch of tasks? Ask clanker to use it!
-Spaghetti code? Try complaining with /omfg
-Did you know? Each kitty/tmux/cmux/zellij/wezterm split keeps its own session — `omp -c` resumes the right one
-Drop the word `ultrathink` in your message for harder multi-step reasoning — watch it glow rainbow as you type
-Say `orchestrate` in your message to drive a multi-phase task with parallel subagents — watch it glow as you type
-Say `workflowz` in your message to drive the task with parallel subagents in eval — watch it glow as you type
-Bulk data to classify or triage? Say `jevify` in your message — the eval kernel's `judge()` processes the batch and you read only what it flags — watch it glow as you type
-Log in to several accounts of the same provider — `/login` again — and omp load-balances across them automatically
-Run `omp auth-broker serve` once and every machine pulls live tokens over the wire — refresh keys never leave the host; `omp auth-gateway` fronts it as a drop-in proxy any OpenAI-compatible client can hit
-Press {key:alt+p} (or /switch) to switch provider, and {key:ctrl+p} to cycle role models smol -> slow -> etc
-Press {key:ctrl+r} to search your prompt history and reuse a past message
-`/force read` pins the next turn to one specific tool when the model keeps reaching for the wrong one
-`/copy code` grabs the last code block to your clipboard — `/copy cmd` grabs the last shell/python command
-`/shake` rips heavy tool results out of context to reclaim tokens without a full /compact — `/shake images` drops just images
-Pair up live: `/collab` shares your session through an end-to-end encrypted relay link — a teammate runs `/join <link>` to watch tool calls stream and prompt the agent from their own omp
-Press {tap:left} to drill into a running or finished agent and inspect its tool calls and transcript
-Hit a Codex rate limit? `/usage reset` spends a saved reset credit to immediately restore your quota
-No native tool_calling? Inference provider botches parsing them? `PI_DIALECT=glm|kimi|anthropic…` rolls it locally for them!
-Turn on `/advisor` to attach a second model that reviews every turn and quietly injects advice
-Try starting your prompt with a ->, and writing a list (1. Do X, 2. Do Y)
-Press {key:shift+tab} to cycle through reasoning effort levels
-omp can reconfigure and extend itself — ask any questions you have!
-Lint/type errors piling up? `omp cleanse` (or /cleanse right here) hunts project diagnostics and fixes them with parallel subagents — {key:escape} cancels
-[NO-TERN] Psst, omp has a natural habitat 🐦 [tern](https://scl.so/tern)
+厌倦了反复输入“继续”？只需发送“.”。
+在提示词的任意位置输入 `#` 即可使用快捷操作——复制当前行或整个提示词、撤销、跳转光标。
+在提示词开头输入 `/` 即可浏览所有命令。
+在提示词开头输入 `!` 可将其作为 bash 运行——使用 `!!` 运行时不会将输出添加到上下文。
+在提示词开头输入 `$ ` 可运行 Python——`$$ ` 运行时不会将输出添加到上下文。
+你可以使用 /btw 来提出一个附带问题。
+使用 /tan 将当前对话分支交给后台智能体
+使用默认按键绑定时，{key:ctrl+d} 会删除光标下的字符，而不是退出草稿——请参阅 /hotkeys 了解退出键。
+使用 `omp stats` 看看哪个模型被你情感虐待得最多。
+尝试任务隔离以创建 CoW 工作树。
+需要低成本的嵌套模型调用？使用 `completion(x...)`。有大批任务？让 clanker 使用它！
+代码一团乱麻？试着用 /omfg 来抱怨
+你知道吗？每个 kitty/tmux/cmux/zellij/wezterm 分屏都会保留自己的会话——`omp -c` 会恢复对应的那个
+想要更强的多步推理，就在消息里加上 `ultrathink`——输入时它会闪烁彩虹光
+在消息中说 `orchestrate`，即可用并行子代理驱动多阶段任务——输入时它会发光
+在消息中说 `workflowz`，即可在 eval 中用并行子代理驱动任务——输入时它会发光
+有批量数据要分类或分流？在消息中说 `jevify`——eval 内核的 `judge()` 会处理这批数据，你只需阅读它标记出的内容——输入时它会发光
+再次运行 `/login`，为同一供应商登录多个账号；omp 会自动在这些账号间分配请求
+运行一次 `omp auth-broker serve`，每台机器都会通过网络拉取实时令牌——刷新密钥永远不会离开主机；`omp auth-gateway` 将其作为即插即用代理，任何兼容 OpenAI 的客户端都能访问
+按 {key:alt+p}（或 /switch）切换提供商，按 {key:ctrl+p} 循环切换角色模型：smol -> slow -> 等
+按 {key:ctrl+r} 搜索你的提示历史并复用过去的消息
+当模型总是调用错误工具时，`/force read` 会将下一轮固定到某个特定工具
+`/copy code` 将最后一个代码块复制到剪贴板 — `/copy cmd` 获取最后一个 shell/python 命令
+`/shake` 将繁重的工具结果从上下文中剥离，以回收 token，无需完整 /compact — `/shake images` 仅丢弃图片
+实时结对：`/collab` 通过端到端加密中继链接共享你的会话 — 队友运行 `/join <link>` 即可观看工具调用流，并从自己的 omp 向代理发送提示
+按 {tap:left} 可深入查看正在运行或已完成的代理，并检查其工具调用和对话记录
+遇到 Codex 速率限制？`/usage reset` 会消耗一个已保存的重置额度，立即恢复你的配额
+没有原生 tool_calling？推理提供商对它们的解析频频出错？`PI_DIALECT=glm|kimi|anthropic…` 会在本地为它们实现该功能！
+开启 `/advisor` 可附加第二个模型，审查每一轮并悄悄注入建议
+尝试用 -> 开头编写提示，并写出列表（1. 做 X，2. 做 Y）
+按 {key:shift+tab} 可循环切换推理力度等级
+omp 可以重新配置和扩展自身 — 有任何问题都可以问！
+Lint/type 错误堆积？`omp cleanse`（或在此处使用 /cleanse）会追踪项目诊断并通过并行子代理修复 — {key:escape} 取消
+[NO-TERN] 嘿，omp 也有适合自己的终端 🐦 [tern](https://scl.so/tern)
