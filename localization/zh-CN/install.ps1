@@ -3,7 +3,9 @@ param(
     [string]$InstallDir = (Join-Path $env:LOCALAPPDATA 'omp-zh'),
     [switch]$Check,
     [string]$PackagePath = '',
-    [string]$BunPath = ''
+    [string]$BunPath = '',
+    [string]$BinDir = (Join-Path $env:USERPROFILE '.local\bin'),
+    [switch]$NoPath
 )
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -74,9 +76,10 @@ try {
     $taskDestination = Join-Path $InstallDir ('versions\' + $taskMetadata.version + '-' + [guid]::NewGuid().ToString('N').Substring(0, 8))
     New-Item -ItemType Directory -Path (Split-Path $taskDestination) -Force | Out-Null
     Move-Item -LiteralPath $taskExtracted -Destination $taskDestination
-    $taskBinDir = Join-Path $env:USERPROFILE '.local\bin'
+    $taskBinDir = [IO.Path]::GetFullPath($BinDir)
     New-Item -ItemType Directory -Path $taskBinDir -Force | Out-Null
     # The launcher intercepts only self-update. Plugin updates continue to use official CLI handling.
+    $taskNoPathOption = if ($NoPath) { ' -NoPath' } else { '' }
     $taskLauncher = @"
 @echo off
 chcp 65001 >nul
@@ -86,10 +89,10 @@ for %%A in (%*) do if "%%~A"=="-l" goto run
 if "%~2"=="--check" goto check
 if "%~2"=="-c" goto check
 if not "%~2"=="" goto updatehelp
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$taskDestination\install.ps1" -Repository "$Repository" -InstallDir "$InstallDir" -BunPath "$BunPath"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$taskDestination\install.ps1" -Repository "$Repository" -InstallDir "$InstallDir" -BunPath "$BunPath" -BinDir "$taskBinDir"$taskNoPathOption
 exit /b %errorlevel%
 :check
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$taskDestination\install.ps1" -Repository "$Repository" -InstallDir "$InstallDir" -BunPath "$BunPath" -Check
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$taskDestination\install.ps1" -Repository "$Repository" -InstallDir "$InstallDir" -BunPath "$BunPath" -BinDir "$taskBinDir" -Check$taskNoPathOption
 exit /b %errorlevel%
 :updatehelp
 echo omp update ^| omp update --check
@@ -102,12 +105,15 @@ exit /b %errorlevel%
     if (Test-Path -LiteralPath $taskLauncherPath) {
         Copy-Item -LiteralPath $taskLauncherPath -Destination (Join-Path $InstallDir ('previous-launcher-' + [DateTime]::Now.ToString('yyyyMMddHHmmssfff') + '.cmd'))
     }
+    $taskLauncher = $taskLauncher.Replace("`r`n", "`n").Replace("`n", "`r`n") + "`r`n"
     [IO.File]::WriteAllText($taskLauncherPath, $taskLauncher, [Text.UTF8Encoding]::new($false))
     [IO.File]::WriteAllText((Join-Path $InstallDir 'installed.json'), (@{ version = $taskMetadata.version; directory = $taskDestination } | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
+    if (-not $NoPath) {
     $taskUserPath = [Environment]::GetEnvironmentVariable('Path', 'User')
     $taskParts = @($taskUserPath -split ';' | Where-Object { $_ -and $_.TrimEnd('\') -ine $taskBinDir.TrimEnd('\') })
     [Environment]::SetEnvironmentVariable('Path', ((@($taskBinDir) + $taskParts) -join ';'), 'User')
     $env:Path = $taskBinDir + ';' + $env:Path
+    }
     Write-Output "OMP $($taskMetadata.version) Chinese CLI installed. Reopen PowerShell and type omp. Run omp update to upgrade."
 } finally {
     if (Test-Path -LiteralPath $taskTemp) { Remove-Item -LiteralPath $taskTemp -Recurse -Force }

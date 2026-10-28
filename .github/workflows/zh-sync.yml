@@ -145,6 +145,9 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ env.BUN_VERSION }}
+      - name: Test Windows launcher with Unicode paths and spaces
+        shell: powershell
+        run: ./localization/zh-CN/test-install.ps1
       - uses: actions/download-artifact@v4
         with:
           name: zh-translations
