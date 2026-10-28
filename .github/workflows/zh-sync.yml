@@ -85,6 +85,7 @@ jobs:
           restore-keys: |
             zh-${{ steps.detect.outputs.version }}-${{ steps.detect.outputs.fingerprint }}-
             zh-${{ steps.detect.outputs.version }}-
+            zh-
       - name: Merge checkpoint with committed translations
         if: steps.detect.outputs.needed == 'true'
         run: |
