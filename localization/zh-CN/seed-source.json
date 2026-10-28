@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/tt1bt/oh-my-pi-zh",
+  "commit": "991f15a714775b4ac0b79f717ee3b56764fb0e60",
+  "license": "MIT",
+  "selection": "String/template translation pairs only; source patches, snippets and prompt assets are excluded. Runtime AST matching and token validation decide whether each pair is reusable."
+}

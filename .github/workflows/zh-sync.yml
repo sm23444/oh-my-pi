@@ -1,0 +1,276 @@
+name: OMP 中文自动更新
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      audit_only:
+        description: '只扫描并构建测试包，不调用翻译接口、不发布'
+        type: boolean
+        default: false
+      force:
+        description: '即使官方版本未变化也重新检查'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - 'localization/zh-CN/**'
+      - '.github/workflows/zh-sync.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: omp-zh-stable
+  cancel-in-progress: false
+
+env:
+  BUN_VERSION: '1.4.4'
+
+jobs:
+  translate:
+    if: github.repository == 'sm23444/oh-my-pi'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      version: ${{ steps.detect.outputs.version }}
+      tag: ${{ steps.detect.outputs.tag }}
+      fingerprint: ${{ steps.detect.outputs.fingerprint }}
+      needed: ${{ steps.detect.outputs.needed }}
+      ready: ${{ steps.status.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - name: Detect latest official stable release
+        id: detect
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE_UPDATE: ${{ inputs.force || false }}
+          AUDIT_ONLY: ${{ inputs.audit_only || false }}
+        run: bun localization/zh-CN/detect.ts
+      - name: Install isolated translation tooling
+        if: steps.detect.outputs.needed == 'true'
+        run: bun install --cwd localization/zh-CN --frozen-lockfile --ignore-scripts
+      - name: Check automation and run contract tests
+        if: steps.detect.outputs.needed == 'true'
+        working-directory: localization/zh-CN
+        run: |
+          bun check
+          bun test .
+      - name: Checkout official stable source
+        if: steps.detect.outputs.needed == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: can1357/oh-my-pi
+          ref: ${{ steps.detect.outputs.tag }}
+          path: official
+          persist-credentials: false
+      - name: Restore unfinished translation batches
+        if: steps.detect.outputs.needed == 'true'
+        id: checkpoint
+        uses: actions/cache/restore@v4
+        with:
+          path: .zh-checkpoint
+          key: zh-${{ steps.detect.outputs.version }}-${{ steps.detect.outputs.fingerprint }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            zh-${{ steps.detect.outputs.version }}-${{ steps.detect.outputs.fingerprint }}-
+      - name: Merge checkpoint with committed translations
+        if: steps.detect.outputs.needed == 'true'
+        run: |
+          if test -f .zh-checkpoint/catalog.json; then
+            bun -e 'const p="localization/zh-CN/catalog.json"; const cached=await Bun.file(".zh-checkpoint/catalog.json").json(); const committed=await Bun.file(p).json(); await Bun.write(p, JSON.stringify({...cached,...committed},null,2)+"\n");'
+          fi
+      - name: Scan existing and newly introduced English UI text
+        if: steps.detect.outputs.needed == 'true'
+        env:
+          VERSION: ${{ steps.detect.outputs.version }}
+        run: bun localization/zh-CN/pipeline.ts scan --source official --version "$VERSION" --report "$RUNNER_TEMP/zh-report"
+      - name: Translate missing strings with Gemini
+        if: steps.detect.outputs.needed == 'true' && !inputs.audit_only
+        env:
+          TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
+          TRANSLATION_PROVIDER: ${{ vars.TRANSLATION_PROVIDER }}
+          TRANSLATION_BASE_URL: ${{ vars.TRANSLATION_BASE_URL }}
+          TRANSLATION_MODEL: ${{ vars.TRANSLATION_MODEL }}
+          VERSION: ${{ steps.detect.outputs.version }}
+        run: |
+          if test -z "$TRANSLATION_API_KEY"; then
+            echo 'Translation is waiting for the TRANSLATION_API_KEY repository secret.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          bun localization/zh-CN/pipeline.ts translate --source official --version "$VERSION" --report "$RUNNER_TEMP/zh-report"
+      - name: Decide whether this candidate may be published
+        if: steps.detect.outputs.needed == 'true'
+        id: status
+        env:
+          AUDIT_ONLY: ${{ inputs.audit_only || false }}
+        run: |
+          bun -e 'const s=await Bun.file(process.env.RUNNER_TEMP+"/zh-report/summary.json").json(); const ready=s.completeWithinScannerScope && process.env.AUDIT_ONLY!=="true"; const p=process.env.GITHUB_OUTPUT; await Bun.write(p,(await Bun.file(p).text())+"ready="+ready+"\n");'
+      - name: Save successful translation batches, including after API failure
+        if: always() && steps.detect.outputs.needed == 'true'
+        run: |
+          mkdir -p .zh-checkpoint
+          cp localization/zh-CN/catalog.json .zh-checkpoint/catalog.json
+      - name: Persist checkpoint
+        if: always() && steps.detect.outputs.needed == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .zh-checkpoint
+          key: zh-${{ steps.detect.outputs.version }}-${{ steps.detect.outputs.fingerprint }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Upload translation catalog and diagnostic report
+        if: always() && steps.detect.outputs.needed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: zh-translations
+          retention-days: 7
+          path: |
+            localization/zh-CN/catalog.json
+            ${{ runner.temp }}/zh-report/
+
+  windows-cli:
+    needs: translate
+    if: needs.translate.outputs.needed == 'true' && (needs.translate.outputs.ready == 'true' || inputs.audit_only)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: zh-translations
+          path: incoming
+      - name: Load candidate translation catalog
+        shell: pwsh
+        run: |
+          $catalog = @(Get-ChildItem incoming -Filter catalog.json -Recurse -File)
+          if ($catalog.Count -ne 1) { throw 'Expected exactly one candidate catalog' }
+          Copy-Item $catalog[0].FullName localization/zh-CN/catalog.json -Force
+          bun install --cwd localization/zh-CN --frozen-lockfile --ignore-scripts
+          if ($LASTEXITCODE -ne 0) { throw 'Translation tooling install failed' }
+      - name: Build and verify Windows CLI
+        shell: pwsh
+        env:
+          VERSION: ${{ needs.translate.outputs.version }}
+          READY: ${{ needs.translate.outputs.ready }}
+        run: |
+          $options = @{ Version=$env:VERSION; Destination=(Join-Path $env:RUNNER_TEMP 'omp-zh-cli') }
+          if ($env:READY -ne 'true') { $options.Preview=$true }
+          & ./localization/zh-CN/build-windows.ps1 @options
+          New-Item -ItemType Directory -Path cli-assets | Out-Null
+          Compress-Archive -Path (Join-Path $env:RUNNER_TEMP 'omp-zh-cli/*') -DestinationPath cli-assets/omp-zh-cli-windows-x64.zip
+          $hash = (Get-FileHash cli-assets/omp-zh-cli-windows-x64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          [IO.File]::WriteAllText((Join-Path $PWD 'cli-assets/SHA256SUMS.txt'), "$hash  omp-zh-cli-windows-x64.zip`n", [Text.UTF8Encoding]::new($false))
+      - name: Verify CLI installation and registered omp command
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bun = (Get-Command bun).Source
+          $unicodeDir = Join-Path $env:RUNNER_TEMP ('installed-omp-zh-' + [char]0x4E2D + [char]0x6587)
+          & ./localization/zh-CN/install.ps1 -PackagePath (Join-Path $PWD 'cli-assets/omp-zh-cli-windows-x64.zip') -InstallDir $unicodeDir -BunPath $bun
+          chcp 936 > $null
+          & (Join-Path $env:USERPROFILE '.local/bin/omp.cmd') --version
+          if ($LASTEXITCODE -ne 0) { throw 'Installed omp command failed' }
+          & (Join-Path $env:USERPROFILE '.local/bin/omp.cmd') plugin --help
+          if ($LASTEXITCODE -ne 0) { throw 'CLI argument forwarding failed' }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-cli-${{ needs.translate.outputs.version }}
+          retention-days: 3
+          path: cli-assets/
+
+  publish:
+    needs: [translate, windows-cli]
+    if: needs.translate.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.translate.outputs.version }}
+      UPSTREAM_TAG: ${{ needs.translate.outputs.tag }}
+      FINGERPRINT: ${{ needs.translate.outputs.fingerprint }}
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: zh-${{ needs.translate.outputs.tag }}-r${{ github.run_number }}.${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: control
+      - uses: actions/checkout@v4
+        with:
+          repository: can1357/oh-my-pi
+          ref: ${{ needs.translate.outputs.tag }}
+          path: official
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: chinese
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: zh-translations
+          path: incoming
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-cli-${{ needs.translate.outputs.version }}
+          path: cli-assets
+      - name: Validate and apply catalog to official source
+        run: |
+          catalog=$(find incoming -type f -name catalog.json)
+          test "$(printf '%s\n' "$catalog" | wc -l)" -eq 1
+          cp "$catalog" control/localization/zh-CN/catalog.json
+          bun install --cwd control/localization/zh-CN --frozen-lockfile --ignore-scripts
+          bun control/localization/zh-CN/pipeline.ts apply --source official --version "$VERSION" --report "$RUNNER_TEMP/publish-report"
+      - name: Update Chinese source branch without changing workflow files
+        run: |
+          if test -n "$(git -C chinese ls-remote --heads origin zh-CN)"; then
+            git -C chinese fetch --depth=1 origin zh-CN
+            git -C chinese checkout -B zh-CN FETCH_HEAD
+          else
+            git -C chinese checkout -b zh-CN
+          fi
+          rsync -a --delete --exclude='.git' --exclude='.github' --exclude='localization' --exclude='README.zh-CN.md' official/ chinese/
+          rsync -a --delete --exclude='node_modules' --exclude='reports' control/localization/zh-CN/ chinese/localization/zh-CN/
+          cp control/README.zh-CN.md chinese/README.zh-CN.md
+          git -C chinese config user.name 'github-actions[bot]'
+          git -C chinese config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C chinese add --all -- . ':!.github'
+          if ! git -C chinese diff --cached --quiet; then
+            git -C chinese commit -m "feat(zh-CN): translate official $UPSTREAM_TAG"
+            git -C chinese push origin HEAD:zh-CN
+          fi
+      - name: Publish Chinese CLI release and release notes
+        run: |
+          {
+            printf '# OMP %s 简体中文 CLI\n\n' "$VERSION"
+            printf '基于官方稳定版 [%s](https://github.com/can1357/oh-my-pi/releases/tag/%s)。\n\n' "$UPSTREAM_TAG" "$UPSTREAM_TAG"
+            cat "$RUNNER_TEMP/publish-report/summary.md"
+            printf '\n下载 Windows x64 CLI 压缩包；首次安装运行仓库中的 localization/zh-CN/install.ps1，之后在 PowerShell 输入 omp，执行 omp update 更新。\n'
+          } > "$RUNNER_TEMP/release-notes.md"
+          gh release create "$RELEASE_TAG" cli-assets/* --target "$(git -C chinese rev-parse HEAD)" --latest --prerelease=false --title "OMP $VERSION 简体中文 CLI" --notes-file "$RUNNER_TEMP/release-notes.md" --repo "$GITHUB_REPOSITORY"
+      - name: Record successfully published upstream version and translations
+        working-directory: control
+        run: |
+          bun -e 'await Bun.write("localization/zh-CN/state.json", JSON.stringify({version:process.env.VERSION,upstreamTag:process.env.UPSTREAM_TAG,publishedAt:new Date().toISOString(),fingerprint:process.env.FINGERPRINT},null,2)+"\n"); const p="localization/zh-CN/CHANGELOG.md"; const s=await Bun.file(p).text(); const h="## ["+process.env.VERSION+"-zh]"; if(!s.includes(h)) await Bun.write(p,s.replace("## [Unreleased]", "## [Unreleased]\n\n"+h+"\n\n- 跟进官方 "+process.env.UPSTREAM_TAG+"，更新中文界面和 Windows CLI 运行包。"));'
+          git config user.name 'github-actions[bot]'
+          git checkout -B zh-control
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add localization/zh-CN/catalog.json localization/zh-CN/state.json localization/zh-CN/CHANGELOG.md
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(zh-CN): record verified $UPSTREAM_TAG release"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

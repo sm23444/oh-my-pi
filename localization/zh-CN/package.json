@@ -1,0 +1,14 @@
+{
+  "name": "omp-zh-automation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test .",
+    "check": "bun check.ts",
+    "scan": "bun pipeline.ts scan"
+  },
+  "dependencies": {
+    "@babel/parser": "7.29.7",
+    "@babel/types": "7.29.7"
+  }
+}

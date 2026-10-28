@@ -1,0 +1,7 @@
+{
+  "model": "gemini-3.1-pro-preview",
+  "provider": "google",
+  "baseUrl": "https://generativelanguage.googleapis.com/v1beta",
+  "batchSize": 20,
+  "maxNewEntries": 1000
+}

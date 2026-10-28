@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- This fork can automatically translate new CLI interface strings into Simplified Chinese when following official stable releases.
+
 ### Changed
 
 - Updated Bun engine requirement to ≥1.4.4
