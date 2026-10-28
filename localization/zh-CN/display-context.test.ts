@@ -167,3 +167,11 @@ test("shell completion generators preserve executable fish syntax", () => {
 	const code=translate(source,"agent","src/cli/completion-gen.ts",{});
 	expect(new Function(`${code};return generateFish("omp");`)()).toBe("function __fish_omp\nreturn 0\nend");
 });
+
+test("device table scaffolding retains addresses while missing-description fallback translates", () => {
+	const source='const lines=[];lines.push(`| \\`xd://${mounted.name}\\` | ${escapeTableCell(mounted.summary) || "No description provided."} |`);'.replaceAll('\\\\`','\\`');
+	const code=translate(source,"tui","src/prompt/tools-markdown.ts",{"No description provided.":"未提供说明。"});
+	const render=new Function("mounted","escapeTableCell",`${code};return lines[0];`);
+	expect(render({name:"test-device",summary:""},(value: string)=>value)).toBe("| `xd://test-device` | 未提供说明。 |");
+	expect(render({name:"test-device",summary:"Custom summary"},(value: string)=>value)).toBe("| `xd://test-device` | Custom summary |");
+});

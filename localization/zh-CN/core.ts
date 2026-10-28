@@ -188,7 +188,8 @@ export function extractCandidates(code: string, pkg: PackageId, file: string): C
 				const visible = parts.text.replace(/__OMP_TOKEN_\d+__/g, "").trim();
 				const technicalVariable = role === "display:variable" && /^[a-z0-9_.:/-]+$/.test(parts.source);
 				const technicalPayload = /^[?&][a-z][\w.-]*=[^\s]*$/i.test(parts.source)
-					|| (visible.includes("```") && !/[a-zA-Z]{2}/.test(visible.replace(/```[\s\S]*?```/g, "")));
+					|| (visible.includes("```") && !/[a-zA-Z]{2}/.test(visible.replace(/```[\s\S]*?```/g, "")))
+					|| (/^\|.*\|$/.test(visible) && !/[a-zA-Z]{2}/.test(visible.replace(/`[^`]*`/g, "")));
 				if ((/[a-zA-Z]{2}/.test(visible) || role === "display:plural") && !/[\u3400-\u9fff]/.test(visible) && !keepEnglish.has(parts.source.trim()) && !technicalVariable && !technicalPayload && !/^[~ *-]*[a-z][\w+.-]*:\/\//.test(parts.source)) {
 					if (/__OMP_TOKEN_\d+__/.test(parts.source)) throw new Error(`Reserved placeholder found in ${pkg}:${file}`);
 					const start = node.start ?? 0;
