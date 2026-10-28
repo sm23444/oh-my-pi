@@ -6398,6 +6398,15 @@
     "translation": "已将所有任务标记为已完成。",
     "origin": "model"
   },
+  "1b090805366db9006dc5bd70268085772abb4ee7ff59bef9c369b10e8d12fb03": {
+    "pkg": "agent",
+    "file": "src/config/service-tier.ts",
+    "role": "field:description",
+    "source": "Omit service_tier (standard processing)",
+    "text": "Omit service_tier (standard processing)",
+    "translation": "省略 service_tier（标准处理）",
+    "origin": "model"
+  },
   "1b115a919dd1a550c1bfac7c82cdc9eb7d8a62f3970d94460d912b495385c0ca": {
     "pkg": "tui",
     "file": "src/chat/advisor-message.ts",
@@ -34334,6 +34343,15 @@
     "translation": "尚未配置插件市场。__OMP_TOKEN_0____OMP_TOKEN_1__开始使用：__OMP_TOKEN_2__  __OMP_TOKEN_3__ add __OMP_TOKEN_4____OMP_TOKEN_5____OMP_TOKEN_6__然后使用 __OMP_TOKEN_7__ 或 __OMP_TOKEN_8__ discover 浏览插件",
     "origin": "model"
   },
+  "89f4688309e1bf0b0c04ebe9f9514e279a09a70d27a6fddf5d237ea01ef58ef0": {
+    "pkg": "agent",
+    "file": "src/task/settings.ts",
+    "role": "field:description",
+    "source": "New worktrees from `github pr_checkout` and `git worktree add` in bash start as a copy-on-write clone of the current checkout so ignored build artifacts (node_modules, target) carry over; falls back to a plain checkout when the filesystem cannot clone",
+    "text": "New worktrees from __OMP_TOKEN_0__ and __OMP_TOKEN_1__ in bash start as a copy-on-write clone of the current checkout so ignored build artifacts (node_modules, target) carry over; falls back to a plain checkout when the filesystem cannot clone",
+    "translation": "在 bash 中通过 __OMP_TOKEN_0__ 和 __OMP_TOKEN_1__ 创建的新工作树会以当前检出的写时复制克隆启动，因此被忽略的构建产物（node_modules、target）也会一并带过去；文件系统无法克隆时会回退到普通检出",
+    "origin": "model"
+  },
   "89f47b9ac071000340f6ea2a5025afcc4fb3784ac6a45983622d743aa5a30c5a": {
     "pkg": "agent",
     "file": "src/goals/settings.ts",
@@ -57661,6 +57679,15 @@
     "text": "Pulse",
     "translation": "脉动",
     "origin": "seed"
+  },
+  "e75fefd91f997676a645454182b0714b486b2f815302500ee824f9c9b06d8ad6": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "display:expression",
+    "source": "?token=***",
+    "text": "?token=***",
+    "translation": "?token=***（令牌已隐藏）",
+    "origin": "model"
   },
   "e76e98fad32b63be94e565573d149751e1fb9af489644f04a46baa0bc7dd5dd6": {
     "pkg": "agent",
