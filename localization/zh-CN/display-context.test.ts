@@ -137,3 +137,27 @@ test("slash-separated UI verbs translate while file paths remain protected", () 
 	const code=translate(source,"tui","src/overlays/settings-selector.ts",{"Hide/show files in src/tools":"显示或隐藏__OMP_TOKEN_0__中的文件"});
 	expect(new Function(`${code};return item.label;`)()).toBe("显示或隐藏src/tools中的文件");
 });
+
+test("interpolated inline commands retain their literal command text and flags", () => {
+	const source='const item={label:`Try \\`${app} update --stable\\`.`};'.replaceAll('\\\\`','\\`');
+	const candidates=extractCandidates(source,"agent","src/cli/build-service.ts");
+	const translation="尝试 `__OMP_TOKEN_0__ update __OMP_TOKEN_1__`。";
+	const code=translate(source,"agent","src/cli/build-service.ts",{[candidates[0].source]:translation});
+	expect(new Function("app",`${code};return item.label;`)("omp")).toBe("尝试 `omp update --stable`。");
+	expect(()=>toEntry(candidates[0],translation.replace("update","reset"),"human")).toThrow("unprotected command");
+	expect(()=>toEntry(candidates[0],translation+" `malicious command`","human")).toThrow("unprotected command");
+});
+
+test("endpoint query parameters retain their syntax inside translated descriptions", () => {
+	const source='const item={label:`Extension endpoint ${port}${token ? "?token=***" : ""}`};';
+	const candidate=extractCandidates(source,"agent","src/cli/browser-relay-cli.ts")[0];
+	const code=translate(source,"agent","src/cli/browser-relay-cli.ts",{[candidate.source]:"扩展端点 __OMP_TOKEN_0____OMP_TOKEN_1__"});
+	expect(new Function("port","token",`${code};return item.label;`)(1234,true)).toBe("扩展端点 1234?token=***");
+});
+
+test("diff fence scaffolding stays literal while its panel label translates", () => {
+	const source='const sections=[];sections.push(`### ${changed}\\n\\n\\`\\`\\`diff\\n${diff}\\n\\`\\`\\``);const item={label:"History"};'.replaceAll('\\\\`','\\`');
+	const code=translate(source,"agent","src/modes/controllers/command-controller.ts",{History:"历史记录"});
+	const result=new Function("changed","diff",`${code};return [item.label,sections[0]];`)("2026-10-28","- old\n+ new");
+	expect(result).toEqual(["历史记录","### 2026-10-28\n\n```diff\n- old\n+ new\n```"]);
+});

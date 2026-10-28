@@ -185,7 +185,9 @@ export function extractCandidates(code: string, pkg: PackageId, file: string): C
 				const parts = literalParts(node, code);
 				const visible = parts.text.replace(/__OMP_TOKEN_\d+__/g, "").trim();
 				const technicalVariable = role === "display:variable" && /^[a-z0-9_.:/-]+$/.test(parts.source);
-				if ((/[a-zA-Z]{2}/.test(visible) || role === "display:plural") && !/[\u3400-\u9fff]/.test(visible) && !keepEnglish.has(parts.source.trim()) && !technicalVariable && !/^[~ *-]*[a-z][\w+.-]*:\/\//.test(parts.source)) {
+				const technicalPayload = /^[?&][a-z][\w.-]*=[^\s]*$/i.test(parts.source)
+					|| (visible.includes("```") && !/[a-zA-Z]{2}/.test(visible.replace(/```[\s\S]*?```/g, "")));
+				if ((/[a-zA-Z]{2}/.test(visible) || role === "display:plural") && !/[\u3400-\u9fff]/.test(visible) && !keepEnglish.has(parts.source.trim()) && !technicalVariable && !technicalPayload && !/^[~ *-]*[a-z][\w+.-]*:\/\//.test(parts.source)) {
 					if (/__OMP_TOKEN_\d+__/.test(parts.source)) throw new Error(`Reserved placeholder found in ${pkg}:${file}`);
 					const start = node.start ?? 0;
 					const end = node.end ?? 0;
@@ -227,9 +229,13 @@ export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"
 	const translatedOrder = [...translation.matchAll(/__OMP_TOKEN_(\d+)__/g)].map(match => Number(match[1])).filter(index => expressions.has(candidate.tokens[index]));
 	if (JSON.stringify(originalOrder) !== JSON.stringify(translatedOrder)) throw new Error("Translation changed template expression evaluation order");
 	if (!/[\u3400-\u9fff]/.test(translation)) throw new Error("Translation contains no Chinese text");
-	// Every unmasked program-shaped token introduced by a model is suspicious.
-	const introduced = translation.replace(/__OMP_TOKEN_\d+__/g, "").match(tokenPattern) ?? [];
-	if (introduced.length) throw new Error("Translation introduced an unprotected command, key, or line break");
+	// Inline code can cross interpolations; unchanged source fragments remain permitted.
+	const permitted = candidate.text.replace(/__OMP_TOKEN_\d+__/g, "").match(tokenPattern) ?? [];
+	for (const token of translation.replace(/__OMP_TOKEN_\d+__/g, "").match(tokenPattern) ?? []) {
+		const index = permitted.indexOf(token);
+		if (index === -1) throw new Error("Translation introduced an unprotected command, key, or line break");
+		permitted.splice(index, 1);
+	}
 }
 
 export function renderLiteral(candidate: Candidate, translation: string, expressionOverrides = new Map<string, string>()): string {
