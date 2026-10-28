@@ -469,16 +469,16 @@ export function validateToolNames(requested: readonly string[] | undefined, know
 	const unknown = missing.filter(name => !builtinNames.has(name));
 	const lines: string[] = [];
 	if (unknown.length > 0) {
-		lines.push(`Unknown tool${unknown.length === 1 ? "" : "s"} in --tools: ${unknown.join(", ")}.`);
+		lines.push(`未知工具${unknown.length === 1 ? "" : ""}在 --tools 中：${unknown.join(", ")}。`);
 		const otherRegistered = known.filter(name => !builtinNames.has(name));
 		lines.push(
-			`Built-in tools: ${BUILTIN_TOOL_NAMES.join(", ")}.` +
-				(otherRegistered.length > 0 ? ` Other registered tools: ${otherRegistered.join(", ")}.` : ""),
+			`内置工具：${BUILTIN_TOOL_NAMES.join(", ")}。` +
+				(otherRegistered.length > 0 ? ` 其他已注册工具：${otherRegistered.join(", ")}。` : ""),
 		);
 	}
 	if (unavailable.length > 0) {
 		lines.push(
-			`Built-in tool${unavailable.length === 1 ? "" : "s"} unavailable in this session: ${unavailable.join(", ")}.`,
+			`内置工具${unavailable.length === 1 ? "" : ""}在此会话中不可用：${unavailable.join(", ")}。`,
 		);
 	}
 	throw new CliUsageError(lines.join("\n"));
@@ -529,9 +529,14 @@ export function reportCliUsageError(
 
 export function printHelp(): void {
 	process.stdout.write(
-		`${chalk.bold(APP_NAME)} - AI coding assistant\n\n` +
-			`Run ${APP_NAME} --help for full command and option details.\n` +
-			`Run ${APP_NAME} <command> --help for command-specific help.\n\n` +
+		`${chalk.bold(APP_NAME)} - AI 编程助手
+
+` +
+			`运行 ${APP_NAME} --help 查看完整的命令与选项说明。
+` +
+			`运行 ${APP_NAME} <command> --help 查看具体命令的帮助。
+
+` +
 			`${getExtraHelpText()}\n`,
 	);
 }

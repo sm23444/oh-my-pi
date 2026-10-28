@@ -211,15 +211,15 @@ export class SSHCommandController {
 				"",
 				theme.fg("success", `+ 已将 SSH 主机 "${name}" 添加到 ${scopeLabel} 配置`),
 				"",
-				`  Host: ${host}`,
+				`  主机：${host}`,
 			];
-			if (username) lines.push(`  User: ${username}`);
-			if (port) lines.push(`  Port: ${port}`);
-			if (keyPath) lines.push(`  Key:  ${keyPath}`);
-			if (description) lines.push(`  Desc: ${description}`);
-			if (compat) lines.push(`  Compat: true`);
+			if (username) lines.push(`  用户：${username}`);
+			if (port) lines.push(`  端口：${port}`);
+			if (keyPath) lines.push(`  密钥：  ${keyPath}`);
+			if (description) lines.push(`  描述：${description}`);
+			if (compat) lines.push(`  兼容：true`);
 			lines.push("");
-			lines.push(theme.fg("muted", `运行 ${theme.fg("accent", "/ssh list")} 以查看所有已配置的主机。`));
+			lines.push(theme.fg("muted", `运行 ${theme.fg("accent", "/ssh 列表")} 以查看所有已配置的主机。`));
 			lines.push("");
 
 			this.#showMessage(lines.join("\n"));

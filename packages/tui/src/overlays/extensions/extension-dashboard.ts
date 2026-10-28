@@ -111,7 +111,7 @@ export function buildTabBarTabs(tabs: ProviderTab[]): Tab[] {
 }
 
 /** The sheet/page title, shared by the ANSI frame and the native views. */
-const DASHBOARD_TITLE = "Extension Control Center";
+const DASHBOARD_TITLE = "扩展控制中心";
 
 /** The kind column shown when rows are not grouped under kind headers (a provider scope or a search). */
 const KIND_COLUMNS: readonly TspPickerColumn[] = [{ id: "kind", format: "dim", priority: 1 }];
@@ -140,7 +140,7 @@ export function buildPickerScopes(tabs: ProviderTab[]): TspPickerScope[] {
 			label: tab.label,
 			mark: { text: providerInitials(tab.label), seed: tab.id },
 			count: tab.count,
-			group: "提供商",
+			group: "Providers",
 			dot: !tab.enabled ? "muted" : emptyEnabled ? "warning" : "success",
 			disabled: emptyEnabled ? "No extensions" : undefined,
 		};
@@ -650,7 +650,7 @@ export class ExtensionDashboard implements Component {
 			{
 				title: DASHBOARD_TITLE,
 				icon: "extension",
-				noun: "extensions",
+				noun: "扩展",
 				size: "lg",
 				layout: "rows",
 				preview: "side",
@@ -709,7 +709,7 @@ export class ExtensionDashboard implements Component {
 			[
 				node("row", { gap: "sm", align: "center", role: "omp.app.where" }, [
 					text(DASHBOARD_TITLE, { role: "omp.app.title" }),
-					text([span(query ? `${shown} of ${total}` : `${total} extensions`, "muted")], { truncate: "end" }),
+					text([span(query ? `第 ${shown} 个，共 ${total} 个` : `${total} 个扩展`, "muted")], { truncate: "end" }),
 				]),
 				node("icon", {
 					name: "x",
@@ -721,7 +721,7 @@ export class ExtensionDashboard implements Component {
 			],
 			"head",
 		);
-		const search = text([span("Search: ", "muted"), query ? span(query, "accent") : span("type to filter", "dim")], {
+		const search = text([span("搜索： ", "muted"), query ? span(query, "accent") : span("输入以筛选", "dim")], {
 			truncate: "end",
 		});
 		const body = node(
@@ -738,15 +738,15 @@ export class ExtensionDashboard implements Component {
 		);
 		const expanded = this.#inspector.isExpanded();
 		const buttons: (NativeNode | null)[] = [
-			actionButton(selected?.on === false ? "Enable" : selected ? "Disable" : "Toggle", "toggle", {
+			actionButton(selected?.on === false ? "启用" : selected ? "禁用" : "切换", "toggle", {
 				keys: "space",
 				tone: "accent",
 				title: selected?.blocked ?? (selected ? undefined : "选择一个扩展"),
 			}),
-			actionButton(expanded ? "Collapse" : "Expand", "expand", { keys: this.#expandKey() }),
+			actionButton(expanded ? "折叠" : "展开", "expand", { keys: this.#expandKey() }),
 		];
-		if (query) buttons.push(actionButton("Clear search", "clear", { keys: "escape" }));
-		buttons.push(null, actionButton("Close", "close", { keys: "escape" }));
+		if (query) buttons.push(actionButton("清除搜索", "clear", { keys: "escape" }));
+		buttons.push(null, actionButton("关闭", "close", { keys: "escape" }));
 		return col([head, this.#tabBar, keyed(search, "search"), body, actionBar(buttons)], { gap: "md", grow: 1 });
 	}
 

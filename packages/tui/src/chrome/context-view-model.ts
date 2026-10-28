@@ -13,16 +13,16 @@ interface ContextCategoryDescriptor {
 /** Context categories in display order. */
 export const CONTEXT_CATEGORIES = [
 	// The Overview weight excludes the Skills listing; content views keep complete system blocks.
-	{ id: "system-prompt", label: "System Prompt", overviewLabel: "System Prompt (excluding Skills)" },
+	{ id: "system-prompt", label: "系统提示词", overviewLabel: "System Prompt (excluding Skills)" },
 	// An estimate of the prompt's skill listing, without entries of its own.
-	{ id: "skills", label: "Skills", openable: false },
-	{ id: "built-in-tools", label: "Built-in Tools" },
-	{ id: "custom-tools", label: "Custom Tools" },
-	{ id: "user-messages", label: "User / Developer Messages" },
-	{ id: "assistant-messages", label: "Assistant Messages" },
-	{ id: "assistant-thinking", label: "Assistant Thinking" },
-	{ id: "tool-calls", label: "Tool Calls" },
-	{ id: "tool-output", label: "Tool Output" },
+	{ id: "skills", label: "技能", openable: false },
+	{ id: "built-in-tools", label: "内置工具" },
+	{ id: "custom-tools", label: "自定义工具" },
+	{ id: "user-messages", label: "用户 / 开发者消息" },
+	{ id: "assistant-messages", label: "助手消息" },
+	{ id: "assistant-thinking", label: "助手思考" },
+	{ id: "tool-calls", label: "工具调用" },
+	{ id: "tool-output", label: "工具输出" },
 ] as const satisfies readonly ContextCategoryDescriptor[];
 
 export type ContextCategoryId = (typeof CONTEXT_CATEGORIES)[number]["id"];

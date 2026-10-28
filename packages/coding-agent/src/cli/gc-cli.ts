@@ -2279,56 +2279,56 @@ async function withGcLock<T>(agentDir: string, fn: (lockPath: string) => Promise
 }
 
 function renderText(result: GcResult): string {
-	const lines = [`GC ${result.apply ? "applied" : "dry-run"} (${result.agentDir})`];
+	const lines = [`垃圾回收 ${result.apply ? "已应用" : "试运行"} (${result.agentDir})`];
 	if (result.stale) {
 		const stale = result.stale;
 		lines.push(
-			`stale: ${stale.deleted}/${stale.wouldDelete} entries, ${formatBytes(stale.bytes)} (${stale.danglingMarkers} session markers, ${stale.staleBreadcrumbs} breadcrumbs, ${stale.expiredReports} reports, ${stale.expiredReplicas} collab replicas)`,
+			`过时项：${stale.deleted}/${stale.wouldDelete} 个条目，${formatBytes(stale.bytes)} (${stale.danglingMarkers} 个会话标记、${stale.staleBreadcrumbs} 个面包屑、${stale.expiredReports} 个报告、${stale.expiredReplicas} 个协作副本)`,
 		);
-		if (stale.errors.length > 0) lines.push(`stale errors: ${stale.errors.length}`);
+		if (stale.errors.length > 0) lines.push(`过时错误：${stale.errors.length} 个`);
 	}
 	if (result.blobs) {
 		lines.push(
-			`blobs: ${result.blobs.deleted}/${result.blobs.wouldDelete} files, ${formatBytes(result.blobs.bytes)}, ${result.blobs.referenced} refs`,
+			`blob：${result.blobs.deleted}/${result.blobs.wouldDelete} 个文件，${formatBytes(result.blobs.bytes)}，${result.blobs.referenced} 个引用`,
 		);
-		if (result.blobs.errors.length > 0) lines.push(`blob errors: ${result.blobs.errors.length}`);
+		if (result.blobs.errors.length > 0) lines.push(`blob 错误：${result.blobs.errors.length}`);
 	}
 	if (result.archive) {
 		lines.push(
-			`sessions: ${result.archive.archived}/${result.archive.wouldArchive} archived, ${result.archive.historyRowsDeleted} history rows and ${result.archive.statsRowsDeleted} stats rows removed`,
+			`会话：${result.archive.archived}/${result.archive.wouldArchive} 已归档，移除 ${result.archive.historyRowsDeleted} 条历史记录和 ${result.archive.statsRowsDeleted} 条统计记录`,
 		);
-		if (result.archive.skippedActive > 0) lines.push(`sessions skipped active: ${result.archive.skippedActive}`);
+		if (result.archive.skippedActive > 0) lines.push(`跳过的活跃会话：${result.archive.skippedActive}`);
 		if (result.archive.wouldDeleteTemps > 0) {
 			lines.push(
-				`session staging temps: ${result.archive.deletedTemps}/${result.archive.wouldDeleteTemps} files, ${formatBytes(result.archive.tempBytes)}`,
+				`会话暂存临时文件：${result.archive.deletedTemps}/${result.archive.wouldDeleteTemps} 个文件，${formatBytes(result.archive.tempBytes)}`,
 			);
 		}
-		if (result.archive.errors.length > 0) lines.push(`session errors: ${result.archive.errors.length}`);
+		if (result.archive.errors.length > 0) lines.push(`会话错误：${result.archive.errors.length}`);
 	}
 	if (result.compress) {
 		const compress = result.compress;
 		if (!compress.supported) {
-			lines.push("compress: unsupported on this filesystem (APFS or NTFS only)");
+			lines.push("压缩：此文件系统不支持（仅支持 APFS 或 NTFS）");
 		} else {
 			if (compress.probeFailure !== undefined) {
-				lines.push(`compress skipped: ${compress.probeFailure}`);
+				lines.push(`压缩跳过：${compress.probeFailure}`);
 			} else {
 				const after = result.apply ? `, ${formatBytes(compress.allocatedAfter)} after` : "";
 				lines.push(
-					`compress: ${compress.compressed}/${compress.wouldCompress} files in ${compress.sessions} sessions, ${formatBytes(compress.allocatedBefore)} on disk before${after}`,
+					`压缩：${compress.compressed}/${compress.wouldCompress} 个文件，涉及 ${compress.sessions} 个会话，压缩前磁盘占用 ${formatBytes(compress.allocatedBefore)}${after}`,
 				);
-				if (compress.skippedLive > 0) lines.push(`compress skipped live: ${compress.skippedLive}`);
+				if (compress.skippedLive > 0) lines.push(`压缩时跳过的活跃会话：${compress.skippedLive}`);
 			}
 			if (compress.leftoverScratchDirs > 0) {
 				const verb = result.apply ? "removed" : "found";
-				lines.push(`compress leftover scratch dirs ${verb}: ${compress.leftoverScratchDirs}`);
+				lines.push(`压缩残留的 scratch 目录 ${verb}：${compress.leftoverScratchDirs}`);
 			}
-			if (compress.errors.length > 0) lines.push(`compress errors: ${compress.errors.length}`);
+			if (compress.errors.length > 0) lines.push(`压缩错误：${compress.errors.length}`);
 		}
 	}
 	if (result.wal) {
 		const state = result.wal.checkpointed ? "checkpointed" : "checkpoint dry-run";
-		lines.push(`wal: ${state}, ${formatBytes(result.wal.walBytes)} across ${result.wal.databases.length} dbs`);
+		lines.push(`wal：${state}，${formatBytes(result.wal.walBytes)}，跨 ${result.wal.databases.length} 个数据库`);
 	}
 	return `${lines.join("\n")}\n`;
 }

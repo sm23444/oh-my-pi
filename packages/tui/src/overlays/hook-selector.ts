@@ -714,7 +714,7 @@ export class HookSelectorComponent extends OverlayPanel {
 		const result = dockedPicker({
 			title: fixed.title,
 			...(this.#detailLines.length > 0 ? { subtitle: plainText(this.#detailLines.join("\n")) } : {}),
-			noun: "options",
+			noun: "选项",
 			size: "md",
 			layout: "rows",
 			preview: "none",
@@ -787,7 +787,7 @@ export class HookSelectorComponent extends OverlayPanel {
 		);
 		if (query) {
 			children.push(
-				node("text", { spans: [span("Search: ", "dim"), span(query)], wrap: "none" }, undefined, "search"),
+				node("text", { spans: [span("搜索： ", "dim"), span(query)], wrap: "none" }, undefined, "search"),
 			);
 		}
 		children.push(fixed.hints);

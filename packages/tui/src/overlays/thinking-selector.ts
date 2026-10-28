@@ -45,7 +45,7 @@ export class ThinkingSelectorComponent extends OverlayPanel {
 		this.#sheet = new SelectListSheet(this.#selectList, {
 			title: "思考级别",
 			icon: "brain",
-			noun: "levels",
+			noun: "级别",
 			current: currentLevel ? [currentLevel] : [],
 			// How hard each level thinks, as a meter from off (empty) to the deepest effort (full); auto has none.
 			columns: [{ id: "depth", format: "bar" }],

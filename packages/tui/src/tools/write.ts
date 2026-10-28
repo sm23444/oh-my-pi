@@ -197,7 +197,7 @@ function writeContentOf(args: unknown): string {
 
 function formatLineCountSuffix(lineCount: number, uiTheme: Theme): string {
 	if (lineCount <= 0) return "";
-	return uiTheme.fg("dim", ` · ${lineCount} line${lineCount === 1 ? "" : "s"}`);
+	return uiTheme.fg("dim", ` · ${lineCount} 行${lineCount === 1 ? "" : ""}`);
 }
 
 function normalizeDisplayText(text: unknown): string {
@@ -373,7 +373,7 @@ function formatStreamingContent(
 
 		let text = "\n\n";
 		if (hidden > 0) {
-			text += `${uiTheme.fg("dim", `… (${hidden} earlier line${hidden === 1 ? "" : "s"})`)}\n`;
+			text += `${uiTheme.fg("dim", `… (${hidden} 条更早的行${hidden === 1 ? "" : ""})`)}\n`;
 		}
 		for (let i = 0; i < visibleLines.length; i++) {
 			const lineNum = startIndex + i + 1;
@@ -389,7 +389,7 @@ function formatStreamingContent(
 	// the native-scrollback commit boundary at the top of the block, so a long
 	// expanded preview could never scroll-append mid-stream.
 	const spinner = spinnerFrame !== undefined ? `${formatStatusIcon("running", uiTheme, spinnerFrame)} ` : "";
-	return `${bodyText}${spinner}${uiTheme.fg("dim", `… (streaming)`)}`;
+	return `${bodyText}${spinner}${uiTheme.fg("dim", `… (流式传输中)`)}`;
 }
 
 function wrapWritePreviewRows(lines: string[], width: number): string[] {
@@ -470,7 +470,7 @@ interface WriteUrlCard {
 const WRITE_URL_CARDS: Record<string, WriteUrlCard> = {
 	agent: {
 		detailsKey: "message",
-		activity: target => ({ label: "Message", detail: target === "all" ? "broadcast" : target }),
+		activity: target => ({ label: "消息", detail: target === "all" ? "广播" : target }),
 		render: (_url, target, content, result, details, options, uiTheme) =>
 			renderAgentWrite(
 				target,
@@ -485,7 +485,7 @@ const WRITE_URL_CARDS: Record<string, WriteUrlCard> = {
 		detailsKey: "proc",
 		activity: target => {
 			const { id, action } = procWriteTarget(target);
-			return { label: "Process", detail: `${action} ${shortenPath(id)}` };
+			return { label: "进程", detail: `${action} ${shortenPath(id)}` };
 		},
 		render: (_url, target, content, result, details, options, uiTheme) => {
 			const { id, action } = procWriteTarget(target);
@@ -502,7 +502,7 @@ const WRITE_URL_CARDS: Record<string, WriteUrlCard> = {
 	},
 	cfg: {
 		detailsKey: "cfg",
-		activity: target => ({ label: "Config", detail: target }),
+		activity: target => ({ label: "配置", detail: target }),
 		render: (url, _target, content, result, details, options, uiTheme) =>
 			renderCfgWrite(url, typeof content === "string" ? content : undefined, result, details?.cfg, options, uiTheme),
 	},
@@ -572,11 +572,11 @@ function writeToolHead(
 ): NativeToolHead {
 	const lineCount = countLines(content);
 	const badges: { text: string; tone?: TspTone }[] = [];
-	if (details?.madeExecutable) badges.push({ text: "executable", tone: "success" });
+	if (details?.madeExecutable) badges.push({ text: "可执行", tone: "success" });
 	const diagnostics = diagnosticsBadge([details?.diagnostics]);
 	if (diagnostics) badges.push(diagnostics);
 	return {
-		title: "Write",
+		title: "写入",
 		target: rawPath ? sanitizeText(displayPath(rawPath)) : undefined,
 		targetKind: "path",
 		href: fileHref(details?.resolvedPath),
@@ -596,7 +596,7 @@ export const writeToolRenderer = {
 				: typeof writeArgs.path === "string"
 					? writeArgs.path
 					: "";
-		if (!rawPath) return { label: "Write" };
+		if (!rawPath) return { label: "写入" };
 		const routed = writeUrlCard(rawPath);
 		if (routed) return routed.card.activity(routed.target);
 		const xdev = parseXdUrl(rawPath);
@@ -604,7 +604,7 @@ export const writeToolRenderer = {
 			const resolveMounted = (context.renderContext as WriteRenderContext | undefined)?.resolveXdevMounted;
 			return xdevActivitySummary(xdev.name, writeArgs.content, resolveMounted);
 		}
-		return { label: "Write", detail: shortenPath(rawPath) };
+		return { label: "写入", detail: shortenPath(rawPath) };
 	},
 
 	renderCall(
@@ -649,7 +649,7 @@ export const writeToolRenderer = {
 		// noise. The liveness cue rides the trailing "(streaming)" line instead.
 		const header = renderStatusLine(
 			{
-				title: "Write",
+				title: "写入",
 				description: `${langIcon} ${pathDisplay}`,
 			},
 			uiTheme,
@@ -733,7 +733,7 @@ export const writeToolRenderer = {
 		if (result.isError) {
 			const errorText = result.content?.find(c => c.type === "text")?.text ?? "";
 			const header = renderStatusLine(
-				{ icon: "error", title: "Write", description: `${langIcon} ${pathDisplay}` },
+				{ icon: "error", title: "写入", description: `${langIcon} ${pathDisplay}` },
 				uiTheme,
 			);
 			return framedToolCard(uiTheme, () => ({
@@ -750,14 +750,14 @@ export const writeToolRenderer = {
 		const lineSuffix = formatLineCountSuffix(lineCount, uiTheme);
 		const execSuffix =
 			!isPartial && result.details?.madeExecutable
-				? `${uiTheme.fg("dim", " · ")}${uiTheme.fg("success", "made executable!")}`
+				? `${uiTheme.fg("dim", " · ")}${uiTheme.fg("success", "已设为可执行！")}`
 				: "";
 		const header = renderStatusLine(
 			{
 				icon: isPartial ? "running" : undefined,
 				iconOverride: isPartial ? undefined : uiTheme.styledSymbol("tool.write", "accent"),
 				spinnerFrame: options.spinnerFrame,
-				title: "Write",
+				title: "写入",
 				description: `${langIcon} ${pathDisplay}${lineSuffix}${execSuffix}`,
 			},
 			uiTheme,

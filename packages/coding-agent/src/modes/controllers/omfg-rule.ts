@@ -268,12 +268,12 @@ function stringArrayField(object: Record<string, unknown>, key: string): string[
 }
 
 function assembleRuleMarkdown(payload: GeneratedRulePayload): string {
-	const lines = ["---", `name: ${payload.name}`, `description: ${JSON.stringify(payload.description)}`];
-	if (payload.condition) lines.push(`condition: ${formatFrontmatterStringArray(payload.condition)}`);
-	if (payload.astCondition) lines.push(`astCondition: ${formatFrontmatterStringArray(payload.astCondition)}`);
-	if (payload.question) lines.push(`question: ${JSON.stringify(payload.question)}`);
+	const lines = ["---", `名称：${payload.name}`, `描述：${JSON.stringify(payload.description)}`];
+	if (payload.condition) lines.push(`条件：${formatFrontmatterStringArray(payload.condition)}`);
+	if (payload.astCondition) lines.push(`astCondition 条件: ${formatFrontmatterStringArray(payload.astCondition)}`);
+	if (payload.question) lines.push(`问题：${JSON.stringify(payload.question)}`);
 	lines.push(
-		`scope: ${formatFrontmatterStringArray(payload.scope)}`,
+		`范围：${formatFrontmatterStringArray(payload.scope)}`,
 		"---",
 		"",
 		payload.body.trim().replace(/\r\n?/g, "\n"),
@@ -450,27 +450,27 @@ function buildNoMatchFeedback(rule: Rule, outputs: readonly TtsrOutput[]): strin
 	const hints = extractConditionHints([...(rule.condition ?? []), ...(rule.astCondition ?? [])]);
 	const lines = [
 		rule.question
-			? `No assistant output within scope ${formatRuleList(rule.scope)} passed ${describeTriggers(rule)}; the question was never asked.`
-			: `No assistant output matched ${describeTriggers(rule)} within scope ${formatRuleList(rule.scope)}.`,
+			? `在范围 ${formatRuleList(rule.scope)} 内没有通过 ${describeTriggers(rule)} 的助手输出；该问题从未被提出。`
+			: `没有助手输出与 ${describeTriggers(rule)} 匹配，匹配作用域为 ${formatRuleList(rule.scope)}。`,
 	];
 	if (outputs.length === 0) {
-		lines.push("No assistant replies, reasoning, or tool calls were available to check.");
+		lines.push("没有可检查的助手回复、推理或工具调用。");
 		return lines.join("\n");
 	}
 
-	lines.push("Checked outputs:");
+	lines.push("已检查的输出：");
 	const max = Math.min(outputs.length, 5);
 	for (let i = 0; i < max; i++) {
 		const output = outputs[i];
 		lines.push(`- ${output.subject}: ${JSON.stringify(excerptForOutput(output.content, hints))}`);
 	}
 	if (outputs.length > max) {
-		lines.push(`- ... ${outputs.length - max} more output(s)`);
+		lines.push(`- ... 还有 ${outputs.length - max} 个输出`);
 	}
 	lines.push(
-		'edit/write calls are checked as the written source text; other tool calls as serialized JSON arguments, where quotes appear escaped (\\").',
+		"edit/write 调用会作为所写入的源文本进行检查；其他工具调用则作为序列化的 JSON 参数进行检查，其中引号显示为转义形式 (\\\")。",
 	);
-	lines.push("If the trigger looks right, fix the scope so it reaches the offending tool and file glob.");
+	lines.push("如果触发条件看起来正确，请修正作用域，使其覆盖有问题的工具和文件 glob。");
 	return lines.join("\n");
 }
 

@@ -14,7 +14,7 @@ export function themePickerOptions(title: string, current: string): SelectPicker
 	return {
 		title,
 		icon: "ink",
-		noun: "themes",
+		noun: "主题",
 		searchable: true,
 		current: [current],
 		confirm: "Apply",

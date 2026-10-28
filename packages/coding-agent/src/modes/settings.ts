@@ -33,7 +33,7 @@ export const cfgAutoResume = register({
 	default: false,
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "自动恢复",
 		description:
 			"自动恢复当前目录中最近的会话。如果其模型无法恢复且模型回退被禁用，交互式启动会发出警告，并在没有已保存历史记录的情况下启动新会话。",
@@ -63,7 +63,7 @@ export const cfgThemeDark = register({
 	default: "titanium",
 	ui: {
 		tab: "appearance",
-		group: "主题",
+		group: "Theme",
 		label: "深色主题",
 		description: "终端为深色背景时使用的主题",
 		options: "runtime",
@@ -77,7 +77,7 @@ export const cfgThemeLight = register({
 	default: "light",
 	ui: {
 		tab: "appearance",
-		group: "主题",
+		group: "Theme",
 		label: "浅色主题",
 		description: "终端为浅色背景时使用的主题",
 		options: "runtime",
@@ -92,7 +92,7 @@ export const cfgSymbolPreset = register({
 	default: "unicode",
 	ui: {
 		tab: "appearance",
-		group: "主题",
+		group: "Theme",
 		label: "符号预设",
 		description: "图标和符号使用的字形集(Unicode、Nerd Font 或 ASCII)",
 		options: [
@@ -114,7 +114,7 @@ export const cfgColorBlindMode = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "主题",
+		group: "Theme",
 		label: "色盲模式",
 		description: "diff 新增内容使用蓝色而不是绿色",
 	},
@@ -128,7 +128,7 @@ export const cfgComposerShape = register({
 	default: "band",
 	ui: {
 		tab: "appearance",
-		group: "输入框",
+		group: "Composer",
 		label: "输入框形状",
 		description: "输入编辑器与状态行的视觉布局",
 		options: "runtime",
@@ -142,7 +142,7 @@ export const cfgComposerTokenRate = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "输入框",
+		group: "Composer",
 		label: "生成速率",
 		description:
 			"显示实时生成 tok/s 读数：在会话标题旁边的工作行中，或紧跟在思考级别之后的原生编辑器栏中显示；上一次读数会在轮次之间保留。该值根据流式增量估算，并在每条消息完成时根据提供商的计费输出数量进行修正。",
@@ -157,7 +157,7 @@ export const cfgStatusLinePreset = register({
 	default: "default",
 	ui: {
 		tab: "appearance",
-		group: "状态栏",
+		group: "Status Line",
 		label: "状态栏预设",
 		description: "预置的状态栏配置",
 		options: [
@@ -179,7 +179,7 @@ export const cfgStatusLineSeparator = register({
 	default: "powerline-thin",
 	ui: {
 		tab: "appearance",
-		group: "状态栏",
+		group: "Status Line",
 		label: "状态栏分隔符",
 		description: "分段之间分隔符的样式",
 		options: [
@@ -201,7 +201,7 @@ export const cfgStatusLineContextLine = register({
 	default: "embedded",
 	ui: {
 		tab: "appearance",
-		group: "状态栏",
+		group: "Status Line",
 		label: "上下文感应线",
 		description: "左右两段之间的横线如何反映上下文占用（仅框式输入框）",
 		options: [
@@ -231,7 +231,7 @@ export const cfgStatusLineSessionAccent = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "状态栏",
+		group: "Status Line",
 		label: "会话强调色",
 		description: "使用会话名称的颜色作为编辑器边框和状态栏间隙的颜色",
 	},
@@ -243,7 +243,7 @@ export const cfgStatusLineTransparent = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "状态栏",
+		group: "Status Line",
 		label: "透明状态栏",
 		description:
 			"状态栏使用终端的默认背景,而不是主题的 `statusLineBg`。Powerline 端帽会被去掉,因为它们需要对比色填充来衔接周围终端。",
@@ -256,7 +256,7 @@ export const cfgStatusLineCompactThinkingLevel = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "状态栏",
+		group: "Status Line",
 		label: "紧凑思考级别",
 		description:
 			"将思考级别显示为模型名称上的单个图标，而不是单独的 ` · <level>` 后缀；在 Tern 的编辑器中，显示为模型芯片的图标，而不是单独的芯片（点击图标可循环切换）。",
@@ -269,7 +269,7 @@ export const cfgStatusLineShowHookStatus = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "状态栏",
+		group: "Status Line",
 		label: "显示 Hook 状态",
 		description: "在状态栏下方显示 hook 状态消息",
 	},
@@ -302,7 +302,7 @@ export const cfgTerminalShowImages = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "图片",
+		group: "Images",
 		label: "显示内联图片",
 		description: "在终端中内联渲染图片",
 		condition: "hasImageProtocol",
@@ -315,7 +315,7 @@ export const cfgImagesAutoResize = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "图片",
+		group: "Images",
 		label: "自动调整图片大小",
 		description: "将大图片调整为最大 2000x2000,以获得更好的模型兼容性",
 	},
@@ -327,7 +327,7 @@ export const cfgImagesBlockImages = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "图片",
+		group: "Images",
 		label: "阻止图片",
 		description: "阻止图片发送给 LLM 提供商",
 	},
@@ -366,7 +366,7 @@ export const cfgTuiResizeScrollback = register({
 	default: "rebuild",
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "尺寸调整时的回滚",
 		description: "终端尺寸稳定后，如何刷新回滚缓冲中保留的会话记录行",
 		options: [
@@ -395,7 +395,7 @@ export const cfgTuiCompleteScrollback = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "完整回滚缓冲区",
 		description:
 			"将被不断增大的 HUD 或对话框推出屏幕的会话记录行直接发送到回滚缓冲区；当它缩小时，空白行会留在会话记录和输入之间，直到新输出填满它们。",
@@ -408,7 +408,7 @@ export const cfgTerminalShowProgress = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "原生终端进度",
 		description:
 			"在代理或上下文维护运行时发出 OSC 9;4 不确定进度（在 Tern 中始终开启）。",
@@ -421,7 +421,7 @@ export const cfgTerminalProgramStatus = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "程序状态（OSC 7501）",
 		description:
 			"通过 OSC 7501 报告代理是正在工作、等待你、已完成还是失败，供终端标签页指示器和代理收件箱使用。",
@@ -434,7 +434,7 @@ export const cfgTuiTextSizing = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "大标题 (Kitty)",
 		description:
 			"使用 Kitty 的 OSC 66 文本尺寸协议以 2 倍大小渲染 Markdown H1 标题。仅在 Kitty 终端上生效;其他终端忽略。默认关闭。",
@@ -447,7 +447,7 @@ export const cfgTuiRenderMermaid = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "渲染 Mermaid 图表",
 		description: "将 Mermaid 围栏代码块渲染为 ASCII 图表",
 	},
@@ -459,7 +459,7 @@ export const cfgTuiRenderSvg = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "渲染 SVG 图形",
 		description:
 			"邀请智能体以 SVG 格式绘制示意图和图表，并在支持图形显示的终端上以内嵌图片形式呈现。",
@@ -473,7 +473,7 @@ export const cfgTuiAutoGraph = register({
 	default: "always",
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "自动绘制表格图表",
 		description:
 			"在智能体回答中的数值表格下方，使用你的主题颜色绘制图表，并在支持图形显示的终端上显示。",
@@ -500,7 +500,7 @@ export const cfgTuiReactions = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "代理表情回应",
 		description: "让代理在你的消息气泡上以 emoji 徽章回应",
 	},
@@ -512,7 +512,7 @@ export const cfgTuiCodexResetFireworks = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "Codex 重置烟花",
 		get description() {
 			return `Celebrate unscheduled Codex weekly usage resets and newly banked saved resets with a top-third fireworks overlay that remains until ${formatKeyHint("escape")}`;
@@ -526,7 +526,7 @@ export const cfgTuiTitleState = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "终端标题运行状态",
 		description:
 			"在终端标题的分隔符中显示代理运行状态——工作时为动画旋转指示器(WSL 下是静态 ':'),轮到你时显示 '>',代理等待你时显示 '!'",
@@ -540,7 +540,7 @@ export const cfgTuiTitleSpinner = register({
 	default: "braille",
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "终端标题指示器",
 		description:
 			"终端标题中工作状态指示器使用的字形集 —— 盲文扫动、月相填充、单点循环或 ASCII 线条",
@@ -560,7 +560,7 @@ export const cfgTuiHyperlinks = register({
 	default: "auto",
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "终端超链接",
 		description:
 			"将路径和网址包装为 OSC 8 超链接，以便在终端中点击打开（auto：检测支持情况；off：从不启用；always：无条件启用）",
@@ -576,7 +576,7 @@ export const cfgTuiMouse = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "鼠标点击聚焦",
 		get description() {
 			const shift = formatKeyHint("shift");
@@ -591,7 +591,7 @@ export const cfgTuiTight = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "紧凑布局",
 		description: "移除终端输出左右两侧 1 字符的水平内边距",
 	},
@@ -604,7 +604,7 @@ export const cfgDisplayShimmer = register({
 	default: "classic",
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "微光动画",
 		description: "用于 working/loading 消息的动画样式",
 		options: [
@@ -623,7 +623,7 @@ export const cfgDisplayPinnedAgents = register({
 	default: "collapsed",
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "固定的代理",
 		description:
 			"编辑器上方的活跃代理固定跳转列表（关闭则隐藏；折叠时显示几行并带展开器；完整时全部列出）",
@@ -641,7 +641,7 @@ export const cfgDisplaySubagentLivePreview = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "子代理实时预览",
 		description: "在每个已固定子代理的行下方显示其当前（或最近）的工具调用",
 	},
@@ -653,7 +653,7 @@ export const cfgDisplaySmoothStreaming = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "平滑流式输出",
 		description: "在数据块到达时平滑地显示助手文本和流式工具输入",
 	},
@@ -665,7 +665,7 @@ export const cfgDisplayHideToolActivity = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "隐藏工具活动",
 		description: "在记录中隐藏模型发起的工具调用和结果",
 	},
@@ -677,7 +677,7 @@ export const cfgDisplayShowTokenUsage = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "显示 Token 用量",
 		description: "在助手消息上显示每轮 token 用量",
 	},
@@ -689,7 +689,7 @@ export const cfgDisplayShowTurnTime = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "显示轮次耗时",
 		description: "在助手消息用量行显示从提示到产出的总耗时（含工具调用）",
 	},
@@ -701,7 +701,7 @@ export const cfgDisplayCacheMissMarker = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "缓存未命中标记",
 		description: "在未命中提示缓存的助手轮次后显示分隔线",
 	},
@@ -713,7 +713,7 @@ export const cfgDisplayAdvisorCollapsedLines = register({
 	default: 0,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "Advisor 折叠行",
 		description:
 			"折叠的顾问卡片在其标题下方显示的最大注释行数（0 表示保留完整预览；使用工具输出开关展开）",
@@ -745,7 +745,7 @@ export const cfgDisplayCollapseCompacted = register({
 	default: true,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "折叠压缩历史",
 		description:
 			"在实时记录中,将压缩前的历史折叠到摘要分隔线之后;禁用则保留完整记录,并在每个压缩点显示分隔线",
@@ -758,7 +758,7 @@ export const cfgShowHardwareCursor = register({
 	default: true, // will be computed based on platform if undefined
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "显示硬件光标",
 		description: "为 IME 支持显示终端光标",
 	},
@@ -770,7 +770,7 @@ export const cfgTuiImeSafeCursor = register({
 	default: false,
 	ui: {
 		tab: "appearance",
-		group: "显示",
+		group: "Display",
 		label: "IME 安全提示行布局",
 		description: "将提示行的底部边框移到单独一行,以免 macOS IME 预编辑将其挤开",
 	},
@@ -788,7 +788,7 @@ export const cfgSteeringMode = register({
 	default: "one-at-a-time",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "引导模式",
 		description: "代理工作时如何处理排队消息",
 	},
@@ -801,7 +801,7 @@ export const cfgFollowUpMode = register({
 	default: "one-at-a-time",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "跟进模式",
 		description: "一轮完成后如何处理积压的跟进消息",
 	},
@@ -814,7 +814,7 @@ export const cfgInterruptMode = register({
 	default: "immediate",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "中断模式",
 		description: "引导消息何时中断工具执行",
 	},
@@ -826,7 +826,7 @@ export const cfgTuiVimMode = register({
 	default: false,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "Vim 编辑模式",
 		get description() {
 			return `Modal prompt editing. ${formatKeyHint("escape")} leaves Insert mode; Normal mode has hjkl, 0, $, ^, w, b, e, gg, G, counts, x/D/C, dd/yy, p and u; operators take motions or text objects (diw, ca(, dap); v/V start a Visual selection that y copies and d deletes`;
@@ -841,7 +841,7 @@ export const cfgTuiVimModeDisplay = register({
 	default: "text",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "Vim 模式指示器",
 		description: "当前 Vim 模式在状态栏中的显示方式",
 		condition: "vimModeEnabled",
@@ -860,7 +860,7 @@ export const cfgLoopMode = register({
 	default: "prompt",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "循环模式",
 		description: "/loop 迭代之间、重新提交提示之前会发生什么",
 		options: [
@@ -885,7 +885,7 @@ export const cfgLoopConditionTimeoutMs = register({
 	default: 30_000,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "循环条件超时（毫秒）",
 		description:
 			"`/loop --while` / `--until` 条件命令的最长等待时间，超时即视为条件失效并停止循环。设为 0 表示无限等待",
@@ -905,7 +905,7 @@ export const cfgComposerRecallClearedDrafts = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "恢复已清除的草稿",
 		get description() {
 			return `Keep drafts cleared with ${formatKeyHint("ctrl+c")} in local ${formatKeyHints(["up", "down"])} history until exit; disabling affects future clears`;
@@ -920,7 +920,7 @@ export const cfgDoubleEscapeAction = register({
 	default: "rewind",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "双击 Escape 操作",
 		get description() {
 			return `What pressing ${formatKeyHint("escape")} twice with an empty editor does: open the transcript rewind selector, open the session tree, or nothing`;
@@ -934,7 +934,7 @@ export const cfgBareExitOnEmptySession = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "空会话时直接退出",
 		description:
 			"在第一条消息之前，精确提交 `exit`、`quit` 或 `q`（不区分大小写）将直接退出，而不会向模型发送提示",
@@ -947,7 +947,7 @@ export const cfgBareSlashCommands = register({
 	default: false,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "无斜杠命令",
 		description:
 			"精确提交不带前导 `/` 的命令名（例如 e.g. `model`, `compact`）即可运行该斜杠命令；会话中有消息后，按两次 Enter 确认",
@@ -961,7 +961,7 @@ export const cfgTreeFilterMode = register({
 	default: "default",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "会话树过滤器",
 		description: "打开会话树时的默认过滤模式",
 	},
@@ -973,7 +973,7 @@ export const cfgAutocompleteMaxVisible = register({
 	default: 10,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "自动补全条目数",
 		description: "自动补全下拉菜单中最多可见的条目数 (3-20)",
 		options: [
@@ -993,7 +993,7 @@ export const cfgSpellingTypoDetection = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "拼写检查（macOS）",
 		description: "用启用的 macOS 词典标记输入中的拼写错误",
 		condition: "macOS",
@@ -1007,7 +1007,7 @@ export const cfgSpellingAutocomplete = register({
 	default: "auto",
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "单词自动补全",
 		get description() {
 			return `Show predicted word completions as inline hints: ${formatKeyHint("tab")} accepts with a space, ${formatKeyHint("right")} without`;
@@ -1038,7 +1038,7 @@ export const cfgComposerPredictions = register({
 	default: false,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "Composer 预测",
 		get description() {
 			return `After a completed turn, ask the active model to predict your next message and show it as ghost text in the empty composer; ${formatKeyHint("tab")} or ${formatKeyHint("right")} inserts it without sending. Extra usage: every completed turn sends one more billed request over the whole conversation (counted in /stats)`;
@@ -1052,7 +1052,7 @@ export const cfgSpellingAutocorrect = register({
 	default: false,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "自动纠错（macOS）",
 		description: "在完成输入的单词后应用有把握的 macOS 纠错",
 		condition: "macOS",
@@ -1065,7 +1065,7 @@ export const cfgEmojiAutocomplete = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "Emoji 自动补全",
 		description: "从 `:name:` 短代码建议 emoji,并展开 `:D` 或 `:-)` 之类的文本表情",
 	},
@@ -1078,7 +1078,7 @@ export const cfgPasteLargeMenuThreshold = register({
 	default: 100,
 	ui: {
 		tab: "interaction",
-		group: "输入",
+		group: "Input",
 		label: "大段粘贴菜单",
 		description:
 			"当粘贴内容达到这么多行时,提供菜单将其包裹在代码块中、包裹在 XML 标签中,或保存到文件。0 禁用该菜单(大段粘贴仍会折叠为 [Paste] 标记)。",
@@ -1098,7 +1098,7 @@ export const cfgStartupQuiet = register({
 	default: false,
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "安静启动",
 		description: "跳过欢迎界面和启动状态消息",
 	},
@@ -1110,7 +1110,7 @@ export const cfgStartupShowSplash = register({
 	default: false,
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "显示启动画面",
 		description:
 			"在正常的交互式启动时显示完整的动画设置画面,而不重新运行设置。安静启动仍会抑制它。",
@@ -1123,7 +1123,7 @@ export const cfgStartupSetupWizard = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "设置向导",
 		description: "每个设置版本显示一次新增的引导步骤",
 	},
@@ -1135,7 +1135,7 @@ export const cfgStartupCheckUpdate = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "检查更新",
 		description: "启动时检查 omp 更新",
 	},
@@ -1148,7 +1148,7 @@ export const cfgUpdateChannel = register({
 	default: "stable",
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "更新通道",
 		description: "omp update 与启动时更新检查所用的通道",
 		options: [
@@ -1165,7 +1165,7 @@ export const cfgMarketplaceAutoUpdate = register({
 	default: "notify",
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "插件市场自动更新",
 		description: "启动时检查插件更新",
 		options: [
@@ -1183,7 +1183,7 @@ export const cfgStartupChangelogMode = register({
 	default: "summary",
 	ui: {
 		tab: "interaction",
-		group: "启动与更新",
+		group: "Startup & Updates",
 		label: "启动更新日志",
 		description: "选择更新说明以摘要、完整详情开始,还是保持隐藏",
 		options: [
@@ -1212,7 +1212,7 @@ export const cfgMagicKeywordsEnabled = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "魔法关键词",
+		group: "Magic Keywords",
 		label: "魔法关键词",
 		description: `为独立的 ${MAGIC_KEYWORDS.map(keyword => keyword.word).join(", ")} 关键词启用隐藏提示`,
 	},
@@ -1226,7 +1226,7 @@ export const cfgMagicKeyword = Object.fromEntries(
 			id: `magicKeywords.${keyword.id}`,
 			type: "boolean",
 			default: true,
-			ui: { tab: "interaction", group: "魔法关键词", label: keyword.label, description: keyword.description },
+			ui: { tab: "interaction", group: "Magic Keywords", label: keyword.label, description: keyword.description },
 		}),
 	]),
 ) as Record<MagicKeywordId, Setting<boolean>>;
@@ -1239,7 +1239,7 @@ export const cfgCompletionNotify = register({
 	default: "on",
 	ui: {
 		tab: "interaction",
-		group: "通知",
+		group: "Notifications",
 		label: "完成通知",
 		description: "代理完成一轮时通知",
 	},
@@ -1252,7 +1252,7 @@ export const cfgErrorNotify = register({
 	default: "off",
 	ui: {
 		tab: "interaction",
-		group: "通知",
+		group: "Notifications",
 		label: "错误通知",
 		description: "代理因错误停止时通知",
 	},
@@ -1264,7 +1264,7 @@ export const cfgAskTimeout = register({
 	default: 0,
 	ui: {
 		tab: "interaction",
-		group: "通知",
+		group: "Notifications",
 		label: "询问超时",
 		description:
 			"在此秒数后自动选择推荐的询问选项（0 表示禁用）。同时约束 cfg:// 审批提示；未答复的审批将拒绝写入，而不是自动选择",
@@ -1295,7 +1295,7 @@ export const cfgAskNotify = register({
 	default: "on",
 	ui: {
 		tab: "interaction",
-		group: "通知",
+		group: "Notifications",
 		label: "询问通知",
 		description: "ask 工具等待输入时通知",
 	},
@@ -1307,7 +1307,7 @@ export const cfgRecapEnabled = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "通知",
+		group: "Notifications",
 		label: "空闲回顾",
 		description: "终端空闲一段时间后,生成一份简短的 LLM 回顾,说明当前进展",
 	},
@@ -1319,7 +1319,7 @@ export const cfgRecapIdleSeconds = register({
 	default: 240,
 	ui: {
 		tab: "interaction",
-		group: "通知",
+		group: "Notifications",
 		label: "空闲回顾延迟",
 		description: "空闲后等待多少秒再显示回顾",
 		options: [

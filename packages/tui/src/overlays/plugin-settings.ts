@@ -377,8 +377,8 @@ export class PluginListComponent extends OverlayPanel {
 		return {
 			lead:
 				rows.length > 0
-					? "Plugins installed for you and this project. Configure one to turn it or its features on and off."
-					: "No plugins installed. Install one with omp plugin install <package>, or <name>@<marketplace>.",
+					? "已为你和此项目安装的插件。配置某个插件可开启或关闭该插件或其功能。"
+					: "未安装插件。使用 omp plugin install <package> 或 <name>@<marketplace> 安装一个。",
 			sections: rows.length > 0 ? [{ id: "installed", title: "已安装", rows }] : [],
 			focus: this.#selectList.getSelectedItem()?.value ?? null,
 			editing: null,
@@ -400,13 +400,13 @@ export class PluginListComponent extends OverlayPanel {
 		const body =
 			this.entries.length === 0
 				? [
-						text([span("No plugins installed", "muted")]),
+						text([span("未安装插件", "muted")]),
 						node("kv", {
 							items: [
-								{ k: "Install npm plugins", v: [span("omp plugin install <package>", "code")] },
+								{ k: "Install npm plugins", v: [span("安装 npm 插件：omp plugin install <package>", "code")] },
 								{
 									k: "Install marketplace plugins",
-									v: [span("omp plugin install <name>@<marketplace>", "code")],
+									v: [span("安装插件：omp plugin install <name>@<marketplace>", "code")],
 								},
 							],
 						}),
@@ -680,15 +680,15 @@ export class MarketplacePluginDetailComponent extends OverlayPanel {
 			...configItems,
 		];
 		const summary: Component[] = [
-			new Text(theme.fg("dim", `版本       ${entry?.version ?? "(unknown)"}`), 0, 0),
+			new Text(theme.fg("dim", `版本       ${entry?.version ?? "（未知）"}`), 0, 0),
 			new Text(theme.fg("dim", `作用域         ${plugin.scope}`), 0, 0),
 			new Text(
-				theme.fg("dim", `安装路径  ${entry?.installPath ? shortenPath(entry.installPath) : "(unknown)"}`),
+				theme.fg("dim", `安装路径  ${entry?.installPath ? shortenPath(entry.installPath) : "（未知）"}`),
 				0,
 				0,
 			),
-			new Text(theme.fg("dim", `安装于  ${entry?.installedAt ?? "(unknown)"}`), 0, 0),
-			new Text(theme.fg("dim", `上次更新  ${entry?.lastUpdated ?? "(unknown)"}`), 0, 0),
+			new Text(theme.fg("dim", `安装于  ${entry?.installedAt ?? "（未知）"}`), 0, 0),
+			new Text(theme.fg("dim", `上次更新  ${entry?.lastUpdated ?? "（未知）"}`), 0, 0),
 		];
 		if (entry?.gitCommitSha) {
 			summary.push(new Text(theme.fg("dim", `git 提交哈希       ${entry.gitCommitSha}`), 0, 0));
@@ -940,7 +940,7 @@ export class PluginSettingsComponent extends Container {
 		) {
 			return view.prefsPage();
 		}
-		return { lead: "Loading installed plugins…", sections: [], focus: null, editing: null };
+		return { lead: "正在加载已安装插件…", sections: [], focus: null, editing: null };
 	}
 
 	/** Routes a native page event to the current view. */

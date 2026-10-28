@@ -227,7 +227,7 @@ function renderJobLine(job: GhRunWatchJobDetails, width: number, theme: Theme): 
 function renderRunBlock(run: GhRunWatchRunDetails, width: number, theme: Theme): string[] {
 	const lines = [formatRunLine(run, theme)];
 	if (run.jobs.length === 0) {
-		lines.push(theme.fg("dim", "waiting for workflow jobs..."));
+		lines.push(theme.fg("dim", "等待工作流任务..."));
 		return lines;
 	}
 
@@ -274,7 +274,7 @@ function renderFailedLogs(
 
 		if (!expanded && tailLines.length > previewLimit) {
 			const remaining = tailLines.length - previewLimit;
-			lines.push(theme.fg("dim", `  … ${remaining} more log lines ${formatExpandHint(theme, false, true)}`));
+			lines.push(theme.fg("dim", `  … 还有 ${remaining} 行日志 ${formatExpandHint(theme, false, true)}`));
 		}
 	}
 
@@ -298,7 +298,7 @@ function buildWatchSections(
 	} else if (watch.mode === "commit") {
 		const runs = watch.runs ?? [];
 		if (runs.length === 0) {
-			main.push(theme.fg("dim", "waiting for workflow runs..."));
+			main.push(theme.fg("dim", "等待工作流运行..."));
 		} else {
 			runs.forEach((run, index) => {
 				if (index > 0) {
@@ -316,7 +316,7 @@ function buildWatchSections(
 
 	const failed = renderFailedLogs(watch.failedLogs ?? [], width, theme, options.expanded);
 	if (failed.length > 0) {
-		sections.push({ label: "failed logs", content: failed });
+		sections.push({ label: "失败日志", content: failed });
 	}
 
 	return sections;
@@ -359,7 +359,7 @@ function renderFallbackComponent(
 	);
 
 	if (!text) {
-		const empty = isError ? "request failed" : "no output";
+		const empty = isError ? "请求失败" : "无输出";
 		return new Text(`${header}\n${theme.fg("dim", empty)}`, 0, 0);
 	}
 
@@ -412,18 +412,18 @@ function renderWatchCall(args: GithubToolRenderArgs, options: RenderResultOption
 	const runId = typeof args.run === "string" && args.run.trim().length > 0 ? args.run.trim() : undefined;
 	const branch = typeof args.branch === "string" && args.branch.trim().length > 0 ? args.branch.trim() : undefined;
 
-	const titleText = theme.fg("accent", "GitHub Run Watch");
+	const titleText = theme.fg("accent", "GitHub 运行监视");
 	let metaText: string;
 	if (runId) {
 		metaText = theme.fg("muted", `#${runId}`);
 	} else if (branch) {
 		metaText = theme.fg("text", branch);
 	} else {
-		metaText = theme.fg("muted", "current HEAD");
+		metaText = theme.fg("muted", "当前 HEAD");
 	}
 
 	const header = `${icon} ${titleText}  ${metaText}`;
-	const wait = theme.fg("dim", "waiting for workflow data...");
+	const wait = theme.fg("dim", "等待工作流数据...");
 	return new Text(`${header}\n${wait}`, 0, 0);
 }
 
@@ -443,7 +443,7 @@ function describeRun(run: GhRunWatchRunDetails): NativeNode {
 	});
 	const jobs =
 		run.jobs.length === 0
-			? noteText("waiting for workflow jobs...")
+			? noteText("等待工作流任务...")
 			: list(
 					run.jobs.map(job => {
 						const tone = jobTone(job);
@@ -463,7 +463,7 @@ function describeWatch(watch: GhRunWatchViewDetails, isError: boolean): NativeTo
 	if (watch.mode === "run" && watch.run) runs.push(describeRun(watch.run));
 	else if (watch.mode === "commit") {
 		const commitRuns = watch.runs ?? [];
-		if (commitRuns.length === 0) runs.push(noteText("waiting for workflow runs..."));
+		if (commitRuns.length === 0) runs.push(noteText("等待工作流运行..."));
 		for (const run of commitRuns) runs.push(describeRun(run));
 	}
 	const failed = (watch.failedLogs ?? []).flatMap((entry): NativeChild[] => {
@@ -475,13 +475,13 @@ function describeWatch(watch: GhRunWatchViewDetails, isError: boolean): NativeTo
 		return [title, ansi(entry.tail, { follow: true, preview: { lines: PREVIEW_LIMITS.OUTPUT_COLLAPSED } })];
 	});
 	return {
-		head: toolHead("GitHub Run Watch", getWatchHeader(watch)),
+		head: toolHead("GitHub 运行监视", getWatchHeader(watch)),
 		tone: isError ? "error" : undefined,
 		body: compact([
 			watch.note ? noteText(watch.note) : undefined,
 			...runs,
 			failed.length > 0
-				? node("section", { head: [span("failed logs", "error")], tone: "error" }, failed, "failed")
+				? node("section", { head: [span("失败日志", "error")], tone: "error" }, failed, "failed")
 				: undefined,
 		]),
 	};
@@ -492,7 +492,7 @@ function describeFallback(result: ToolRenderResult<GhToolDetails>, args: GithubT
 	const title = formatOpTitle(args.op);
 	const meta = buildOpMeta(args, KEEP_TEXT);
 	if (result.isError === true) return errorView(title, output || "request failed", ...meta);
-	if (!output) return { head: toolHead(title, ...meta), tone: "warning", body: [noteText("no output")] };
+	if (!output) return { head: toolHead(title, ...meta), tone: "warning", body: [noteText("无输出")] };
 	return {
 		head: toolHead(title, ...meta),
 		body: [md(plainText(output))],
@@ -541,19 +541,19 @@ export const githubToolRenderer = {
 					? {
 							icon: options.spinnerFrame !== undefined ? "running" : "pending",
 							spinnerFrame: options.spinnerFrame,
-							title: "GitHub Run Watch",
+							title: "GitHub 运行监视",
 							meta: [getWatchHeader(watch)],
 						}
 					: isError
 						? {
 								icon: "error",
-								title: "GitHub Run Watch",
+								title: "GitHub 运行监视",
 								titleColor: "error",
 								meta: [getWatchHeader(watch)],
 							}
 						: {
 								iconOverride: uiTheme.styledSymbol("tool.gh", "accent"),
-								title: "GitHub Run Watch",
+								title: "GitHub 运行监视",
 								titleColor: "accent",
 								meta: [getWatchHeader(watch)],
 							},
@@ -583,8 +583,8 @@ export const githubToolRenderer = {
 		const runId = typeof args.run === "string" && args.run.trim().length > 0 ? args.run.trim() : undefined;
 		const branch = typeof args.branch === "string" && args.branch.trim().length > 0 ? args.branch.trim() : undefined;
 		return {
-			head: toolHead("GitHub Run Watch", runId ? `#${runId}` : (branch ?? "current HEAD")),
-			body: [noteText("waiting for workflow data...")],
+			head: toolHead("GitHub 运行监视", runId ? `#${runId}` : (branch ?? "current HEAD")),
+			body: [noteText("等待工作流数据...")],
 		};
 	},
 
@@ -729,10 +729,10 @@ export function formatJobState(job: GhRunJobSnapshot): string {
 /** Format workflow jobs as a Markdown section. */
 export function renderJobsSection(jobs: GhRunJobSnapshot[]): string[] {
 	if (jobs.length === 0) {
-		return ["## Jobs", "", "No jobs reported yet."];
+		return ["## 作业", "", "尚未报告任何作业。"];
 	}
 
-	const lines: string[] = [`## Jobs (${jobs.length})`, ""];
+	const lines: string[] = [`## 作业（${jobs.length}）`, ""];
 	for (const job of jobs) {
 		lines.push(`- [${formatJobState(job)}] ${job.name}`);
 		if (job.startedAt) {
@@ -758,9 +758,9 @@ export function renderFailedJobLogs(
 		return [];
 	}
 
-	const lines: string[] = ["## Failed Jobs", ""];
+	const lines: string[] = ["## 失败的作业", ""];
 	for (const entry of failedJobLogs) {
-		lines.push(`### ${entry.job.name} [${entry.job.conclusion ?? "failed"}]`);
+		lines.push(`### ${entry.job.name} [${entry.job.conclusion ?? "失败"}]`);
 		pushLine(lines, "Run", `#${entry.run.id}`);
 		pushLine(lines, "Workflow", entry.run.workflowName ?? undefined);
 		if (entry.job.startedAt) {
@@ -778,17 +778,17 @@ export function renderFailedJobLogs(
 			lines.push(
 				options.mode === "full"
 					? entry.truncated
-						? "Partial log (capture truncated):"
-						: "Full log:"
+						? "部分日志（捕获已截断）："
+						: "完整日志："
 					: entry.truncated
-						? `Last ${options.tail} captured log lines (log capture truncated):`
-						: `Last ${options.tail} log lines:`,
+						? `最后 ${options.tail} 条已捕获日志行（日志捕获已截断）：`
+						: `最后 ${options.tail} 条日志行：`,
 			);
-			lines.push("```text");
+			lines.push("```文本");
 			lines.push(logText);
 			lines.push("```");
 		} else {
-			lines.push(options.mode === "full" ? "Full log unavailable." : "Log tail unavailable.");
+			lines.push(options.mode === "full" ? "完整日志不可用。" : "日志尾部不可用。");
 			if (entry.unavailableReason) pushLine(lines, "Reason", entry.unavailableReason);
 		}
 		lines.push("");
@@ -799,7 +799,7 @@ export function renderFailedJobLogs(
 
 /** Format a workflow run and its jobs as Markdown. */
 export function renderRunSection(run: GhRunSnapshot): string[] {
-	const label = run.workflowName ? `### Run #${run.id} - ${run.workflowName}` : `### Run #${run.id}`;
+	const label = run.workflowName ? `### 运行 #${run.id} - ${run.workflowName}` : `### 运行 #${run.id}`;
 	const lines: string[] = [label, ""];
 	pushLine(lines, "Title", run.displayTitle ?? undefined);
 	pushLine(lines, "Branch", run.branch ?? undefined);

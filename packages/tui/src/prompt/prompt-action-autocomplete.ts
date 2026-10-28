@@ -291,7 +291,7 @@ export function createPromptActionAutocompleteProvider(
 		},
 		{
 			id: "copy-prompt",
-			label: "复制整个提示词",
+			label: "复制整段提示词",
 			description: formatKeyHints(options.keybindings.getKeys("app.clipboard.copyPrompt")),
 			keywords: ["copy", "prompt", "clipboard", "message"],
 			execute: options.copyPrompt,

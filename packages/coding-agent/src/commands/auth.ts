@@ -202,7 +202,7 @@ export default class Auth extends Command {
 		if (broker) {
 			process.stderr.write(
 				`${chalk.red(`error: omp uses the auth broker at ${broker.url}; credentials live there, not in this machine's agent.db.`)}\n` +
-					"Run this on the broker host, or disable the broker (`omp config reset auth.broker.url`) first.\n",
+					"请在 broker 主机上运行此命令，或先禁用 broker（`omp config reset auth.broker.url`）。\n",
 			);
 			process.exitCode = 1;
 			return;
@@ -250,8 +250,9 @@ export default class Auth extends Command {
 			const summary = await importAuthCredentials(store, data);
 			process.stderr.write(
 				summary.imported === 0
-					? "No credentials to import.\n"
-					: `Imported ${summary.imported} credential(s) for ${summary.providers.join(", ")}.\n`,
+					? "没有要导入的凭据。\n"
+					: `已导入 ${summary.imported} 个凭据，适用于 ${summary.providers.join(", ")}。
+`,
 			);
 		} finally {
 			store.close();

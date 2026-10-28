@@ -57,7 +57,7 @@ export function formatCodexUsageReportLabel(
 			: "";
 	const identity = clean(base);
 	const plan = includePlan ? codexUsagePlan(report) : undefined;
-	return `${identity}${org}${plan ? ` · plan: ${plan}` : ""}`;
+	return `${identity}${org}${plan ? ` · 套餐：${plan}` : ""}`;
 }
 
 function normalizeIdentityValue(value: unknown): string | undefined {

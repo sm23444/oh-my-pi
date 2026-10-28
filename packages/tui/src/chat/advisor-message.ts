@@ -65,7 +65,7 @@ class AdvisorHeader implements Component {
 		width = Math.max(1, width);
 		if (this.#cache?.width === width) return this.#cache.lines;
 		const uiTheme = this.#uiTheme;
-		const tag = uiTheme.fg("customMessageLabel", uiTheme.bold(`${uiTheme.status.info} Advisor`));
+		const tag = uiTheme.fg("customMessageLabel", uiTheme.bold(`${uiTheme.status.info} 顾问`));
 		const lines = [
 			truncateToWidth(`${tag} ${uiTheme.fg("dim", this.#meta.join(uiTheme.sep.dot))}`, width, Ellipsis.Unicode),
 		];
@@ -104,7 +104,7 @@ class AdvisorNotes implements Component {
 			const uiTheme = this.#uiTheme;
 			const rail = uiTheme.fg("dim", uiTheme.symbol("advisor.rail"));
 			const hidden = this.#hidden;
-			lines.push(`  ${rail} ${uiTheme.fg("dim", `… +${hidden} more ${hidden === 1 ? "note" : "notes"}`)}`);
+			lines.push(`  ${rail} ${uiTheme.fg("dim", `… 另有 ${hidden} 条${hidden === 1 ? "笔记" : "笔记"}`)}`);
 		}
 		const rendered = lines.map(line => truncateToWidth(line, width, Ellipsis.Unicode));
 		this.#cache = { width, lines: rendered };
@@ -157,10 +157,10 @@ const RANKS: readonly AdvisorRank[] = ["blocker", "concern", "nit", "note"];
 
 /** Each rank's native look, GitHub-alert style: card/icon tone, Tern icon name, label and its span style. */
 const RANK_LOOK: Record<AdvisorRank, { tone: TspTone; icon: string; label: string; style: string }> = {
-	blocker: { tone: "error", icon: "octagon-alert", label: "Blocker", style: "error strong" },
-	concern: { tone: "warning", icon: "warn", label: "Concern", style: "warning strong" },
-	nit: { tone: "neutral", icon: "lightbulb", label: "Nit", style: "strong" },
-	note: { tone: "neutral", icon: "info", label: "Note", style: "strong" },
+	blocker: { tone: "error", icon: "octagon-alert", label: "阻断问题", style: "error strong" },
+	concern: { tone: "warning", icon: "warn", label: "待关注问题", style: "warning strong" },
+	nit: { tone: "neutral", icon: "lightbulb", label: "小建议", style: "strong" },
+	note: { tone: "neutral", icon: "info", label: "说明", style: "strong" },
 };
 
 function rankOf(entry: AdvisorNote): AdvisorRank {
@@ -178,7 +178,7 @@ function tallySpans(notes: readonly AdvisorNote[]): TspSpan[] {
 		const count = notes.filter(entry => rankOf(entry) === rank).length;
 		if (count === 0) continue;
 		if (spans.length > 0) spans.push(span(" · ", "dim"));
-		spans.push(span(`${count} ${rank}${count === 1 ? "" : "s"}`, RANK_LOOK[rank].style));
+		spans.push(span(`${count} ${rank}${count === 1 ? "" : ""}`, RANK_LOOK[rank].style));
 	}
 	return spans;
 }
@@ -218,7 +218,7 @@ export function createAdvisorMessageCard(
 	const notes = details?.notes ?? [];
 	const blockers = notes.filter(note => note.severity === "blocker").length;
 	const meta: string[] = [`${notes.length} ${notes.length === 1 ? "note" : "notes"}`];
-	if (blockers > 0) meta.push(uiTheme.fg("error", `${blockers} blocker${blockers === 1 ? "" : "s"}`));
+	if (blockers > 0) meta.push(uiTheme.fg("error", `${blockers} 个阻塞项${blockers === 1 ? "" : ""}`));
 	let override: boolean | undefined;
 	let lastGlobal = getExpanded();
 	const expanded = (): boolean => {
@@ -240,7 +240,7 @@ export function createAdvisorMessageCard(
 			[
 				node("icon", { name: look.icon, tone: look.tone }),
 				text(tallySpans(notes), { grow: 1 }),
-				text([span(sources.size === 1 && sole ? sole : "Advisor", "dim")], { role: "omp.advisor.source" }),
+				text([span(sources.size === 1 && sole ? sole : "顾问", "dim")], { role: "omp.advisor.source" }),
 			],
 			"head",
 		);

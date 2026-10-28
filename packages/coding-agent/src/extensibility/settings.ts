@@ -19,9 +19,9 @@ export const cfgSkillsRegistryUrl = register({
 	ui: {
 		tab: "interaction",
 		group: "Skills",
-		label: "Skill Registry",
+		label: "技能注册表",
 		description:
-			"Skillshare registry used by `omp skill` to install, search, and publish skills (https://host[:port])",
+			"供 `omp skill` 安装、搜索和发布技能使用的技能共享注册表（https://host[:port]）",
 	},
 });
 
@@ -35,8 +35,8 @@ export const cfgSkillsEnableSkillCommands = register({
 	ui: {
 		tab: "tasks",
 		group: "Commands & Skills",
-		label: "Skill Commands",
-		description: "Register skills as /skill:name commands",
+		label: "技能命令",
+		description: "将技能注册为 /skill:name 命令",
 	},
 });
 
@@ -107,8 +107,8 @@ export const cfgCommandsEnableClaudeUser = register({
 	ui: {
 		tab: "tasks",
 		group: "Commands & Skills",
-		label: "Claude User Commands",
-		description: "Load commands from ~/.claude/commands/",
+		label: "Claude 用户命令",
+		description: "从 ~/.claude/commands/ 加载命令",
 	},
 });
 
@@ -119,8 +119,8 @@ export const cfgCommandsEnableClaudeProject = register({
 	ui: {
 		tab: "tasks",
 		group: "Commands & Skills",
-		label: "Claude Project Commands",
-		description: "Load commands from .claude/commands/",
+		label: "Claude 项目命令",
+		description: "从 .claude/commands/ 加载命令",
 	},
 });
 
@@ -131,8 +131,8 @@ export const cfgCommandsEnableOpencodeUser = register({
 	ui: {
 		tab: "tasks",
 		group: "Commands & Skills",
-		label: "OpenCode User Commands",
-		description: "Load commands from ~/.config/opencode/commands/",
+		label: "OpenCode 用户命令",
+		description: "从 ~/.config/opencode/commands/ 加载命令",
 	},
 });
 
@@ -143,8 +143,8 @@ export const cfgCommandsEnableOpencodeProject = register({
 	ui: {
 		tab: "tasks",
 		group: "Commands & Skills",
-		label: "OpenCode Project Commands",
-		description: "Load commands from .opencode/commands/",
+		label: "OpenCode 项目命令",
+		description: "从 .opencode/commands/ 加载命令",
 	},
 });
 
@@ -155,9 +155,9 @@ export const cfgExtensionHandlersToolCallTimeoutMs = register({
 	ui: {
 		tab: "tools",
 		group: "Extensions",
-		label: "Tool Call Handler Timeout (ms)",
+		label: "工具调用处理器超时（毫秒）",
 		description:
-			"Positive finite active-work timeout for extension tool_call handlers; invalid values use 30000ms, and time awaiting OMP-owned dialogs does not count",
+			"扩展 tool_call 处理器的有效工作超时（须为正的有限值）；取值非法时按 30000 毫秒处理，等待 OMP 自身对话框的时间不计入",
 	},
 });
 
@@ -168,8 +168,8 @@ export const cfgExtensionHandlersModeControl = register({
 	ui: {
 		tab: "tools",
 		group: "Extensions",
-		label: "Extension Mode Control",
+		label: "扩展模式控制",
 		description:
-			"Let extensions enter and exit plan, vibe, goal, and loop modes via ctx.sessionModes.set(); reading mode state stays available",
+			"允许扩展通过 ctx.sessionModes.set() 进入和退出 plan、vibe、goal 和 loop 模式；读取模式状态保持可用",
 	},
 });

@@ -89,7 +89,7 @@ export class SkillMessageComponent extends Container {
 				span(label, "customMessageLabel strong", details?.path ? { href: tryFileUri(details.path) } : undefined),
 			];
 			if (typeof details?.lineCount === "number") {
-				head.push(span(`  ${details.lineCount} ${details.lineCount === 1 ? "line" : "lines"}`, "muted"));
+				head.push(span(`  ${details.lineCount} ${details.lineCount === 1 ? "行" : "行"}`, "muted"));
 			}
 			const children: NativeChild[] = [];
 			if (draft) children.push(md(draft));
@@ -98,7 +98,7 @@ export class SkillMessageComponent extends Container {
 				node(
 					"section",
 					{
-						head: [span("prompt", "muted")],
+						head: [span("提示词", "muted")],
 						role: "omp.skill.prompt",
 						collapsible: true,
 						collapsed: !this.#expanded,
@@ -216,7 +216,7 @@ export class SkillMessageComponent extends Container {
 		const chip = skillChipStyle(label, bubbleReset());
 		const parts = [details?.path ? fileHyperlink(details.path, chip, { line: 1 }) : chip];
 		if (typeof details?.lineCount === "number") {
-			parts.push(theme.fg("muted", `${details.lineCount} ${details.lineCount === 1 ? "line" : "lines"}`));
+			parts.push(theme.fg("muted", `${details.lineCount} ${details.lineCount === 1 ? "行" : "行"}`));
 		}
 		return parts.join("  ");
 	}
@@ -225,7 +225,7 @@ export class SkillMessageComponent extends Container {
 	#promptSection(bubble: UserBubbleOptions): Component[] {
 		const text = this.#extractText();
 		if (!text) return [];
-		return [new Spacer(1), new Text(theme.fg("muted", "prompt"), 0, 0), new Spacer(1), this.#markdown(text, bubble)];
+		return [new Spacer(1), new Text(theme.fg("muted", "提示词"), 0, 0), new Spacer(1), this.#markdown(text, bubble)];
 	}
 
 	#extractText(): string {

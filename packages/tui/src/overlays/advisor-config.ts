@@ -272,11 +272,11 @@ function formatReviewCadence(advisor: AdvisorConfig): string {
 function describeSyncBacklogMode(mode: AdvisorSyncBacklog): string {
 	switch (mode) {
 		case "off":
-			return "Never wait for this advisor's backlog.";
+			return "从不等待此顾问的积压事项。";
 		case "strict":
-			return "Wait for all of this advisor's scheduled reviews; no wall-clock cap.";
+			return "等待此顾问的所有预定审查；无实际时间上限。";
 		default:
-			return `Wait until fewer than ${mode} scheduled reviews remain (30s cap).`;
+			return `等待直到剩余的预定审查少于 ${mode} 项（上限 30 秒）。`;
 	}
 }
 
@@ -455,7 +455,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 		const height = Math.max(14, process.stdout.rows || 40);
 		const bodyRows = Math.max(3, height - 4);
 		this.#bodyRowsLast = bodyRows;
-		const title = `Advisor configuration · ${this.#scope}${this.#dirty ? "  ● unsaved" : ""}`;
+		const title = `顾问配置 · ${this.#scope}${this.#dirty ? "  ● 未保存" : ""}`;
 		this.#split.setNarrowPane(this.#screen === "list" ? undefined : "left");
 		this.#split.setSplitAt(this.#screen === "list" ? 0 : Number.MAX_SAFE_INTEGER);
 		this.#split.setHeight(bodyRows);
@@ -506,9 +506,9 @@ export class AdvisorConfigOverlayComponent implements Component {
 			id: `advisor:${i}`,
 			label: a.name || "(未命名)",
 			icon: "advisor",
-			group: "顾问",
+			group: "Advisors",
 		}));
-		pages.push({ id: "shared", label: "共享指令", icon: "doc", group: "所有顾问" });
+		pages.push({ id: "shared", label: "共享指令", icon: "doc", group: "All advisors" });
 
 		const sections: TspPrefsProps["sections"][number][] = [];
 		if (doc.warnings?.length) {
@@ -537,7 +537,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 				{
 					id: "model",
 					label: "模型",
-					hint: model ? undefined : `使用顾问角色默认值（${this.#defaultModelLabel ?? "unset"}）。`,
+					hint: model ? undefined : `使用顾问角色默认值（${this.#defaultModelLabel ?? "未设置"}）。`,
 					changed: model ? true : undefined,
 					defaultLabel: model ? (this.#defaultModelLabel ?? "advisor role default") : undefined,
 					control: { k: "action", label: model || this.#defaultModelLabel || "顾问角色默认值", act: "edit" },
@@ -564,7 +564,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 				{
 					id: "syncBacklog",
 					label: "同步积压",
-					hint: `追赶策略；继承会遵循 advisor.syncBacklog (当前为 ${this.#deps.syncBacklog ?? "off"})。`,
+					hint: `追赶策略；继承会遵循 advisor.syncBacklog (当前为 ${this.#deps.syncBacklog ?? "关闭"})。`,
 					changed: advisor.syncBacklog !== undefined ? true : undefined,
 					control: {
 						k: "choice",
@@ -662,8 +662,8 @@ export class AdvisorConfigOverlayComponent implements Component {
 			pages,
 			page: shared ? "shared" : `advisor:${index}`,
 			lead: shared
-				? "Instructions every advisor gets before its own."
-				: "An advisor watches the session and leaves notes; set its model, tools and instructions here.",
+				? "每个顾问都会在其自身指令之前收到的指令。"
+				: "顾问会观察会话并留下备注；请在此设置其模型、工具和指令。",
 			sections,
 			focus,
 			editing,
@@ -745,7 +745,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 				title: "顾问模型",
 				subtitle: `${name} 使用此模型进行审查。未设置时，使用 ${fallback}。`,
 				icon: "model",
-				noun: "models",
+				noun: "模型",
 				size: "md",
 				layout: "rows",
 				preview: "below",
@@ -773,14 +773,14 @@ export class AdvisorConfigOverlayComponent implements Component {
 	#intervalCard(input: Component): NativeNode {
 		const name = this.#doc.advisors[this.#detailIndex]?.name || "this advisor";
 		return overlayCard("omp.overlay.advisor.interval", `Review interval · ${name}`, [
-			text([span("Review every Nth eligible update; skipped updates join the next review.", "muted")], {
+			text([span("每第 N 个符合条件的更新审查一次；跳过的更新并入下一次审查。", "muted")], {
 				wrap: "word",
 			}),
 			input,
 			actionBar([
 				null,
-				actionButton("Cancel", "field-cancel", { keys: "escape" }),
-				actionButton("Save", "field-save", { keys: "enter", tone: "accent" }),
+				actionButton("取消", "field-cancel", { keys: "escape" }),
+				actionButton("保存", "field-save", { keys: "enter", tone: "accent" }),
 			]),
 		]);
 	}
@@ -894,7 +894,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 	}
 
 	#describeCard(): NativeNode {
-		const title = `Advisor configuration · ${this.#scope}${this.#dirty ? "  ● unsaved" : ""}`;
+		const title = `顾问配置 · ${this.#scope}${this.#dirty ? "  ● 未保存" : ""}`;
 		const preview = this.#screen === "list" ? this.#describePreview() : undefined;
 		if (this.#nativeHints?.screen !== this.#screen) {
 			const hints = screenHints(this.#screen);
@@ -911,8 +911,8 @@ export class AdvisorConfigOverlayComponent implements Component {
 		) {
 			return prev.node;
 		}
-		const head: TspSpan[] = [span(`Advisor configuration · ${this.#scope}`)];
-		if (this.#dirty) head.push(span("  ● unsaved", "warning"));
+		const head: TspSpan[] = [span(`顾问配置 · ${this.#scope}`)];
+		if (this.#dirty) head.push(span("  ● 未保存", "warning"));
 		const body: NativeNode = preview
 			? node(
 					"row",
@@ -940,7 +940,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 					"col",
 					{ tone: "warning" },
 					[
-						text([span("⚠ Config problems — dropped while loading:", "warning")]),
+						text([span("⚠ 配置问题 —— 加载时已丢弃：", "warning")]),
 						...sanitizeDisplayWarnings(this.#doc.warnings).map(warning =>
 							text([span(warning, "warning")], { wrap: "word" }),
 						),
@@ -958,8 +958,8 @@ export class AdvisorConfigOverlayComponent implements Component {
 		} else if (value === "shared") {
 			const instructions = this.#doc.instructions?.trim();
 			children.push(
-				text([span("Shared instructions", "strong")]),
-				instructions ? text(instructions, { wrap: "word" }) : text([span("(none)", "muted")]),
+				text([span("共享指令", "strong")]),
+				instructions ? text(instructions, { wrap: "word" }) : text([span("(无)", "muted")]),
 			);
 		} else {
 			const help =
@@ -985,7 +985,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 		const model = advisor.model?.trim() || this.#defaultModelLabel || "advisor role default";
 		const instructions = advisor.instructions?.trim();
 		const out: NativeNode[] = [
-			text([span(advisor.name || "(unnamed)", "strong")]),
+			text([span(advisor.name || "(未命名)", "strong")]),
 			node("kv", {
 				items: [
 					{ k: "Enabled", v: advisor.enabled === false ? "○ off" : "● on" },
@@ -995,8 +995,8 @@ export class AdvisorConfigOverlayComponent implements Component {
 					{ k: "Sync backlog", v: this.#syncBacklogLabel(advisor) },
 				],
 			}),
-			text([span("Instructions:", "dim")]),
-			instructions ? text(instructions, { wrap: "word" }) : text([span("(none)", "muted")]),
+			text([span("说明：", "dim")]),
+			instructions ? text(instructions, { wrap: "word" }) : text([span("(无)", "muted")]),
 		];
 		const liveStat = this.#cb.getAdvisorStats?.()?.find(s => s.name === (advisor.name || "default"));
 		if (liveStat && (liveStat.status === "running" || liveStat.status === "quota_exhausted")) {
@@ -1014,7 +1014,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 					v: `${liveStat.contextTokens.toLocaleString()}/${liveStat.contextWindow.toLocaleString()} (${pct}%)`,
 				});
 			}
-			out.push(text([span("Usage:", "dim")]), node("kv", { items: usage }));
+			out.push(text([span("用法:", "dim")]), node("kv", { items: usage }));
 		}
 		const quotaProvider =
 			(advisor.model?.includes("/") ? advisor.model.split("/")[0] : null) ?? liveStat?.model?.provider;
@@ -1130,7 +1130,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 		const lines = [
 			theme.bold(advisor.name || "(未命名)"),
 			"",
-			`${theme.fg("dim", "已启用：")} ${advisor.enabled === false ? "○ off" : "● on"}`,
+			`${theme.fg("dim", "已启用：")} ${advisor.enabled === false ? "○ 关闭" : "● 开启"}`,
 			`${theme.fg("dim", "模型：")} ${model}`,
 			`${theme.fg("dim", "工具：")} ${tools}`,
 			`${theme.fg("dim", "审查：")} ${formatReviewCadence(advisor)}`,
@@ -1229,7 +1229,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 		this.#ensureRosterVisible();
 		const items: SelectItem[] = this.#doc.advisors.map((advisor, index) => ({
 			value: `advisor:${index}`,
-			label: `${advisor.enabled === false ? "○" : "●"} ${advisor.name || "(unnamed)"}`,
+			label: `${advisor.enabled === false ? "○" : "●"} ${advisor.name || "(未命名)"}`,
 			description: this.#advisorSummary(advisor),
 		}));
 		items.push({ value: "add", label: "+ 添加顾问" });
@@ -1284,7 +1284,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 			// the initial scope's warnings when the overlay opens, so only switches
 			// report here — no double-showing the opening file.
 			if (doc.warnings?.length) {
-				const message = `WATCHDOG.yml: ${sanitizeDisplayWarnings(doc.warnings).join("; ")}`;
+				const message = `WATCHDOG.yml 警告：${sanitizeDisplayWarnings(doc.warnings).join("; ")}`;
 				if (this.#cb.warn) this.#cb.warn(message);
 				else this.#cb.notify(message);
 			}
@@ -1489,9 +1489,9 @@ export class AdvisorConfigOverlayComponent implements Component {
 			`Thinking effort for ${selector} · ${editorKey("tui.select.confirm")} / click pick · ${editorKey("tui.select.cancel")} back`,
 			{
 				title: "思考级别",
-				subtitle: `${this.#doc.advisors[index]?.name || "the advisor"} 在 ${selector} 上的推理强度。`,
+				subtitle: `${this.#doc.advisors[index]?.name || "顾问"} 在 ${selector} 上的推理强度。`,
 				icon: "thinking",
-				noun: "levels",
+				noun: "级别",
 				current: current === undefined ? [] : [current],
 				confirm: "Use level",
 				decorate: item => {
@@ -1535,9 +1535,9 @@ export class AdvisorConfigOverlayComponent implements Component {
 			`${editorKey("tui.select.confirm")} / click choose review mode · ${editorKey("tui.select.cancel")} back`,
 			{
 				title: "审查模式",
-				subtitle: `当 ${advisor.name || "the advisor"} 审查会话时。`,
+				subtitle: `当 ${advisor.name || "顾问"} 审查会话时。`,
 				icon: "review",
-				noun: "modes",
+				noun: "模式",
 				current: [current],
 				decorate: item => ({ label: item.value }),
 			},
@@ -1605,9 +1605,9 @@ export class AdvisorConfigOverlayComponent implements Component {
 			`${editorKey("tui.select.confirm")} / click choose catch-up policy · ${editorKey("tui.select.cancel")} back`,
 			{
 				title: "同步待处理项",
-				subtitle: `会话等待 ${advisor.name || "the advisor"} 的待处理审查的时长。`,
+				subtitle: `会话等待 ${advisor.name || "顾问"} 的待处理审查的时长。`,
 				icon: "time",
-				noun: "policies",
+				noun: "策略",
 				current: [current ?? SYNC_BACKLOG_INHERIT],
 				decorate: item => ({ label: item.value }),
 			},
@@ -1649,9 +1649,9 @@ export class AdvisorConfigOverlayComponent implements Component {
 			`${editorKey("tui.select.confirm")} / click toggle · select Done or ${editorKey("tui.select.cancel")} to apply (empty = no tools; read/grep/glob = default)`,
 			{
 				title: "工具",
-				subtitle: `允许 ${this.#doc.advisors[index]?.name || "the advisor"} 调用的工具。“无”表示不授予任何工具；read、grep 和 glob 是默认值。`,
+				subtitle: `允许 ${this.#doc.advisors[index]?.name || "顾问"} 调用的工具。“无”表示不授予任何工具；read、grep 和 glob 是默认值。`,
 				icon: "tools",
-				noun: "tools",
+				noun: "工具",
 				current: [...selected],
 				decorate: item => ({ label: item.value }),
 			},
@@ -1663,7 +1663,7 @@ export class AdvisorConfigOverlayComponent implements Component {
 		const shared = index < 0;
 		this.#detailIndex = index;
 		const current = shared ? this.#doc.instructions : this.#doc.advisors[index].instructions;
-		const title = shared ? "Shared advisor instructions" : `Instructions — ${this.#doc.advisors[index].name}`;
+		const title = shared ? "共享顾问指令" : `指令 — ${this.#doc.advisors[index].name}`;
 		const editor = new HookEditorComponent(
 			this.#tui,
 			title,

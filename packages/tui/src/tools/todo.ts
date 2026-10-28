@@ -181,7 +181,7 @@ function selectWithinCap<T extends { status: TodoStatus }>(
 		const hiddenActive = active.length - cap;
 		return {
 			items: active.slice(0, cap),
-			summary: `… ${hiddenActive} more active ${pluralize("todo", hiddenActive)}`,
+			summary: `… 还有 ${hiddenActive} 个活动 ${pluralize("todo", hiddenActive)}`,
 		};
 	}
 
@@ -511,7 +511,7 @@ function describeTodoResult(
 ): NativeToolView | undefined {
 	if (result.isError) {
 		return {
-			tool: { title: "Todo" },
+			tool: { title: "任务" },
 			tone: "error",
 			body: [errorText(resultText(result) || "Todo operation failed")],
 		};
@@ -519,14 +519,14 @@ function describeTodoResult(
 	const phases = (result.details?.phases ?? []).filter(phase => phase.tasks.length > 0);
 	const total = phases.reduce((sum, phase) => sum + phase.tasks.length, 0);
 	if (total === 0) {
-		return { tool: { title: "Todo" }, body: [noteText(forDisplay(resultText(result) || "No todos"))] };
+		return { tool: { title: "任务" }, body: [noteText(forDisplay(resultText(result) || "No todos"))] };
 	}
 	const closed = phases.reduce((sum, phase) => sum + phase.tasks.filter(isClosedTodo).length, 0);
 	const activeDescs = options.expanded ? [] : activeTodoDescriptionsProvider();
 	const isMatched = (task: TodoItem): boolean =>
 		activeDescs.length > 0 && todoMatchesAnyDescription(task.content, activeDescs);
 	return {
-		tool: { title: "Todo", target: `${closed}/${total}`, targetKind: "text" },
+		tool: { title: "任务", target: `${closed}/${total}`, targetKind: "text" },
 		body: [node("checklist", { mode: "full", phases: todoChecklistPhases(phases, isMatched) }, [], "checklist")],
 		preview: "none",
 		open: true,
@@ -560,7 +560,7 @@ export const todoToolRenderer = {
 		// No body worth boxing while the call streams — a lone status line reads
 		// cleaner than an empty frame. The container renders it without chrome.
 		const header = renderStatusLine(
-			{ icon: "pending", spinnerFrame: options?.spinnerFrame, title: "Todo", meta: ops },
+			{ icon: "pending", spinnerFrame: options?.spinnerFrame, title: "任务", meta: ops },
 			uiTheme,
 		);
 		return new Text(header, 0, 0);
@@ -573,8 +573,8 @@ export const todoToolRenderer = {
 		args?: TodoRenderArgs,
 	): Component {
 		if (result.isError) {
-			const errorText = result.content?.find(content => content.type === "text")?.text ?? "Todo operation failed";
-			const header = renderStatusLine({ icon: "error", title: "Todo" }, uiTheme);
+			const errorText = result.content?.find(content => content.type === "text")?.text ?? "任务操作失败";
+			const header = renderStatusLine({ icon: "error", title: "任务" }, uiTheme);
 			return framedToolCard(uiTheme, () => ({
 				header,
 				sections: [{ content: formatErrorDetail(errorText, uiTheme).split("\n") }],
@@ -598,7 +598,7 @@ export const todoToolRenderer = {
 		const header = renderStatusLine(
 			{
 				iconOverride: uiTheme.styledSymbol("tool.todo", "accent"),
-				title: "Todo",
+				title: "任务",
 				meta: [`${allTasks.length} tasks`],
 			},
 			uiTheme,
@@ -748,7 +748,7 @@ export const todoToolRenderer = {
 				parts.push(`${e.items.length} ${pluralize("item", e.items.length)}`);
 			return parts.join(" ");
 		});
-		return { tool: { title: "Todo", target: ops.length === 0 ? "update" : ops.join(", "), targetKind: "text" } };
+		return { tool: { title: "任务", target: ops.length === 0 ? "update" : ops.join(", "), targetKind: "text" } };
 	},
 
 	describeResult(result: ToolRenderResult<TodoToolDetails>, options: RenderResultOptions): NativeToolView | undefined {

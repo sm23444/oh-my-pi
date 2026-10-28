@@ -17,9 +17,9 @@ export const cfgAdvisorEnabled = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Enable Advisor",
+		label: "启用顾问",
 		description:
-			"Pair a second model (assigned to the 'advisor' role) that passively reviews each turn and injects notes.",
+			"配对第二个模型(分配给 'advisor' 角色),被动审查每一轮并在其中注入笔记。",
 	},
 });
 
@@ -32,9 +32,9 @@ export const cfgAdvisorSyncBacklog = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Advisor Sync Backlog",
+		label: "顾问同步积压",
 		description:
-			"Pause main agent until advisor backlog falls below threshold. Numeric values cap wait at 30 seconds; strict waits for all scheduled reviews without a wall-clock cap. Off disables catch-up delays. Abort, failure, and disposal release waits.",
+			"暂停主代理，直到顾问积压降至阈值以下。数值设置最多等待 30 秒；严格设置会等待所有已安排的审查，且无实际时间上限。关闭会禁用追赶延迟。中止、失败和处置会解除等待。",
 		condition: "advisorEnabled",
 	},
 });
@@ -47,16 +47,16 @@ export const cfgAdvisorImmuneTurns = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Advisor Immune Turns",
+		label: "顾问免打扰轮数",
 		description:
-			"After an advisor concern or blocker interrupts, route further concerns as non-interrupting asides for this many primary turns. Blockers are exempt from the cooldown.",
+			"在顾问关注或阻塞项中断后，将后续关注作为非中断旁白传递，持续该数量的主轮次。阻塞项不受冷却时间限制。",
 		options: [
-			{ value: "0", label: "0 steps", description: "No cooldown." },
-			{ value: "1", label: "1 step" },
-			{ value: "2", label: "2 steps" },
-			{ value: "3", label: "3 steps", description: "Default." },
-			{ value: "4", label: "4 steps" },
-			{ value: "5", label: "5 steps" },
+			{ value: "0", label: "0 步", description: "无冷却时间。" },
+			{ value: "1", label: "1 步" },
+			{ value: "2", label: "2 步" },
+			{ value: "3", label: "3 步", description: "默认。" },
+			{ value: "4", label: "4 步" },
+			{ value: "5", label: "5 步" },
 		],
 		condition: "advisorEnabled",
 	},
@@ -71,13 +71,13 @@ export const cfgAdvisorContinueSeverity = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Advisor Continue Severity",
+		label: "Advisor Continue 严重程度",
 		description:
-			"Minimum severity of an advisor note that wakes the agent after it finished with a final answer. Lower-severity notes stay as a card at the end of the transcript and reach the agent with your next message.",
+			"在代理完成最终回答后，能唤醒代理的 Advisor 备注的最低严重程度。较低严重程度的备注会作为卡片保留在会话记录末尾，并在您发送下一条消息时传递给代理。",
 		options: [
-			{ value: "nit", label: "Nit", description: "Every note continues the run." },
-			{ value: "concern", label: "Concern", description: "Concerns and blockers continue the run. Default." },
-			{ value: "blocker", label: "Blocker", description: "Only blockers continue the run." },
+			{ value: "nit", label: "小建议", description: "每条备注都会继续运行。" },
+			{ value: "concern", label: "待关注问题", description: "关注项和阻塞项都会继续运行。默认。" },
+			{ value: "blocker", label: "阻断问题", description: "仅阻塞项会继续运行。" },
 		],
 		condition: "advisorEnabled",
 	},
@@ -92,12 +92,12 @@ export const cfgAdvisorReviewMode = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Advisor Review Mode",
+		label: "顾问审查模式",
 		description:
-			"Default advisor cadence when no WATCHDOG.yml roster is present. turn reviews every primary turn; agent-end reviews only final yields.",
+			"当不存在 WATCHDOG.yml 名册时，默认顾问节奏：turn 模式会在每个主回合审查；agent-end 模式仅在最终产出时审查。",
 		options: [
-			{ value: "turn", label: "Every turn", description: "Review every primary update (tool-call round)." },
-			{ value: "agent-end", label: "Agent end", description: "Review only at final yields (once per run)." },
+			{ value: "turn", label: "每个回合", description: "审查每次主更新（工具调用回合）。" },
+			{ value: "agent-end", label: "智能体结束时", description: "仅在最终产出时审查（每次运行一次）。" },
 		],
 		condition: "advisorEnabled",
 	},
@@ -111,15 +111,15 @@ export const cfgAdvisorReviewInterval = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Advisor Review Interval",
+		label: "顾问审查间隔",
 		description:
-			"Default advisor cadence when no WATCHDOG.yml roster is present: review every Nth eligible primary update. 1 = every update. Skipped updates are sent with the next scheduled review.",
+			"当不存在 WATCHDOG.yml 名册时，默认顾问节奏：每隔 N 个符合条件的主更新审查一次。1 = 每次更新。跳过的更新将随下一次计划审查一并发送。",
 		options: [
-			{ value: "1", label: "Every eligible update", description: "Default." },
-			{ value: "2", label: "Every 2nd" },
-			{ value: "3", label: "Every 3rd" },
-			{ value: "5", label: "Every 5th" },
-			{ value: "10", label: "Every 10th" },
+			{ value: "1", label: "每次符合条件的更新", description: "默认。" },
+			{ value: "2", label: "每 2 次" },
+			{ value: "3", label: "每 3 次" },
+			{ value: "5", label: "每 5 次" },
+			{ value: "10", label: "每 10 次" },
 		],
 		condition: "advisorEnabled",
 	},
@@ -133,15 +133,15 @@ export const cfgAdvisorMaxNotesPerUpdate = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Advisor Max Notes Per Update",
+		label: "顾问每次更新最多提示条数",
 		description:
-			"Maximum non-blocker advice notes accepted per advisor prompt update (1–32; UI offers 1–5 quick picks). Blockers are exempt.",
+			"每次顾问提示更新可接受的非阻塞性建议条数上限（1–32；界面提供 1–5 快捷选项）。阻塞性问题不受此限制。",
 		options: [
-			{ value: "1", label: "1 note", description: "Anti-flood (strict)." },
-			{ value: "2", label: "2 notes" },
-			{ value: "3", label: "3 notes" },
-			{ value: "4", label: "4 notes", description: "Frontier reasoning models. Default." },
-			{ value: "5", label: "5 notes" },
+			{ value: "1", label: "1 条", description: "防刷屏（严格）。" },
+			{ value: "2", label: "2 条" },
+			{ value: "3", label: "3 条" },
+			{ value: "4", label: "4 条", description: "前沿推理模型。默认。" },
+			{ value: "5", label: "5 条" },
 		],
 		condition: "advisorEnabled",
 	},
@@ -155,9 +155,9 @@ export const cfgAdvisorEvictStaleResults = register({
 	ui: {
 		tab: "model",
 		group: "Advisor",
-		label: "Advisor Evict Stale Results",
+		label: "Advisor 清除过期结果",
 		description:
-			"Before each review, replace the advisor's read/grep/glob output from older reviews with a short placeholder. The latest review is kept.",
+			"每次审查前，将 Advisor 在较旧审查中的 read/grep/glob 输出替换为简短占位符。最新审查会被保留。",
 		condition: "advisorEnabled",
 	},
 });

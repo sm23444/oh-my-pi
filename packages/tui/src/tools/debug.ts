@@ -68,23 +68,23 @@ export function formatLocation(snapshot: DebugSessionSnapshot | undefined): stri
 /** Formats the debugger session snapshot for model and terminal output. */
 export function formatSessionSnapshot(snapshot: DebugSessionSnapshot): string[] {
 	const lines = [
-		`Session ${snapshot.id}`,
-		`Adapter: ${snapshot.adapter}`,
-		`Status: ${snapshot.status}`,
+		`会话 ${snapshot.id}`,
+		`适配器：${snapshot.adapter}`,
+		`状态：${snapshot.status}`,
 		`CWD: ${snapshot.cwd}`,
 	];
-	if (snapshot.program) lines.push(`Program: ${snapshot.program}`);
-	if (snapshot.stopReason) lines.push(`Stop reason: ${snapshot.stopReason}`);
-	if (snapshot.frameName) lines.push(`Frame: ${snapshot.frameName}`);
+	if (snapshot.program) lines.push(`程序：${snapshot.program}`);
+	if (snapshot.stopReason) lines.push(`停止原因：${snapshot.stopReason}`);
+	if (snapshot.frameName) lines.push(`帧：${snapshot.frameName}`);
 	if (snapshot.instructionPointerReference) {
-		lines.push(`Instruction pointer: ${snapshot.instructionPointerReference}`);
+		lines.push(`指令指针：${snapshot.instructionPointerReference}`);
 	}
 	const location = formatLocation(snapshot);
-	if (location) lines.push(`Location: ${location}`);
+	if (location) lines.push(`位置：${location}`);
 	if (snapshot.needsConfigurationDone) {
-		lines.push("Configuration: pending configurationDone; set breakpoints, then continue.");
+		lines.push("配置：等待 configurationDone；设置断点，然后继续。");
 	}
-	if (snapshot.exitCode !== undefined) lines.push(`Exit code: ${snapshot.exitCode}`);
+	if (snapshot.exitCode !== undefined) lines.push(`退出代码：${snapshot.exitCode}`);
 	return lines;
 }
 
@@ -172,9 +172,9 @@ function describeDebugResult(
 			sessionRows = rows.filter(([, value]) => value).length;
 		}
 	}
-	body.push(output ? ansi(output) : noteText("No output"));
+	body.push(output ? ansi(output) : noteText("无输出"));
 	return {
-		head: toolHead("Debug", action, target),
+		head: toolHead("调试", action, target),
 		body,
 		preview: { lines: sessionRows + PREVIEW_LIMITS.COLLAPSED_LINES },
 	};
@@ -186,7 +186,7 @@ const debugResultMemo = new OwnerMemo<NativeToolView | undefined>();
 export const debugToolRenderer = {
 	animatedPartialResult: true,
 	renderCall(args: DebugRenderArgs, _options: RenderResultOptions, theme: Theme): Component {
-		const text = renderStatusLine({ icon: "pending", title: "Debug", description: summarizeDebugCall(args) }, theme);
+		const text = renderStatusLine({ icon: "pending", title: "调试", description: summarizeDebugCall(args) }, theme);
 		return new Text(text, 0, 0);
 	},
 
@@ -202,7 +202,7 @@ export const debugToolRenderer = {
 			const statusIcon = success
 				? theme.styledSymbol("tool.debug", "accent")
 				: formatStatusIcon(options.isPartial ? "running" : "error", theme, options.spinnerFrame);
-			const header = `${statusIcon} Debug ${action}`;
+			const header = `${statusIcon} 调试 ${action}`;
 			const summaryLines = result.details?.snapshot
 				? formatSessionSnapshot(result.details.snapshot).map(line => replaceTabs(line))
 				: [];
@@ -215,15 +215,15 @@ export const debugToolRenderer = {
 			const remaining = rawLines.length - displayedLines.length;
 			if (remaining > 0) {
 				displayedLines.push(
-					theme.fg("muted", `… ${remaining} more lines ${formatExpandHint(theme, options.expanded, true)}`),
+					theme.fg("muted", `… 还有 ${remaining} 行 ${formatExpandHint(theme, options.expanded, true)}`),
 				);
 			}
 			return {
 				header,
 				phase: options.isPartial ? "partial" : result.isError ? "error" : "success",
 				sections: [
-					...(summaryLines.length > 0 ? [{ label: theme.fg("toolTitle", "Session"), content: summaryLines }] : []),
-					{ label: theme.fg("toolTitle", "Output"), content: displayedLines },
+					...(summaryLines.length > 0 ? [{ label: theme.fg("toolTitle", "会话"), content: summaryLines }] : []),
+					{ label: theme.fg("toolTitle", "输出"), content: displayedLines },
 				],
 				applyBg: false,
 			};
@@ -231,7 +231,7 @@ export const debugToolRenderer = {
 	},
 	describeCall(args: DebugRenderArgs): NativeToolView {
 		const [action, target] = debugCallParts(args, "request");
-		return { head: toolHead("Debug", action, target) };
+		return { head: toolHead("调试", action, target) };
 	},
 	describeResult(
 		result: ToolRenderResult<DebugToolDetails>,

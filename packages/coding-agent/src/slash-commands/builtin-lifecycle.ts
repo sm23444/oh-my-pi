@@ -34,7 +34,7 @@ import type {
 
 function formatFreshSessionResult(result: FreshSessionResult): string {
 	const stateLabel = result.closedProviderSessions === 1 ? "provider state" : "provider states";
-	return `Fresh provider session started (${result.closedProviderSessions} ${stateLabel} pruned).`;
+	return `新的提供商会话已启动（已清理 ${result.closedProviderSessions} ${stateLabel}）。`;
 }
 
 export const shutdownHandlerTui = (
@@ -59,7 +59,7 @@ function parseShakeMode(args: string): ShakeMode | { error: string } {
 function formatWorkspaceDirectories(runtime: SlashCommandRuntime, note?: string): string {
 	const cwd = runtime.sessionManager.getCwd();
 	const additional = runtime.sessionManager.getAdditionalDirectories();
-	const lines = ["Workspace directories:", `  ${cwd} (working directory)`, ...additional.map(d => `  ${d}`)];
+	const lines = ["工作区目录：", `  ${cwd}（工作目录）`, ...additional.map(d => `  ${d}`)];
 	return note ? `${note}\n${lines.join("\n")}` : lines.join("\n");
 }
 async function fatalMoveFailure(text: string, runtime: SlashCommandRuntime): Promise<SlashCommandResult> {
@@ -80,7 +80,7 @@ async function reportFailedRollback(runtime: SlashCommandRuntime, rollbackError:
 		);
 	}
 	return usage(
-		`Move failed and rollback failed: ${errorMessage(rollbackError)} (workspace remains at ${actual})`,
+		`移动失败且回滚失败：${errorMessage(rollbackError)}（工作区仍位于 ${actual}）`,
 		runtime,
 	);
 }
@@ -98,13 +98,13 @@ async function relocateHeadlessSession(
 	try {
 		await runtime.settings.flush();
 	} catch (err) {
-		return usage(`Failed to save pending settings: ${errorMessage(err)}`, runtime);
+		return usage(`保存待处理设置失败：${errorMessage(err)}`, runtime);
 	}
 	const previousState = runtime.sessionManager.captureState();
 	try {
 		await runtime.session.moveSession(resolvedPath);
 	} catch (err) {
-		return usage(`Move failed: ${errorMessage(err)}`, runtime);
+		return usage(`移动失败：${errorMessage(err)}`, runtime);
 	}
 	try {
 		setProjectDir(resolvedPath);
@@ -114,7 +114,7 @@ async function relocateHeadlessSession(
 		} catch (rollbackError) {
 			return reportFailedRollback(runtime, rollbackError);
 		}
-		return usage(`Move failed: ${errorMessage(err)}`, runtime);
+		return usage(`移动失败：${errorMessage(err)}`, runtime);
 	}
 	try {
 		await rescopeHeadlessToCwd(runtime, resolvedPath);
@@ -125,7 +125,7 @@ async function relocateHeadlessSession(
 		} catch (rollbackError) {
 			return reportFailedRollback(runtime, rollbackError);
 		}
-		return usage(`Move failed: ${errorMessage(err)}`, runtime);
+		return usage(`移动失败：${errorMessage(err)}`, runtime);
 	}
 	await runtime.notifyConfigChanged?.();
 	await runtime.notifyTitleChanged?.();
@@ -175,7 +175,7 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 			const result = runtime.session.freshSession();
 			if (!result) {
 				await runtime.output(
-					"Wait for the current response to finish or abort it before refreshing provider state.",
+					"请等待当前响应完成或中止，然后再刷新提供商状态。",
 				);
 				return commandConsumed();
 			}
@@ -246,16 +246,16 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 					// small) and provider errors propagate as plain Errors; surface them
 					// via runtime.output so they don't fail the ACP prompt turn.
 					compactFailed = true;
-					await runtime.output(`Compaction failed: ${errorMessage(err)}`);
+					await runtime.output(`压缩失败：${errorMessage(err)}`);
 					return;
 				}
 				const after = runtime.session.getContextUsage?.();
 				const afterTokens = after?.tokens;
 				if (beforeTokens != null && afterTokens != null) {
 					const saved = beforeTokens - afterTokens;
-					await runtime.output(`Compaction complete. Tokens: ${beforeTokens} -> ${afterTokens} (saved ${saved}).`);
+					await runtime.output(`压缩完成。Token 数：${beforeTokens} -> ${afterTokens}（节省 ${saved}）。`);
 				} else {
-					await runtime.output("Compaction complete.");
+					await runtime.output("上下文压缩完成。");
 				}
 			};
 			// Provider-backed: background-dispatch under RPC so the serialized command
@@ -316,10 +316,10 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 		allowArgs: true,
 		handle: async (command, runtime) => {
 			if (runtime.session.isStreaming) {
-				return usage("Wait for the current response to finish or abort it before handing off.", runtime);
+				return usage("请等待当前响应完成或中止后再进行交接。", runtime);
 			}
 			if (runtime.session.isGeneratingHandoff) {
-				return usage("Handoff generation is already in progress.", runtime);
+				return usage("交接生成已在进行中。", runtime);
 			}
 			// Print mode turns a failed handoff into a nonzero exit; closure
 			// state because the background-dispatch branch (RPC) returns
@@ -347,24 +347,24 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 					// and is surfaced verbatim behind the same "<verb> failed:" prefix
 					// `/compact` uses.
 					if (message === "Handoff cancelled") {
-						await runtime.output("Handoff cancelled.");
+						await runtime.output("已取消交接。");
 						return;
 					}
 					// Persist the real failure so it stays debuggable after the client
 					// message scrolls away (same rationale as the TUI path, #7993).
 					logger.error("Handoff failed", { error: message });
 					handoffFailed = true;
-					await runtime.output(`Handoff failed: ${message}`);
+					await runtime.output(`交接失败：${message}`);
 					return;
 				}
 				if (!result) {
-					await runtime.output("Handoff cancelled.");
+					await runtime.output("已取消交接。");
 					return;
 				}
 				// `savedPath` is deliberately not reported: `SessionHandoff` only writes
 				// the document to disk when `options.autoTriggered` is set, which the
 				// user-invoked path never passes.
-				await runtime.output("Context handed off and compacted in place.");
+				await runtime.output("上下文已交接并就地压缩。");
 			};
 			if (runtime.runCommandInBackground) {
 				runtime.runCommandInBackground(runHandoff);
@@ -434,17 +434,17 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 					{ allowGlobalFallback: true },
 				);
 				if (!match) {
-					return usage(`Session "${sessionArg}" not found.`, runtime);
+					return usage(`未找到会话“${sessionArg}”。`, runtime);
 				}
 				sessionId = match.session.id;
 			} else {
 				sessionId = runtime.sessionManager.getSessionId();
 				if (!sessionId) {
-					return usage("No active session to pin.", runtime);
+					return usage("没有可固定的活动会话。", runtime);
 				}
 			}
 			const pinned = await toggleSessionPin(sessionId);
-			await runtime.output(pinned ? "Session pinned to the top of the resume list." : "Session unpinned.");
+			await runtime.output(pinned ? "会话已固定到恢复列表顶部。" : "会话已取消固定。");
 			return commandConsumed();
 		},
 	},
@@ -509,13 +509,13 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 		description: "重试上一个失败的智能体回合",
 		handle: async (_command, runtime) => {
 			if (runtime.session.isStreaming) {
-				return usage("Wait for the current response to finish or abort it before retrying.", runtime);
+				return usage("请等待当前响应结束或中止后再重试。", runtime);
 			}
 			const didRetry = await runtime.session.retry();
 			if (!didRetry) {
-				return usage("Nothing to retry.", runtime);
+				return usage("无可重试的内容。", runtime);
 			}
-			await runtime.output("Retrying the last failed turn.");
+			await runtime.output("正在重试上一次失败的轮次。");
 			// `AgentSession.retry()` only schedules the continuation as a
 			// post-prompt task; it returns before the retried turn streams. Hosts
 			// whose prompt turn owns the event subscription (ACP) must stay open
@@ -533,7 +533,7 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 		handleTui: async (_command, runtime) => {
 			const didRetry = await runtime.ctx.session.retry();
 			if (!didRetry) {
-				runtime.ctx.showStatus("Nothing to retry");
+				runtime.ctx.showStatus("没有可重试的内容");
 			}
 			clearSubmittedText(runtime);
 		},
@@ -586,20 +586,20 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 						runtime.settings,
 						runtime.session,
 					);
-					await runtime.output(payload || "Memory payload is empty.");
+					await runtime.output(payload || "记忆负载为空。");
 					return commandConsumed();
 				}
 				case "clear":
 				case "reset": {
 					await backend.clear(runtime.settings.getAgentDir(), runtime.cwd, runtime.session);
 					await runtime.session.refreshBaseSystemPrompt();
-					await runtime.output("Memory cleared.");
+					await runtime.output("记忆已清空。");
 					return commandConsumed();
 				}
 				case "enqueue":
 				case "rebuild": {
 					await backend.enqueue(runtime.settings.getAgentDir(), runtime.cwd, runtime.session);
-					await runtime.output("Memory consolidation enqueued.");
+					await runtime.output("记忆整合已入队。");
 					return commandConsumed();
 				}
 				case "queue": {
@@ -608,12 +608,12 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 						cwd: runtime.cwd,
 						session: runtime.session,
 					});
-					await runtime.output(payload ?? `Memory queue is not available for the ${backend.id} backend.`);
+					await runtime.output(payload ?? `记忆队列不可用于 ${backend.id} 后端。`);
 					return commandConsumed();
 				}
 				case "sync": {
 					await backend.enqueue(runtime.settings.getAgentDir(), runtime.cwd, runtime.session);
-					await runtime.output("Memory consolidation ran.");
+					await runtime.output("记忆整合已执行。");
 					return commandConsumed();
 				}
 				case "stats":
@@ -625,11 +625,11 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 				}
 				case "mm":
 					return usage(
-						"Mental-model maintenance via /memory mm is unsupported in ACP mode; use the hindsight HTTP API directly.",
+						"通过 /memory mm 进行心智模型维护在 ACP 模式下不受支持；请直接使用 hindsight HTTP API。",
 						runtime,
 					);
 				default:
-					return usage("Usage: /memory <view|stats|diagnose|clear|reset|enqueue|rebuild|queue|sync>", runtime);
+					return usage("用法：/memory <view|stats|diagnose|clear|reset|enqueue|rebuild|queue|sync>", runtime);
 			}
 		},
 		handleTui: async (command, runtime) => {
@@ -664,7 +664,7 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 					const title = await generation;
 					if (!isCurrent() || title === undefined) return;
 					if (!title) {
-						await runtime.output("Could not generate a session title. Use /rename <title> to set one.");
+						await runtime.output("无法生成会话标题。使用 /rename <title> 设置一个。");
 						return;
 					}
 					const persistence = sessionManager.setSessionName(title, "user");
@@ -672,16 +672,16 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 					const ok = await persistence;
 					if (!isCurrent()) return;
 					if (!ok) {
-						await runtime.output("Session name not changed (a user-set name takes precedence).");
+						await runtime.output("会话名称未更改（用户设置的名称优先）。");
 						return;
 					}
 					await runtime.notifyTitleChanged?.();
 					if (!isCurrent()) return;
-					await runtime.output(`Session renamed to ${title}.`);
+					await runtime.output(`会话已重命名为 ${title}。`);
 				} catch (err) {
 					if (!isCurrent()) return;
 					if (command.args || !runtime.runCommandInBackground) throw err;
-					await runtime.output(`Rename failed: ${errorMessage(err)}`);
+					await runtime.output(`重命名失败：${errorMessage(err)}`);
 				}
 			};
 			if (!command.args && runtime.runCommandInBackground) {
@@ -709,7 +709,7 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 			)
 				return;
 			if (!title) {
-				runtime.ctx.showStatus("Could not generate a session title. Use /rename <title> to set one.");
+				runtime.ctx.showStatus("无法生成会话标题。请使用 /rename <title> 设置标题。");
 				return;
 			}
 			await runtime.ctx.handleRenameCommand(title);
@@ -723,20 +723,20 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 		inlineHint: "[<path>]",
 		allowArgs: true,
 		handle: async (command, runtime) => {
-			if (runtime.session.isStreaming) return usage("Cannot move while streaming.", runtime);
-			if (!command.args) return usage("Usage: /move <path>", runtime);
+			if (runtime.session.isStreaming) return usage("流式传输时无法移动。", runtime);
+			if (!command.args) return usage("用法：/move <path>", runtime);
 			const resolvedPath = resolveToCwd(command.args, runtime.cwd);
 			try {
 				const stat = await fs.stat(resolvedPath);
 				if (!stat.isDirectory()) {
-					return usage(`Not a directory: ${resolvedPath}`, runtime);
+					return usage(`不是目录：${resolvedPath}`, runtime);
 				}
 			} catch {
-				return usage(`Directory does not exist: ${resolvedPath}`, runtime);
+				return usage(`目录不存在：${resolvedPath}`, runtime);
 			}
 			const failure = await relocateHeadlessSession(runtime, resolvedPath);
 			if (failure) return failure;
-			await runtime.output(`Moved to ${runtime.sessionManager.getCwd()}.`);
+			await runtime.output(`已移动到 ${runtime.sessionManager.getCwd()}。`);
 			return commandConsumed();
 		},
 		handleTui: async (command, runtime) => {
@@ -754,21 +754,21 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 		inlineHint: "[<branch>]",
 		allowArgs: true,
 		handle: async (command, runtime) => {
-			if (runtime.session.isStreaming) return usage("Cannot create a worktree while streaming.", runtime);
+			if (runtime.session.isStreaming) return usage("流式传输时无法创建工作树。", runtime);
 			const branch = command.args.trim() || defaultSessionWorktreeBranch();
 			const sourceCwd = runtime.sessionManager.getCwd();
 			let worktree: SessionWorktree;
 			try {
 				worktree = await createSessionWorktree(sourceCwd, runtime.settings, branch);
 			} catch (err) {
-				return usage(`Worktree creation failed: ${errorMessage(err)}`, runtime);
+				return usage(`工作树创建失败：${errorMessage(err)}`, runtime);
 			}
 			const failure = await relocateHeadlessSession(runtime, worktree.path);
 			if (failure) return failure;
 			const cleanup = await cleanSourceCheckoutIfConfigured(sourceCwd, runtime.settings);
 			if (cleanup.errorMessage !== undefined) {
 				await runtime.output(
-					`Warning: Worktree created, but cleaning source checkout failed: ${cleanup.errorMessage}`,
+					`警告：工作树已创建，但清理源检出失败：${cleanup.errorMessage}`,
 				);
 			}
 			await runtime.output(formatSessionWorktreeSummary(worktree, cleanup.cleaned));
@@ -788,14 +788,14 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 		inlineHint: "<path>",
 		allowArgs: true,
 		handle: async (command, runtime) => {
-			if (runtime.session.isStreaming) return usage("Cannot add a directory while streaming.", runtime);
+			if (runtime.session.isStreaming) return usage("正在流式传输时无法添加目录。", runtime);
 			if (!command.args) return usage(formatWorkspaceDirectories(runtime, "Usage: /add-dir <path>"), runtime);
 			const resolved = resolveToCwd(command.args, runtime.cwd);
 			try {
 				const stat = await fs.stat(resolved);
-				if (!stat.isDirectory()) return usage(`Not a directory: ${resolved}`, runtime);
+				if (!stat.isDirectory()) return usage(`不是目录：${resolved}`, runtime);
 			} catch {
-				return usage(`Directory does not exist: ${resolved}`, runtime);
+				return usage(`目录不存在：${resolved}`, runtime);
 			}
 			let added: string | null;
 			try {
@@ -804,7 +804,7 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 				return usage(errorMessage(err), runtime);
 			}
 			if (added === null) {
-				await runtime.output(`Already in the workspace: ${resolved}`);
+				await runtime.output(`已在工作区中：${resolved}`);
 				return commandConsumed();
 			}
 			await runtime.session.refreshBaseSystemPrompt();
@@ -820,11 +820,11 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 		inlineHint: "<path>",
 		allowArgs: true,
 		handle: async (command, runtime) => {
-			if (runtime.session.isStreaming) return usage("Cannot remove a directory while streaming.", runtime);
-			if (!command.args) return usage("Usage: /remove-dir <path>", runtime);
+			if (runtime.session.isStreaming) return usage("正在流式传输时无法删除目录。", runtime);
+			if (!command.args) return usage("用法：/remove-dir <path>", runtime);
 			const resolved = resolveToCwd(command.args, runtime.cwd);
 			if (resolved === path.resolve(runtime.cwd)) {
-				return usage("Cannot remove the working directory; use /move to change it.", runtime);
+				return usage("无法删除工作目录；请使用 /move 更改。", runtime);
 			}
 			let removed: string | null;
 			try {
@@ -833,7 +833,7 @@ export const BUILTIN_LIFECYCLE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> =
 				return usage(errorMessage(err), runtime);
 			}
 			if (removed === null) {
-				await runtime.output(`Not a workspace directory: ${resolved}`);
+				await runtime.output(`不是工作区目录：${resolved}`);
 				return commandConsumed();
 			}
 			await runtime.session.refreshBaseSystemPrompt();

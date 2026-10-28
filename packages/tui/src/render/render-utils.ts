@@ -414,7 +414,7 @@ export function sanitizeDisplayLines(text: string): string[] {
 
 /** Render a sanitized error message with its status icon. */
 export function formatErrorMessage(message: string | undefined, theme: Theme): string {
-	return `${theme.styledSymbol("status.error", "error")} ${theme.fg("error", `Error: ${sanitizeErrorText(message)}`)}`;
+	return `${theme.styledSymbol("status.error", "error")} ${theme.fg("error", `错误：${sanitizeErrorText(message)}`)}`;
 }
 
 /**
@@ -560,7 +560,7 @@ export function formatDiagnostics(
 		: theme.styledSymbol("status.warning", "warning");
 	const summary = sanitizeDiagnosticDisplayText(diag.summary);
 	const summaryTag = summary ? ` ${theme.fg("dim", `(${summary})`)}` : "";
-	let output = `\n\n${headerIcon} ${theme.fg("toolTitle", options?.title ?? "Diagnostics")}${summaryTag}`;
+	let output = `\n\n${headerIcon} ${theme.fg("toolTitle", options?.title ?? "诊断")}${summaryTag}`;
 
 	const maxDiags = expanded ? diag.messages.length : 5;
 	let diagsShown = 0;
@@ -644,7 +644,7 @@ export function formatDiagnostics(
 		const remaining = totalDiags - diagsShown;
 		output += `\n ${theme.fg("dim", theme.tree.last)} ${theme.fg(
 			"muted",
-			`… ${remaining} more`,
+			`… 还有 ${remaining} 个`,
 		)} ${formatExpandHint(theme)}`;
 	}
 
@@ -695,7 +695,7 @@ export function formatDiffStats(added: number, removed: number, hunks: number, t
 	const parts: string[] = [];
 	if (added > 0) parts.push(theme.fg("toolDiffAdded", `+${added}`));
 	if (removed > 0) parts.push(theme.fg("toolDiffRemoved", `-${removed}`));
-	if (hunks > 0) parts.push(theme.fg("dim", `${hunks} hunk${hunks !== 1 ? "s" : ""}`));
+	if (hunks > 0) parts.push(theme.fg("dim", `${hunks} 个差异块${hunks !== 1 ? "" : ""}`));
 	return parts.join(theme.fg("dim", " / "));
 }
 
@@ -1093,7 +1093,7 @@ export function formatParseErrors(errors: string[], total?: number): string[] {
 	if (deduped.length === 0) return [];
 	const fullCount = total ?? deduped.length;
 	const capped = deduped.slice(0, PARSE_ERRORS_LIMIT);
-	const header = fullCount > capped.length ? `Parse issues (${capped.length} / ${fullCount}):` : "Parse issues:";
+	const header = fullCount > capped.length ? `解析问题 (${capped.length} / ${fullCount}):` : "解析问题:";
 	return [header, ...capped.map(err => `- ${err}`)];
 }
 
@@ -1241,7 +1241,7 @@ export function appendParseErrorsBulletList(
 		lines.push(theme.fg("warning", `  - ${err}`));
 	}
 	if (fullCount > capped.length) {
-		lines.push(theme.fg("dim", `  … ${fullCount - capped.length} more`));
+		lines.push(theme.fg("dim", `  … 还有 ${fullCount - capped.length} 个`));
 	}
 }
 
@@ -1252,8 +1252,8 @@ export function appendParseErrorsBulletList(
 export function formatParseErrorsCountLabel(parseErrors: readonly string[], total?: number): string {
 	const fullCount = total ?? parseErrors.length;
 	return fullCount > PARSE_ERRORS_LIMIT
-		? `${PARSE_ERRORS_LIMIT} / ${fullCount} parse issues`
-		: `${fullCount} parse issue${fullCount !== 1 ? "s" : ""}`;
+		? `${PARSE_ERRORS_LIMIT} / ${fullCount} 个解析问题`
+		: `${fullCount} 个解析问题${fullCount !== 1 ? "" : ""}`;
 }
 
 /**

@@ -30,7 +30,7 @@ const TIME_UNITS_MS = new Map<string, number>([
 ]);
 
 const LOOP_USAGE =
-	"Usage: /loop [count|duration] [--while|--until '<command>'] [prompt]. Examples: /loop 10, /loop 10m, /loop 20 --until 'bun test' fix the failing tests.";
+	"用法：/loop [次数|时长] [--while|--until '<命令>'] [提示]。示例：/loop 10、/loop 10m、/loop 20 --until 'bun test' 修复失败的测试。";
 
 /**
  * Flag → `until` polarity. `--while` continues while the command succeeds;

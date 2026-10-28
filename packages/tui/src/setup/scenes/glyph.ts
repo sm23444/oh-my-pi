@@ -101,7 +101,7 @@ class GlyphSceneController implements SetupSceneController {
 	describe(): NativeNode {
 		return this.#native.get([this.#selectList], () =>
 			col(
-				[text([span("If a row shows boxes, tofu, or misaligned icons, pick another.", "muted")]), this.#selectList],
+				[text([span("如果某一行显示为方框、豆腐块或图标错位,请换一行。", "muted")]), this.#selectList],
 				{ gap: "sm", role: "omp.setup.glyph" },
 			),
 		);

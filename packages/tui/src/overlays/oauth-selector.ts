@@ -348,9 +348,9 @@ export class OAuthSelectorComponent extends OverlayPanel {
 			const message =
 				this.#menu.items.length === 0
 					? this.#mode === "login"
-						? "No OAuth providers available"
-						: "No stored provider credentials to log out"
-					: "No matching providers";
+						? "没有可用的 OAuth 提供商"
+						: "没有已存储的提供商凭据可注销"
+					: "没有匹配的提供商";
 			this.#listContainer.addChild(new TruncatedText(theme.fg("muted", message), 0, 0));
 		}
 		if (this.#statusMessage) {
@@ -445,16 +445,16 @@ export class OAuthSelectorComponent extends OverlayPanel {
 		const detail = origin
 			? [
 					span(
-						origin.kind === "env" && origin.envVar ? `env: ${origin.envVar}` : ORIGIN_LABELS[origin.kind],
+						origin.kind === "env" && origin.envVar ? `环境变量：${origin.envVar}` : ORIGIN_LABELS[origin.kind],
 						"muted",
 					),
 				]
 			: undefined;
 		const state = this.#authState.get(providerId);
-		if (state === "checking") return { value: [span("checking", "warning", { fx: "pulse" })], detail };
-		if (state === "invalid") return { value: [span("invalid", "error")], detail };
+		if (state === "checking") return { value: [span("检查中", "warning", { fx: "pulse" })], detail };
+		if (state === "invalid") return { value: [span("无效", "error")], detail };
 		if (state === "valid" || this.#hasSelectableAuth(providerId)) {
-			return { value: [span("logged in", "success")], detail };
+			return { value: [span("已登录", "success")], detail };
 		}
 		return { detail };
 	}
@@ -508,7 +508,7 @@ export class OAuthSelectorComponent extends OverlayPanel {
 			title: login ? "登录" : "退出登录",
 			subtitle: login ? "选择提供商" : "移除已存储的凭据",
 			icon: "key-round",
-			noun: "providers",
+			noun: "提供商",
 			size: "md",
 			layout: "cards",
 			preview: "none",
@@ -567,9 +567,9 @@ export class OAuthSelectorComponent extends OverlayPanel {
 		const empty =
 			this.#menu.items.length === 0
 				? this.#mode === "login"
-					? "No OAuth providers available"
-					: "No stored provider credentials to log out"
-				: "No matching providers";
+					? "没有可用的 OAuth 提供商"
+					: "没有已存储的提供商凭据可注销"
+				: "没有匹配的提供商";
 		children.push(
 			node(
 				"list",

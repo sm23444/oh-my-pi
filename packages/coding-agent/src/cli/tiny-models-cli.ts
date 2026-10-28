@@ -97,13 +97,13 @@ async function listModels(json: boolean | undefined): Promise<void> {
 		writeLine(JSON.stringify({ models: TINY_LOCAL_MODELS, wordCompletion }));
 		return;
 	}
-	writeLine(chalk.bold("Tiny local models"));
+	writeLine(chalk.bold("微型本地模型"));
 	for (const spec of TINY_LOCAL_MODELS) {
 		const defaultMark = spec.key === DEFAULT_TINY_TITLE_LOCAL_MODEL_KEY ? chalk.cyan(" default") : "";
 		writeLine(`${chalk.cyan(spec.key)}${defaultMark}`);
 		writeLine(`  ${spec.label} — ${spec.description}`);
 	}
-	const status = wordCompletion.ready ? chalk.green("downloaded") : chalk.dim("not downloaded");
+	const status = wordCompletion.ready ? chalk.green("downloaded") : chalk.dim("未下载");
 	writeLine(`${chalk.cyan(SMOLLM_KEY)}`);
 	writeLine(`  ${SMOLLM_LABEL} — ${wordCompletion.description}, ${formatBytes(SMOLLM_TOTAL_BYTES)}, ${status}`);
 	writeLine(`  ${chalk.dim(wordCompletion.dir)}`);

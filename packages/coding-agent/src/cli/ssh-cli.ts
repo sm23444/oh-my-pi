@@ -46,7 +46,8 @@ export async function runSSHCommand(cmd: SSHCommandArgs): Promise<void> {
 			break;
 		default:
 			process.stdout.write(chalk.red(`Unknown action: ${cmd.action}\n`));
-			process.stdout.write(`Valid actions: add, remove, list\n`);
+			process.stdout.write(`有效操作：add、remove、list
+`);
 			process.exitCode = 1;
 	}
 }
@@ -60,7 +61,7 @@ async function handleAdd(cmd: SSHCommandArgs): Promise<void> {
 	if (!name) {
 		process.stdout.write(chalk.red("Error: Host name required\n"));
 		process.stdout.write(
-			chalk.dim("Usage: omp ssh add <name> --host <address> [--user <user>] [--port <port>] [--key <path>]\n"),
+			chalk.dim("用法：omp ssh add <name> --host <address> [--user <user>] [--port <port>] [--key <path>]\n"),
 		);
 		process.exitCode = 1;
 		return;
@@ -69,7 +70,7 @@ async function handleAdd(cmd: SSHCommandArgs): Promise<void> {
 	const host = cmd.flags.host;
 	if (!host) {
 		process.stdout.write(chalk.red("Error: --host is required\n"));
-		process.stdout.write(chalk.dim("Usage: omp ssh add <name> --host <address>\n"));
+		process.stdout.write(chalk.dim("用法：omp ssh add <name> --host <address>\n"));
 		process.exitCode = 1;
 		return;
 	}
@@ -107,7 +108,7 @@ async function handleRemove(cmd: SSHCommandArgs): Promise<void> {
 	const name = cmd.args[0];
 	if (!name) {
 		process.stdout.write(chalk.red("Error: Host name required\n"));
-		process.stdout.write(chalk.dim("Usage: omp ssh remove <name> [--scope project|user]\n"));
+		process.stdout.write(chalk.dim("用法：omp ssh remove <name> [--scope project|user]\n"));
 		process.exitCode = 1;
 		return;
 	}
@@ -143,13 +144,14 @@ async function handleList(cmd: SSHCommandArgs): Promise<void> {
 	const hasUser = Object.keys(userHosts).length > 0;
 
 	if (!hasProject && !hasUser) {
-		process.stdout.write(chalk.dim("No SSH hosts configured\n"));
-		process.stdout.write(chalk.dim("Add one with: omp ssh add <name> --host <address>\n"));
+		process.stdout.write(chalk.dim("未配置 SSH 主机\n"));
+		process.stdout.write(chalk.dim("添加方式：omp ssh add <name> --host <address>\n"));
 		return;
 	}
 
 	if (hasProject) {
-		process.stdout.write(chalk.bold(`Project SSH Hosts (${projectPath}):\n`));
+		process.stdout.write(chalk.bold(`项目 SSH 主机 (${projectPath}):
+`));
 		printHosts(projectHosts);
 	}
 
@@ -158,7 +160,8 @@ async function handleList(cmd: SSHCommandArgs): Promise<void> {
 	}
 
 	if (hasUser) {
-		process.stdout.write(chalk.bold(`User SSH Hosts (${userPath}):\n`));
+		process.stdout.write(chalk.bold(`用户 SSH 主机 (${userPath}):
+`));
 		printHosts(userHosts);
 	}
 }
@@ -171,7 +174,7 @@ function printHosts(hosts: Record<string, SSHHostConfig>): void {
 	for (const [name, config] of Object.entries(hosts)) {
 		const parts = [chalk.cyan(name), config.host];
 		if (config.username) parts.push(chalk.dim(config.username));
-		if (config.port && config.port !== 22) parts.push(chalk.dim(`port:${config.port}`));
+		if (config.port && config.port !== 22) parts.push(chalk.dim(`端口：${config.port}`));
 		if (config.keyPath) parts.push(chalk.dim(config.keyPath));
 		if (config.description) parts.push(chalk.dim(`- ${config.description}`));
 		process.stdout.write(`  ${parts.join("  ")}\n`);

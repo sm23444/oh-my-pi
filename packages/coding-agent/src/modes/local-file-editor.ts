@@ -6,7 +6,7 @@ import type { SessionManager } from "../session/session-manager";
 import { getEditorCommand, openEditorOnPath } from "../utils/external-editor";
 import type { InteractiveModeContext } from "./types";
 
-const PICKER_TITLE = "Open local:// file in external editor";
+const PICKER_TITLE = "在外部编辑器中打开 local:// 文件";
 
 function errorMessage(error: unknown): string {
 	return error instanceof Error ? error.message : String(error);
@@ -87,7 +87,7 @@ async function pickLocalFile(
 		return undefined;
 	}
 	if (files.length === 0) {
-		ctx.showStatus("No local:// files in this session yet.");
+		ctx.showStatus("此会话中尚无 local:// 文件。");
 		return undefined;
 	}
 	// Sanitize labels so filenames with ANSI/C0 escapes or tabs cannot corrupt the picker,
@@ -108,7 +108,7 @@ async function pickLocalFile(
 /** `/local [target]` and the `app.local.open` key: picker when target is blank, else open target directly. */
 export async function openLocalFileInEditor(ctx: InteractiveModeContext, target?: string): Promise<void> {
 	if (ctx.collabGuest) {
-		ctx.showStatus("/local is host-only during a collab session");
+		ctx.showStatus("协作会话期间，/local 仅限主持人使用。");
 		return;
 	}
 	const editorCmd = getEditorCommand();
@@ -155,5 +155,5 @@ export async function openLocalFileInEditor(ctx: InteractiveModeContext, target?
 		ctx.showWarning(`编辑器以代码 ${exitCode} 退出；${sanitizeText(chosen.url)} 保留其已保存的内容。`);
 		return;
 	}
-	ctx.showStatus(`Closed ${sanitizeText(chosen.url)} in editor.`);
+	ctx.showStatus(`已在编辑器中关闭 ${sanitizeText(chosen.url)}。`);
 }

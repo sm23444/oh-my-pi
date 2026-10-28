@@ -54,13 +54,13 @@ export const BUILTIN_CONTROL_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			const spaceIdx = command.args.indexOf(" ");
 			const toolName = spaceIdx === -1 ? command.args : command.args.slice(0, spaceIdx);
 			const prompt = spaceIdx === -1 ? "" : command.args.slice(spaceIdx + 1).trim();
-			if (!toolName) return usage("Usage: /force:<tool-name> [prompt]", runtime);
+			if (!toolName) return usage("用法：/force:<tool-name> [prompt]", runtime);
 			try {
 				runtime.session.setForcedToolChoice(toolName);
 			} catch (err) {
 				return usage(errorMessage(err), runtime);
 			}
-			await runtime.output(`Next turn forced to use ${toolName}.`);
+			await runtime.output(`下一轮已强制使用 ${toolName}。`);
 			return prompt ? { prompt } : commandConsumed();
 		},
 		handleTui: (command, runtime) => {
@@ -76,7 +76,7 @@ export const BUILTIN_CONTROL_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 
 			try {
 				runtime.ctx.session.setForcedToolChoice(toolName);
-				runtime.ctx.showStatus(`Next turn forced to use ${toolName}.`);
+				runtime.ctx.showStatus(`下一轮已强制使用 ${toolName}。`);
 			} catch (error) {
 				runtime.ctx.showError(errorMessage(error));
 				clearSubmittedText(runtime);
@@ -123,7 +123,7 @@ export const BUILTIN_CONTROL_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		description: "忘记“询问并记住”已记录的所有文件和文件夹审批",
 		handle: async (_command, runtime) => {
 			clearApprovalGrants(runtime.settings.getAgentDir());
-			await runtime.output("Remembered approvals forgotten; the next read or write asks again.");
+			await runtime.output("已清除记住的审批；下次读取或写入时会再次询问。");
 			return commandConsumed();
 		},
 	},

@@ -58,14 +58,14 @@ export function renderCfgRead(
 	return card((_width, expanded) => {
 		const meta: string[] = [];
 		if (details) {
-			meta.push(details.count === 1 ? "1 setting" : `${details.count} settings`);
-			if (details.modified) meta.push(`${details.modified} modified`);
+			meta.push(details.count === 1 ? "1 项设置" : `${details.count} 项设置`);
+			if (details.modified) meta.push(`${details.modified} 项已修改`);
 		}
 		const header = renderStatusLine(
 			{
 				icon: result === undefined ? "pending" : result.isError ? "error" : "info",
-				title: "Config",
-				description: (details?.path ?? parseCfgUrl(url)?.segments.join(".")) || "all settings",
+				title: "配置",
+				description: (details?.path ?? parseCfgUrl(url)?.segments.join(".")) || "全部设置",
 				meta,
 			},
 			theme,
@@ -86,14 +86,14 @@ export function describeCfgRead(
 	result: CardToolResult | undefined,
 	details: CfgReadDetails | undefined,
 ): NativeToolView {
-	const description = (details?.path ?? parseCfgUrl(url)?.segments.join(".")) || "all settings";
+	const description = (details?.path ?? parseCfgUrl(url)?.segments.join(".")) || "全部设置";
 	const meta: string[] = [];
 	if (details) {
-		meta.push(details.count === 1 ? "1 setting" : `${details.count} settings`);
-		if (details.modified) meta.push(`${details.modified} modified`);
+		meta.push(details.count === 1 ? "1 项设置" : `${details.count} 项设置`);
+		if (details.modified) meta.push(`${details.modified} 项已修改`);
 	}
 	if (result?.isError) return errorView("Config", firstText(result) || "Settings read failed.", description, ...meta);
-	const head = toolHead("Config", description, ...meta);
+	const head = toolHead("配置", description, ...meta);
 	if (!result) return { head };
 	const listing = plainText(safe(firstText(result).trimEnd()));
 	return {
@@ -114,10 +114,10 @@ export function describeCfgWrite(
 	const path = details?.path ?? target?.segments.join(".");
 	const save = details?.save ?? target?.save ?? false;
 	if (result?.isError) return errorView("Config", firstText(result) || "Settings write failed.", path);
-	const head = toolHead("Config", path);
-	head.push(span(" "), span(save ? "persist" : "session", save ? "accent strong" : "muted"));
-	if (details?.outcome === "declined") head.push(span(" "), span("declined", "warning strong"));
-	if (details?.outcome === "unchanged") head.push(span(" "), span("unchanged", "muted"));
+	const head = toolHead("配置", path);
+	head.push(span(" "), span(save ? "持久化" : "会话", save ? "accent strong" : "muted"));
+	if (details?.outcome === "declined") head.push(span(" "), span("已拒绝", "warning strong"));
+	if (details?.outcome === "unchanged") head.push(span(" "), span("未更改", "muted"));
 	const next = span(plainText(details?.value ?? content?.trim() ?? "…"), "toolOutput");
 	const change = details
 		? [span(plainText(details.previous), "dim"), span(" → ", "dim"), next]
@@ -131,7 +131,7 @@ export function describeCfgWrite(
 				? text(
 						[
 							span(
-								`still ${plainText(details.effective)}: a higher-precedence layer overrides the saved value`,
+								`仍为 ${plainText(details.effective)}：更高优先级的层覆盖了已保存的值`,
 								"warning",
 							),
 						],
@@ -165,7 +165,7 @@ export function renderCfgWrite(
 		const badges = [formatBadge(save ? "persist" : "session", save ? "accent" : "muted", theme)];
 		if (details?.outcome === "declined") badges.push(formatBadge("declined", "warning", theme));
 		if (details?.outcome === "unchanged") badges.push(formatBadge("unchanged", "muted", theme));
-		const header = `${renderStatusLine({ icon, title: "Config", description: details?.path ?? target?.segments.join(".") }, theme)} ${badges.join(" ")}`;
+		const header = `${renderStatusLine({ icon, title: "配置", description: details?.path ?? target?.segments.join(".") }, theme)} ${badges.join(" ")}`;
 		if (result?.isError) return [header, formatErrorDetail(firstText(result) || "Settings write failed.", theme)];
 		const arrow = theme.fg("dim", "→");
 		const next = theme.fg("toolOutput", details?.value ?? content?.trim() ?? "…");
@@ -175,7 +175,7 @@ export function renderCfgWrite(
 		];
 		if (details?.effective !== undefined)
 			lines.push(
-				theme.fg("warning", `  still ${details.effective}: a higher-precedence layer overrides the saved value`),
+				theme.fg("warning", `  仍为 ${details.effective}：更高优先级的层覆盖了已保存的值`),
 			);
 		return lines;
 	}, options);

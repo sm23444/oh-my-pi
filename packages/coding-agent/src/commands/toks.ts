@@ -99,11 +99,11 @@ export default class Toks extends Command {
 		const baseline = rows.find(row => row.encoding === natives.Encoding.O200kBase)?.tokens ?? 0;
 		const label = source.kind === "file" ? path.relative(process.cwd(), source.path) || source.path : "text";
 		const out = [
-			`${chalk.dim("input")}  ${label}`,
-			`${chalk.dim("size")}   ${formatBytes(bytes)} · ${count(chars, "char")} · ${count(lines, "line")}`,
+			`${chalk.dim("输入")}  ${label}`,
+			`${chalk.dim("大小")}   ${formatBytes(bytes)} · ${count(chars, "char")} · ${count(lines, "line")}`,
 			"",
 			chalk.dim(
-				`${"encoding".padEnd(18)}${"models".padEnd(22)}${"tokens".padStart(10)}${"chars/tok".padStart(11)}${"vs o200k".padStart(10)}`,
+				`${"编码".padEnd(18)}${"模型".padEnd(22)}${"令牌".padStart(10)}${"chars/tok".padStart(11)}${"对比 o200k".padStart(10)}`,
 			),
 		];
 		for (const row of rows) {

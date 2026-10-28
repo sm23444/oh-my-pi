@@ -135,13 +135,13 @@ async function handlePythonSetup(flags: { json?: boolean; check?: boolean }): Pr
 
 	if (!check.pythonPath) {
 		console.error(chalk.red(`${theme.status.error} Python not found`));
-		console.error(chalk.dim("Install Python 3.8+ or set python.interpreter to its executable path"));
+		console.error(chalk.dim("安装 Python 3.8+ 或将 python.interpreter 设置为其可执行文件路径"));
 		process.exit(1);
 	}
 
-	console.log(chalk.dim(`Python: ${check.pythonPath}`));
+	console.log(chalk.dim(`Python 路径：${check.pythonPath}`));
 	if (check.usingManagedEnv) {
-		console.log(chalk.dim(`Using managed environment: ${check.managedEnvPath}`));
+		console.log(chalk.dim(`正在使用托管环境：${check.managedEnvPath}`));
 	}
 
 	if (check.available) {
@@ -262,7 +262,7 @@ async function handleSpeechSetup(flags: { json?: boolean; check?: boolean }): Pr
 	}
 
 	if (flags.check) {
-		console.log(chalk.bold("Speech dependencies:"));
+		console.log(chalk.bold("语音依赖项："));
 		let allReady = true;
 		for (const component of components) {
 			const ready = await component.isReady();
@@ -283,7 +283,7 @@ async function handleSpeechSetup(flags: { json?: boolean; check?: boolean }): Pr
 			console.log(chalk.green(`${theme.status.success} ${component.name} ready`));
 			continue;
 		}
-		console.log(chalk.dim(`Preparing ${component.name}...`));
+		console.log(chalk.dim(`正在准备 ${component.name}...`));
 		try {
 			await component.ensure(progress => {
 				const percent = typeof progress.percent === "number" ? ` (${progress.percent}%)` : "";
@@ -301,7 +301,7 @@ async function handleSpeechSetup(flags: { json?: boolean; check?: boolean }): Pr
 	console.log(chalk.green(`\n${theme.status.success} Speech is ready`));
 	console.log(
 		chalk.dim(
-			`Enable speech-to-text via stt.enabled, then hold ${formatKeyHint("space")} by default to talk (remap or disable it with app.stt.pushToTalk, or bind app.stt.toggle separately); enable the speech-generation tool via speechgen.enabled; speak replies aloud via speech.enabled.`,
+			`通过 stt.enabled 启用语音转文字，默认按住 ${formatKeyHint("space")} 说话（可通过 app.stt.pushToTalk 重新映射或禁用，或单独绑定 app.stt.toggle）；通过 speechgen.enabled 启用语音生成工具；通过 speech.enabled 朗读回复。`,
 		),
 	);
 }
@@ -310,21 +310,21 @@ async function handleSpeechSetup(flags: { json?: boolean; check?: boolean }): Pr
  * Print setup command help.
  */
 export function printSetupHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} setup`)} - 运行入门引导或为可选功能安装依赖项
+	console.log(`${chalk.bold(`${APP_NAME} 设置`)} - 运行入门引导或为可选功能安装依赖项
 
-${chalk.bold("Usage:")}
+${chalk.bold("用法:")}
   ${APP_NAME} setup                     运行入门引导向导
   ${APP_NAME} setup <component> [options]
 
-${chalk.bold("Components:")}
+${chalk.bold("组件:")}
   python    验证 Python 3 解释器是否可访问以执行代码
   speech    选择并下载语音转文本和文本转语音模型
 
-${chalk.bold("Options:")}
+${chalk.bold("选项:")}
   -c, --check   检查是否已安装依赖项但不执行安装
   --json        以 JSON 格式输出状态
 
-${chalk.bold("Examples:")}
+${chalk.bold("示例:")}
   ${APP_NAME} setup                  运行入门引导向导
   ${APP_NAME} setup python           检查 Python 执行依赖项
   ${APP_NAME} setup speech           选择并下载 STT 和 TTS 模型

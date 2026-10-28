@@ -18,7 +18,7 @@ interface ParsedSshAddArgs {
 type SshAddOptionParser = (parsed: ParsedSshAddArgs, value: string | undefined) => string | undefined;
 
 const SSH_ADD_USAGE =
-	"Usage: /ssh add <name> --host <host> [--user <user>] [--port <port>] [--key <keyPath>] [--scope project|user]";
+	"用法：/ssh add <name> --host <host> [--user <user>] [--port <port>] [--key <keyPath>] [--scope project|user]";
 
 const SSH_ADD_OPTION_PARSERS = new Map<string, SshAddOptionParser>([
 	[
@@ -122,7 +122,7 @@ async function handleListCommand(runtime: SlashCommandRuntime): Promise<SlashCom
 			}
 		}
 		if (entries.length === 0) {
-			await runtime.output("No SSH hosts configured.");
+			await runtime.output("未配置任何 SSH 主机。");
 			return commandConsumed();
 		}
 		await runtime.output(
@@ -132,22 +132,22 @@ async function handleListCommand(runtime: SlashCommandRuntime): Promise<SlashCom
 		);
 		return commandConsumed();
 	} catch (err) {
-		return usage(`Failed to list SSH hosts: ${errorMessage(err)}`, runtime);
+		return usage(`无法列出 SSH 主机：${errorMessage(err)}`, runtime);
 	}
 }
 
 async function handleRemoveCommand(rest: string, runtime: SlashCommandRuntime): Promise<SlashCommandResult> {
 	const parsed = parseNamedScopeArgs(rest, "Invalid --scope value. Use project or user.");
 	if (parsed.error) return usage(parsed.error, runtime);
-	if (!parsed.name) return usage("Usage: /ssh remove <name> [--scope project|user]", runtime);
+	if (!parsed.name) return usage("用法：/ssh remove <name> [--scope project|user]", runtime);
 	try {
 		const filePath = getSSHConfigPath(parsed.scope, runtime.cwd);
 		await removeSSHHost(filePath, parsed.name);
 		resetCapabilities();
-		await runtime.output(`Removed SSH host "${parsed.name}" from ${parsed.scope} config.`);
+		await runtime.output(`已移除 SSH 主机“${parsed.name}”（位于 ${parsed.scope} 配置中）。`);
 		return commandConsumed();
 	} catch (err) {
-		return usage(`Failed to remove SSH host: ${errorMessage(err)}`, runtime);
+		return usage(`移除 SSH 主机失败：${errorMessage(err)}`, runtime);
 	}
 }
 
@@ -155,8 +155,8 @@ async function handleAddCommand(rest: string, runtime: SlashCommandRuntime): Pro
 	if (!rest) return usage(SSH_ADD_USAGE, runtime);
 	const parsed = parseSshAddArgs(rest);
 	if (parsed.error) return usage(parsed.error, runtime);
-	if (!parsed.name) return usage("Host name required. Usage: /ssh add <name> --host <host> ...", runtime);
-	if (!parsed.host) return usage("--host is required. Usage: /ssh add <name> --host <host> ...", runtime);
+	if (!parsed.name) return usage("需要主机名。用法：/ssh add <name> --host <host> ...", runtime);
+	if (!parsed.host) return usage("--host 为必填项。用法：/ssh add <name> --host <host> ...", runtime);
 	const hostConfig: SSHHostConfig = { host: parsed.host };
 	if (parsed.username) hostConfig.username = parsed.username;
 	if (parsed.port) hostConfig.port = parsed.port;
@@ -165,10 +165,10 @@ async function handleAddCommand(rest: string, runtime: SlashCommandRuntime): Pro
 		const filePath = getSSHConfigPath(parsed.scope, runtime.cwd);
 		await addSSHHost(filePath, parsed.name, hostConfig);
 		resetCapabilities();
-		await runtime.output(`Added SSH host "${parsed.name}" (${parsed.scope}).`);
+		await runtime.output(`已添加 SSH 主机“${parsed.name}”（${parsed.scope}）。`);
 		return commandConsumed();
 	} catch (err) {
-		return usage(`Failed to add SSH host: ${errorMessage(err)}`, runtime);
+		return usage(`添加 SSH 主机失败：${errorMessage(err)}`, runtime);
 	}
 }
 
@@ -191,6 +191,6 @@ export async function handleSshAcp(
 		case "add":
 			return await handleAddCommand(rest, runtime);
 		default:
-			return usage(`Unknown /ssh subcommand: ${verb}. Use /ssh help for available subcommands.`, runtime);
+			return usage(`未知的 /ssh 子命令：${verb}。使用 /ssh help 查看可用子命令。`, runtime);
 	}
 }

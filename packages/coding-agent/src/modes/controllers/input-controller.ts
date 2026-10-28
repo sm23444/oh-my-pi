@@ -888,7 +888,7 @@ export class InputController {
 		// what the click displayed.
 		const nextId = pickRecentFocusableAgentId(scoped, this.ctx.focusedAgentId);
 		if (nextId === undefined) {
-			this.ctx.showStatus("That subagent is gone — open the hub for live agents");
+			this.ctx.showStatus("该子代理已不存在 —— 打开 hub 查看活跃代理");
 			return;
 		}
 		this.#focusResolvedAgent(nextId);
@@ -1108,7 +1108,7 @@ export class InputController {
 				this.#armedBareCommand = { text, sessionId: this.ctx.sessionManager.getSessionId() };
 				this.ctx.editor.setText(text);
 				this.ctx.showStatus(
-					`Press Enter again to run ${bareSlashCommand.command}; add a leading space to send "${text}" as a message`,
+					`再次按 Enter 运行 ${bareSlashCommand.command}；在前面加一个空格可将 "${text}" 作为消息发送`,
 				);
 				return;
 			}
@@ -1152,18 +1152,18 @@ export class InputController {
 			// executeBuiltinSlashCommand, which already consumed allowed ones).
 			if (this.ctx.collabGuest) {
 				if (text.startsWith("/")) {
-					this.ctx.showStatus(`${text.split(/\s+/, 1)[0]} is host-only during a collab session`);
+					this.ctx.showStatus(`${text.split(/\s+/, 1)[0]} 在协作会话期间仅限主持人使用。`);
 					this.ctx.editor.setText("");
 					return;
 				}
 				if (text.startsWith("!") || parsePythonCommandInput(text)) {
-					this.ctx.showStatus("Local execution is host-only during a collab session");
+					this.ctx.showStatus("协作会话期间，本地执行仅限主持人使用");
 					this.ctx.editor.setText("");
 					return;
 				}
 				if (this.ctx.collabGuest.readOnly) {
 					// Keep the typed text: the prompt was not consumed.
-					this.ctx.showStatus("This collab link is read-only — prompting is disabled");
+					this.ctx.showStatus("此协作链接为只读 — 提示功能已禁用");
 					return;
 				}
 				const images = inputImages && inputImages.length > 0 ? [...inputImages] : undefined;
@@ -1586,7 +1586,7 @@ export class InputController {
 		}
 		if (text && (text.startsWith("/") || text.startsWith("!") || parsePythonCommandInput(text))) {
 			this.ctx.showStatus(
-				`Only ${FOCUSED_VIEW_COMMAND_LIST} run here; other commands run in the main session — press ${formatDoubleTap("left")} to return first`,
+				`此处仅可运行 ${FOCUSED_VIEW_COMMAND_LIST}；其他命令在主会话中运行 — 请先按 ${formatDoubleTap("left")} 返回`,
 			);
 			return; // editor text not cleared: Editor does not auto-clear on submit
 		}
@@ -1680,7 +1680,7 @@ export class InputController {
 		// shape for SIGSTOP). No-op on platforms that cannot suspend.
 		if (process.platform === "win32") {
 			this.ctx.showStatus(
-				`Suspend (${appKey(this.ctx.keybindings, "app.suspend")}) is not supported on this platform`,
+				`此平台不支持挂起（${appKey(this.ctx.keybindings, "app.suspend")}）`,
 			);
 			return;
 		}
@@ -1756,7 +1756,7 @@ export class InputController {
 	handleDequeue(): void {
 		const popped = this.#popLastQueuedMessage();
 		if (!popped) {
-			this.ctx.showStatus("No queued messages to restore");
+			this.ctx.showStatus("没有可恢复的排队消息");
 			return;
 		}
 		// Drop only the popped message's local-submission signature; the messages
@@ -1764,7 +1764,7 @@ export class InputController {
 		// as local and does not blank the editor the dequeue just restored to.
 		this.ctx.locallySubmittedUserSignatures.delete(`${popped.text}\u0000${popped.images?.length ?? 0}`);
 		this.#restoreEntriesToEditor([popped]);
-		this.ctx.showStatus("Restored last queued message to editor");
+		this.ctx.showStatus("已将最后一条排队消息恢复到编辑器");
 	}
 
 	/**
@@ -1842,14 +1842,14 @@ export class InputController {
 
 	async handleRetry(): Promise<void> {
 		if (this.ctx.collabGuest) {
-			this.ctx.showStatus("/retry is host-only during a collab session");
+			this.ctx.showStatus("/retry 在协作会话期间仅限主持人使用");
 			return;
 		}
 		const didRetry = await this.ctx.viewSession.retry();
 		if (didRetry) {
 			this.ctx.editor.clearDraft();
 		} else {
-			this.ctx.showStatus("Nothing to retry");
+			this.ctx.showStatus("没有可重试的内容");
 		}
 	}
 
@@ -1885,7 +1885,7 @@ export class InputController {
 		// Queue shorthand reaches this helper before the normal guest input gate.
 		// Like /queue, it must not submit to the guest's local session.
 		if (this.ctx.collabGuest) {
-			this.ctx.showStatus("/queue is host-only during a collab session");
+			this.ctx.showStatus("/queue 在协作会话期间仅限主持人使用");
 			this.ctx.editor.setText(options.detachedText ?? options.historyText ?? text);
 			return;
 		}
@@ -1918,8 +1918,8 @@ export class InputController {
 			this.ctx.updatePendingMessagesDisplay();
 			this.ctx.showStatus(
 				messages.length === 1
-					? "Queued message for after compaction"
-					: `Queued ${messages.length} messages for after compaction`,
+					? "已排队消息将在压缩后发送"
+					: `已排队 ${messages.length} 条消息，将在压缩后发送`,
 			);
 			this.ctx.ui.requestRender();
 			return;
@@ -1989,11 +1989,11 @@ export class InputController {
 			this.ctx.showStatus(
 				startImmediately
 					? queuedCount === 1
-						? "Sent queued message"
-						: `Sent first message; queued ${queuedCount - 1} for later yields`
+						? "已发送排队消息"
+						: `已发送首条消息；已排队 ${queuedCount - 1} 条消息，待后续让出时处理`
 					: queuedCount === 1
-						? "Queued message for when the agent yields"
-						: `Queued ${queuedCount} messages for when the agent yields`,
+						? "已排队一条消息，待代理让出时发送"
+						: `已排队 ${queuedCount} 条消息，待代理让出时发送`,
 			);
 		}
 		this.ctx.ui.requestRender();
@@ -2378,7 +2378,7 @@ export class InputController {
 			return;
 		}
 		if (!focused.acceptsImages) {
-			this.ctx.showStatus("Image paste is not supported in this prompt");
+			this.ctx.showStatus("当前提示不支持粘贴图像");
 			return;
 		}
 		const promptPaste = this.#beginPromptImagePaste(focused);
@@ -2453,7 +2453,7 @@ export class InputController {
 				}
 				// Image-only prompts keep the path as text, like other unattachable pastes.
 				sink.pasteText(path);
-				this.ctx.showStatus("Video paste is not supported in this prompt");
+				this.ctx.showStatus("当前提示不支持粘贴视频");
 				return;
 			}
 			const image = await loadImageInput({
@@ -2466,7 +2466,7 @@ export class InputController {
 				// locked transient screenshot file). Prefer the clipboard bytes.
 				if (await this.#tryPasteClipboardImage(sink)) return;
 				sink.pasteText(path);
-				this.ctx.showStatus("Pasted path is not a supported image");
+				this.ctx.showStatus("粘贴的路径不是受支持的图片");
 				return;
 			}
 			await sink.attach(
@@ -2503,14 +2503,14 @@ export class InputController {
 				);
 				this.ctx.showStatus(
 					overSsh
-						? `Image not found at ${displayPath}. Over SSH this path is local to your terminal — paste the image directly (clipboard image-paste shortcut) to send its bytes.`
-						: `Image not found at ${displayPath}`,
+						? `未在 ${displayPath} 找到图片。通过 SSH 连接时，此路径是您本地终端上的路径——请直接粘贴图片（剪贴板图片粘贴快捷键）以发送其字节。`
+						: `未在 ${displayPath} 找到图片`,
 				);
 				return;
 			}
 			if (await this.#tryPasteClipboardImage(sink)) return;
 			sink.pasteText(path);
-			this.ctx.showStatus("Failed to read pasted image path");
+			this.ctx.showStatus("无法读取粘贴的图片路径");
 		}
 	}
 
@@ -2581,7 +2581,7 @@ export class InputController {
 			const image = await this.clipboard.readImage();
 			if (image) {
 				if (textOnlyPrompt) {
-					this.ctx.showStatus("Image paste is not supported in this prompt");
+					this.ctx.showStatus("当前提示不支持粘贴图像");
 					return false;
 				}
 				return await sink.attach(
@@ -2600,7 +2600,7 @@ export class InputController {
 			// this keypress, so a miss here must not dead-end.
 			const text = await textPromise;
 			if (!text) {
-				this.ctx.showStatus("Clipboard is empty");
+				this.ctx.showStatus("剪贴板为空");
 				return false;
 			}
 			// #3506: when the clipboard text is an explicit image file path,
@@ -2628,7 +2628,7 @@ export class InputController {
 			this.ctx.ui.requestRender();
 			return true;
 		} catch {
-			this.ctx.showStatus("Failed to read clipboard");
+			this.ctx.showStatus("读取剪贴板失败");
 			return false;
 		} finally {
 			promptPaste?.finish();
@@ -2647,10 +2647,10 @@ export class InputController {
 				this.ctx.editor.insertText(text);
 				this.ctx.ui.requestRender();
 			} else {
-				this.ctx.showStatus("No text in clipboard to paste raw");
+				this.ctx.showStatus("剪贴板中没有可原样粘贴的文本");
 			}
 		} catch {
-			this.ctx.showStatus("Failed to paste raw text from clipboard");
+			this.ctx.showStatus("从剪贴板原样粘贴文本失败");
 		}
 	}
 
@@ -2742,7 +2742,7 @@ export class InputController {
 			} while (await Bun.file(filePath).exists());
 			await Bun.write(filePath, text);
 			this.ctx.editor.insertText(`local://${name} `);
-			this.ctx.showStatus(`Saved ${lineCount} pasted lines to local://${name}`);
+			this.ctx.showStatus(`已将 ${lineCount} 行粘贴内容保存到 local://${name}`);
 		} catch (error) {
 			logger.warn("failed to save large paste to file", {
 				error: error instanceof Error ? error.message : String(error),
@@ -2808,14 +2808,14 @@ export class InputController {
 		const { line } = this.ctx.editor.getCursor();
 		const text = this.ctx.editor.getLines()[line] || "";
 		if (!text) {
-			this.ctx.showStatus("Nothing to copy");
+			this.ctx.showStatus("没有可复制的内容");
 			return;
 		}
 		try {
 			copyToClipboard(text);
 			const sanitized = sanitizeText(text);
 			const preview = sanitized.length > 30 ? `${sanitized.slice(0, 30)}...` : sanitized;
-			this.ctx.showStatus(`Copied line: ${preview}`);
+			this.ctx.showStatus(`已复制行：${preview}`);
 		} catch {
 			this.ctx.showWarning("复制到剪贴板失败");
 		}
@@ -2825,14 +2825,14 @@ export class InputController {
 	handleCopyPrompt(): void {
 		const text = this.ctx.editor.getText();
 		if (!text) {
-			this.ctx.showStatus("Nothing to copy");
+			this.ctx.showStatus("没有可复制的内容");
 			return;
 		}
 		try {
 			copyToClipboard(text);
 			const sanitized = sanitizeText(text);
 			const preview = sanitized.length > 30 ? `${sanitized.slice(0, 30)}...` : sanitized;
-			this.ctx.showStatus(`Copied: ${preview}`);
+			this.ctx.showStatus(`已复制：${preview}`);
 		} catch {
 			this.ctx.showWarning("复制到剪贴板失败");
 		}
@@ -2841,7 +2841,7 @@ export class InputController {
 	cycleThinkingLevel(): void {
 		const newLevel = this.ctx.viewSession.cycleThinkingLevel();
 		if (newLevel === undefined) {
-			this.ctx.showStatus("Current model does not support thinking");
+			this.ctx.showStatus("当前模型不支持思考");
 		} else {
 			this.ctx.statusLine.invalidate();
 			this.ctx.updateEditorBorderColor();
@@ -2853,7 +2853,7 @@ export class InputController {
 			const cycleOrder = cfgCycleOrder.get(settings);
 			const result = await this.ctx.viewSession.cycleRoleModels(cycleOrder, direction);
 			if (!result) {
-				this.ctx.showStatus("Only one role model available");
+				this.ctx.showStatus("仅有一个角色模型可用");
 				return;
 			}
 
@@ -2877,11 +2877,11 @@ export class InputController {
 		if (this.ctx.hideToolActivity) {
 			const visibilityKey = appKey(this.ctx.keybindings, "app.tools.toggleVisibility");
 			const visibilityHint = visibilityKey ? `${visibilityKey} or /settings` : "/settings";
-			this.ctx.showStatus(`Tool activity is hidden — show it with ${visibilityHint} before expanding`);
+			this.ctx.showStatus(`工具活动已隐藏 — 展开前使用 ${visibilityHint} 显示`);
 			return;
 		}
 		this.setToolsExpanded(!this.ctx.toolOutputExpanded);
-		this.ctx.showStatus(`Tool output expansion: ${this.ctx.toolOutputExpanded ? "enabled" : "disabled"}`);
+		this.ctx.showStatus(`工具输出展开：${this.ctx.toolOutputExpanded ? "已启用" : "已禁用"}`);
 	}
 
 	toggleToolActivityVisibility(): void {
@@ -2907,7 +2907,7 @@ export class InputController {
 		if (this.ctx.hideToolActivity) this.ctx.ui.clearInlineImages();
 		// A viewport-only repaint leaves tool rows already retired to terminal history unchanged.
 		this.ctx.ui.resetDisplay();
-		this.ctx.showStatus(`Tool activity: ${this.ctx.hideToolActivity ? "hidden" : "visible"}`);
+		this.ctx.showStatus(`工具活动：${this.ctx.hideToolActivity ? "隐藏" : "可见"}`);
 	}
 
 	setToolsExpanded(expanded: boolean): void {
@@ -2931,7 +2931,7 @@ export class InputController {
 		const thinkingOff =
 			((this.ctx.viewSession ?? this.ctx.session)?.thinkingLevel ?? ThinkingLevel.Off) === ThinkingLevel.Off;
 		if (thinkingOff && !this.ctx.hasDisplayableThinkingContent) {
-			this.ctx.showStatus("Thinking is off — enable thinking to show blocks");
+			this.ctx.showStatus("思考已关闭 — 启用思考以显示区块");
 			return;
 		}
 		this.ctx.hideThinkingBlock = !this.ctx.hideThinkingBlock;
@@ -2957,7 +2957,7 @@ export class InputController {
 		this.ctx.chatContainer.resetStableEmission();
 		this.ctx.ui.resetDisplay();
 
-		this.ctx.showStatus(`Thinking blocks: ${this.ctx.hideThinkingBlock ? "hidden" : "visible"}`);
+		this.ctx.showStatus(`思考区块：${this.ctx.hideThinkingBlock ? "隐藏" : "可见"}`);
 	}
 
 	async openExternalEditor(): Promise<void> {

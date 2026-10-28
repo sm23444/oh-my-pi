@@ -121,7 +121,7 @@ export function parseConfigArgs(args: string[]): ConfigCommandArgs | undefined {
 
 function formatValue(value: unknown): string {
 	if (value === undefined || value === null) {
-		return chalk.dim("(not set)");
+		return chalk.dim("（未设置）");
 	}
 	if (typeof value === "boolean") {
 		return value ? chalk.green("true") : chalk.red("false");
@@ -232,7 +232,7 @@ async function handleList(flags: { json?: boolean }): Promise<void> {
 		return;
 	}
 
-	console.log(chalk.bold("Settings:\n"));
+	console.log(chalk.bold("设置：\n"));
 
 	const groups: Record<string, CliSettingDef[]> = {};
 	for (const def of defs) {
@@ -292,7 +292,8 @@ async function handleListLayer(scope: ConfigScope, flags: { json?: boolean }): P
 		return;
 	}
 
-	console.log(chalk.bold(`Settings in the ${scope} layer:\n`));
+	console.log(chalk.bold(`位于 ${scope} 层中的设置：
+`));
 	for (const [def, value] of entries) {
 		const valueStr = def.setting.isCredential && value ? REDACTED : formatValue(value);
 		console.log(`  ${chalk.white(def.path)} = ${valueStr} ${chalk.dim(getTypeDisplay(def))}`);
@@ -302,14 +303,16 @@ async function handleListLayer(scope: ConfigScope, flags: { json?: boolean }): P
 function handleGet(key: string | undefined, flags: { json?: boolean }): void {
 	if (!key) {
 		console.error(chalk.red(`Usage: ${APP_NAME} config get <key>`));
-		console.error(chalk.dim(`\nRun '${APP_NAME} config list' to see available keys`));
+		console.error(chalk.dim(`
+请运行 '${APP_NAME} config list' 以查看可用键`));
 		process.exit(1);
 	}
 
 	const def = findSettingDef(key);
 	if (!def) {
 		console.error(chalk.red(`Unknown setting: ${key}`));
-		console.error(chalk.dim(`\nRun '${APP_NAME} config list' to see available keys`));
+		console.error(chalk.dim(`
+请运行 '${APP_NAME} config list' 以查看可用键`));
 		process.exit(1);
 	}
 
@@ -326,14 +329,16 @@ function handleGet(key: string | undefined, flags: { json?: boolean }): void {
 async function handleSet(key: string | undefined, value: string | undefined, flags: { json?: boolean }): Promise<void> {
 	if (!key || value === undefined) {
 		console.error(chalk.red(`Usage: ${APP_NAME} config set <key> <value>`));
-		console.error(chalk.dim(`\nRun '${APP_NAME} config list' to see available keys`));
+		console.error(chalk.dim(`
+请运行 '${APP_NAME} config list' 以查看可用键`));
 		process.exit(1);
 	}
 
 	const def = findSettingDef(key);
 	if (!def) {
 		console.error(chalk.red(`Unknown setting: ${key}`));
-		console.error(chalk.dim(`\nRun '${APP_NAME} config list' to see available keys`));
+		console.error(chalk.dim(`
+请运行 '${APP_NAME} config list' 以查看可用键`));
 		process.exit(1);
 	}
 
@@ -406,14 +411,16 @@ function shadowingSource(setting: AnySetting): { json: Record<string, string>; m
 async function handleReset(key: string | undefined, flags: { json?: boolean }): Promise<void> {
 	if (!key) {
 		console.error(chalk.red(`Usage: ${APP_NAME} config reset <key>`));
-		console.error(chalk.dim(`\nRun '${APP_NAME} config list' to see available keys`));
+		console.error(chalk.dim(`
+请运行 '${APP_NAME} config list' 以查看可用键`));
 		process.exit(1);
 	}
 
 	const def = findSettingDef(key);
 	if (!def) {
 		console.error(chalk.red(`Unknown setting: ${key}`));
-		console.error(chalk.dim(`\nRun '${APP_NAME} config list' to see available keys`));
+		console.error(chalk.dim(`
+请运行 '${APP_NAME} config list' 以查看可用键`));
 		process.exit(1);
 	}
 
@@ -447,9 +454,9 @@ function handlePath(): void {
 // =============================================================================
 
 export function printConfigHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} config`)} - 管理设置
+	console.log(`${chalk.bold(`${APP_NAME} config（管理设置）`)} - 管理设置
 
-${chalk.bold("Commands:")}
+${chalk.bold("命令:")}
   list               列出所有设置及其当前值
   get <key>          获取特定设置的值
   set <key> <value>  设置某个设置项的值
@@ -457,11 +464,11 @@ ${chalk.bold("Commands:")}
   path               打印配置目录路径
   init-xdg           初始化 XDG Base Directory 结构
 
-${chalk.bold("Options:")}
+${chalk.bold("选项:")}
   --json             输出为 JSON
   --scope <scope>    与 list 一起使用：仅显示全局或项目层设置的键，按写入原样显示
 
-${chalk.bold("Examples:")}
+${chalk.bold("示例:")}
   ${APP_NAME} config list
   ${APP_NAME} config get theme
   ${APP_NAME} config set theme catppuccin-mocha
@@ -472,7 +479,7 @@ ${chalk.bold("Examples:")}
   ${APP_NAME} config list --scope global --json
   ${APP_NAME} config init-xdg
 
-${chalk.bold("Boolean Values:")}
+${chalk.bold("布尔值:")}
   true, false, yes, no, on, off, 1, 0
 `);
 }

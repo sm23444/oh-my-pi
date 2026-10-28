@@ -52,7 +52,8 @@ export default class Collab extends Command {
 			await runCollabLinkCommand({ selector: args.selector, view: flags.view, json: flags.json });
 		} catch (error) {
 			if (!(error instanceof CollabLinkError)) throw error;
-			process.stderr.write(`error: ${error.message}\n`);
+			process.stderr.write(`错误: ${error.message}
+`);
 			process.exitCode = 1;
 		}
 	}

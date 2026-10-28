@@ -3705,13 +3705,13 @@ export class StatusLineComponent<TSession extends StatusLineSession = StatusLine
 		const window = ctx.contextWindow;
 		const boundaries = ctx.autoCompactEnabled ? this.#compactionBoundaries(window) : null;
 		const lines = [
-			pct === null ? "Context usage unknown" : `Context ${Math.round(pct)}% used`,
-			window > 0 ? `${formatNumber(ctx.contextTokens)} of ${formatNumber(window)} tokens` : "No context window",
+			pct === null ? "上下文用量未知" : `上下文已使用 ${Math.round(pct)}%`,
+			window > 0 ? `${formatNumber(ctx.contextTokens)} / ${formatNumber(window)} 个 token` : "无上下文窗口",
 		];
-		if (boundaries) lines.push(`Auto-compact at ${Math.round(boundaries.thresholdPercent)}%`);
+		if (boundaries) lines.push(`达到 ${Math.round(boundaries.thresholdPercent)}% 时自动压缩`);
 		const speculation = ctx.compactionSpeculation;
-		if (speculation === "running") lines.push("Compaction summary in progress");
-		else if (speculation === "armed") lines.push("Compaction summary ready");
+		if (speculation === "running") lines.push("正在生成压缩摘要");
+		else if (speculation === "armed") lines.push("压缩摘要已就绪");
 		// The line spans the whole window: omp's boundary symbols sit where speculation
 		// starts and compaction fires, and the share past the speculation point is accent.
 		const used = pct === null ? null : Math.min(1, pct / 100);
@@ -3723,7 +3723,7 @@ export class StatusLineComponent<TSession extends StatusLineSession = StatusLine
 				const start: TspMeterMark = {
 					at: speculationAt,
 					icon: "context.speculation",
-					title: `Compaction summary starts at ${Math.round(speculationAt * 100)}%`,
+					title: `压缩摘要开始于 ${Math.round(speculationAt * 100)}%`,
 				};
 				// Lit while a background summary runs or waits armed.
 				if (speculation !== "idle") start.tone = "accent";
@@ -3732,7 +3732,7 @@ export class StatusLineComponent<TSession extends StatusLineSession = StatusLine
 			marks.push({
 				at: Math.min(1, boundaries.thresholdPercent / 100),
 				icon: "context.compaction",
-				title: `Auto-compact at ${Math.round(boundaries.thresholdPercent)}%`,
+				title: `在 ${Math.round(boundaries.thresholdPercent)}% 自动压缩`,
 			});
 		}
 		const context = node(
@@ -3766,7 +3766,7 @@ export class StatusLineComponent<TSession extends StatusLineSession = StatusLine
 				role: "omp.composer.usage",
 				text: cost,
 				wrap: "none",
-				...(cost ? { title: `Session cost ${cost}` } : {}),
+				...(cost ? { title: `会话费用 ${cost}` } : {}),
 				actions: { click: "status.cost" },
 			},
 			undefined,

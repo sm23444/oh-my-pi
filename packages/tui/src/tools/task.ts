@@ -80,11 +80,11 @@ type TaskRenderOptions = RenderResultOptions & { renderContext?: TaskRenderConte
 const MAX_NESTED_TASK_RENDER_DEPTH = 8;
 
 function renderNestedCycleLine(theme: Theme): string {
-	return theme.fg("dim", "… nested task progress already shown");
+	return theme.fg("dim", "… 嵌套任务进度已显示");
 }
 
 function formatFindingSummary(findings: FindingDetails[], theme: Theme): string {
-	if (findings.length === 0) return theme.fg("dim", "Findings: none");
+	if (findings.length === 0) return theme.fg("dim", "发现: 无");
 
 	const counts: { [P in FindingPriority]?: number } = {};
 	for (const finding of findings) {
@@ -99,7 +99,7 @@ function formatFindingSummary(findings: FindingDetails[], theme: Theme): string 
 		parts.push(theme.styledSymbol(symbol, color) ? `${theme.styledSymbol(symbol, color)} ${text}` : text);
 	}
 
-	return `${theme.fg("dim", "Findings:")} ${parts.join(theme.sep.dot)}`;
+	return `${theme.fg("dim", "发现:")} ${parts.join(theme.sep.dot)}`;
 }
 
 function normalizeFindings(value: unknown): FindingDetails[] {
@@ -349,7 +349,7 @@ function renderOutputSection(
 	if (!trimmedOutput && !warning) return lines;
 
 	if (warning) {
-		lines.push(`${continuePrefix}${theme.fg("dim", "Output")}`);
+		lines.push(`${continuePrefix}${theme.fg("dim", "输出")}`);
 		lines.push(
 			`${continuePrefix}  ${theme.fg("warning", theme.status.warning)} ${theme.fg(
 				"dim",
@@ -420,7 +420,7 @@ function renderOutputSection(
 			}
 
 			// Expanded: tree format
-			lines.push(`${continuePrefix}${theme.fg("dim", "Output")}`);
+			lines.push(`${continuePrefix}${theme.fg("dim", "输出")}`);
 			const tree = renderJsonTreeLines(parsed, theme, {
 				maxDepth: expanded ? 6 : 2,
 				maxLines: expanded ? 24 : 6,
@@ -445,7 +445,7 @@ function renderOutputSection(
 		}
 	}
 
-	lines.push(`${continuePrefix}${theme.fg("dim", "Output")}`);
+	lines.push(`${continuePrefix}${theme.fg("dim", "输出")}`);
 
 	const outputLines = trimmedOutput.split("\n");
 	const previewCount = expanded ? maxExpanded : maxCollapsed;
@@ -471,7 +471,7 @@ function renderTaskSection(
 	const trimmed = sanitizeText(task).trim();
 	if (!expanded || !trimmed) return lines;
 
-	lines.push(`${continuePrefix}${theme.fg("dim", "Task")}`);
+	lines.push(`${continuePrefix}${theme.fg("dim", "任务")}`);
 	const taskLines = trimmed.split("\n");
 	for (const line of taskLines.slice(0, maxExpanded)) {
 		lines.push(`${continuePrefix}  ${theme.fg("dim", replaceTabs(line))}`);
@@ -525,7 +525,7 @@ function renderTaskCallLines(args: Partial<TaskParams> | undefined, theme: Theme
 	const idLabel = rawName ? formatTaskId(rawName) : "";
 	const brief = taskFirstLine(args.task);
 	if (idLabel || brief) {
-		let line = `${bullet} ${theme.fg("accent", theme.bold(idLabel || "agent"))}`;
+		let line = `${bullet} ${theme.fg("accent", theme.bold(idLabel || "代理"))}`;
 		if (brief) {
 			line += `: ${theme.fg("muted", previewLine(brief, 64))}`;
 		}
@@ -565,7 +565,7 @@ function renderTaskItemLines(tasks: TaskItem[] | undefined, theme: Theme): strin
 		}
 		line += agentTypeBadge(item?.agent, theme);
 		if (item?.isolated === true) {
-			line += theme.fg("dim", " [isolated]");
+			line += theme.fg("dim", " [已隔离]");
 		}
 		lines.push(line);
 	}
@@ -638,7 +638,7 @@ export function renderCall(args: TaskParams, options: TaskRenderOptions, theme: 
 	const header = renderStatusLine(
 		{
 			iconOverride: theme.styledSymbol("tool.task", "accent"),
-			title: "Task",
+			title: "任务",
 			description: formatAgentHeaderLabel(args),
 		},
 		theme,
@@ -693,7 +693,7 @@ function renderRouteLine(route: string | undefined, continuePrefix: string, maxW
 	if (!route) return [];
 	return [
 		truncateTaskRow(
-			`${continuePrefix}${theme.fg("dim", `routed: ${replaceTabs(sanitizeText(route))}`)}`,
+			`${continuePrefix}${theme.fg("dim", `路由: ${replaceTabs(sanitizeText(route))}`)}`,
 			maxWidth,
 			"",
 		),
@@ -956,16 +956,16 @@ function renderReviewResult(
 		? theme.styledSymbol("status.done", "accent")
 		: theme.fg(verdictColor, theme.status.error);
 	lines.push(
-		`${continuePrefix} Patch is ${theme.fg(verdictColor, summary.overall_correctness)} ${verdictIcon} ${theme.fg(
+		`${continuePrefix} 补丁为 ${theme.fg(verdictColor, summary.overall_correctness)} ${verdictIcon} ${theme.fg(
 			"dim",
-			`(${(summary.confidence * 100).toFixed(0)}% confidence)`,
+			`(${(summary.confidence * 100).toFixed(0)}% c置信度)`,
 		)}`,
 	);
 
 	// Explanation preview (first ~80 chars when collapsed, full when expanded)
 	if (summary.explanation) {
 		if (expanded) {
-			lines.push(`${continuePrefix}${theme.fg("dim", "Summary")}`);
+			lines.push(`${continuePrefix}${theme.fg("dim", "摘要")}`);
 			const explanationLines = sanitizeText(summary.explanation).split("\n");
 			for (const line of explanationLines) {
 				lines.push(`${continuePrefix}  ${theme.fg("dim", replaceTabs(line))}`);
@@ -1068,7 +1068,7 @@ function renderAgentResult(
 			: success
 				? "done"
 				: mergeFailed
-					? "merge failed"
+					? "合并失败"
 					: "failed";
 
 	// Reserve the name and required badges before optional model metadata and details.
@@ -1119,7 +1119,7 @@ function renderAgentResult(
 	statusLine += `${theme.sep.dot}${theme.fg("dim", formatDuration(result.durationMs))}`;
 
 	if (result.truncated) {
-		statusLine += ` ${theme.fg("warning", "[truncated]")}`;
+		statusLine += ` ${theme.fg("warning", "[已截断]")}`;
 	}
 
 	lines.push(truncateTaskRow(statusLine, maxWidth, ""));
@@ -1202,7 +1202,7 @@ function renderAgentResult(
 				const target = lines;
 				if (!isTaskTool) {
 					hasCustomRendering = true;
-					target.push(`${continuePrefix}${theme.fg("dim", `Tool: ${toolName}`)}`);
+					target.push(`${continuePrefix}${theme.fg("dim", `工具：${toolName}`)}`);
 				}
 				if (component instanceof Text) {
 					// Prefix each line with continuePrefix
@@ -1313,11 +1313,11 @@ function formatHiddenProgressLine(hidden: readonly AgentProgress[], theme: Theme
 	};
 	for (const p of hidden) counts[p.status]++;
 	const parts: string[] = [];
-	if (counts.completed > 0) parts.push(theme.fg("dim", `${counts.completed} done`));
-	if (counts.running > 0) parts.push(theme.fg("dim", `${counts.running} running`));
-	if (counts.pending > 0) parts.push(theme.fg("dim", `${counts.pending} pending`));
-	if (counts.failed > 0) parts.push(theme.fg("error", `${counts.failed} failed`));
-	if (counts.aborted > 0) parts.push(theme.fg("error", `${counts.aborted} aborted`));
+	if (counts.completed > 0) parts.push(theme.fg("dim", `${counts.completed} 已完成`));
+	if (counts.running > 0) parts.push(theme.fg("dim", `${counts.running} 运行中`));
+	if (counts.pending > 0) parts.push(theme.fg("dim", `${counts.pending} 待处理`));
+	if (counts.failed > 0) parts.push(theme.fg("error", `${counts.failed} 失败`));
+	if (counts.aborted > 0) parts.push(theme.fg("error", `${counts.aborted} 已中止`));
 	const breakdown =
 		parts.length > 0
 			? `${theme.fg("dim", " (")}${parts.join(theme.fg("dim", theme.sep.dot))}${theme.fg("dim", ")")}`
@@ -1365,11 +1365,11 @@ export function renderResult(
 		const text = result.content.find(c => c.type === "text")?.text || "";
 		const errored = result.isError === true;
 		const header = errored
-			? renderStatusLine({ icon: "error", title: "Task", description: agentLabel }, theme)
+			? renderStatusLine({ icon: "error", title: "任务", description: agentLabel }, theme)
 			: renderStatusLine(
 					{
 						iconOverride: theme.styledSymbol("status.done", "accent"),
-						title: "Task",
+						title: "任务",
 						description: agentLabel,
 					},
 					theme,
@@ -1428,7 +1428,7 @@ export function renderResult(
 					: icon === "success"
 						? theme.styledSymbol("status.done", "accent")
 						: undefined,
-			title: "Task",
+			title: "任务",
 			meta: metaLabel ? [metaLabel] : undefined,
 		},
 		theme,
@@ -1538,12 +1538,12 @@ export function renderResult(
 			}
 
 			const summaryParts: string[] = [];
-			if (abortedCount > 0) summaryParts.push(theme.fg("error", `${abortedCount} aborted`));
-			if (successCount > 0) summaryParts.push(theme.fg("success", `${successCount} succeeded`));
-			if (mergeFailedCount > 0) summaryParts.push(theme.fg("warning", `${mergeFailedCount} merge failed`));
-			if (failCount > 0) summaryParts.push(theme.fg("error", `${failCount} failed`));
+			if (abortedCount > 0) summaryParts.push(theme.fg("error", `${abortedCount} 已中止`));
+			if (successCount > 0) summaryParts.push(theme.fg("success", `${successCount} 成功`));
+			if (mergeFailedCount > 0) summaryParts.push(theme.fg("warning", `${mergeFailedCount} 合并失败`));
+			if (failCount > 0) summaryParts.push(theme.fg("error", `${failCount} 失败`));
 			const totalRequests = requestTotal;
-			if (totalRequests > 0) summaryParts.push(theme.fg("dim", `${formatNumber(totalRequests)} req`));
+			if (totalRequests > 0) summaryParts.push(theme.fg("dim", `${formatNumber(totalRequests)} 次请求`));
 			summaryParts.push(theme.fg("dim", formatDuration(details.totalDurationMs)));
 			// Wrap the run summary in the theme's bracket glyphs (dim chrome, colored
 			// counts) to match the bash tool's `[Wall: … | Exit: …]` footer.
@@ -1669,7 +1669,7 @@ export function renderNestedTaskResults(
 			continue;
 		}
 		if (depth >= MAX_NESTED_TASK_RENDER_DEPTH) {
-			lines.push(theme.fg("dim", "… nested task depth limit reached"));
+			lines.push(theme.fg("dim", "… 嵌套任务深度已达上限"));
 			continue;
 		}
 		seen.add(details);
@@ -1716,7 +1716,7 @@ function renderNestedTaskTree(
 			continue;
 		}
 		if (depth >= MAX_NESTED_TASK_RENDER_DEPTH) {
-			lines.push(theme.fg("dim", "… nested task depth limit reached"));
+			lines.push(theme.fg("dim", "… 嵌套任务深度已达上限"));
 			continue;
 		}
 		seen.add(details);
@@ -1823,8 +1823,8 @@ function contextStats(
 /** Agent badges: `background` for async jobs, `isolated` worktrees. */
 function agentBadges(background: boolean, isolated: boolean | undefined): TspAgentProps["badges"] {
 	const badges: { text: string; tone?: TspTone }[] = [];
-	if (background) badges.push({ text: "background" });
-	if (isolated) badges.push({ text: "isolated" });
+	if (background) badges.push({ text: "后台" });
+	if (isolated) badges.push({ text: "隔离" });
 	return badges.length > 0 ? badges : undefined;
 }
 
@@ -1848,11 +1848,11 @@ function describeNestedTasks(
 	const out: NativeNode[] = [];
 	for (const details of nested) {
 		if (state.seen.has(details)) {
-			out.push(noteText("↻ nested task cycle", "dim"));
+			out.push(noteText("↻ 嵌套任务循环", "dim"));
 			continue;
 		}
 		if (depth >= MAX_NESTED_TASK_RENDER_DEPTH) {
-			out.push(noteText("… nested task depth limit reached", "dim"));
+			out.push(noteText("… 嵌套任务深度已达上限", "dim"));
 			continue;
 		}
 		state.seen.add(details);
@@ -1926,7 +1926,7 @@ function describeProgressAgent(progress: AgentProgress, state: AgentDescribeStat
 				? text(
 						[
 							span(
-								`auto-retry gave up after ${progress.retryFailure.attempt} ${pluralize("attempt", progress.retryFailure.attempt)}: ${plainText(progress.retryFailure.errorMessage)}`,
+								`自动重试在 ${progress.retryFailure.attempt} 次尝试（${pluralize("attempt", progress.retryFailure.attempt)}）后放弃：${plainText(progress.retryFailure.errorMessage)}`,
 								"error",
 							),
 						],
@@ -1950,9 +1950,9 @@ function describeResultAgent(result: SingleResult, state: AgentDescribeState, de
 	const errorLine = (message: string, token = "error"): NativeNode =>
 		text([span(plainText(message), token)], { wrap: "word", role: "omp.tool.error" });
 	const badges: { text: string; tone?: TspTone }[] = [...(agentBadges(state.background, result.isolated) ?? [])];
-	if (mergeFailed) badges.push({ text: "merge failed", tone: "warning" });
-	else if (warning && success) badges.push({ text: "warning", tone: "warning" });
-	if (result.truncated) badges.push({ text: "truncated", tone: "warning" });
+	if (mergeFailed) badges.push({ text: "合并失败", tone: "warning" });
+	else if (warning && success) badges.push({ text: "警告", tone: "warning" });
+	if (result.truncated) badges.push({ text: "已截断", tone: "warning" });
 	const cost = result.usage?.cost.total ?? 0;
 	return agentNode(
 		{
@@ -2061,7 +2061,7 @@ function describeTaskCall(args: TaskParams | undefined): NativeToolView {
 	}
 	const target = agents.length > 1 ? agentCountLabel(agents.length) : formatAgentHeaderLabel(args);
 	return {
-		tool: { title: "Task", target, targetKind: target ? "text" : undefined },
+		tool: { title: "任务", target, targetKind: target ? "text" : undefined },
 		body: compact([describeContext(args?.context), ...agents]),
 	};
 }
@@ -2078,13 +2078,13 @@ function describeTaskResult(
 		const fallback = resultText(result).trim();
 		if (result.isError) {
 			return {
-				tool: { title: "Task", target: agentLabel, targetKind: "text" },
+				tool: { title: "任务", target: agentLabel, targetKind: "text" },
 				tone: "error",
 				body: compact([context, errorText(fallback || "Task failed")]),
 			};
 		}
 		return {
-			tool: { title: "Task", target: agentLabel, targetKind: agentLabel ? "text" : undefined },
+			tool: { title: "任务", target: agentLabel, targetKind: agentLabel ? "text" : undefined },
 			body: compact([context, fallback ? noteText(fallback, "dim") : undefined]),
 		};
 	}
@@ -2137,18 +2137,18 @@ function describeTaskResult(
 	const target = count > 0 ? agentCountLabel(count) : agentLabel;
 	return {
 		tool: {
-			title: "Task",
+			title: "任务",
 			target,
 			targetKind: target ? "text" : undefined,
 			meta: summary.length > 0 ? [summary.join(" · ")] : undefined,
-			badges: background ? [{ text: "background" }] : undefined,
+			badges: background ? [{ text: "后台" }] : undefined,
 		},
 		tone: aborted + failed > 0 ? "error" : undefined,
 		preview: "none",
 		body: compact([
 			context,
 			...agents,
-			count === 0 ? noteText(fallback.trim() || "No results", "dim") : undefined,
+			count === 0 ? noteText(fallback.trim() || "无结果", "dim") : undefined,
 			trailer ? text([span(plainText(trailer), "muted")], { wrap: "word", role: "omp.tool.stats" }) : undefined,
 		]),
 	};

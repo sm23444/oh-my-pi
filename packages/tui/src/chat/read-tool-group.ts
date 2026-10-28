@@ -674,7 +674,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 				...head,
 				role: "omp.tool.read",
 				name: "read",
-				title: "Read",
+				title: "读取",
 				status,
 				tone: status === "error" ? "error" : undefined,
 				frame: "inline",
@@ -698,7 +698,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 			href: fileHref(linkPathForTargets(row.targets)),
 			meta: correctedFrom ? [`corrected from ${shortenPath(correctedFrom)}`] : undefined,
 			badges: conflicts
-				? [{ text: `${conflicts} conflict${conflicts === 1 ? "" : "s"}`, tone: "warning" }]
+				? [{ text: `${conflicts} 处冲突${conflicts === 1 ? "" : ""}`, tone: "warning" }]
 				: undefined,
 		};
 	}
@@ -721,7 +721,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 			href: fileHref(linkPathForTargets(row.targets)),
 			icon: status === "error" ? "x-circle" : undefined,
 			tone: READ_STATUS_TONE[status],
-			chip: conflicts ? { text: `${conflicts} conflict${conflicts === 1 ? "" : "s"}` } : undefined,
+			chip: conflicts ? { text: `${conflicts} 处冲突${conflicts === 1 ? "" : ""}` } : undefined,
 			detail,
 			title: error,
 			key: row.targetPath,
@@ -777,7 +777,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 		const usageByRow = this.#usageRowsBySummaryRow(rows);
 		const previews = entries.filter(entry => this.#shouldRenderPreview(entry));
 		const status = this.#groupStatus(entries);
-		const title = span("Read", "toolTitle");
+		const title = span("读取", "toolTitle");
 		const children: NativeChild[] = [];
 		let head: TspSpan[] = [title];
 		if (rows.length === 1) {
@@ -882,9 +882,9 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 		}
 		if (split.sel) spans.push(span(`:${split.sel}`, "accent"));
 		const correctedFrom = this.#correctedFromForTargets(row.targets);
-		if (correctedFrom) spans.push(span(` (corrected from ${shortenPath(correctedFrom)})`, "dim"));
+		if (correctedFrom) spans.push(span(` (更正自 ${shortenPath(correctedFrom)})`, "dim"));
 		const conflicts = this.#conflictCountForTargets(row.targets);
-		if (conflicts) spans.push(span(` (⚠ ${conflicts} conflict${conflicts === 1 ? "" : "s"})`, "warning"));
+		if (conflicts) spans.push(span(` (⚠ ${conflicts} 处冲突${conflicts === 1 ? "" : ""})`, "warning"));
 		return spans;
 	}
 
@@ -906,7 +906,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 		);
 
 		if (displayRows.length === 0) {
-			this.#text.setText(` ${theme.format.bullet} ${theme.fg("toolTitle", theme.bold("Read"))}`);
+			this.#text.setText(` ${theme.format.bullet} ${theme.fg("toolTitle", theme.bold("读取"))}`);
 			this.addChild(this.#text);
 			return;
 		}
@@ -916,7 +916,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 			if (!this.#shouldRenderPreviewRow(row)) {
 				const statusSymbol = this.#formatStatus(this.#statusForTargets(row.targets));
 				const pathDisplay = this.#formatRowPath(row);
-				const lines = [` ${statusSymbol} ${theme.fg("toolTitle", theme.bold("Read"))} ${pathDisplay}`.trimEnd()];
+				const lines = [` ${statusSymbol} ${theme.fg("toolTitle", theme.bold("读取"))} ${pathDisplay}`.trimEnd()];
 				const usageRows = this.#usageRowsBySummaryRow(displayRows).get(0) ?? [];
 				this.#appendUsageRows(lines, usageRows, "   ");
 				this.#text.setText(lines.join("\n"));
@@ -929,7 +929,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 			return;
 		}
 
-		const header = `${theme.fg("toolTitle", theme.bold("Read"))}${theme.fg("dim", ` (${displayRows.length})`)}`;
+		const header = `${theme.fg("toolTitle", theme.bold("读取"))}${theme.fg("dim", ` (${displayRows.length})`)}`;
 		const lines = [` ${theme.format.bullet} ${header}`];
 		const entriesWithoutPreview = entries.filter(entry => !this.#shouldRenderPreview(entry));
 		const summaryTargets = this.#displayTargetsForEntries(entriesWithoutPreview);
@@ -1152,7 +1152,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 			pathDisplay += theme.fg("accent", selectorSuffix);
 		}
 		if (options.correctedFrom) {
-			pathDisplay += theme.fg("dim", ` (corrected from ${shortenPath(options.correctedFrom)})`);
+			pathDisplay += theme.fg("dim", ` (更正自 ${shortenPath(options.correctedFrom)})`);
 		}
 		pathDisplay += this.#formatConflictBadge(options.conflictCount);
 		return pathDisplay;
@@ -1161,7 +1161,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 	#formatConflictBadge(conflictCount: number | undefined): string {
 		if (!conflictCount || conflictCount <= 0) return "";
 		const n = conflictCount;
-		return ` ${theme.fg("warning", `(⚠ ${n} conflict${n === 1 ? "" : "s"})`)}`;
+		return ` ${theme.fg("warning", `(⚠ ${n} 处冲突${n === 1 ? "" : ""})`)}`;
 	}
 
 	/**
@@ -1181,7 +1181,7 @@ export class ReadToolGroupComponent extends Container implements ToolExecutionHa
 					linkPath: readTargetLinkPath(split.path, entry.linkPath),
 				})
 			: "";
-		const title = pathDisplay ? `Read ${pathDisplay}` : "Read";
+		const title = pathDisplay ? `读取 ${pathDisplay}` : "读取";
 		let cachedWidth: number | undefined;
 		let cachedLines: string[] | undefined;
 		const dropCache = () => {

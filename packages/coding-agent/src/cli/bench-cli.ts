@@ -639,9 +639,9 @@ function formatCachePairLine(pair: BenchCachePairReport, index: number, total: n
 			return `${run.phase} failed: ${truncateToWidth(replaceTabs(run.result.error), ERROR_WIDTH)}`;
 		}
 		const usage = run.usage;
-		return `${run.phase}${alreadyWarm ? " (already warm)" : ""} ${run.observations.join(", ")} ${chalk.dim("input")} ${usage?.inputTokens ?? 0} ${chalk.dim("cache-read")} ${usage?.cacheReadTokens ?? 0} ${chalk.dim("cache-write")} ${usage?.cacheWriteTokens ?? 0} ${chalk.dim("output")} ${usage?.outputTokens ?? run.result.outputTokens} ${chalk.dim("total")} ${usage?.totalTokens ?? 0} ${chalk.dim("cost")} ${formatCost(usage?.cost ?? 0)} ${chalk.dim("TTFT")} ${formatMs(run.result.ttftMs)} ${chalk.dim("duration")} ${formatMs(run.result.durationMs)} ${chalk.dim("throughput")} ${run.result.tokensPerSecond.toFixed(1)}/s`;
+		return `${run.phase}${alreadyWarm ? " (already warm)" : ""} ${run.observations.join(", ")} ${chalk.dim("输入")} ${usage?.inputTokens ?? 0} ${chalk.dim("缓存读取")} ${usage?.cacheReadTokens ?? 0} ${chalk.dim("缓存写入")} ${usage?.cacheWriteTokens ?? 0} ${chalk.dim("输出")} ${usage?.outputTokens ?? run.result.outputTokens} ${chalk.dim("总计")} ${usage?.totalTokens ?? 0} ${chalk.dim("成本")} ${formatCost(usage?.cost ?? 0)} ${chalk.dim("TTFT")} ${formatMs(run.result.ttftMs)} ${chalk.dim("时长")} ${formatMs(run.result.durationMs)} ${chalk.dim("吞吐量")} ${run.result.tokensPerSecond.toFixed(1)}/s`;
 	};
-	return `  ${chalk.dim(`pair ${index + 1}/${total}`)} ${formatPhase(pair.cold, pair.coldAlreadyWarm)}; ${formatPhase(pair.warm)}`;
+	return `  ${chalk.dim(`第 ${index + 1}/${total} 组`)} ${formatPhase(pair.cold, pair.coldAlreadyWarm)}; ${formatPhase(pair.warm)}`;
 }
 
 interface BenchRequestOptions {
@@ -824,16 +824,16 @@ function formatMs(ms: number): string {
 
 /** One run's result line; `tagKind` labels the challenge (only informative when kinds are mixed). */
 function formatRunLine(result: BenchRunResult, index: number, total: number, opts: { tagKind: boolean }): string {
-	const prefix = chalk.dim(`run ${index + 1}/${total}`);
+	const prefix = chalk.dim(`第 ${index + 1}/${total} 次运行`);
 	const kind = opts.tagKind && result.challenge ? `${chalk.cyan(result.challenge.padEnd(10))} ` : "";
 	if (result.ok) {
 		// A prefill run emits a handful of tokens: its output rates are noise, the input rate is the result.
 		const gen = result.generationTps > 0 ? `${result.generationTps.toFixed(1)}/s` : "-";
 		const rates =
 			result.challenge === "prefill"
-				? `${chalk.dim("prefill")} ${result.prefillTps.toFixed(0)}/s`
-				: `${chalk.dim("tok/s")} ${result.tokensPerSecond.toFixed(1)} ${chalk.dim("gen")} ${gen}`;
-		return `  ${chalk.green("✓")} ${prefix} ${kind}${chalk.dim("TTFT")} ${formatMs(result.ttftMs)} ${rates} ${chalk.dim("in")} ${formatNumber(result.inputTokens)} ${chalk.dim("out")} ${formatNumber(result.outputTokens)} ${chalk.dim("total")} ${formatMs(result.durationMs)}`;
+				? `${chalk.dim("预填充")} ${result.prefillTps.toFixed(0)}/s`
+				: `${chalk.dim("tok/s")} ${result.tokensPerSecond.toFixed(1)} ${chalk.dim("生成")} ${gen}`;
+		return `  ${chalk.green("✓")} ${prefix} ${kind}${chalk.dim("TTFT")} ${formatMs(result.ttftMs)} ${rates} ${chalk.dim("输入")} ${formatNumber(result.inputTokens)} ${chalk.dim("输出")} ${formatNumber(result.outputTokens)} ${chalk.dim("总计")} ${formatMs(result.durationMs)}`;
 	}
 	return `  ${chalk.red("✗")} ${prefix} ${kind}${chalk.red(truncateToWidth(replaceTabs(result.error).replace(/\r?\n/g, " "), ERROR_WIDTH))}`;
 }
@@ -869,7 +869,7 @@ function formatProgress(progress: BenchProgress, unit: "runs" | "pairs"): string
 function formatRowStatus(row: BenchTableRow, spinner: string): string {
 	switch (row.state) {
 		case "queued":
-			return chalk.dim("queued");
+			return chalk.dim("排队中");
 		case "running":
 			return `${chalk.yellow(spinner)} ${formatProgress(row.progress, "runs")}`;
 		case "done": {
@@ -1164,7 +1164,7 @@ export async function runBenchCommand(command: BenchCommandArgs, deps: BenchDepe
 					(runtime.settings ? cfgTierAnthropic.get(runtime.settings) : undefined) ?? "none",
 					(runtime.settings ? cfgTierGoogle.get(runtime.settings) : undefined) ?? "none",
 				);
-		if (!json && flagTier) print(chalk.dim(`service tier: ${flagTier}`));
+		if (!json && flagTier) print(chalk.dim(`服务层级：${flagTier}`));
 		const total = cacheMode ? cachePairs! : runs;
 		rows = targets.map(({ selector, model, thinking }): BenchTableRow => ({
 			report: buildModelReport(selector, model, thinking, []),
@@ -1301,7 +1301,7 @@ export async function runBenchCommand(command: BenchCommandArgs, deps: BenchDepe
 				const { phase } = step;
 				if (!json && phase) {
 					print(
-						`  ${chalk.bold(PHASE_LABELS[phase])} ${chalk.dim(`· ${step.concurrency} concurrent · ${step.runs} runs`)}`,
+						`  ${chalk.bold(PHASE_LABELS[phase])} ${chalk.dim(`· ${step.concurrency} 并发 · ${step.runs} 次运行`)}`,
 					);
 				}
 				const finished: BenchRunResult[] = [];
@@ -1357,7 +1357,7 @@ export async function runBenchCommand(command: BenchCommandArgs, deps: BenchDepe
 				const phaseReport = phase && phase !== "prefill" ? phases[phase] : undefined;
 				if (!json && phaseReport) {
 					print(
-						`    ${chalk.dim("aggregate")} ${phaseReport.aggregateTps.toFixed(1)} tok/s ${chalk.dim(`over ${formatMs(phaseReport.wallMs)} wall`)}`,
+						`    ${chalk.dim("汇总")} ${phaseReport.aggregateTps.toFixed(1)} tok/s ${chalk.dim(`用时 ${formatMs(phaseReport.wallMs)} 墙钟`)}`,
 					);
 				}
 				offset += step.runs;

@@ -148,7 +148,7 @@ export const createAutoresearchExtension: ExtensionFactory = api => {
 				dashboard.updateWidget(ctx, runtime);
 				const experimentTools = new Set(EXPERIMENT_TOOL_NAMES);
 				await api.setActiveTools(api.getActiveTools().filter(name => !experimentTools.has(name)));
-				ctx.ui.notify("Autoresearch mode disabled", "info");
+				ctx.ui.notify("Autoresearch 模式已禁用", "info");
 				return;
 			}
 
@@ -157,7 +157,7 @@ export const createAutoresearchExtension: ExtensionFactory = api => {
 				dashboard.updateWidget(ctx, runtime);
 				const experimentTools = new Set(EXPERIMENT_TOOL_NAMES);
 				await api.setActiveTools(api.getActiveTools().filter(name => !experimentTools.has(name)));
-				ctx.ui.notify("Autoresearch mode disabled", "info");
+				ctx.ui.notify("Autoresearch 模式已禁用", "info");
 				return;
 			}
 
@@ -219,7 +219,7 @@ export const createAutoresearchExtension: ExtensionFactory = api => {
 			if (goalArg !== null) {
 				api.sendUserMessage(goalArg);
 			} else {
-				ctx.ui.notify("Autoresearch enabled—describe what to optimize in your next message.", "info");
+				ctx.ui.notify("Autoresearch 已启用——请在下一则消息中描述要优化的内容。", "info");
 			}
 		},
 	});
@@ -229,7 +229,7 @@ export const createAutoresearchExtension: ExtensionFactory = api => {
 		handler(ctx): void {
 			const runtime = getRuntime(ctx);
 			if (runtime.state.results.length === 0 && !runtime.runningExperiment) {
-				ctx.ui.notify("No autoresearch results yet", "info");
+				ctx.ui.notify("暂无 Autoresearch 结果", "info");
 				return;
 			}
 			runtime.dashboardExpanded = !runtime.dashboardExpanded;
@@ -430,15 +430,15 @@ export const createAutoresearchExtension: ExtensionFactory = api => {
 				const repository = vcs.requireGit(ctx.cwd);
 				await repository.reset("hard", session.baselineCommit);
 				await repository.clean({});
-				ctx.ui.notify(`Reset worktree to baseline ${session.baselineCommit.slice(0, 12)}.`, "info");
+				ctx.ui.notify(`将工作树重置到基线 ${session.baselineCommit.slice(0, 12)}。`, "info");
 			} catch (err) {
 				ctx.ui.notify(
-					`Failed to reset worktree to baseline: ${err instanceof Error ? err.message : String(err)}`,
+					`无法将工作树重置到基线：${err instanceof Error ? err.message : String(err)}`,
 					"error",
 				);
 			}
 		} else if (shouldResetTree) {
-			ctx.ui.notify("No baseline commit recorded — skipped worktree reset.", "warning");
+			ctx.ui.notify("未记录基线提交——已跳过工作树重置。", "warning");
 		}
 
 		removeLegacyArtifacts(ctx.cwd);
@@ -457,7 +457,7 @@ export const createAutoresearchExtension: ExtensionFactory = api => {
 		dashboard.updateWidget(ctx, runtime);
 		const experimentTools = new Set(EXPERIMENT_TOOL_NAMES);
 		await api.setActiveTools(api.getActiveTools().filter(name => !experimentTools.has(name)));
-		ctx.ui.notify("Autoresearch session cleared.", "info");
+		ctx.ui.notify("Autoresearch 会话已清除。", "info");
 	}
 };
 

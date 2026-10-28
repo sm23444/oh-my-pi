@@ -87,7 +87,7 @@ function renderContextGaugeState(state: GalleryFixtureState, width: number): rea
 
 export const statusLineFixtures: Record<string, GalleryFixture> = {
 	context_gauge: {
-		label: "上下文计量器",
+		label: "Context Gauge",
 		renderState: renderContextGaugeState,
 		args: { note: "status-line context gauge preview" },
 		result: { content: [{ type: "text", text: "Rendered annotated and embedded context gauges." }] },

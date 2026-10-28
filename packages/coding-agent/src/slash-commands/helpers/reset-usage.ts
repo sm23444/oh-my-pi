@@ -109,7 +109,7 @@ export function formatResetUsageAccountLine(account: ResetUsageAccount): string 
 			detail += ` (${oneLine(account.unavailableReason)})`;
 		}
 	}
-	return `- ${oneLine(account.label)} [${oneLine(account.providerLabel)} · ${account.provider}/${account.target.credentialId}]: ${detail}${account.active ? " (active)" : ""}`;
+	return `- ${oneLine(account.label)} [${oneLine(account.providerLabel)} · ${account.provider}/${account.target.credentialId}]: ${detail}${account.active ? " (活跃)" : ""}`;
 }
 
 /** Map one account's live reset status to a selector row. */
@@ -182,29 +182,29 @@ export function describeRedeemOutcome(outcome: ResetCreditRedeemOutcome, label: 
 					: cleared.length > 0
 						? `the covered rate-limit window${cleared.length === 1 ? " has" : "s have"} been refreshed`
 						: "your rate-limit window has been refreshed";
-			return `Reset applied for ${label}${provider} — ${scope}.`;
+			return `已应用重置：${label}${provider} — ${scope}。`;
 		}
 		case "already_redeemed":
-			return `${label}${provider}: that reset was already redeemed.`;
+			return `${label}${provider}：该重置已兑换过了。`;
 		case "no_credit":
-			return `${label}${provider}: no saved resets available to spend${reason}.`;
+			return `${label}${provider}：没有可用的已保存重置可消耗${reason}。`;
 		case "credit_list_failed":
-			return `${label}${provider}: couldn't load this account's saved resets (network/auth) — nothing was spent, try again.`;
+			return `${label}${provider}：无法加载此账户的已保存重置（network/auth）——未消耗任何额度，请重试。`;
 		case "nothing_to_reset":
-			return `${label}${provider}: nothing to reset right now — your covered limits aren't constrained, so no credit was spent.`;
+			return `${label}${provider}：现在没有需要重置的内容——您的覆盖限额未受限，因此未消耗任何额度。`;
 		case "no_account":
-			return `Could not find the stored account ${label}${provider}.`;
+			return `找不到已存储的账户 ${label}${provider}。`;
 		case "account_unavailable":
-			return `${label}${provider}: could not authenticate this account — try /login.`;
+			return `${label}${provider}：无法验证此账户身份——请尝试 /login.`;
 		case "offer_changed":
-			return `${label}${provider}: the reset offer changed — nothing was spent; reopen /usage reset.`;
+			return `${label}${provider}：重置方案已更改——未消耗任何额度；请重新打开 /usage reset。`;
 		case "reset_in_progress":
-			return `${label}${provider}: a reset is already in progress.`;
+			return `${label}${provider}：重置已在进行中。`;
 		case "reset_unconfirmed":
 		case "network_error":
 		case "malformed_response":
-			return `${label}${provider}: couldn't confirm whether the reset applied — check /usage before trying again${reason}.`;
+			return `${label}${provider}：无法确认重置是否已应用——请先查看 /usage，然后再试${reason}。`;
 		default:
-			return `${label}${provider}: reset was not confirmed (${outcome.code})${reason}.`;
+			return `${label}${provider}：重置未得到确认（${outcome.code}）${reason}。`;
 	}
 }

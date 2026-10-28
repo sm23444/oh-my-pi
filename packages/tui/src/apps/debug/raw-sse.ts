@@ -278,9 +278,9 @@ export class RawSseViewerComponent implements Component {
 				: keyed(
 						col(
 							[
-								text("No raw SSE frames captured yet", { role: "omp.app.empty-title" }),
+								text("尚未捕获任何原始 SSE 帧", { role: "omp.app.empty-title" }),
 								text([
-									span("HTTP SSE providers populate this view while a model response is streaming.", "muted"),
+									span("HTTP SSE 提供商在模型响应流式传输期间填充此视图。", "muted"),
 								]),
 							],
 							{ gap: "xs", align: "center", role: "omp.app.empty" },
@@ -305,9 +305,9 @@ export class RawSseViewerComponent implements Component {
 							"status",
 						),
 					actionBar([
-						actionButton("Copy raw", "copy-raw", { keys: "ctrl+c", tone: "accent" }),
+						actionButton("复制原始数据", "copy-raw", { keys: "ctrl+c", tone: "accent" }),
 						null,
-						actionButton("Close", "close", { keys: "escape" }),
+						actionButton("关闭", "close", { keys: "escape" }),
 					]),
 				]),
 				{ role: "omp.debug.bar", gap: "sm" },
@@ -317,21 +317,21 @@ export class RawSseViewerComponent implements Component {
 
 	#describeHead(snapshot: RawSseDebugSnapshot): NativeNode {
 		const stats = [
-			span(`${snapshot.totalEvents} events`, "num"),
+			span(`${snapshot.totalEvents} 个事件`, "num"),
 			span(" · ", "dim"),
-			span(`${snapshot.records.length} records`, "num"),
+			span(`${snapshot.records.length} 条记录`, "num"),
 		];
 		if (snapshot.droppedRecords > 0) {
-			stats.push(span(" · ", "dim"), span(`${snapshot.droppedRecords} dropped`, "warning"));
+			stats.push(span(" · ", "dim"), span(`已丢弃 ${snapshot.droppedRecords} 条`, "warning"));
 		}
 		stats.push(
 			span(" · ", "dim"),
 			snapshot.lastUpdatedAt
-				? span(`last ${formatRawSseIsoTime(snapshot.lastUpdatedAt)}`, "muted")
-				: span("waiting for first frame", "muted"),
+				? span(`最近更新于 ${formatRawSseIsoTime(snapshot.lastUpdatedAt)}`, "muted")
+				: span("等待第一帧", "muted"),
 		);
 		return keyed(
-			row([text("Raw provider stream", { role: "omp.app.title" }), text(stats, { truncate: "end" })], {
+			row([text("原始提供商流", { role: "omp.app.title" }), text(stats, { truncate: "end" })], {
 				gap: "sm",
 				align: "center",
 				role: "omp.app.head",
@@ -475,7 +475,7 @@ export class RawSseViewerComponent implements Component {
 	#copyAll(): void {
 		const payload = this.#buffer.toRawText();
 		if (payload.trim().length === 0) {
-			const message = "No raw SSE frames to copy";
+			const message = "没有可复制的原始 SSE 帧";
 			this.#statusMessage = message;
 			this.#statusFailed = true;
 			this.#onStatus?.(message);
@@ -485,7 +485,7 @@ export class RawSseViewerComponent implements Component {
 
 		try {
 			this.#deps.copyToClipboard(payload);
-			const message = "Copied raw SSE stream";
+			const message = "已复制原始 SSE 流";
 			this.#statusMessage = message;
 			this.#statusFailed = false;
 			this.#onStatus?.(message);

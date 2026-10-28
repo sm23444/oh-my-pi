@@ -49,7 +49,8 @@ export default class Completions extends Command {
 	async run(): Promise<void> {
 		const shell = this.argv[0];
 		if (!isShell(shell)) {
-			process.stderr.write(`Usage: ${APP_NAME} completions <${SHELLS.join("|")}>\n`);
+			process.stderr.write(`用法: ${APP_NAME} completions <${SHELLS.join("|")}>
+`);
 			process.exitCode = 1;
 			return;
 		}

@@ -48,7 +48,7 @@ export class TanCommandController {
 	async start(work: string, images?: ImageContent[]): Promise<boolean> {
 		const trimmedWork = work.trim();
 		if (!trimmedWork) {
-			this.ctx.showStatus("Usage: /tan <work>");
+			this.ctx.showStatus("用法：/tan <work>");
 			return false;
 		}
 
@@ -353,7 +353,7 @@ export class TanCommandController {
 			{ triggerTurn: false, deliverAs: "nextTurn" },
 		);
 		if (!wasStreaming) this.ctx.rebuildChatFromMessages();
-		this.ctx.showStatus(`Dispatched background tan ${jobId}`);
+		this.ctx.showStatus(`已派发后台 tan ${jobId}`);
 		return true;
 	}
 }

@@ -244,9 +244,9 @@ export class SignInScene implements SetupSceneController {
 						"text",
 						{
 							spans: [
-								span("Browser login: ", "accent"),
-								span("Open login URL", "accent link", { href: authUrl }),
-								span(` (clipboard copy attempted; ${copyKey} retries)`, "dim"),
+								span("浏览器登录： ", "accent"),
+								span("打开登录 URL", "accent link", { href: authUrl }),
+								span(` （已尝试复制到剪贴板；按 ${copyKey} 重试）`, "dim"),
 							],
 						},
 						undefined,
@@ -265,7 +265,7 @@ export class SignInScene implements SetupSceneController {
 							"text",
 							{
 								spans: [
-									span("Local shortcut (this machine only): ", "dim"),
+									span("本地快捷方式（仅限此计算机）： ", "dim"),
 									span(launchUrl, "dim link", { href: launchUrl }),
 								],
 								wrap: "char",
@@ -292,7 +292,7 @@ export class SignInScene implements SetupSceneController {
 						node(
 							"row",
 							{ gap: "sm", align: "center" },
-							[node("spinner", {}), text([span(`Signing in to ${provider}`, "strong")])],
+							[node("spinner", {}), text([span(`正在登录 ${provider}`, "strong")])],
 							"heading",
 						),
 						...tail,
@@ -304,7 +304,7 @@ export class SignInScene implements SetupSceneController {
 				[
 					node(
 						"text",
-						{ spans: [span("Pick a provider to sign in — you can connect more than one.", "muted")] },
+						{ spans: [span("选择一个提供商登录——可以连接多个。", "muted")] },
 						undefined,
 						"intro",
 					),
@@ -333,7 +333,7 @@ export class SignInScene implements SetupSceneController {
 		const useManualInput = PASTE_CODE_LOGIN_PROVIDERS.has(providerId);
 		this.#selector.stopValidation();
 		this.#loggingInProvider = providerId;
-		this.#statusLines = [{ text: "Starting OAuth flow…", color: "dim" }];
+		this.#statusLines = [{ text: "正在启动 OAuth 流程…", color: "dim" }];
 		this.#authUrl = undefined;
 		this.#authLaunchUrl = undefined;
 		this.#loginAbort = new AbortController();
@@ -360,7 +360,7 @@ export class SignInScene implements SetupSceneController {
 						statusLines.push({ text: info.instructions, color: "warning" });
 					}
 					if (useManualInput) {
-						statusLines.push({ text: "Paste the returned code or redirect URL when prompted.", color: "dim" });
+						statusLines.push({ text: "提示时粘贴返回的代码或重定向 URL。", color: "dim" });
 					}
 					this.#statusLines = statusLines;
 					void this.#copyAuthUrl();
@@ -380,8 +380,8 @@ export class SignInScene implements SetupSceneController {
 			await this.#host.ctx.refreshProvider(providerId);
 			if (this.#disposed) return;
 			this.#statusLines = [
-				{ text: `${theme.status.success} Signed in to ${providerId}`, color: "success" },
-				{ text: `Credentials saved to ${getAgentDbPath()}`, color: "dim" },
+				{ text: `${theme.status.success} 已登录到 ${providerId}`, color: "success" },
+				{ text: `凭据已保存到 ${getAgentDbPath()}`, color: "dim" },
 			];
 			this.#authUrl = undefined;
 			this.#authLaunchUrl = undefined;
@@ -394,15 +394,15 @@ export class SignInScene implements SetupSceneController {
 		} catch (error) {
 			if (this.#disposed) return;
 			if (this.#loginAbort?.signal.aborted) {
-				this.#statusLines = [{ text: "Login cancelled.", color: "dim" }];
+				this.#statusLines = [{ text: "登录已取消。", color: "dim" }];
 				this.#authUrl = undefined;
 				this.#authLaunchUrl = undefined;
 			} else {
 				const message = error instanceof Error ? error.message : String(error);
 				this.#statusLines = [
-					{ text: `Login failed: ${message}`, color: "error" },
+					{ text: `登录失败: ${message}`, color: "error" },
 					{
-						text: `Choose another provider or press ${editorKey("tui.select.cancel")} to continue.`,
+						text: `选择其他提供商，或按 ${editorKey("tui.select.cancel")} 继续。`,
 						color: "dim",
 					},
 				];

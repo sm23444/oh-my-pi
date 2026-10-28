@@ -52,7 +52,8 @@ export default class Clip extends Command {
 		try {
 			const token = await credential.resolve();
 			if (!token) {
-				process.stderr.write(`clip: ${StencilCredential.missingMessage}\n`);
+				process.stderr.write(`剪贴板: ${StencilCredential.missingMessage}
+`);
 				process.exitCode = 1;
 				return;
 			}
@@ -65,7 +66,8 @@ export default class Clip extends Command {
 			});
 			process.stdout.write(`${clip.url}\n`);
 		} catch (error) {
-			process.stderr.write(`clip: ${error instanceof Error ? error.message : String(error)}\n`);
+			process.stderr.write(`剪贴板: ${error instanceof Error ? error.message : String(error)}
+`);
 			process.exitCode = 1;
 		} finally {
 			credential.close();

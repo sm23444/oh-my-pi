@@ -52,7 +52,7 @@ export async function listGrievances(options: ListGrievancesOptions): Promise<vo
 			console.log("[]");
 		} else {
 			console.log(
-				chalk.dim("No grievances database found. Auto-QA has not recorded any reports yet (or was disabled)."),
+				chalk.dim("未找到申诉数据库。Auto-QA 尚未记录任何报告（或已被禁用）。"),
 			);
 		}
 		return;
@@ -77,7 +77,7 @@ export async function listGrievances(options: ListGrievancesOptions): Promise<vo
 		}
 
 		if (rows.length === 0) {
-			console.log(chalk.dim("No grievances recorded yet."));
+			console.log(chalk.dim("尚未记录任何申诉。"));
 			return;
 		}
 
@@ -89,7 +89,7 @@ export async function listGrievances(options: ListGrievancesOptions): Promise<vo
 			console.log();
 		}
 
-		console.log(chalk.dim(`Showing ${rows.length} most recent${options.tool ? ` for ${options.tool}` : ""}`));
+		console.log(chalk.dim(`显示最近 ${rows.length} 条${options.tool ? `，针对 ${options.tool}` : ""}`));
 	} finally {
 		db.close();
 	}
@@ -122,7 +122,7 @@ export async function cleanGrievances(options: CleanGrievancesOptions): Promise<
 			console.log(JSON.stringify({ deleted: 0 }));
 		} else {
 			console.log(
-				chalk.dim("No grievances database found. Auto-QA has not recorded any reports yet (or was disabled)."),
+				chalk.dim("未找到申诉数据库。Auto-QA 尚未记录任何报告（或已被禁用）。"),
 			);
 		}
 		return;
@@ -154,7 +154,7 @@ export async function cleanGrievances(options: CleanGrievancesOptions): Promise<
 		}
 
 		if (deleted === 0) {
-			console.log(chalk.dim("No matching grievances to delete."));
+			console.log(chalk.dim("没有匹配的申诉可删除。"));
 			return;
 		}
 
@@ -215,7 +215,7 @@ export async function pushGrievances(options: PushGrievancesOptions): Promise<vo
 		if (options.json) {
 			console.log(JSON.stringify({ pushed: 0, ok: false, skipped: true, reason: "no_db" }));
 		} else {
-			console.log(chalk.dim("No grievances database found — nothing to push."));
+			console.log(chalk.dim("未找到申诉数据库——没有可推送的内容。"));
 		}
 		return;
 	}
@@ -248,7 +248,7 @@ export async function pushGrievances(options: PushGrievancesOptions): Promise<vo
 			return;
 		}
 		if (total === 0) {
-			console.log(chalk.dim("Nothing to push — all grievances are already shipped."));
+			console.log(chalk.dim("没有可推送的内容——所有申诉均已推送。"));
 			return;
 		}
 		const rejected = result.rejected ?? 0;

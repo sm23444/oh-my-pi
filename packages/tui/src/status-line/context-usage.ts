@@ -457,11 +457,11 @@ export function computeContextBreakdown(session: ContextUsageSession, options: C
 	}
 
 	const categories: CategoryInfo[] = [
-		{ id: "systemPrompt", label: "System prompt", tokens: systemPromptTokens },
-		{ id: "systemTools", label: "System tools", tokens: toolsTokens },
-		{ id: "systemContext", label: "System context", tokens: systemContextTokens },
-		{ id: "skills", label: "Skills", tokens: skillsTokens },
-		{ id: "messages", label: "Messages", tokens: messagesTokens },
+		{ id: "systemPrompt", label: "系统提示词", tokens: systemPromptTokens },
+		{ id: "systemTools", label: "系统工具", tokens: toolsTokens },
+		{ id: "systemContext", label: "系统上下文", tokens: systemContextTokens },
+		{ id: "skills", label: "技能", tokens: skillsTokens },
+		{ id: "messages", label: "消息", tokens: messagesTokens },
 	];
 
 	let autoCompactBufferTokens = 0;

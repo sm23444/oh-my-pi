@@ -64,9 +64,9 @@ import { isNativeRendering } from "../native/state";
 import { getKeybindings } from "../keybindings";
 
 /** Title shown in the overlay's top border. */
-const OVERLAY_TITLE = "Plan Review";
+const OVERLAY_TITLE = "计划审查";
 /** Native sheet title when the plan has no title heading of its own. */
-const NATIVE_TITLE = "Plan review";
+const NATIVE_TITLE = "计划审阅";
 /** Minimum plan-body rows kept visible even on short terminals. */
 const MIN_BODY_ROWS = 3;
 /** Visible rows for the in-overlay annotation editor before it scrolls. */
@@ -176,7 +176,7 @@ function lineContexts(rendered: readonly string[]): readonly LineAnchorContext[]
 			const sanitized = sanitizeStatusText(line);
 			const truncated = visibleWidth(sanitized) > MAX_ANNOTATION_CONTEXT_WIDTH;
 			const text = truncateToWidth(sanitized, MAX_ANNOTATION_CONTEXT_WIDTH, Ellipsis.Unicode);
-			return { text: text || "(blank line)", truncated };
+			return { text: text || "（空行）", truncated };
 		});
 		lineContextCache.set(rendered, contexts);
 	}
@@ -1590,11 +1590,11 @@ export class PlanReviewOverlay implements Component {
 			children.push(keyed(text([span(this.#promptTitle, "muted")], { role: "omp.plan.prompt" }), "prompt"));
 		}
 		if (this.#committed) {
-			const label = this.#committedLabel ? `${this.#committedLabel} — submitting…` : "Submitting…";
+			const label = this.#committedLabel ? `${this.#committedLabel} — 正在提交…` : "正在提交…";
 			children.push(node("spinner", { label: [span(label, "accent strong")] }, undefined, "options"));
 			children.push(
 				keyed(
-					text([span("Applying your selection — this can take a moment while context is prepared.", "dim")], {
+					text([span("正在应用您的选择——准备上下文可能需要一点时间。", "dim")], {
 						wrap: "word",
 					}),
 					"footer",
@@ -1632,13 +1632,13 @@ export class PlanReviewOverlay implements Component {
 		if (this.#committed) return undefined;
 		const buttons: NativeNode[] = [];
 		if (this.callbacks.onCopyPlan)
-			buttons.push(actionButton("Copy", "copyPlan", { keys: "c", title: "复制计划  c" }));
+			buttons.push(actionButton("复制", "copyPlan", { keys: "c", title: "复制计划  c" }));
 		// Unbound: the button still mirrors the callback, without a keycap.
 		const editorKeyId = getKeybindings().getKeys("app.editor.external")[0];
 		if (this.callbacks.onExternalEditor) {
 			buttons.push(
 				actionButton(
-					`Edit in ${this.#externalEditorName ?? "$EDITOR"}`,
+					`在 ${this.#externalEditorName ?? "$EDITOR"} 中编辑`,
 					"externalEditor",
 					editorKeyId ? { keys: editorKeyId } : {},
 				),
@@ -1648,7 +1648,7 @@ export class PlanReviewOverlay implements Component {
 		// only leaves the draft/chooser, so the button is hidden there.
 		if (!this.#annotating && !this.#annotationChooser) {
 			const cancelKeyId = getKeybindings().getKeys("tui.select.cancel")[0];
-			buttons.push(actionButton("Cancel", "cancel", cancelKeyId ? { keys: cancelKeyId } : {}));
+			buttons.push(actionButton("取消", "cancel", cancelKeyId ? { keys: cancelKeyId } : {}));
 		}
 		if (buttons.length === 0) return undefined;
 		return node("row", { role: "omp.plan.tools", gap: "sm", align: "center", justify: "end" }, buttons, "tools");
@@ -1784,7 +1784,7 @@ export class PlanReviewOverlay implements Component {
 				});
 			});
 			return [
-				keyed(text([span("Edit annotation", "accent strong")]), "chooserHead"),
+				keyed(text([span("编辑标注", "accent strong")]), "chooserHead"),
 				selectList("chooser", entries, { selected: `c${chooser.selected}` }),
 				hintsRow(
 					[
@@ -1814,7 +1814,7 @@ export class PlanReviewOverlay implements Component {
 					{ role: "omp.plan.feedback", gap: "xs" },
 					[
 						keyed(
-							text([span("Note on ", "muted"), span(location, "accent")], { truncate: "end" }),
+							text([span("关于 ", "muted"), span(location, "accent")], { truncate: "end" }),
 							"annotateHead",
 						),
 						this.#editor,

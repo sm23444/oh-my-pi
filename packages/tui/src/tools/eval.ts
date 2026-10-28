@@ -537,7 +537,7 @@ function formatStatusEventExpanded(event: EvalStatusEvent, theme: Theme): string
 			lines.push(`   ${theme.fg("dim", formatter(arr[i]))}`);
 		}
 		if (arr.length > max) {
-			lines.push(`   ${theme.fg("dim", `… ${arr.length - max} more`)}`);
+			lines.push(`   ${theme.fg("dim", `… 还有 ${arr.length - max} 项`)}`);
 		}
 	};
 
@@ -547,7 +547,7 @@ function formatStatusEventExpanded(event: EvalStatusEvent, theme: Theme): string
 			lines.push(`   ${theme.fg("toolOutput", truncateToWidth(replaceTabs(line), 80))}`);
 		}
 		if (previewLines.hidden > 0) {
-			lines.push(`   ${theme.fg("dim", `… ${previewLines.hidden} more lines`)}`);
+			lines.push(`   ${theme.fg("dim", `… 还有 ${previewLines.hidden} 行`)}`);
 		}
 	};
 
@@ -603,7 +603,7 @@ function renderStatusEvents(events: EvalStatusEvent[], theme: Theme, expanded: b
 	const lines: string[] = [];
 	if (hidden > 0) {
 		const glyph = visible.length > 0 ? theme.tree.branch : theme.tree.last;
-		lines.push(`${theme.fg("dim", glyph)} ${theme.fg("dim", `… ${hidden} earlier`)}`);
+		lines.push(`${theme.fg("dim", glyph)} ${theme.fg("dim", `… 前面还有 ${hidden} 行`)}`);
 	}
 	for (let i = 0; i < visible.length; i++) {
 		const isLast = i === visible.length - 1;
@@ -758,10 +758,10 @@ function evalToolHead(
 ): NativeToolHead {
 	const badges: { text: string; title?: string }[] = [...new Set(languages)].map(language => ({ text: language }));
 	if (details?.async?.state === "running") {
-		badges.push({ text: "background", title: `Backgrounded as job ${details.async.jobId}` });
+		badges.push({ text: "后台", title: `已作为作业 ${details.async.jobId} 转入后台` });
 	}
 	return {
-		title: (cellCount > 1 ? "" : plainText(title ?? "").trim()) || "Eval",
+		title: (cellCount > 1 ? "" : plainText(title ?? "").trim()) || "求值",
 		badges: badges.length > 0 ? badges : undefined,
 		meta: cellCount > 1 ? [`${cellCount} cells`] : undefined,
 	};
@@ -862,7 +862,7 @@ function evalStatusSection(log: StatusEventLog, expanded: boolean): NativeNode |
 	return node(
 		"col",
 		{ role: "omp.run.status", gap: "none" },
-		compact<NativeNode>([hidden > 0 && keyed(text([span(`${hidden} earlier`, "muted")]), "earlier"), ...lines]),
+		compact<NativeNode>([hidden > 0 && keyed(text([span(`更早的 ${hidden} 行`, "muted")]), "earlier"), ...lines]),
 		"status",
 	);
 }
@@ -1073,13 +1073,13 @@ export const evalToolRenderer = {
 									outputLines.push(
 										uiTheme.fg(
 											"dim",
-											`… ${outputContent.hiddenCount} more lines (${expandKeyHint()} to expand)`,
+											`… 还有 ${outputContent.hiddenCount} 行（按 ${expandKeyHint()} 展开）`,
 										),
 									);
 								}
 								if (statusLines.length > 0) {
 									if (outputLines.length > 0) {
-										outputLines.push(uiTheme.fg("dim", "Status"));
+										outputLines.push(uiTheme.fg("dim", "状态"));
 									}
 									outputLines.push(...statusLines);
 								}
@@ -1166,7 +1166,7 @@ export const evalToolRenderer = {
 
 		if (!output && statusLines.length > 0) {
 			const lines = [
-				uiTheme.fg("dim", "Status"),
+				uiTheme.fg("dim", "状态"),
 				...statusLines,
 				timeoutLine,
 				noticeLine,
@@ -1183,7 +1183,7 @@ export const evalToolRenderer = {
 				.join("\n");
 			const lines = [
 				styledOutput,
-				...(statusLines.length > 0 ? [uiTheme.fg("dim", "Status"), ...statusLines] : []),
+				...(statusLines.length > 0 ? [uiTheme.fg("dim", "状态"), ...statusLines] : []),
 				timeoutLine,
 				noticeLine,
 				asyncLine,
@@ -1221,13 +1221,13 @@ export const evalToolRenderer = {
 					outputLines.push("");
 					const skippedLine = uiTheme.fg(
 						"dim",
-						`… (${cachedSkipped} earlier lines, showing ${cachedLines.length} of ${cachedSkipped + cachedLines.length}) (${expandKeyHint()} to expand)`,
+						`…（更早的 ${cachedSkipped} 行，显示 ${cachedLines.length} 行，共 ${cachedSkipped + cachedLines.length} 行）（按 ${expandKeyHint()} 展开）`,
 					);
 					outputLines.push(truncateToWidth(skippedLine, width));
 				}
 				outputLines.push(...cachedLines);
 				if (statusLines.length > 0) {
-					outputLines.push(truncateToWidth(uiTheme.fg("dim", "Status"), width));
+					outputLines.push(truncateToWidth(uiTheme.fg("dim", "状态"), width));
 					for (const statusLine of statusLines) {
 						outputLines.push(truncateToWidth(statusLine, width));
 					}

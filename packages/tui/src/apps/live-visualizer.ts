@@ -180,7 +180,7 @@ export class LiveVisualizer implements Component {
 				meter
 					? row(
 							[
-								text([span("mic", "muted")]),
+								text([span("麦克风", "muted")]),
 								node("meter", { value: level, style: "bar", size: "md", tone, grow: 1 }),
 							],
 							{
@@ -189,12 +189,12 @@ export class LiveVisualizer implements Component {
 								role: "omp.app.live.level",
 							},
 						)
-					: node("progress", { value: level, tone, label: [span("mic", "muted")] }),
+					: node("progress", { value: level, tone, label: [span("麦克风", "muted")] }),
 				text([span(this.#userTranscript, "accent")], { wrap: "none", truncate: "start" }),
 				actionBar([
 					null,
-					actionButton(phase === "muted" ? "Unmute" : "Mute", "mute", { keys: "space" }),
-					actionButton("End call", "end", { keys: "escape", tone: "error" }),
+					actionButton(phase === "muted" ? "取消静音" : "静音", "mute", { keys: "space" }),
+					actionButton("结束通话", "end", { keys: "escape", tone: "error" }),
 				]),
 			]);
 		});

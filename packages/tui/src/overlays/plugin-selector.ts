@@ -48,7 +48,7 @@ export class PluginSelectorComponent extends OverlayPanel {
 			const scopeTag = scope ? ` [${scope}]` : "";
 			badgesByValue.set(id, [
 				...(plugin.version ? [{ text: plugin.version }] : []),
-				...(installed ? [{ text: "installed", tone: "success" as const }] : []),
+				...(installed ? [{ text: "已安装", tone: "success" as const }] : []),
 				...(scope ? [{ text: scope, tone: "accent" as const }] : []),
 			]);
 
@@ -89,7 +89,7 @@ export class PluginSelectorComponent extends OverlayPanel {
 		this.#sheet = new SelectListSheet(this.#selectList, {
 			title: "插件",
 			icon: "plus",
-			noun: "plugins",
+			noun: "插件",
 			confirm: "Install",
 			decorate: item => {
 				const [name] = splitPluginId(item.value);

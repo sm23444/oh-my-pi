@@ -246,7 +246,7 @@ export class SetupWizardComponent implements Component, OverlayFocusOwner {
 	#describeScene(): NativeNode {
 		const scene = this.scenes[this.#sceneIndex];
 		const active = this.#activeScene;
-		const title = active?.title ?? scene?.title ?? "Setup";
+		const title = active?.title ?? scene?.title ?? "设置";
 		const subtitle = active?.subtitle;
 		const footer = sceneFooterHint();
 		return this.#nativeScene.get([this.#sceneIndex, this.scenes.length, active, title, subtitle, footer], () => {
@@ -258,7 +258,7 @@ export class SetupWizardComponent implements Component, OverlayFocusOwner {
 						[
 							logoNode(PI_LOGO, false),
 							text([span(APP_NAME, "accent strong")], { wrap: "none" }),
-							text([span(`Setup step ${this.#sceneIndex + 1} of ${this.scenes.length}`, "muted")], {
+							text([span(`设置步骤 ${this.#sceneIndex + 1}，共 ${this.scenes.length} 步`, "muted")], {
 								wrap: "none",
 							}),
 						],
@@ -276,7 +276,7 @@ export class SetupWizardComponent implements Component, OverlayFocusOwner {
 
 	#renderScene(width: number, height: number): string[] {
 		const scene = this.scenes[this.#sceneIndex];
-		const title = this.#activeScene?.title ?? scene?.title ?? "Setup";
+		const title = this.#activeScene?.title ?? scene?.title ?? "设置";
 		const subtitle = this.#activeScene?.subtitle;
 		const contentWidth = Math.max(MIN_CONTENT_WIDTH, width - SCENE_MARGIN_X * 2);
 		const logo = gradientLogo(PI_LOGO, 0);

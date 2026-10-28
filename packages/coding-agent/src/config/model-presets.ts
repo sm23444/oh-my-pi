@@ -404,7 +404,7 @@ export function describeShadowedRoles(
 	);
 	if (thinking) {
 		lines.push(
-			`defaultThinkingLevel: ${describeRoleValue(thinking.actual)} from ${SOURCE_LABELS[thinking.source]} (preset: ${thinking.expected})`,
+			`默认思考级别：${describeRoleValue(thinking.actual)}，来自 ${SOURCE_LABELS[thinking.source]}（预设：${thinking.expected}）`,
 		);
 	}
 	return lines;

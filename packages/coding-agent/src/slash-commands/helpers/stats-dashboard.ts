@@ -21,7 +21,7 @@ export interface StatsDashboardLaunchResult {
 
 let activeStatsServer: StatsDashboardServer | undefined;
 
-const STATS_DASHBOARD_USAGE = "Usage: /stats [--port <port>] [--host <host>]";
+const STATS_DASHBOARD_USAGE = "用法：/stats [--port <端口>] [--host <主机>]";
 
 function parsePort(value: string | undefined): number | string {
 	if (!value) return `Missing port. ${STATS_DASHBOARD_USAGE}`;

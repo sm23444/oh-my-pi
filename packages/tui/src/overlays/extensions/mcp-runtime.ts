@@ -249,11 +249,11 @@ export function snapshotMcpRuntime(
 export function formatMcpListHint(snapshot: MCPRuntimeSnapshot): string {
 	switch (snapshot.health) {
 		case "inactive":
-			return "inactive";
+			return "未激活";
 		case "connecting":
-			return "connecting…";
+			return "正在连接…";
 		case "disconnected":
-			return "unavailable";
+			return "不可用";
 		case "connected": {
 			const parts = [`${snapshot.tools.length} tool${snapshot.tools.length === 1 ? "" : "s"}`];
 			if (snapshot.resources.length > 0) {
@@ -270,13 +270,13 @@ export function formatMcpListHint(snapshot: MCPRuntimeSnapshot): string {
 export function formatMcpHealthLabel(health: MCPConnectionHealth): string {
 	switch (health) {
 		case "connected":
-			return "Connected";
+			return "已连接";
 		case "connecting":
-			return "Connecting";
+			return "正在连接";
 		case "disconnected":
-			return "Not connected";
+			return "未连接";
 		case "inactive":
-			return "Inactive";
+			return "未激活";
 	}
 }
 

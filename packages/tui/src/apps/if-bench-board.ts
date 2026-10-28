@@ -168,8 +168,8 @@ function renderLive(
 	if (rows.size === 0) return [];
 	const deepest = Math.max(0, ...[...rows.values()].map(row => row.actions));
 	const header =
-		`${fgOrPlain("accent", spinner)} ${theme ? theme.bold("if-bench 基准") : "if-bench"} ${fgOrPlain("dim", "·")} ` +
-		`${rows.size} live ${fgOrPlain("dim", "·")} ${deepest} actions ${fgOrPlain("dim", "·")} ` +
+		`${fgOrPlain("accent", spinner)} ${theme ? theme.bold("if-bench 基准") : "if-bench 基准"} ${fgOrPlain("dim", "·")} ` +
+		`${rows.size} 个活跃项 ${fgOrPlain("dim", "·")} ${deepest} 个操作 ${fgOrPlain("dim", "·")} ` +
 		`${fgOrPlain("dim", `L=${meta.arrayLength} nya{1,${meta.nyaMax}}`)} ${fgOrPlain("dim", "·")} ` +
 		`${formatDuration(Date.now() - startedAt)}`;
 	const lines = [header];
@@ -229,7 +229,7 @@ function ladder(row: RowState, maxTurns: number, spinner: string): string {
 function formatTurnLine(label: string, record: IfBenchTurnRecord): string {
 	const head = `[turn ${record.turn}] ${label} ${record.cumulativeActions} acts cat@${record.placement}`;
 	if (record.passed) return `${head} PASS ${formatDuration(Math.round(record.durationMs))}`;
-	return `${head} FAIL ${record.failure ?? "format"}`;
+	return `${head} FAIL ${record.failure ?? "格式"}`;
 }
 
 function formatVerdict(report: IfBenchModelReport, meta: IfBenchBoardMeta): string {

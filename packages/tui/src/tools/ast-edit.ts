@@ -183,13 +183,13 @@ export const astEditToolRenderer = {
 	inline: true,
 	renderCall(args: AstEditRenderArgs, _options: RenderResultOptions, uiTheme: Theme): Component {
 		const meta: string[] = [];
-		if (args.paths?.length) meta.push(`in ${args.paths.join(", ")}`);
+		if (args.paths?.length) meta.push(`于 ${args.paths.join(", ")}`);
 		const rewriteCount = args.ops?.length ?? 0;
-		if (rewriteCount > 1) meta.push(`${rewriteCount} rewrites`);
+		if (rewriteCount > 1) meta.push(`${rewriteCount} 处重写`);
 
 		const description =
-			rewriteCount === 1 ? patternPreview(args.ops?.[0]?.pat) : rewriteCount ? `${rewriteCount} rewrites` : "?";
-		const header = renderStatusLine({ icon: "pending", title: "AST Edit", description, meta }, uiTheme);
+			rewriteCount === 1 ? patternPreview(args.ops?.[0]?.pat) : rewriteCount ? `${rewriteCount} 处重写` : "?";
+		const header = renderStatusLine({ icon: "pending", title: "AST 编辑", description, meta }, uiTheme);
 		// Pending call has no body yet — a lone status line is sleeker than an empty frame.
 		return new Text(header, 0, 0);
 	},
@@ -203,8 +203,8 @@ export const astEditToolRenderer = {
 		const details = result.details;
 
 		if (result.isError) {
-			const errorText = result.content?.find(c => c.type === "text")?.text || "Unknown error";
-			const header = renderStatusLine({ icon: "error", title: "AST Edit" }, uiTheme);
+			const errorText = result.content?.find(c => c.type === "text")?.text || "未知错误";
+			const header = renderStatusLine({ icon: "error", title: "AST 编辑" }, uiTheme);
 			return framedToolCard(uiTheme, () => ({
 				header,
 				sections: [{ content: formatErrorDetail(errorText, uiTheme).split("\n") }],
@@ -222,9 +222,9 @@ export const astEditToolRenderer = {
 			const rewriteCount = args?.ops?.length ?? 0;
 			const description = rewriteCount === 1 ? patternPreview(args?.ops?.[0]?.pat) : undefined;
 			const meta = ["0 replacements"];
-			if (details?.scopePath) meta.push(`in ${details.scopePath}`);
-			if (filesSearched > 0) meta.push(`searched ${filesSearched}`);
-			const header = renderStatusLine({ icon: "warning", title: "AST Edit", description, meta }, uiTheme);
+			if (details?.scopePath) meta.push(`于 ${details.scopePath}`);
+			if (filesSearched > 0) meta.push(`搜索了 ${filesSearched}`);
+			const header = renderStatusLine({ icon: "warning", title: "AST 编辑", description, meta }, uiTheme);
 			// The "0 replacements" count already rides on the status line; only parse
 			// errors are worth a body, so frame solely when there are some.
 			const bodyLines: string[] = [];
@@ -240,9 +240,9 @@ export const astEditToolRenderer = {
 
 		const summaryParts = [formatCount("replacement", totalReplacements), formatCount("file", filesTouched)];
 		const meta = [...summaryParts];
-		if (details?.scopePath) meta.push(`in ${details.scopePath}`);
-		meta.push(`searched ${filesSearched}`);
-		if (limitReached) meta.push(uiTheme.fg("warning", "limit reached"));
+		if (details?.scopePath) meta.push(`于 ${details.scopePath}`);
+		meta.push(`搜索了 ${filesSearched}`);
+		if (limitReached) meta.push(uiTheme.fg("warning", "已达到上限"));
 		const rewriteCount = args?.ops?.length ?? 0;
 		const description = rewriteCount === 1 ? patternPreview(args?.ops?.[0]?.pat) : undefined;
 
@@ -299,15 +299,15 @@ export const astEditToolRenderer = {
 			return !first.startsWith("Safety cap reached") && !first.startsWith("Parse issues:");
 		});
 
-		const badge = { label: "proposed", color: "warning" as const };
+		const badge = { label: "已提议", color: "warning" as const };
 		const header = renderStatusLine(
-			{ icon: limitReached ? "warning" : "success", title: "AST Edit", description, badge, meta },
+			{ icon: limitReached ? "warning" : "success", title: "AST 编辑", description, badge, meta },
 			uiTheme,
 		);
 
 		const extraLines: string[] = [];
 		if (limitReached) {
-			extraLines.push(uiTheme.fg("warning", "limit reached; narrow path"));
+			extraLines.push(uiTheme.fg("warning", "已达上限;请缩小 path"));
 		}
 		if (details?.parseErrors?.length) {
 			extraLines.push(
@@ -340,7 +340,7 @@ export const astEditToolRenderer = {
 	describeCall(args: AstEditRenderArgs): NativeToolView {
 		return {
 			tool: {
-				title: "AST Edit",
+				title: "AST 编辑",
 				...astEditPatternHead(args),
 				meta: args.paths?.length ? [`in ${args.paths.map(displayPath).join(", ")}`] : undefined,
 			},
@@ -356,7 +356,7 @@ export const astEditToolRenderer = {
 		const patternHead = astEditPatternHead(args);
 		if (result.isError) {
 			return {
-				tool: { title: "AST Edit", ...patternHead },
+				tool: { title: "AST 编辑", ...patternHead },
 				tone: "error",
 				body: [errorText(resultText(result) || "Unknown error")],
 			};
@@ -378,7 +378,7 @@ export const astEditToolRenderer = {
 		const totalReplacements = details?.totalReplacements ?? 0;
 		if (totalReplacements === 0) {
 			return {
-				tool: { title: "AST Edit", ...patternHead, meta: ["0 replacements"] },
+				tool: { title: "AST 编辑", ...patternHead, meta: ["0 replacements"] },
 				tone: "warning",
 				body: compact<NativeChild>([parseNote, astEditScopeStats(details)]),
 			};
@@ -409,11 +409,11 @@ export const astEditToolRenderer = {
 		const pattern = args?.ops?.length === 1 ? patternPreview(args.ops[0]?.pat) : undefined;
 		return {
 			tool: {
-				title: "AST Edit",
+				title: "AST 编辑",
 				target: single ? displayPath(single.path) : formatCount("file", fileCount),
 				targetKind: single ? "path" : "text",
 				meta: compact([diffStatsMeta(added, removed), formatCount("replacement", totalReplacements)]),
-				badges: details?.applied ? undefined : [{ text: "proposed", tone: "warning" }],
+				badges: details?.applied ? undefined : [{ text: "已提议", tone: "warning" }],
 			},
 			tone: limitReached ? "warning" : undefined,
 			body: compact<NativeChild>([

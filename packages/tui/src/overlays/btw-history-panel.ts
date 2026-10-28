@@ -122,20 +122,20 @@ const STATUS: Record<BtwHistoryRecord["status"], { label: string; color: ThemeCo
 	interrupted: { label: "已中断", color: "warning" },
 };
 
-const SHEET = { role: "omp.overlay.btwHistory", anchor: "center", size: "lg", head: "BTW history" } as const;
-const EMPTY_SHEET = { role: "omp.overlay.btwHistory", anchor: "center", size: "md", head: "BTW history" } as const;
+const SHEET = { role: "omp.overlay.btwHistory", anchor: "center", size: "lg", head: "BTW 历史" } as const;
+const EMPTY_SHEET = { role: "omp.overlay.btwHistory", anchor: "center", size: "md", head: "BTW 历史" } as const;
 
 /** A status worth naming next to an answer natively; an answered question needs none. */
 function describeStatus(status: BtwHistoryTurn["status"]): TspSpan[] | undefined {
 	switch (status) {
 		case "running":
-			return [span("●", "accent", { fx: "pulse" }), span(" Answering", "accent")];
+			return [span("●", "accent", { fx: "pulse" }), span(" 正在回答", "accent")];
 		case "cancelled":
-			return [span("Cancelled", "warning")];
+			return [span("已取消", "warning")];
 		case "error":
-			return [span("Failed", "error")];
+			return [span("失败", "error")];
 		case "interrupted":
-			return [span("Interrupted", "warning")];
+			return [span("已中断", "warning")];
 		case "complete":
 			return undefined;
 	}
@@ -670,7 +670,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 		const items = this.#records.map(record => {
 			const followUps = record.followUps?.length ?? 0;
 			const detail: TspSpan[] = [span(this.#timeFormat.format(record.createdAt), "mono")];
-			if (followUps > 0) detail.push(span(` · ${followUps} follow-up${followUps === 1 ? "" : "s"}`));
+			if (followUps > 0) detail.push(span(` · ${followUps} 个后续问题${followUps === 1 ? "" : ""}`));
 			const status = describeStatus(getBtwLatestTurn(record).status);
 			// The question is markdown: its `code` reads as mono, without the backticks.
 			const label = sanitizeDisplayLine(getBtwTopicLabel(record))
@@ -699,7 +699,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 		const meta: TspSpan[] =
 			index === 0
 				? [span(this.#dateFormat.format(turn.createdAt))]
-				: [span("Follow-up · "), span(this.#timeFormat.format(turn.createdAt))];
+				: [span("追问 · "), span(this.#timeFormat.format(turn.createdAt))];
 		const status = describeStatus(turn.status);
 		if (status) meta.push(span("  ·  "), ...status);
 		// The question stays markdown so its inline code and links render.
@@ -711,7 +711,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 		if (turn.answer.trim() || !turn.error) {
 			const answer = turn.answer.trim()
 				? md(sanitizeDisplayText(turn.answer), { stream: turn.status === "running" })
-				: text([span(turn.status === "running" ? "Thinking…" : "No answer text.", "dim")], {
+				: text([span(turn.status === "running" ? "正在思考…" : "没有回答内容。", "dim")], {
 						role: "omp.btw.pending",
 					});
 			children.push(node("col", { role: "omp.btw.answer" }, [answer], "answer"));
@@ -720,7 +720,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 			children.push(text([span(sanitizeErrorLine(turn.error), "error")], { role: "omp.btw.error", wrap: "word" }));
 		}
 		if (turn.status === "interrupted") {
-			children.push(text([span("Not resumed in this view.", "muted")], { role: "omp.btw.note" }));
+			children.push(text([span("未在此视图中恢复。", "muted")], { role: "omp.btw.note" }));
 		}
 		return node("col", { role: "omp.btw.turn" }, children, key);
 	}
@@ -745,12 +745,12 @@ export class BtwHistoryPanel implements Component, Focusable {
 			"col",
 			{ role: "omp.btw.empty", align: "center", gap: "sm" },
 			[
-				text("No side questions yet", { role: "omp.btw.empty.title" }),
+				text("暂无附带问题", { role: "omp.btw.empty.title" }),
 				text(
 					[
-						span("Ask one with "),
-						span("/btw <question>", "code"),
-						span(". The answer stays out of the main conversation."),
+						span("通过以下方式提问："),
+						span("/btw <问题>", "code"),
+						span("。回答不会出现在主对话中。"),
 					],
 					{ role: "omp.btw.empty.hint", wrap: "word" },
 				),
@@ -768,22 +768,22 @@ export class BtwHistoryPanel implements Component, Focusable {
 		if (this.#composer) {
 			return actionBar([
 				null,
-				actionButton("Cancel", "discard", { keys: "escape" }),
-				actionButton(this.#followUpPending ? "Sending…" : "Send", "send", { keys: "enter", tone: "accent" }),
+				actionButton("取消", "discard", { keys: "escape" }),
+				actionButton(this.#followUpPending ? "正在发送…" : "发送", "send", { keys: "enter", tone: "accent" }),
 			]);
 		}
 		const running = record !== undefined && getBtwLatestTurn(record).status === "running";
 		const hides = this.#options.escapeHides === true;
 		const buttons: (NativeNode | null)[] = [];
-		if (running) buttons.push(actionButton("Stop answer", "stop", { keys: hides ? "x" : "escape" }));
+		if (running) buttons.push(actionButton("停止回答", "stop", { keys: hides ? "x" : "escape" }));
 		if (record && getBtwCopyText(record) !== undefined) {
-			buttons.push(actionButton(copied ? "Copy again" : "Copy answer", "copy-answer", { keys: "c" }));
-			if (copied) buttons.push(text([span("✓ Copied", "success")], { role: "omp.btw.copied" }));
+			buttons.push(actionButton(copied ? "再次复制" : "复制回答", "copy-answer", { keys: "c" }));
+			if (copied) buttons.push(text([span("✓ 已复制", "success")], { role: "omp.btw.copied" }));
 		}
 		buttons.push(null);
 		// Clicking Close always dismisses the sheet; its tooltip names Esc only where Esc does too.
-		buttons.push(actionButton("Close", "close", running && !hides ? undefined : { keys: "escape" }));
-		if (canFollowUp) buttons.push(actionButton("Follow up", "follow-up", { keys: "f", tone: "accent" }));
+		buttons.push(actionButton("关闭", "close", running && !hides ? undefined : { keys: "escape" }));
+		if (canFollowUp) buttons.push(actionButton("追问", "follow-up", { keys: "f", tone: "accent" }));
 		return actionBar(buttons);
 	}
 
@@ -928,7 +928,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 	}
 
 	#focusLabel(focus: "list" | "answer"): string {
-		const label = focus === "list" ? `History (${this.#records.length})` : "Details";
+		const label = focus === "list" ? `历史记录 (${this.#records.length})` : "详情";
 		return this.#focus === focus
 			? theme.bold(theme.fg("accent", `${theme.nav.cursor} ${label}`))
 			: theme.fg("muted", `  ${label}`);
@@ -1035,7 +1035,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 				lines.push(
 					row(
 						theme.fg("dim", editorKeys("tui.select.up", "tui.select.down")) +
-							theme.fg("muted", ` ${this.#focus === "list" ? "select" : "scroll"}`),
+							theme.fg("muted", ` ${this.#focus === "list" ? "选择" : "滚动"}`),
 						width,
 					),
 				);

@@ -213,7 +213,7 @@ export class ContextViewer implements Component {
 					size: "lg",
 					anchor: "center",
 					head: [
-						span("Context", "strong"),
+						span("上下文", "strong"),
 						span(` · ${category ? safeText(category.label) : this.#modelLabel}`, "muted"),
 					],
 				},
@@ -572,8 +572,8 @@ export class ContextViewer implements Component {
 		children.push(
 			actionBar([
 				null,
-				...(this.#state !== "overview" ? [actionButton("Back", "back")] : []),
-				actionButton("Close", "close"),
+				...(this.#state !== "overview" ? [actionButton("返回", "back")] : []),
+				actionButton("关闭", "close"),
 			]),
 		);
 		return col(children, {

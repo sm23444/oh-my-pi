@@ -255,7 +255,7 @@ function formatBenchIndex(index: number, total: number): string {
 }
 
 function formatBenchAccount(account: string | undefined): string {
-	return account ? sanitizeBenchText(account, BENCH_ACCOUNT_WIDTH) : chalk.dim("(no account)");
+	return account ? sanitizeBenchText(account, BENCH_ACCOUNT_WIDTH) : chalk.dim("(无账户)");
 }
 
 function formatBenchDuration(ms: number): string {
@@ -315,11 +315,11 @@ function renderBenchStatusLine(
 	const prefix = formatBenchIndex(index, total);
 	switch (status.state) {
 		case "waiting":
-			return `${chalk.dim("○")} ${prefix} ${chalk.dim("waiting")}`;
+			return `${chalk.dim("○")} ${prefix} ${chalk.dim("等待中")}`;
 		case "running": {
 			const frames = SPINNER_FRAMES.unicode.activity;
 			const spinner = frames[frame % frames.length] ?? "*";
-			return `${chalk.yellow(spinner)} ${prefix} ${formatBenchAccount(status.account)} ${chalk.dim("sending request")}`;
+			return `${chalk.yellow(spinner)} ${prefix} ${formatBenchAccount(status.account)} ${chalk.dim("正在发送请求")}`;
 		}
 		case "success":
 			return renderBenchResultLine(index, total, status.result);
@@ -355,7 +355,7 @@ export function createBenchProgressSink(
 	const width = Number.isFinite(columns) && columns > 0 ? Math.trunc(columns) : 80;
 	const render = (): void => {
 		const lines = [
-			chalk.bold("bench requests"),
+			chalk.bold("基准测试请求"),
 			...statuses.map((status, index) => renderBenchStatusLine(status, index, total, frame)),
 		];
 		// Anchor every redraw at column 0 and terminate each row with CRLF: a
@@ -717,7 +717,7 @@ function summarizeResults(
 }
 
 function formatRows(rows: Array<{ count: number; percent: number; label: string }>): string[] {
-	if (rows.length === 0) return [`  ${chalk.dim("(none)")}`];
+	if (rows.length === 0) return [`  ${chalk.dim("(无)")}`];
 	const maxCountWidth = Math.max(...rows.map(row => row.count.toString().length));
 	return rows.map(row => {
 		const count = row.count.toString().padStart(maxCountWidth);
@@ -738,16 +738,16 @@ export function formatDryBalanceText(summary: DryBalanceSummary): string {
 		label: row.reason,
 	}));
 	const lines = [
-		chalk.bold("dry-balance"),
-		`model: ${summary.model}`,
-		`provider: ${summary.provider}`,
-		`samples: ${summary.samples}`,
-		`concurrency: ${summary.concurrency}`,
+		chalk.bold("模拟余额"),
+		`模型: ${summary.model}`,
+		`提供商: ${summary.provider}`,
+		`样本数: ${summary.samples}`,
+		`并发: ${summary.concurrency}`,
 		"",
 		`${chalk.green("success")} ${summary.success.total}`,
 		...formatRows(accountRows),
 		"",
-		`${summary.failure.total > 0 ? chalk.red("failure") : chalk.dim("failure")} ${summary.failure.total}`,
+		`${summary.failure.total > 0 ? chalk.red("failure") : chalk.dim("失败")} ${summary.failure.total}`,
 		...formatRows(failureRows),
 	];
 	if (summary.bench) {
@@ -764,13 +764,13 @@ export function formatDryBalanceText(summary: DryBalanceSummary): string {
 		}));
 		lines.push(
 			"",
-			chalk.bold("bench"),
-			`requests: ${summary.bench.total}`,
+			chalk.bold("基准测试"),
+			`请求: ${summary.bench.total}`,
 			`${chalk.green("success")} ${summary.bench.success.total}`,
-			`avg TTFT: ${avgTtft}`,
-			`avg TPS: ${avgTps}`,
+			`平均 TTFT: ${avgTtft}`,
+			`平均 TPS: ${avgTps}`,
 			"",
-			`${summary.bench.failure.total > 0 ? chalk.red("failure") : chalk.dim("failure")} ${summary.bench.failure.total}`,
+			`${summary.bench.failure.total > 0 ? chalk.red("failure") : chalk.dim("失败")} ${summary.bench.failure.total}`,
 			...formatRows(benchFailureRows),
 		);
 	}

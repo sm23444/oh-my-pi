@@ -1526,8 +1526,8 @@ export class OutputSink {
 			const headSep = headWritten > 0 ? "\n" : "";
 			const tailSep = tailBytes > 0 && !this.#artifactTailRing.startsWith("\n") ? "\n" : "";
 			const notice =
-				`${headSep}[ARTIFACT TRUNCATED: kept first ${formatBytes(headWritten)} + last ${formatBytes(tailBytes)} ` +
-				`of ${formatBytes(totalCapped)}; ${formatBytes(droppedBytes)} elided from the middle]${tailSep}`;
+				`${headSep}[ARTIFACT TRUNCATED：保留了前 ${formatBytes(headWritten)} + 后 ${formatBytes(tailBytes)} ` +
+				`共 ${formatBytes(totalCapped)}；从中间省略了 ${formatBytes(droppedBytes)}]${tailSep}`;
 			this.#writeArtifact(notice, "flush");
 		}
 		if (tailBytes > 0) {
@@ -1742,7 +1742,7 @@ export function formatHeadTruncationNotice(
 	const totalFileLines = options.totalFileLines ?? truncation.totalLines;
 	const endLineDisplay = startLineDisplay + (truncation.outputLines ?? truncation.totalLines) - 1;
 	const nextOffset = endLineDisplay + 1;
-	const notice = `[Showing lines ${startLineDisplay}-${endLineDisplay} of ${totalFileLines}. Use :${nextOffset} to continue]`;
+	const notice = `[显示第 ${startLineDisplay}-${endLineDisplay} 行，共 ${totalFileLines} 行。使用 :${nextOffset} 继续]`;
 	return `\n\n${notice}`;
 }
 

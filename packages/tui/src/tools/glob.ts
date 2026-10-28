@@ -132,7 +132,7 @@ function describeGlobFiles(
 function globNativeHead(args: GlobRenderArgs | undefined, meta: readonly string[] = []): NativeToolHead {
 	const parts = [...meta];
 	if (meta.length === 0 && args?.limit !== undefined) parts.push(`limit:${args.limit}`);
-	return { title: "Glob", target: formatGlobRenderPaths(args) || "*", targetKind: "pattern", meta: parts };
+	return { title: "查找", target: formatGlobRenderPaths(args) || "*", targetKind: "pattern", meta: parts };
 }
 
 /** Render glob calls and results in the transcript. */
@@ -140,12 +140,12 @@ export const globToolRenderer = {
 	inline: true,
 	renderCall(args: GlobRenderArgs, _options: RenderResultOptions, uiTheme: Theme): Component {
 		const meta: string[] = [];
-		if (args.limit !== undefined) meta.push(`limit:${args.limit}`);
+		if (args.limit !== undefined) meta.push(`限制:${args.limit}`);
 
 		const text = renderStatusLine(
 			{
 				icon: "pending",
-				title: "Glob",
+				title: "查找",
 				titleColor: "toolTitle",
 				description: formatGlobRenderPaths(args) || "*",
 				meta,
@@ -165,7 +165,7 @@ export const globToolRenderer = {
 		const linkPaths = globLinkPaths(details, options.renderContext?.rawDetails);
 
 		if (result.isError || details?.error) {
-			const errorText = details?.error || result.content?.find(c => c.type === "text")?.text || "Unknown error";
+			const errorText = details?.error || result.content?.find(c => c.type === "text")?.text || "未知错误";
 			return new Text(formatErrorMessage(errorText, uiTheme), 0, 0);
 		}
 
@@ -179,14 +179,14 @@ export const globToolRenderer = {
 				textContent.includes("No files found") ||
 				textContent.trim() === ""
 			) {
-				return new Text(formatEmptyMessage("No files found", uiTheme), 0, 0);
+				return new Text(formatEmptyMessage("未找到文件", uiTheme), 0, 0);
 			}
 
 			const lines = textContent.split("\n").filter(l => l.trim());
 			const header = renderStatusLine(
 				{
 					iconOverride: globStatusIcon(uiTheme),
-					title: "Glob",
+					title: "查找",
 					titleColor: "toolTitle",
 					description: formatGlobRenderPaths(args),
 					meta: [formatCount("file", lines.length)],
@@ -223,7 +223,7 @@ export const globToolRenderer = {
 
 		const missingPaths = details?.missingPaths ?? [];
 		const missingNote =
-			missingPaths.length > 0 ? uiTheme.fg("warning", `skipped missing: ${missingPaths.join(", ")}`) : undefined;
+			missingPaths.length > 0 ? uiTheme.fg("warning", `跳过缺失: ${missingPaths.join(", ")}`) : undefined;
 
 		if (fileCount === 0) {
 			// `truncated` on an empty result means the scan timed out mid-walk —
@@ -235,10 +235,10 @@ export const globToolRenderer = {
 			const header = renderStatusLine(
 				{
 					icon: "warning",
-					title: "Glob",
+					title: "查找",
 					titleColor: "toolTitle",
 					description: formatGlobRenderPaths(args),
-					meta: emptyTimedOut ? ["0 files", uiTheme.fg("warning", "timed out")] : ["0 files"],
+					meta: emptyTimedOut ? ["0 files", uiTheme.fg("warning", "已超时")] : ["0 files"],
 				},
 				uiTheme,
 			);
@@ -247,12 +247,12 @@ export const globToolRenderer = {
 			return new Text(lines.join("\n"), 0, 0);
 		}
 		const meta: string[] = [formatCount("file", fileCount)];
-		if (details?.scopePath) meta.push(`in ${details.scopePath}`);
-		if (truncated) meta.push(uiTheme.fg("warning", timedOut ? "timed out" : "truncated"));
+		if (details?.scopePath) meta.push(`于 ${details.scopePath}`);
+		if (truncated) meta.push(uiTheme.fg("warning", timedOut ? "已超时" : "已截断"));
 		const header = renderStatusLine(
 			{
 				...(truncated ? { icon: "warning" as const } : { iconOverride: globStatusIcon(uiTheme) }),
-				title: "Glob",
+				title: "查找",
 				titleColor: "toolTitle",
 				description: formatGlobRenderPaths(args),
 				meta,
@@ -269,7 +269,7 @@ export const globToolRenderer = {
 
 		const extraLines: string[] = [];
 		if (truncationReasons.length > 0) {
-			extraLines.push(uiTheme.fg("warning", `truncated: ${truncationReasons.join(", ")}`));
+			extraLines.push(uiTheme.fg("warning", `已截断: ${truncationReasons.join(", ")}`));
 		}
 		if (missingNote) extraLines.push(missingNote);
 
@@ -348,7 +348,7 @@ export const globToolRenderer = {
 				// `truncated` on an empty result means the scan timed out mid-walk.
 				tool: {
 					...globNativeHead(args, compact(["0 files", scope])),
-					note: timedOut || truncated ? "timed out" : undefined,
+					note: timedOut || truncated ? "已超时" : undefined,
 				},
 				tone: "warning",
 				inline: true,
@@ -364,7 +364,7 @@ export const globToolRenderer = {
 		const head = globNativeHead(args, compact([formatCount("file", details.fileCount), scope]));
 		return {
 			tool: truncated
-				? { ...head, badges: [{ text: timedOut ? "timed out" : "truncated", tone: "warning" }] }
+				? { ...head, badges: [{ text: timedOut ? "已超时" : "已截断", tone: "warning" }] }
 				: head,
 			inline: true,
 			body: compact<NativeChild>([

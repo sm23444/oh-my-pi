@@ -40,7 +40,8 @@ export default class Stream extends Command {
 		const credential = new StencilCredential();
 		try {
 			if (!(await credential.resolve())) {
-				process.stderr.write(`stream: ${StencilCredential.missingMessage}\n`);
+				process.stderr.write(`流：${StencilCredential.missingMessage}
+`);
 				process.exitCode = 1;
 				return;
 			}
@@ -53,7 +54,8 @@ export default class Stream extends Command {
 			});
 			if (exitCode !== 0) process.exitCode = exitCode;
 		} catch (error) {
-			process.stderr.write(`stream: ${error instanceof Error ? error.message : String(error)}\n`);
+			process.stderr.write(`流：${error instanceof Error ? error.message : String(error)}
+`);
 			process.exitCode = 1;
 		} finally {
 			credential.close();

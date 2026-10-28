@@ -222,7 +222,7 @@ function compactionNativeLabel(message: CompactionSummaryMessage): TspSpan[] {
 		spans.push(
 			span(` · ${formatNumber(message.tokensBefore)}`, "muted mono"),
 			span(" → ", "dim"),
-			span(`${formatNumber(message.tokensAfter)} tokens`, "muted mono"),
+			span(`${formatNumber(message.tokensAfter)} 个令牌`, "muted mono"),
 		);
 	}
 	if (message.warning) spans.push(span(` ${theme.icon.warning}`, "warning"));
@@ -276,7 +276,7 @@ export class HandoffSummaryMessageComponent extends SummaryMessageComponent {
 	constructor(message: CustomMessage<unknown>) {
 		super({
 			label: () => `${theme.icon.context} handed-off`,
-			nativeLabel: () => [span("Handed off", "muted")],
+			nativeLabel: () => [span("已移交", "muted")],
 			role: "omp.handoff",
 			detailMarkdown: () => {
 				const document = extractHandoffDocument(getCustomMessageText(message));
@@ -305,7 +305,7 @@ export class BranchSummaryMessageComponent extends SummaryMessageComponent {
 	constructor(message: BranchSummaryMessage) {
 		super({
 			label: () => `${theme.icon.branch} branch`,
-			nativeLabel: () => [span("Branch summarized", "muted")],
+			nativeLabel: () => [span("分支已总结", "muted")],
 			role: "omp.branch",
 			detailMarkdown: () => `**Branch summary**\n\n${message.summary}`,
 		});

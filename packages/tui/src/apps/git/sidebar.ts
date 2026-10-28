@@ -1083,8 +1083,8 @@ export class Sidebar {
 			[
 				row(
 					compact([
-						text([span(`${total} change${total === 1 ? "" : "s"}`, "strong")]),
-						this.#model.branch !== null && text([span("on", "muted")]),
+						text([span(`${total} 项更改${total === 1 ? "" : ""}`, "strong")]),
+						this.#model.branch !== null && text([span("开启", "muted")]),
 						this.#model.branch !== null &&
 							text([span(this.#model.branch, "mono")], { role: "omp.app.git.branch", truncate: "middle" }),
 					]),
@@ -1146,7 +1146,7 @@ export class Sidebar {
 				row(
 					[
 						node("icon", { name: folded ? "chev-r" : "chev" }),
-						text(area === "unstaged" ? "Unstaged" : "Staged"),
+						text(area === "unstaged" ? "未暂存" : "已暂存"),
 						text([span(String(files.length), "num")], { role: "omp.app.git.count" }),
 					],
 					{ gap: "xs", align: "center", actions: { click: `fold-${area}` }, title: folded ? "显示" : "隐藏" },
@@ -1217,7 +1217,7 @@ export class Sidebar {
 		if (file.deletions) stats.push(span(`${stats.length > 0 ? " " : ""}−${file.deletions}`, "del num"));
 		return item(key, {
 			label,
-			detail: file.origPath ? [span(`from ${file.origPath}`, "dim")] : undefined,
+			detail: file.origPath ? [span(`来自 ${file.origPath}`, "dim")] : undefined,
 			value: stats.length > 0 ? stats : undefined,
 			hint: [KIND_LETTER[file.kind]],
 			tone: KIND_COLOR[file.kind],
@@ -1266,12 +1266,12 @@ export class Sidebar {
 		const canCommit =
 			hasChanges && !this.generating && (summary.trim().length > 0 || description.trim().length === 0);
 		const label = this.generating
-			? "Generating message…"
+			? "正在生成提交信息…"
 			: summary.trim().length === 0 && description.trim().length === 0
-				? "Generate message"
+				? "生成提交信息"
 				: this.#model.staged.length > 0
-					? "Commit"
-					: "Stage all & commit";
+					? "提交"
+					: "暂存全部并提交";
 		// The panels' button (omp-panels.css `omp.btn`): accent while the keyboard is on it, muted when it can't run.
 		const commitTone = !canCommit ? "muted" : on({ kind: "commit-button" }) ? "accent" : undefined;
 		return col(
@@ -1281,7 +1281,7 @@ export class Sidebar {
 				keyed(
 					row(
 						[
-							row([node("icon", { name: this.amend ? "check" : "commit" }), text("Amend")], {
+							row([node("icon", { name: this.amend ? "check" : "commit" }), text("修改提交")], {
 								gap: "xs",
 								align: "center",
 								role: `omp.app.git.toggle${this.amend ? ".set" : ""}${on({ kind: "amend" }) ? ".on" : ""}`,
@@ -1313,7 +1313,7 @@ export class Sidebar {
 	#describeHead(selectedKey: string | undefined): NativeChild[] {
 		const head = this.#model.headCommit;
 		if (!head) {
-			return [keyed(text([span("No commits yet", "muted")], { role: "omp.app.git.empty" }), "empty")];
+			return [keyed(text([span("尚无提交", "muted")], { role: "omp.app.git.empty" }), "empty")];
 		}
 		const when = head.authorDate ? new Date(head.authorDate) : null;
 		const initials = head.authorName
@@ -1356,7 +1356,7 @@ export class Sidebar {
 		);
 		const out: NativeChild[] = [keyed(commit, "head")];
 		if (!head.filesLoaded) {
-			out.push(keyed(text([span("Loading changed files…", "muted")]), "loading"));
+			out.push(keyed(text([span("正在加载已更改的文件…", "muted")]), "loading"));
 			return out;
 		}
 		const additions = head.files.reduce((sum, file) => sum + (file.additions ?? 0), 0);
@@ -1366,7 +1366,7 @@ export class Sidebar {
 				row(
 					[
 						text([
-							span(`${head.files.length} file${head.files.length === 1 ? "" : "s"}`, "strong"),
+							span(`${head.files.length} 个文件${head.files.length === 1 ? "" : ""}`, "strong"),
 							span("  "),
 							span(`+${additions}`, "ins num"),
 							span(" "),
@@ -1521,7 +1521,7 @@ export class Sidebar {
 	#changesHeaderRows(width: number): Row[] {
 		const total = this.#model.unstaged.length + this.#model.staged.length;
 		const branch = this.#model.branch ? tintChip(` ${this.#model.branch} `, theme.getColorHex("accent")) : "";
-		const label = theme.bold(`${total} 个文件更改${total === 1 ? "" : "s"} 于 `);
+		const label = theme.bold(`${total} 个文件更改${total === 1 ? "" : ""} 于 `);
 		return [
 			{ text: ` ${label}${branch}` },
 			this.#viewToggleRow(width),
@@ -1623,10 +1623,10 @@ export class Sidebar {
 		const description = this.description.getText().trim();
 		const canActivate = hasChanges && !this.generating && (summary.length > 0 || description.length === 0);
 		const label = this.generating
-			? "-○- Generating commit message"
+			? "-○- 正在生成提交信息"
 			: this.#model.staged.length > 0
-				? "-○- Commit staged changes"
-				: "-○- Stage all & commit";
+				? "-○- 提交已暂存的更改"
+				: "-○- 暂存全部并提交";
 		const pad = Math.max(0, Math.floor((width - 4 - visibleWidth(label)) / 2));
 		const inner = `${" ".repeat(pad)}${label}${" ".repeat(pad)}`;
 		const button = pill(inner, theme.getColorHex("accent"), {

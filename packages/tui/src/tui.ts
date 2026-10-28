@@ -3449,7 +3449,7 @@ export class TUI extends Container {
 			plan = provider.renderFrame({ columns: width, rows: height });
 			viewport = Array.from(plan.viewport);
 			if (viewport.length > height) {
-				const message = `Frame provider returned ${viewport.length} rows for a ${height}-row viewport`;
+				const message = `框架提供商返回了 ${viewport.length} 行，而视口为 ${height} 行`;
 				if (Bun.env.NODE_ENV === "test" || Bun.env.NODE_ENV === "development") throw new Error(message);
 				logger.error("TUI layout contract violated", { rows: viewport.length, height });
 				viewport = viewport.slice(0, height);

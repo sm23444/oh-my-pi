@@ -28,7 +28,7 @@ export async function pickCleanseTarget(checkers: readonly CleanseCheckerChoice[
 	const items: SelectItem[] = [
 		{
 			value: "all",
-			label: `运行所有 ${checkers.length} 个已发现的检查器${checkers.length === 1 ? "" : "s"}`,
+			label: `运行所有 ${checkers.length} 个已发现的检查器${checkers.length === 1 ? "" : ""}`,
 		},
 		...checkers.map(checker => ({
 			value: `checker:${checker.id}`,
@@ -45,7 +45,7 @@ export async function pickCleanseTarget(checkers: readonly CleanseCheckerChoice[
 		maxVisible: 12,
 		picker: {
 			icon: "wand",
-			noun: "checkers",
+			noun: "检查器",
 			subtitle: "运行检查器，然后修复它们发现的问题",
 			confirm: "Cleanse",
 		},

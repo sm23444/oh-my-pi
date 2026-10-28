@@ -59,7 +59,7 @@ function renderUsageReports(
 ): string {
 	const displayReports = collapseSharedUsageReports(reports);
 	const latestFetchedAt = Math.max(...displayReports.map(report => report.fetchedAt ?? 0));
-	const lines = [`Usage${latestFetchedAt ? ` (${formatCoarseDuration(nowMs - latestFetchedAt)} ago)` : ""}`];
+	const lines = [`用量${latestFetchedAt ? ` (${formatCoarseDuration(nowMs - latestFetchedAt)} 前)` : ""}`];
 	const grouped = new Map<string, UsageReport[]>();
 	for (const report of displayReports) {
 		const providerReports = grouped.get(report.provider) ?? [];
@@ -73,7 +73,7 @@ function renderUsageReports(
 		lines.push("", formatProviderName(provider));
 		const reportingModels = usageModelSelectors.filter(selector => selector.startsWith(`${provider}/`));
 		if (reportingModels.length > 0) {
-			lines.push("  Models with usage data");
+			lines.push("  包含用量数据的模型");
 			for (const selector of reportingModels) lines.push(`    ${sanitizeText(selector)}`);
 		}
 		const activeAccount = resolveActiveAccount?.(provider);
@@ -105,29 +105,29 @@ function renderUsageReports(
 				const availability =
 					resets.redeemableCount === resets.bankedCount ? "available" : `${resets.redeemableCount} usable now`;
 				lines.push(
-					`- ${resetLabel}: ${resets.bankedCount} saved rate-limit reset${resets.bankedCount === 1 ? "" : "s"} — ${availability} — /usage reset to spend`,
+					`- ${resetLabel}：${resets.bankedCount} 个已保存的限速重置${resets.bankedCount === 1 ? "" : ""} — ${availability} — /usage 重置以使用`,
 				);
 				if (resets.soonestExpiry) {
 					const expiryMs = Date.parse(resets.soonestExpiry);
 					const remaining = expiryMs - nowMs;
 					if (remaining > 0) {
 						lines.push(
-							`  soonest expires in ${formatCoarseDuration(remaining)} (${resets.soonestExpiry.slice(0, 10)})`,
+							`  最快将在 ${formatCoarseDuration(remaining)} 后过期（${resets.soonestExpiry.slice(0, 10)}）`,
 						);
 					} else {
-						lines.push(`  expired (${resets.soonestExpiry.slice(0, 10)})`);
+						lines.push(`  已过期（${resets.soonestExpiry.slice(0, 10)}）`);
 					}
 				}
 				if (resets.redeemableCount === 0 && resets.unavailableReason) {
 					const reason = sanitizeText(resets.unavailableReason.replace(/[\r\n\t]+/g, " "));
-					lines.push(`  unavailable: ${reason}`);
+					lines.push(`  不可用：${reason}`);
 				}
 			}
 			if (report.limits.length === 0) {
 				const email = typeof report.metadata?.email === "string" ? report.metadata.email : "account";
 				const label =
 					report.provider === "openai-codex" ? formatCodexUsageReportLabel(report, providerReports, email) : email;
-				lines.push(`- ${label}: no limits reported`);
+				lines.push(`- ${label}：未报告任何限制`);
 				continue;
 			}
 			for (let index = 0; index < report.limits.length; index++) {
@@ -141,12 +141,12 @@ function renderUsageReports(
 						: "";
 				lines.push(`- ${limit.label}${tier}${formatWindowSuffix(limit.label, window)}`);
 				lines.push(
-					`  ${formatUsageReportAccount(report, providerReports, limit, index)}: ${formatUsageAmount(limit)}${inUse ? "  ← in use by this session" : ""}`,
+					`  ${formatUsageReportAccount(report, providerReports, limit, index)}: ${formatUsageAmount(limit)}${inUse ? "  ← 当前会话正在使用" : ""}`,
 				);
 				lines.push(`  ${renderAsciiBar(limit.amount.usedFraction)}`);
 				if (limit.window?.resetsAt && limit.window.resetsAt > nowMs) {
 					lines.push(
-						`  ${limit.window.resetLabel ?? "resets"} in ${formatCoarseDuration(limit.window.resetsAt - nowMs)}`,
+						`  ${limit.window.resetLabel ?? "重置"} 于 ${formatCoarseDuration(limit.window.resetsAt - nowMs)} 后`,
 					);
 				}
 				if (limit.notes && limit.notes.length > 0)
@@ -189,14 +189,14 @@ export async function buildUsageReportText(runtime: SlashCommandRuntime): Promis
 	const stats = runtime.session.sessionManager.getUsageStatistics();
 	const orchestrationTokens = stats.orchestrationInput + stats.orchestrationOutput + stats.orchestrationCacheRead;
 	return [
-		"Usage",
-		`Input tokens: ${stats.input}`,
-		`Output tokens: ${stats.output}`,
-		`Cache read tokens: ${stats.cacheRead}`,
-		`Cache write tokens: ${stats.cacheWrite}`,
-		`Total tokens: ${stats.totalTokens}`,
+		"用量",
+		`输入 Token 数：${stats.input}`,
+		`输出 Token 数：${stats.output}`,
+		`缓存读取 Token 数：${stats.cacheRead}`,
+		`缓存写入 Token 数：${stats.cacheWrite}`,
+		`Token 总数：${stats.totalTokens}`,
 		...(orchestrationTokens > 0 ? [`Orchestration tokens: ${orchestrationTokens}`] : []),
-		`Premium requests: ${stats.premiumRequests}`,
-		`Cost: $${stats.cost.toFixed(6)}`,
+		`高级请求数：${stats.premiumRequests}`,
+		`费用：$${stats.cost.toFixed(6)}`,
 	].join("\n");
 }

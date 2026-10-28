@@ -410,18 +410,23 @@ async function runServe(flags: AuthGatewayCommandArgs["flags"]): Promise<void> {
 		excludeProviders: new Set(cfgDisabledProviders.get(settings)),
 		clients,
 	});
-	process.stdout.write(`auth-gateway listening on ${handle.url}\n`);
+	process.stdout.write(`auth-gateway 正在监听 ${handle.url}
+`);
 	if (gatewayToken) {
-		process.stdout.write(`bearer token: ${getTokenFilePath()} (chmod 0600)\n`);
+		process.stdout.write(`bearer 令牌：${getTokenFilePath()} (chmod 0600)
+`);
 	} else {
-		process.stdout.write(`auth: disabled (--no-auth) — any client can call this gateway\n`);
+		process.stdout.write(`auth：已禁用（--no-auth）——任何客户端均可调用此网关
+`);
 	}
 	if (clientsPath !== undefined && clients !== undefined) {
 		process.stdout.write(
-			`client tokens: ${clients.length} from ${clientsPath} (re-read every ${CLIENTS_RELOAD_INTERVAL_MS / 1000}s)\n`,
+			`客户端令牌：${clients.length} 个，来自 ${clientsPath}（每 ${CLIENTS_RELOAD_INTERVAL_MS / 1000} 秒重新读取）
+`,
 		);
 	}
-	process.stdout.write(`upstream broker: ${brokerConfig.url}\n`);
+	process.stdout.write(`上游 broker：${brokerConfig.url}
+`);
 
 	// `serve` is long-lived: rebuild the catalog periodically so models
 	// discovered after boot (for providers we already hold credentials for)
@@ -470,7 +475,9 @@ async function runServe(flags: AuthGatewayCommandArgs["flags"]): Promise<void> {
 	const stop = async (signal: NodeJS.Signals): Promise<void> => {
 		if (shutdownStarted) return;
 		shutdownStarted = true;
-		process.stdout.write(`\nReceived ${signal}, shutting down...\n`);
+		process.stdout.write(`
+收到 ${signal}，正在关闭...
+`);
 		clearInterval(catalogRefresh);
 		clearInterval(credentialSync);
 		clearInterval(clientsReload);
@@ -541,9 +548,11 @@ async function runStatus(flags: AuthGatewayCommandArgs["flags"]): Promise<void> 
 		if (flags.json) {
 			process.stdout.write(`${JSON.stringify(status)}\n`);
 		} else {
-			process.stdout.write(`${chalk.yellow("No broker configured.")} Set OMP_AUTH_BROKER_URL.\n`);
+			process.stdout.write(`${chalk.yellow("No broker configured.")} 设置 OMP_AUTH_BROKER_URL。
+`);
 			process.stdout.write(
-				`token: ${status.tokenPresent ? chalk.green("present") : chalk.red("missing")} at ${status.tokenFile}\n`,
+				`令牌：${status.tokenPresent ? chalk.green("present") : chalk.red("missing")}，位于 ${status.tokenFile}
+`,
 			);
 		}
 		process.exitCode = 1;
@@ -571,11 +580,12 @@ async function runStatus(flags: AuthGatewayCommandArgs["flags"]): Promise<void> 
 			})`;
 			process.stdout.write(`${tokenPresent ? chalk.green("ready") : chalk.yellow("not ready")} ${brokerLine}\n`);
 			process.stdout.write(
-				`token: ${tokenPresent ? chalk.green("present") : chalk.red("missing")} at ${status.tokenFile}\n`,
+				`令牌：${tokenPresent ? chalk.green("present") : chalk.red("missing")}，位于 ${status.tokenFile}
+`,
 			);
 			if (!tokenPresent) {
 				process.stdout.write(
-					"Run `omp auth-gateway token` or `omp auth-gateway serve` to create a bearer token.\n",
+					"运行 `omp auth-gateway token` 或 `omp auth-gateway serve` 以创建 bearer 令牌。\n",
 				);
 			}
 		}
@@ -595,9 +605,11 @@ async function runStatus(flags: AuthGatewayCommandArgs["flags"]): Promise<void> 
 		if (flags.json) {
 			process.stdout.write(`${JSON.stringify(status)}\n`);
 		} else {
-			process.stdout.write(`${chalk.red("FAILED")} upstream broker: ${brokerConfig.url}: ${message}\n`);
+			process.stdout.write(`${chalk.red("FAILED")} 上游代理：${brokerConfig.url}：${message}
+`);
 			process.stdout.write(
-				`token: ${status.tokenPresent ? chalk.green("present") : chalk.red("missing")} at ${status.tokenFile}\n`,
+				`令牌：${status.tokenPresent ? chalk.green("present") : chalk.red("missing")}，位于 ${status.tokenFile}
+`,
 			);
 		}
 		process.exitCode = 1;
@@ -859,7 +871,8 @@ async function runCheck(flags: AuthGatewayCommandArgs["flags"]): Promise<void> {
 				grouped.set(row.provider, list);
 			}
 			const providers = [...grouped.keys()].sort();
-			process.stdout.write(`broker: ${brokerConfig.url}${flags.strict ? chalk.dim(" [strict]") : ""}\n`);
+			process.stdout.write(`代理：${brokerConfig.url}${flags.strict ? chalk.dim(" [严格]") : ""}
+`);
 			for (const provider of providers) {
 				const rows = grouped.get(provider) ?? [];
 				process.stdout.write(`\n${chalk.bold(provider)} (${rows.length})\n`);
@@ -876,14 +889,15 @@ async function runCheck(flags: AuthGatewayCommandArgs["flags"]): Promise<void> {
 					// failed row can't say which subscription needs re-login.
 					const org = row.orgName ?? row.orgId;
 					const identity = org && org !== base ? `${base} (${org})` : base;
-					const remote = row.remoteRefresh ? chalk.dim(" [remote-refresh]") : "";
+					const remote = row.remoteRefresh ? chalk.dim(" [远程刷新]") : "";
 					const reasonParts: string[] = [];
 					if (row.reason) reasonParts.push(row.reason);
 					if (row.completion?.reason) reasonParts.push(`chat: ${row.completion.reason}`);
 					const reason = reasonParts.length > 0 ? chalk.dim(` — ${reasonParts.join("; ")}`) : "";
 					const chat = formatCompletionStatus(row.completion);
 					process.stdout.write(
-						`  ${status}${chat} id=${row.id.toString().padStart(3)} ${row.type.padEnd(7)} ${identity}${remote}${reason}\n`,
+						`  ${status}${chat} id=${row.id.toString().padStart(3)} 类型 ${row.type.padEnd(7)} 身份 ${identity}${remote}${reason}
+`,
 					);
 				}
 			}

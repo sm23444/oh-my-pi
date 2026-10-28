@@ -68,7 +68,7 @@ export function promptTextReviewSource(text: string, sessionId: string, label = 
 /** Create a prompt-backed source while preserving the supplied text exactly. */
 export function createPromptTextReviewSource(ctx: CustomCommandContext, text: string): TextReviewSource | undefined {
 	if (text.length === 0) {
-		ctx.ui.notify("Enter text to annotate.", "warning");
+		ctx.ui.notify("输入要批注的文本。", "warning");
 		return undefined;
 	}
 	return promptTextReviewSource(text, ctx.sessionManager.getSessionId());

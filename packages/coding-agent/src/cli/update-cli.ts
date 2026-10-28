@@ -1558,7 +1558,7 @@ function packageManagerMigrationSteps(manager: "bun" | "npm", release: ReleaseIn
  *    and verify again; only a repeated failure aborts, with a recovery hint.
  */
 export async function migrateRenamedInstall(release: ReleaseInfo, steps: RenameMigrationSteps): Promise<void> {
-	console.log(chalk.dim(`npm package renamed to ${release.packages.pkg}; migrating this install.`));
+	console.log(chalk.dim(`npm 包已重命名为 ${release.packages.pkg}；正在迁移此安装。`));
 	const installExit = await steps.install();
 	if (installExit !== 0) {
 		throw new Error(
@@ -1612,7 +1612,7 @@ async function npmSupportsReleaseAgeOverride(): Promise<boolean> {
  * verified and reported its own result.
  */
 async function updateViaBun(release: ReleaseInfo): Promise<InstalledVersionVerification | undefined> {
-	console.log(chalk.dim("Updating via bun..."));
+	console.log(chalk.dim("正在通过 bun 更新..."));
 	let verification: InstalledVersionVerification | undefined;
 	if (release.packages.pkg !== PACKAGE) {
 		await migrateRenamedInstall(release, packageManagerMigrationSteps("bun", release));
@@ -1630,7 +1630,7 @@ async function updateViaBun(release: ReleaseInfo): Promise<InstalledVersionVerif
 	try {
 		const pruneResult = await pruneBunCacheAfterGlobalInstall();
 		if (pruneResult && pruneResult.removedEntries > 0) {
-			console.log(chalk.dim(`Pruned ${pruneResult.removedEntries} stale Bun cache entries`));
+			console.log(chalk.dim(`已清理 ${pruneResult.removedEntries} 个过期 Bun 缓存条目`));
 		}
 	} catch (err) {
 		console.log(chalk.yellow(`Warning: could not prune stale Bun cache entries: ${err}`));
@@ -1639,7 +1639,7 @@ async function updateViaBun(release: ReleaseInfo): Promise<InstalledVersionVerif
 }
 
 async function updateViaNpm(release: ReleaseInfo): Promise<InstalledVersionVerification | undefined> {
-	console.log(chalk.dim("Updating via npm..."));
+	console.log(chalk.dim("正在通过 npm 更新..."));
 	if (release.packages.pkg !== PACKAGE) {
 		await migrateRenamedInstall(release, packageManagerMigrationSteps("npm", release));
 		return undefined;
@@ -1760,13 +1760,13 @@ export async function updateViaManager(
 }
 
 async function updateViaHomebrew(expectedVersion: string, force: boolean): Promise<void> {
-	console.log(chalk.dim("Updating Homebrew formulae..."));
+	console.log(chalk.dim("正在更新 Homebrew formulae..."));
 	const update = await $`brew update`.nothrow();
 	if (update.exitCode !== 0) {
 		throw new Error(`brew update failed with exit code ${update.exitCode}`);
 	}
 
-	console.log(chalk.dim("Updating via Homebrew..."));
+	console.log(chalk.dim("正在通过 Homebrew 更新..."));
 	const args = buildHomebrewUpdateArgs(force);
 	const result = await $`brew ${args}`.nothrow();
 	if (result.exitCode !== 0) {
@@ -1777,7 +1777,7 @@ async function updateViaHomebrew(expectedVersion: string, force: boolean): Promi
 }
 
 async function updateViaMise(expectedVersion: string, force: boolean): Promise<void> {
-	console.log(chalk.dim("Updating via mise..."));
+	console.log(chalk.dim("正在通过 mise 更新..."));
 	const env = buildMiseUpdateEnv();
 	const help = await $`mise upgrade --help`.env(env).quiet().nothrow();
 	const supportsReleaseAgeOverride = help.exitCode === 0 && /(?:--minimum-release-age|--before)\b/.test(help.text());
@@ -1847,7 +1847,7 @@ async function installFromPatch(
 		return false;
 	}
 	const from = patch.fromVersion ? ` from ${patch.fromVersion}` : "";
-	console.log(chalk.dim(`Downloading patch${from} (${formatBytes(patch.size)})…`));
+	console.log(chalk.dim(`正在下载补丁${from} (${formatBytes(patch.size)})…`));
 	try {
 		await downloadVerifiedBinary({
 			url: patch.url,
@@ -1864,12 +1864,12 @@ async function installFromPatch(
 			);
 		}
 		await fs.promises.chmod(paths.tempPath, 0o755);
-		console.log(chalk.dim(`Patched and verified sha256:${build.file.sha256}`));
+		console.log(chalk.dim(`已打补丁并验证 sha256:${build.file.sha256}`));
 		return true;
 	} catch (err) {
 		await unlinkIfExists(paths.tempPath).catch(() => {});
 		console.log(
-			chalk.dim(`Patch unusable (${err instanceof Error ? err.message : err}); downloading the whole file instead.`),
+			chalk.dim(`补丁不可用（${err instanceof Error ? err.message : err}）；改为下载整个文件。`),
 		);
 		return false;
 	} finally {
@@ -1892,7 +1892,7 @@ async function downloadBuild(
 	options: BuildDownloadOptions,
 ): Promise<void> {
 	if (build.patch && (await installFromPatch(build, build.patch, paths, options))) return;
-	console.log(chalk.dim(`Downloading ${build.file.name} (${formatBytes(build.file.size)})…`));
+	console.log(chalk.dim(`正在下载 ${build.file.name} (${formatBytes(build.file.size)})…`));
 	await downloadVerifiedBinary({
 		url: build.download,
 		targetPath: paths.tempPath,
@@ -1900,7 +1900,7 @@ async function downloadBuild(
 		expectedDigest: `sha256:${build.file.sha256}`,
 		fetchImpl: options.fetchImpl,
 	});
-	console.log(chalk.dim(`Verified sha256:${build.file.sha256}`));
+	console.log(chalk.dim(`已验证 sha256:${build.file.sha256}`));
 }
 
 /**
@@ -1936,7 +1936,7 @@ export async function updateViaBinaryAt(
 	// or reclaim each other's live backup/temp files. The download above writes
 	// to a unique temp path and is safe to overlap; only the swap is shared.
 	const verification = await withFileLock(targetPath, async () => {
-		console.log(chalk.dim("Installing update..."));
+		console.log(chalk.dim("正在安装更新..."));
 		const result = await replaceBinaryForUpdate({
 			targetPath,
 			tempPath,
@@ -1959,7 +1959,7 @@ export async function updateViaBinaryAt(
 		return result;
 	});
 	printVerifiedVersion(build.version, verification.path ?? targetPath);
-	console.log(chalk.dim(`Restart ${APP_NAME} to use the new version`));
+	console.log(chalk.dim(`请重启 ${APP_NAME} 以使用新版本`));
 }
 
 /**
@@ -2007,7 +2007,7 @@ export async function updateViaShimTakeover(
 	// never retire the same shims or reclaim a live run's backup before its
 	// verification can roll it back.
 	await withFileLock(exePath, async () => {
-		console.log(chalk.dim(`Installing ${APP_NAME}.exe beside the script launcher...`));
+		console.log(chalk.dim(`正在将 ${APP_NAME}.exe 安装到脚本启动器旁边...`));
 		await fs.promises.rename(tempPath, exePath);
 		// Retire the shims so PATH resolution lands on the new exe. Renamed, not
 		// deleted: restorable on verification failure, and Windows permits
@@ -2065,7 +2065,7 @@ export async function updateViaShimTakeover(
 		}
 	});
 	for (const { launcher } of forwarded) {
-		console.log(chalk.dim(`Converted ${launcher} to a forwarder (it could not be removed).`));
+		console.log(chalk.dim(`已将 ${launcher} 转换为转发器（它无法被移除）。`));
 	}
 	for (const launcher of stuck) {
 		console.log(
@@ -2075,7 +2075,7 @@ export async function updateViaShimTakeover(
 		);
 	}
 	printVerifiedVersion(build.version);
-	console.log(chalk.dim(`Restart ${APP_NAME} to use the new version`));
+	console.log(chalk.dim(`请重启 ${APP_NAME} 以使用新版本`));
 }
 
 /**
@@ -2204,12 +2204,12 @@ async function updateToStandaloneBinary(
 		);
 	}
 	if (build.version !== release.version) {
-		console.log(chalk.dim(`Installing the newest published ${channel} build, ${build.version}.`));
+		console.log(chalk.dim(`正在安装最新发布的 ${channel} 构建版本 ${build.version}。`));
 	}
 	const unmanaged = `This install is no longer managed by ${manager}. Removing the old global package may delete this launcher; if it does, reinstall with: ${installerHint()}`;
 	if (target.method === "binary") {
 		if (target.replacesSymlink) {
-			console.log(chalk.dim("Replacing the package-manager launcher with the standalone binary."));
+			console.log(chalk.dim("正在将包管理器启动器替换为独立二进制文件。"));
 		}
 		await updateViaBinaryAt(target.path, build, { validateExistingTarget: target.validateExistingTarget });
 		if (target.replacesSymlink) console.log(chalk.yellow(unmanaged));
@@ -2218,7 +2218,7 @@ async function updateToStandaloneBinary(
 	// Without package-manager routing only a Windows script launcher resolves
 	// to a manager (the bun/npm bin-dir probes are skipped), so its path is known.
 	if (target.method !== "npm" || !target.path) throw new Error(`Could not resolve ${APP_NAME} launcher path in PATH`);
-	console.log(chalk.dim("This release ships as a standalone binary; replacing the script launcher."));
+	console.log(chalk.dim("此版本以独立二进制文件形式发布；正在替换脚本启动器。"));
 	await updateViaShimTakeover(target.path, build);
 	console.log(chalk.yellow(unmanaged));
 }
@@ -2256,7 +2256,7 @@ async function runManagedUpdate(
 		}
 		if (target.method === "nix") {
 			console.log(chalk.yellow("This installation is managed by Nix and cannot update itself."));
-			console.log(chalk.dim("Update the flake input or profile that provides omp, then rebuild."));
+			console.log(chalk.dim("更新提供 omp 的 flake input 或 profile，然后重新构建。"));
 			return;
 		}
 		if (target.method === "brew") {
@@ -2298,10 +2298,10 @@ export async function runUpdateCommand(opts: {
 	}
 	// `update.channel` picks the channel; --canary/--stable switch and persist it.
 	await Settings.init({ cwd: getProjectDir() });
-	console.log(chalk.dim(`Current version: ${VERSION}`));
+	console.log(chalk.dim(`当前版本：${VERSION}`));
 	const persistedChannel = readPersistedChannel() ?? "stable";
 	const channel = opts.channel ?? persistedChannel;
-	if (channel === "canary") console.log(chalk.dim("Current channel: canary"));
+	if (channel === "canary") console.log(chalk.dim("当前通道：canary"));
 	const request: UpdateRequest = {
 		force: opts.force,
 		check: opts.check,
@@ -2330,19 +2330,19 @@ export async function runUpdateCommand(opts: {
  * Print update command help.
  */
 export function printUpdateHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} update`)} - 检查并安装更新
+	console.log(`${chalk.bold(`${APP_NAME} 更新`)} - 检查并安装更新
 
-${chalk.bold("Usage:")}
+${chalk.bold("用法:")}
   ${APP_NAME} update [options]
 
-${chalk.bold("Options:")}
+${chalk.bold("选项:")}
   -c, --check     检查更新但不安装
   -f, --force     即使是最新版本也强制重新安装
   -l, --plugins   更新已安装的插件
   --canary        切换到 canary 通道并更新
   --stable        切换回 stable 通道
 
-${chalk.bold("Examples:")}
+${chalk.bold("示例:")}
   ${APP_NAME} update              更新至最新版本
   ${APP_NAME} update --check      检查是否有可用更新
   ${APP_NAME} update --force      强制重新安装

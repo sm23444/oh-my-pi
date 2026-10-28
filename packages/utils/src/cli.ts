@@ -471,7 +471,8 @@ export async function run(opts: RunOptions): Promise<void> {
 			const Cmd = await loadEntry(entry);
 			renderCommandHelp(bin, entry.name, Cmd);
 		} else {
-			process.stderr.write(`Unknown command: ${commandId}\n`);
+			process.stderr.write(`未知命令: ${commandId}
+`);
 		}
 		return;
 	}
@@ -480,7 +481,8 @@ export async function run(opts: RunOptions): Promise<void> {
 	const entry = findEntry(opts.commands, commandId);
 
 	if (!entry) {
-		process.stderr.write(`Error: command ${commandId} not found\n`);
+		process.stderr.write(`错误: 命令 ${commandId} 未找到
+`);
 		process.exitCode = 1;
 		return;
 	}
@@ -496,9 +498,13 @@ export async function run(opts: RunOptions): Promise<void> {
 		// process-level catch would dump a minified `dist/cli.js` code frame over a
 		// plain argument error (issue #5369).
 		if (error instanceof CliUsageError) {
-			process.stderr.write(`error: ${error.message}\n\n`);
+			process.stderr.write(`错误: ${error.message}
+
+`);
 			process.stderr.write(`USAGE\n  ${commandUsageLine(bin, entry.name, Cmd)}\n`);
-			process.stderr.write(`\nRun \`${bin} ${entry.name} --help\` for details.\n`);
+			process.stderr.write(`
+运行 \`${bin} ${entry.name} --help\` 查看详情。
+`);
 			process.exitCode = 1;
 			return;
 		}

@@ -3,7 +3,7 @@ import type { GalleryFixture } from "./types";
 
 export const editFixtures: Record<string, GalleryFixture> = {
 	edit: {
-		label: "编辑",
+		label: "Edit",
 		editMode: "replace",
 		// `previewDiff` is surfaced verbatim by the renderer's call preview, and the
 		// harness diff strategy skips `{ file_path, previewDiff }` (no `path`/`edits`),
@@ -63,7 +63,7 @@ export const editFixtures: Record<string, GalleryFixture> = {
 	},
 
 	edit_delete: {
-		label: "删除",
+		label: "Delete",
 		// The registry has no `edit_delete` key, so `renderer: "edit"` routes this
 		// fixture through the real built-in edit renderer (see the harness in
 		// `gallery-cli`), keeping the sample identical to a production delete.
@@ -92,7 +92,7 @@ export const editFixtures: Record<string, GalleryFixture> = {
 	},
 
 	edit_move: {
-		label: "移动",
+		label: "Move",
 		renderer: "edit",
 		streamingArgs: { file_path: "scripts/prune-changelogs.ts", rename: "scripts/archived/prune-changelogs.ts" },
 		args: { file_path: "scripts/prune-changelogs.ts", rename: "scripts/archived/prune-changelogs.ts" },
@@ -123,7 +123,7 @@ export const editFixtures: Record<string, GalleryFixture> = {
 	},
 
 	apply_patch: {
-		label: "应用补丁",
+		label: "Apply Patch",
 		editMode: "apply_patch",
 		streamingArgs: {
 			file_path: "packages/coding-agent/src/edit/renderer.ts",
@@ -187,7 +187,7 @@ export const editFixtures: Record<string, GalleryFixture> = {
 	},
 
 	ast_edit: {
-		label: "AST 编辑",
+		label: "AST Edit",
 		streamingArgs: {
 			ops: [{ pat: "countEditFiles($$$ARGS)" }],
 			paths: ["packages/coding-agent/src/**/*.ts"],

@@ -1,6 +1,7 @@
 import * as path from "node:path";
 import { applyCatalog, extractCandidates, fromSeed, inScope, npmPackages, packagePaths, toEntry, type Candidate, type Catalog, type PackageId, type SeedEntry } from "./core";
 import { translateAll, type TranslationConfig, type TranslationFailure } from "./client";
+import { patchDisplayBoundaries } from "./runtime-patches";
 
 interface Settings {
 	model: string;
@@ -47,8 +48,24 @@ if (!files.length || !candidates.length || !candidates.some(candidate => candida
 let seeded = 0;
 for (const candidate of candidates) {
 	if (catalog[candidate.id]) continue;
-	const translation = fromSeed(candidate, seeds);
-	if (translation) { catalog[candidate.id] = toEntry(candidate, translation, "seed"); seeded++; }
+	const translation = candidate.role === "display:plural" ? "" : fromSeed(candidate, seeds);
+	if (translation !== undefined) { catalog[candidate.id] = toEntry(candidate, translation, "seed"); seeded++; }
+}
+let reused = 0;
+const reusable = new Map<string, Map<string, Catalog[keyof Catalog]>>();
+for (const entry of Object.values(catalog)) {
+	const key = JSON.stringify([entry.source, entry.text]);
+	const variants = reusable.get(key) ?? new Map<string, Catalog[keyof Catalog]>();
+	variants.set(entry.translation, entry);
+	reusable.set(key, variants);
+}
+for (const candidate of candidates) {
+	if (catalog[candidate.id]) continue;
+	const variants = reusable.get(JSON.stringify([candidate.source, candidate.text]));
+	if (variants?.size !== 1) continue;
+	const entry = [...variants.values()][0];
+	try { catalog[candidate.id] = toEntry(candidate, entry.translation, entry.origin); reused++; }
+	catch { /* A translation with different expression semantics must be translated separately. */ }
 }
 const saveCatalog = async () => {
 	const sorted = Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));
@@ -72,7 +89,7 @@ const writeReport = async () => {
 		version: option("version"), model: Bun.env.TRANSLATION_MODEL || settings.model,
 		scannedFiles: files.length, detectedDisplayStrings: candidates.length,
 		translatedDisplayStrings: candidates.length - pending.length, pendingDisplayStrings: pending.length,
-		seededThisRun: seeded, modelTranslatedThisRun: translated, deferredThisRun: deferred.length,
+		seededThisRun: seeded, reusedThisRun: reused, modelTranslatedThisRun: translated, deferredThisRun: deferred.length,
 		retainedInactiveTranslations: Object.keys(catalog).filter(id => !active.has(id)).length,
 		completeWithinScannerScope: pending.length === 0,
 	};
@@ -138,9 +155,13 @@ try {
 		const allowMissing = args.includes("--allow-missing");
 		if (missing().length && !allowMissing) throw new Error(`${missing().length} display strings still need translation; refusing publication`);
 		// Prepare every change before mutating source so a parse/placeholder error cannot leave half a tree.
-		const changes = files.map(file => ({ file, result: applyCatalog(file.code, file.candidates, catalog, allowMissing) }));
+		const changes = files.map(file => {
+			const translated = applyCatalog(file.code, file.candidates, catalog, allowMissing);
+			const code = patchDisplayBoundaries(file.pkg, file.file, translated.code);
+			return { file, result: { ...translated, code }, displayBoundaryPatched: code !== translated.code };
+		});
 		for (const { file, result } of changes) if (result.code !== file.code) await Bun.write(file.absolute, result.code);
-		await Bun.write(path.join(reportDir, "applied.json"), JSON.stringify(changes.filter(change => change.result.applied).map(({ file, result }) => ({ pkg: file.pkg, file: file.file, applied: result.applied })), null, 2) + "\n");
+		await Bun.write(path.join(reportDir, "applied.json"), JSON.stringify(changes.filter(change => change.result.applied || change.displayBoundaryPatched).map(({ file, result, displayBoundaryPatched }) => ({ pkg: file.pkg, file: file.file, applied: result.applied, displayBoundaryPatched })), null, 2) + "\n");
 	}
 } finally {
 	await saveCatalog();

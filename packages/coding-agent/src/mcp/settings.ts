@@ -13,8 +13,8 @@ export const cfgMcpEnableProjectConfig = register({
 	ui: {
 		tab: "tools",
 		group: "Discovery & MCP",
-		label: "MCP Project Config",
-		description: "Load .mcp.json/mcp.json from project root",
+		label: "MCP 项目配置",
+		description: "从项目根目录加载 .mcp.json/mcp.json",
 	},
 });
 
@@ -25,8 +25,8 @@ export const cfgMcpStartupTimeoutMs = register({
 	ui: {
 		tab: "tools",
 		group: "Discovery & MCP",
-		label: "MCP Startup Window",
-		description: "Wait this many milliseconds for initial MCP tool discovery; 0 waits until connections settle",
+		label: "MCP 启动窗口",
+		description: "等待这么多毫秒以进行初始 MCP 工具发现；0 表示等待直到连接稳定",
 	},
 });
 
@@ -37,8 +37,8 @@ export const cfgMcpRenderMarkdownResults = register({
 	ui: {
 		tab: "tools",
 		group: "Discovery & MCP",
-		label: "MCP Markdown Results",
-		description: "Render non-JSON MCP text results as Markdown in the transcript",
+		label: "MCP Markdown 结果",
+		description: "在记录中将非 JSON 的 MCP 文本结果渲染为 Markdown",
 	},
 });
 effect(cfgMcpRenderMarkdownResults, setMcpRenderMarkdownResults);
@@ -50,8 +50,8 @@ export const cfgMcpNotifications = register({
 	ui: {
 		tab: "tools",
 		group: "Discovery & MCP",
-		label: "MCP Update Injection",
-		description: "Inject MCP resource updates into the agent conversation",
+		label: "MCP 更新注入",
+		description: "将 MCP 资源更新注入代理对话",
 	},
 });
 
@@ -62,8 +62,8 @@ export const cfgMcpNotificationDebounceMs = register({
 	ui: {
 		tab: "tools",
 		group: "Discovery & MCP",
-		label: "MCP Notification Debounce",
+		label: "MCP 通知防抖",
 		description:
-			"Debounce window in milliseconds for MCP resource updates before injecting them into the conversation",
+			"MCP 资源更新在注入对话前的防抖窗口(毫秒)",
 	},
 });

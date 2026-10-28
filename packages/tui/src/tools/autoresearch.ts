@@ -245,13 +245,13 @@ function renderSummary(details: LogDetails, theme: Theme): string {
 	let summary = `${theme.fg(color, experiment.status.toUpperCase())} ${theme.fg("muted", truncateToWidth(replaceTabs(experiment.description), 100))}`;
 	summary += ` ${theme.fg("accent", `${state.metricName}=${formatNum(experiment.metric, state.metricUnit)}`)}`;
 	if (state.bestMetric !== null) {
-		summary += ` ${theme.fg("dim", `baseline ${formatNum(state.bestMetric, state.metricUnit)}`)}`;
+		summary += ` ${theme.fg("dim", `基线 ${formatNum(state.bestMetric, state.metricUnit)}`)}`;
 	}
 	if (state.confidence !== null) {
-		summary += ` ${theme.fg("dim", `conf ${state.confidence.toFixed(1)}x`)}`;
+		summary += ` ${theme.fg("dim", `置信度 ${state.confidence.toFixed(1)}x`)}`;
 	}
 	if (details.scopeDeviations.length > 0) {
-		summary += ` ${theme.fg("warning", `deviations:${details.scopeDeviations.length}`)}`;
+		summary += ` ${theme.fg("warning", `偏差：${details.scopeDeviations.length}`)}`;
 	}
 	return summary;
 }
@@ -319,7 +319,7 @@ function renderStatus(details: RunDetails, theme: Theme): string {
 		return theme.fg("error", `TIMEOUT ${details.durationSeconds.toFixed(1)}s`);
 	}
 	if (details.exitCode !== 0) {
-		return theme.fg("error", `FAIL exit=${details.exitCode} ${details.durationSeconds.toFixed(1)}s`);
+		return theme.fg("error", `FAIL 退出码=${details.exitCode} ${details.durationSeconds.toFixed(1)} 秒`);
 	}
 	const metric =
 		details.parsedPrimary !== null
@@ -349,7 +349,7 @@ export const runExperimentToolRenderer = {
 	},
 	renderResult(result, options, theme): Text {
 		if (isProgressDetails(result.details)) {
-			const header = theme.fg("warning", `Running ${result.details.elapsed}...`);
+			const header = theme.fg("warning", `正在运行 ${result.details.elapsed}...`);
 			const preview = replaceTabs(result.content.find(part => part.type === "text")?.text ?? "");
 			return new Text(preview ? `${header}\n${theme.fg("dim", preview)}` : header, 0, 0);
 		}
@@ -366,7 +366,7 @@ export const runExperimentToolRenderer = {
 		);
 		const suffix =
 			options.expanded && details.truncation && details.fullOutputPath
-				? `\n${theme.fg("warning", `Full output: ${shortenPath(details.fullOutputPath)}`)}`
+				? `\n${theme.fg("warning", `完整输出：${shortenPath(details.fullOutputPath)}`)}`
 				: "";
 		return new Text(preview ? `${statusText}\n${theme.fg("dim", preview)}${suffix}` : statusText, 0, 0);
 	},
@@ -382,7 +382,7 @@ export const runExperimentToolRenderer = {
 					tone: "warning",
 					preview: { lines: 6 },
 					body: compact([
-						node("spinner", { label: [span(`Running ${plainText(details.elapsed)}…`, "warning")] }),
+						node("spinner", { label: [span(`正在运行 ${plainText(details.elapsed)}…`, "warning")] }),
 						output.trim() ? ansi(output, { follow: true }) : undefined,
 					]),
 				};
@@ -396,7 +396,7 @@ export const runExperimentToolRenderer = {
 					status.node,
 					details.tailOutput.trim() ? ansi(details.tailOutput, { follow: true }) : undefined,
 					details.truncation && details.fullOutputPath
-						? text([span("Full output: ", "warning"), span(shortenPath(details.fullOutputPath), "path")], {
+						? text([span("完整输出：", "warning"), span(shortenPath(details.fullOutputPath), "path")], {
 								truncate: "middle",
 							})
 						: undefined,

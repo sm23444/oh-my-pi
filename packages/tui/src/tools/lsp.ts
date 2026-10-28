@@ -135,9 +135,9 @@ export function renderCall(args: LspParams, _options: RenderResultOptions, theme
 	}
 
 	const meta: string[] = [];
-	if (queryPreview && target) meta.push(`query:${queryPreview}`);
-	if (args.new_name) meta.push(`new:${args.new_name}`);
-	if (args.apply !== undefined) meta.push(`apply:${args.apply ? "true" : "false"}`);
+	if (queryPreview && target) meta.push(`查询：${queryPreview}`);
+	if (args.new_name) meta.push(`新建：${args.new_name}`);
+	if (args.apply !== undefined) meta.push(`应用：${args.apply ? "是" : "否"}`);
 
 	const descriptionParts = [actionLabel];
 	if (target) {
@@ -177,7 +177,7 @@ export function renderResult(
 	if (content?.type !== "text" || !("text" in content) || !content.text) {
 		const icon = formatStatusIcon("warning", theme, options.spinnerFrame);
 		const header = `${icon} LSP`;
-		return new Text([header, theme.fg("dim", "No result")].join("\n"), 0, 0);
+		return new Text([header, theme.fg("dim", "无结果")].join("\n"), 0, 0);
 	}
 
 	const text = content.text;
@@ -198,14 +198,14 @@ export function renderResult(
 		requestLines.push(theme.fg("toolOutput", request.file));
 	}
 	if (request?.line !== undefined) {
-		requestLines.push(theme.fg("dim", `line ${request.line}`));
+		requestLines.push(theme.fg("dim", `行 ${request.line}`));
 	}
 	if (request?.symbol) {
-		requestLines.push(theme.fg("dim", `symbol: ${sanitizeInlineText(request.symbol)}`));
+		requestLines.push(theme.fg("dim", `符号：${sanitizeInlineText(request.symbol)}`));
 	}
-	if (request?.query) requestLines.push(theme.fg("dim", `query: ${request.query}`));
-	if (request?.new_name) requestLines.push(theme.fg("dim", `new name: ${request.new_name}`));
-	if (request?.apply !== undefined) requestLines.push(theme.fg("dim", `apply: ${request.apply ? "true" : "false"}`));
+	if (request?.query) requestLines.push(theme.fg("dim", `查询：${request.query}`));
+	if (request?.new_name) requestLines.push(theme.fg("dim", `新名称：${request.new_name}`));
+	if (request?.apply !== undefined) requestLines.push(theme.fg("dim", `应用：${request.apply ? "是" : "否"}`));
 
 	// The body depends only on the (immutable) text, theme and `expanded`; parse
 	// and render it once per expanded state instead of on every spinner frame.
@@ -213,7 +213,7 @@ export function renderResult(
 	const renderBody = (expanded: boolean): LspResultBody => {
 		if (codeBlockMatch) {
 			return {
-				label: "Hover",
+				label: "悬停",
 				state: "success",
 				bodyLines: renderHover(codeBlockMatch, text, lines, expanded, theme),
 			};
@@ -222,29 +222,29 @@ export function renderResult(
 			const errorCount = errorMatch ? Number.parseInt(errorMatch[1], 10) : 0;
 			const warnCount = warningMatch ? Number.parseInt(warningMatch[1], 10) : 0;
 			return {
-				label: "Diagnostics",
+				label: "诊断",
 				state: errorCount > 0 ? "error" : warnCount > 0 ? "warning" : "success",
 				bodyLines: renderDiagnostics(errorMatch, warningMatch, lines, expanded, theme),
 			};
 		}
 		if (refMatch) {
 			return {
-				label: "References",
+				label: "引用",
 				state: "success",
 				bodyLines: renderReferences(refMatch, lines, expanded, theme),
 			};
 		}
 		if (symbolsMatch) {
-			return { label: "Symbols", state: "success", bodyLines: renderSymbols(symbolsMatch, lines, expanded, theme) };
+			return { label: "符号", state: "success", bodyLines: renderSymbols(symbolsMatch, lines, expanded, theme) };
 		}
 		if (result.details?.action === "diagnostics" && text === "OK") {
 			return {
-				label: "Diagnostics",
+				label: "诊断",
 				state: "success",
-				bodyLines: [`${theme.styledSymbol("tool.lsp", "accent")} ${theme.fg("dim", "OK")}`],
+				bodyLines: [`${theme.styledSymbol("tool.lsp", "accent")} ${theme.fg("dim", "确定")}`],
 			};
 		}
-		return { label: "Response", state: "success", bodyLines: renderGeneric(text, lines, expanded, theme) };
+		return { label: "响应", state: "success", bodyLines: renderGeneric(text, lines, expanded, theme) };
 	};
 
 	return framedToolCard(theme, ({ contentWidth }) => {
@@ -280,7 +280,7 @@ export function renderResult(
 			phase: isPartial ? "partial" : state,
 			sections: [
 				...(requestLines.length > 0 ? [{ content: requestLines }] : []),
-				{ label: theme.fg("toolTitle", "Response"), content: contentLines },
+				{ label: theme.fg("toolTitle", "响应"), content: contentLines },
 			],
 			applyBg: false,
 		};
@@ -349,7 +349,7 @@ function renderHover(
 	output += `\n ${theme.fg("mdCodeBlockBorder", v)} ${firstCodeLine}`;
 
 	if (codeLines.length > 1) {
-		output += `\n ${theme.fg("mdCodeBlockBorder", v)} ${theme.fg("muted", `… ${codeLines.length - 1} more lines`)}`;
+		output += `\n ${theme.fg("mdCodeBlockBorder", v)} ${theme.fg("muted", `… 还有 ${codeLines.length - 1} 行`)}`;
 	}
 
 	if (afterCode) {
@@ -393,9 +393,9 @@ function renderDiagnostics(
 				: theme.styledSymbol("tool.lsp", "accent");
 
 	const meta: string[] = [];
-	if (errorCount > 0) meta.push(`${errorCount} error${errorCount !== 1 ? "s" : ""}`);
-	if (warnCount > 0) meta.push(`${warnCount} warning${warnCount !== 1 ? "s" : ""}`);
-	if (meta.length === 0) meta.push("No issues");
+	if (errorCount > 0) meta.push(`${errorCount} 个错误${errorCount !== 1 ? "" : ""}`);
+	if (warnCount > 0) meta.push(`${warnCount} 个警告${warnCount !== 1 ? "" : ""}`);
+	if (meta.length === 0) meta.push("无问题");
 
 	const diagLines = lines.filter(l => l.includes(theme.status.error) || /:\d+:\d+/.test(l));
 	const parsedDiagnostics = diagLines
@@ -458,7 +458,7 @@ function renderDiagnostics(
 		output += `\n ${theme.fg("dim", branch)} ${theme.fg(severityColor, location)}${message}`;
 	}
 	if (remaining > 0) {
-		output += `\n ${theme.fg("dim", theme.tree.last)} ${theme.fg("muted", `… ${remaining} more`)}`;
+		output += `\n ${theme.fg("dim", theme.tree.last)} ${theme.fg("muted", `… 还有 ${remaining} 个`)}`;
 	}
 
 	return output.split("\n");
@@ -494,7 +494,7 @@ function renderReferences(refMatch: RegExpMatchArray, lines: string[], expanded:
 	const renderGrouped = (maxFiles: number, maxLocsPerFile: number): string => {
 		const hidden = files.length > maxFiles || files.some(file => byFile.get(file)!.length > maxLocsPerFile);
 		const expandHint = formatExpandHint(theme, expanded, hidden);
-		let output = `${icon} ${theme.fg("dim", `${refCount} found`)}${expandHint}`;
+		let output = `${icon} ${theme.fg("dim", `找到 ${refCount} 个`)}${expandHint}`;
 
 		const filesToShow = files.slice(0, maxFiles);
 		for (let fi = 0; fi < filesToShow.length; fi++) {
@@ -516,19 +516,19 @@ function renderReferences(refMatch: RegExpMatchArray, lines: string[], expanded:
 					const locCont = isLastLoc ? "   " : `${theme.tree.vertical}  `;
 					output += `\n ${theme.fg("dim", fileCont)}${theme.fg("dim", locBranch)} ${theme.fg(
 						"muted",
-						`line ${line}, col ${col}`,
+						`第 ${line} 行，第 ${col} 列`,
 					)}`;
 					if (expanded) {
 						output += `\n ${theme.fg("dim", fileCont)}${theme.fg("dim", locCont)}${theme.fg(
 							"muted",
-							`at ${file}:${line}:${col}`,
+							`位于 ${file}:${line}:${col}`,
 						)}`;
 					}
 				}
 				if (locs.length > maxLocsPerFile) {
 					output += `\n ${theme.fg("dim", fileCont)}${theme.fg("dim", theme.tree.last)} ${theme.fg(
 						"muted",
-						`… ${locs.length - maxLocsPerFile} more`,
+						`… 还有 ${locs.length - maxLocsPerFile} 项`,
 					)}`;
 				}
 			}
@@ -607,7 +607,7 @@ function renderSymbols(symbolsMatch: RegExpMatchArray, lines: string[], expanded
 	const topLevelCount = symbols.filter(s => s.indent === 0).length;
 
 	if (expanded) {
-		let output = `${icon} ${theme.fg("dim", `in ${fileName}`)}`;
+		let output = `${icon} ${theme.fg("dim", `在 ${fileName} 中`)}`;
 
 		const prefixes = getPrefixes();
 		for (let i = 0; i < symbols.length; i++) {
@@ -617,7 +617,7 @@ function renderSymbols(symbolsMatch: RegExpMatchArray, lines: string[], expanded
 			const branch = symIsLast ? theme.tree.last : theme.tree.branch;
 			const detailPrefix = symIsLast ? "   " : `${theme.tree.vertical}  `;
 			output += `\n${prefix}${theme.fg("dim", branch)} ${theme.fg("accent", sym.icon)} ${theme.fg("accent", sym.name)}`;
-			output += `\n${prefix}${theme.fg("dim", detailPrefix)}${theme.fg("muted", `line ${sym.line}`)}`;
+			output += `\n${prefix}${theme.fg("dim", detailPrefix)}${theme.fg("muted", `第 ${sym.line} 行`)}`;
 		}
 		return output.split("\n");
 	}
@@ -626,18 +626,18 @@ function renderSymbols(symbolsMatch: RegExpMatchArray, lines: string[], expanded
 	const topLevel = symbols.filter(s => s.indent === 0).slice(0, 3);
 	const hasMoreSymbols = symbols.length > topLevel.length;
 	const expandHint = formatExpandHint(theme, expanded, hasMoreSymbols);
-	let output = `${icon} ${theme.fg("dim", `in ${fileName}`)}${expandHint}`;
+	let output = `${icon} ${theme.fg("dim", `在 ${fileName} 中`)}${expandHint}`;
 	for (let i = 0; i < topLevel.length; i++) {
 		const sym = topLevel[i];
 		const isLast = i === topLevel.length - 1 && topLevelCount <= 3;
 		const branch = isLast ? theme.tree.last : theme.tree.branch;
 		output += `\n ${theme.fg("dim", branch)} ${theme.fg("accent", sym.icon)} ${theme.fg("accent", sym.name)} ${theme.fg(
 			"muted",
-			`line ${sym.line}`,
+			`第 ${sym.line} 行`,
 		)}`;
 	}
 	if (topLevelCount > 3) {
-		output += `\n ${theme.fg("dim", theme.tree.last)} ${theme.fg("muted", `… ${topLevelCount - 3} more`)}`;
+		output += `\n ${theme.fg("dim", theme.tree.last)} ${theme.fg("muted", `… 还有 ${topLevelCount - 3} 项`)}`;
 	}
 
 	return output.split("\n");
@@ -662,7 +662,7 @@ function renderGeneric(text: string, lines: string[], expanded: boolean, theme: 
 				: theme.styledSymbol("status.info", "accent");
 
 	if (expanded) {
-		let output = `${icon} ${theme.fg("dim", "Output")}`;
+		let output = `${icon} ${theme.fg("dim", "输出")}`;
 		for (let i = 0; i < lines.length; i++) {
 			const isLast = i === lines.length - 1;
 			const branch = isLast ? theme.tree.last : theme.tree.branch;
@@ -966,7 +966,7 @@ function describeLspSymbols(lines: string[]): NativeNode | undefined {
 				span(plainText(symMatch[1]), "accent"),
 				span(" "),
 				span(plainText(symMatch[2]), "accent"),
-				span(` line ${symMatch[3]}`, "muted"),
+				span(` 第 ${symMatch[3]} 行`, "muted"),
 			],
 			open: true,
 			children,

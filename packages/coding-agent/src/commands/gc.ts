@@ -55,7 +55,9 @@ export default class Gc extends Command {
 		const errors = collectGcErrors(result);
 		if (errors.length > 0) {
 			process.stderr.write(
-				`GC completed with ${errors.length} error${errors.length === 1 ? "" : "s"}:\n${errors.map(error => `- ${error}`).join("\n")}\n`,
+				`GC 完成时有 ${errors.length} 个错误${errors.length === 1 ? "" : ""}:
+${errors.map(error => `- ${error}`).join("\n")}
+`,
 			);
 			process.exitCode = 1;
 		}

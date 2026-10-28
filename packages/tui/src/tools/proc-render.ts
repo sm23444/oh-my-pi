@@ -51,7 +51,7 @@ function preview(body: string, expanded: boolean, theme: Theme, tone: "dim" | "t
 		line =>
 			`  ${quote} ${theme.fg(tone, truncateToWidth(safe(line.trim()), TRUNCATE_LENGTHS.LINE, Ellipsis.Unicode))}`,
 	);
-	if (shown.hidden) lines.push(`  ${quote} ${theme.fg("dim", `… +${shown.hidden} more lines`)}`);
+	if (shown.hidden) lines.push(`  ${quote} ${theme.fg("dim", `… +${shown.hidden} 更多行`)}`);
 	return lines;
 }
 
@@ -75,11 +75,11 @@ export function renderAgentWrite(
 		const failed = receipts.length - delivered;
 		const error = result?.isError || (failed > 0 && delivered === 0);
 		const meta: string[] = [];
-		if (recipient === "all") meta.push("broadcast");
+		if (recipient === "all") meta.push("广播");
 		if (receipts.length === 1) meta.push(theme.fg(receiptColor(receipts[0]!.outcome), receipts[0]!.outcome));
 		else if (receipts.length > 1) {
-			if (delivered) meta.push(theme.fg("success", `${delivered} delivered`));
-			if (failed) meta.push(theme.fg("error", `${failed} failed`));
+			if (delivered) meta.push(theme.fg("success", `${delivered} 已送达`));
+			if (failed) meta.push(theme.fg("error", `${failed} 失败`));
 		}
 		const header = renderStatusLine(
 			result === undefined
@@ -93,7 +93,7 @@ export function renderAgentWrite(
 			return [header, formatErrorDetail(firstText(result) || "Message delivery failed.", theme)];
 		const lines = [header, ...preview(body, expanded, theme)];
 		if (result && receipts.length === 0)
-			lines.push(theme.fg("muted", firstText(result) || "No live peers to broadcast to."));
+			lines.push(theme.fg("muted", firstText(result) || "没有可广播的在线对等节点。"));
 		if (receipts.length > 1 || failed > 0) {
 			lines.push(
 				...renderTreeList(
@@ -121,12 +121,12 @@ function daemonMeta(daemon: DaemonSnapshot, theme: Theme): string[] {
 				? "error"
 				: "warning";
 	const meta = [theme.fg(stateColor, daemon.state)];
-	if (daemon.pid !== undefined) meta.push(`pid ${daemon.pid}`);
+	if (daemon.pid !== undefined) meta.push(`进程 ID ${daemon.pid}`);
 	meta.push(
-		`${daemon.exitedAt === undefined ? "up" : "ran"} ${formatDuration(Math.max(0, (daemon.exitedAt ?? Date.now()) - daemon.startedAt))}`,
+		`${daemon.exitedAt === undefined ? "运行中" : "已运行"} ${formatDuration(Math.max(0, (daemon.exitedAt ?? Date.now()) - daemon.startedAt))}`,
 	);
-	if (daemon.detached) meta.push("detached");
-	else if (daemon.persist) meta.push("persistent");
+	if (daemon.detached) meta.push("已分离");
+	else if (daemon.persist) meta.push("持久");
 	return meta;
 }
 
@@ -155,7 +155,7 @@ export function renderProcWrite(
 	theme: Theme,
 ): Component {
 	return card((_width, expanded) => {
-		const title = `Proc ${action} ${safe(id || "…")}`;
+		const title = `进程 ${action} ${safe(id || "…")}`;
 		const daemon = details && "daemon" in details ? details.daemon : undefined;
 		const header = renderStatusLine(
 			{
@@ -200,7 +200,7 @@ export function renderProcRead(
 	theme: Theme,
 ): Component {
 	return card((_width, expanded) => {
-		const title = id ? `Proc ${safe(id)}` : "Proc jobs & services";
+		const title = id ? `进程 ${safe(id)}` : "进程作业与服务";
 		const daemon = details?.daemon;
 		const header = renderStatusLine(
 			{
@@ -232,7 +232,7 @@ export function renderProcRead(
 					line =>
 						`  ${styleTerminalRow(truncateToWidth(safe(line), TRUNCATE_LENGTHS.LINE, Ellipsis.Unicode), theme.fg("toolOutput", ""))}`,
 				);
-			if (output.length > limit) visible.unshift(theme.fg("dim", `  … ${output.length - limit} earlier lines`));
+			if (output.length > limit) visible.unshift(theme.fg("dim", `  … 更早的 ${output.length - limit} 行`));
 			return [header, ...visible];
 		}
 		if (id && !details?.jobs && !details?.daemons && !details?.agents) {
@@ -268,7 +268,7 @@ export function renderProcRead(
 				},
 				theme,
 			),
-			...(items.length ? [] : [theme.fg("dim", "No background jobs or services.")]),
+			...(items.length ? [] : [theme.fg("dim", "无后台作业或服务。")]),
 		];
 	}, options);
 }
@@ -279,12 +279,12 @@ export function renderProcRead(
 
 function daemonMetaText(daemon: DaemonSnapshot): string {
 	const meta: string[] = [daemon.state];
-	if (daemon.pid !== undefined) meta.push(`pid ${daemon.pid}`);
+	if (daemon.pid !== undefined) meta.push(`进程 ID ${daemon.pid}`);
 	meta.push(
-		`${daemon.exitedAt === undefined ? "up" : "ran"} ${formatDuration(Math.max(0, (daemon.exitedAt ?? Date.now()) - daemon.startedAt))}`,
+		`${daemon.exitedAt === undefined ? "运行中" : "已运行"} ${formatDuration(Math.max(0, (daemon.exitedAt ?? Date.now()) - daemon.startedAt))}`,
 	);
-	if (daemon.detached) meta.push("detached");
-	else if (daemon.persist) meta.push("persistent");
+	if (daemon.detached) meta.push("已分离");
+	else if (daemon.persist) meta.push("持久");
 	return meta.join(" · ");
 }
 
@@ -336,11 +336,11 @@ export function describeAgentWrite(
 	const delivered = receipts.filter(receipt => receipt.outcome !== "failed").length;
 	const failed = receipts.length - delivered;
 	const meta: TspSpan[] = [];
-	if (recipient === "all") meta.push(span("broadcast", "muted"));
+	if (recipient === "all") meta.push(span("广播", "muted"));
 	if (receipts.length === 1) meta.push(span(receipts[0]!.outcome, RECEIPT_TONE[receipts[0]!.outcome]));
 	else if (receipts.length > 1) {
-		if (delivered) meta.push(span(`${delivered} delivered`, "success"));
-		if (failed) meta.push(span(`${failed} failed`, "error"));
+		if (delivered) meta.push(span(`${delivered} 已送达`, "success"));
+		if (failed) meta.push(span(`${failed} 失败`, "error"));
 	}
 	const head = toolHead("IRC", span(recipient, "accent"), ...meta);
 	const error = result?.isError === true || (failed > 0 && delivered === 0);
@@ -349,7 +349,7 @@ export function describeAgentWrite(
 	}
 	const children = compact<NativeChild>([
 		quotedPreview(body),
-		result !== undefined && receipts.length === 0 && noteText(firstText(result) || "No live peers to broadcast to."),
+		result !== undefined && receipts.length === 0 && noteText(firstText(result) || "无在线对等节点可广播。"),
 		(receipts.length > 1 || failed > 0) &&
 			node(
 				"list",
@@ -382,7 +382,7 @@ export function describeProcWrite(
 ): NativeToolView {
 	const daemon = details && "daemon" in details ? details.daemon : undefined;
 	const head = toolHead(
-		`Proc ${action}`,
+		`进程 ${action}`,
 		span(safe(id || "…"), "accent"),
 		daemon ? daemonMetaText(daemon) : action === "mode" && content ? safe(content) : undefined,
 	);
@@ -424,7 +424,7 @@ export function describeProcRead(
 	details: ProcReadDetails | undefined,
 ): NativeToolView {
 	const daemon = details?.daemon;
-	const title = id ? "Proc" : "Proc jobs & services";
+	const title = id ? "进程" : "进程作业与服务";
 	const head = toolHead(title, id ? span(safe(id), "accent") : undefined, daemon ? daemonMetaText(daemon) : undefined);
 	if (result?.isError) {
 		return { head, tone: "error", body: [errorText(firstText(result) || "Process read failed.")] };
@@ -456,7 +456,7 @@ export function describeProcRead(
 			node(
 				"item",
 				{
-					label: [span("service", "accent"), span(" "), span(safe(service.name), "toolOutput")],
+					label: [span("服务", "accent"), span(" "), span(safe(service.name), "toolOutput")],
 					detail: [span(daemonMetaText(service), "muted")],
 					tone:
 						service.state === "failed"
@@ -473,7 +473,7 @@ export function describeProcRead(
 			node(
 				"item",
 				{
-					label: [span("agent", agent.live ? "accent" : "warning"), span(" "), span(safe(agent.id), "toolOutput")],
+					label: [span("代理", agent.live ? "accent" : "warning"), span(" "), span(safe(agent.id), "toolOutput")],
 					value: [span(formatDuration(agent.ageMs), "muted")],
 				},
 				undefined,

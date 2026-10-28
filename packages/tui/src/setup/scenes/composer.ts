@@ -121,10 +121,10 @@ class ComposerSceneController implements SetupSceneController {
 		return this.#native.get([this.#currentShape, cx.cols, confirm], () =>
 			col(
 				[
-					text([span(`Select a layout; live preview updates below. Press ${confirm} to confirm.`, "muted")]),
+					text([span(`选择布局；下方实时预览会更新。按 ${confirm} 确认。`, "muted")]),
 					this.#selectList,
 					col([
-						text([span("Preview:", "muted")]),
+						text([span("预览：", "muted")]),
 						ansi(renderComposerShapePreview(this.#currentShape, cx.cols, this.#host.ctx.statusLine).join("\n"), {
 							cols: cx.cols,
 						}),

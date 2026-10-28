@@ -352,7 +352,7 @@ const modelSegment: StatusLineSegment = {
 	id: "model",
 	render(ctx) {
 		const modelName = modelDisplayName(ctx);
-		const thinkingDisplay = modelThinkingDisplay(ctx);
+		const thinkingDisplay = __ompZhThinking(modelThinkingDisplay(ctx), thinkingLevelWord(ctx.session));
 
 		// Compact mode swaps the model icon for the thinking-level glyph and drops
 		// the " · <level>" tail, keeping the level visible as a single icon.
@@ -397,7 +397,7 @@ const modelSegment: StatusLineSegment = {
 		if (advisor) spans.push(span(` ${advisor.icon}`, advisor.color));
 		if (ctx.session.isFastModeActive() && theme.icon.fast) spans.push(span(` ${theme.icon.fast}`, token));
 		const level = ctx.options.model?.showThinkingLevel === false ? undefined : thinkingLevelWord(ctx.session);
-		if (level !== undefined) spans.push(span(" · ", "dim"), span(level, thinkingLevelToken(level)));
+		if (level !== undefined) spans.push(span(" · ", "dim"), span(__ompZhValue(level), thinkingLevelToken(level)));
 		const slowModeLabel = ctx.session.getAnthropicSlowModeLabel?.();
 		if (slowModeLabel) spans.push(span(`${theme.sep.dot}${slowModeLabel}`, "warning"));
 		return segView(spans, "model", slowModeLabel ? "warning" : undefined);
@@ -436,7 +436,7 @@ function describeGoalMode(ctx: SegmentContext, mode: { enabled: boolean; paused:
 		default:
 			break;
 	}
-	let label = "Goal";
+	let label = "目标";
 	if (ctx.goalStatusInFooter === true && goal) label += ` ${formatGoalBudget(goal.tokensUsed, goal.tokenBudget)}`;
 	const token = color === "accent" ? accentToken(ctx, color) : color;
 	return segView([span(label, token)], icon, toneOf(color));
@@ -503,7 +503,7 @@ const modeSegment: StatusLineSegment = {
 
 		const plan = ctx.planMode;
 		if (plan && (plan.enabled || plan.paused)) {
-			const label = plan.paused ? `Plan${pauseSuffix}` : "Plan";
+			const label = plan.paused ? `计划${pauseSuffix}` : "计划";
 			const content = withIcon(theme.icon.plan, label);
 			return {
 				content: plan.paused ? theme.fg("warning", content) : accentFg(ctx, "accent", content),
@@ -532,8 +532,8 @@ const modeSegment: StatusLineSegment = {
 		if (loop) {
 			const icon = loop.state === "paused" ? theme.icon.pause || theme.icon.loop : theme.icon.loop;
 			const color: ThemeColor = loop.state === "paused" ? "warning" : "customMessageLabel";
-			const stateLabel = loop.state === "waiting" ? "next prompt repeats" : loop.state;
-			const label = `Loop${loop.state === "waiting" ? ":" : ""} ${stateLabel}`;
+			const stateLabel = __ompZhValue(loop.state === "waiting" ? "next prompt repeats" : loop.state);
+			const label = `循环${loop.state === "waiting" ? ":" : ""} ${stateLabel}`;
 			const parts = [withIcon(icon, label)];
 			const limit = formatLoopLimit(loop.limit, ctx.now?.getTime());
 			if (limit) parts.push(limit);
@@ -549,18 +549,18 @@ const modeSegment: StatusLineSegment = {
 		const plan = ctx.planMode;
 		if (plan && (plan.enabled || plan.paused)) {
 			return plan.paused
-				? segView([span("Plan (paused)", "warning")], "plan", "warning")
-				: segView([span("Plan", accentToken(ctx, "accent"))], "plan");
+				? segView([span("计划（已暂停）", "warning")], "plan", "warning")
+				: segView([span("计划", accentToken(ctx, "accent"))], "plan");
 		}
-		if (ctx.prewalk?.enabled) return segView([span("Prewalk", accentToken(ctx, "accent"))], "prewalk");
+		if (ctx.prewalk?.enabled) return segView([span("预遍历", accentToken(ctx, "accent"))], "prewalk");
 		const goal = ctx.goalMode;
 		if (goal && (goal.enabled || goal.paused)) return describeGoalMode(ctx, goal);
-		if (ctx.vibeMode?.enabled) return segView([span("Vibe", accentToken(ctx, "accent"))], "agents");
+		if (ctx.vibeMode?.enabled) return segView([span("Vibe 模式", accentToken(ctx, "accent"))], "agents");
 		const loop = ctx.loopMode;
 		if (loop) {
 			const paused = loop.state === "paused";
-			const stateLabel = loop.state === "waiting" ? "next prompt repeats" : loop.state;
-			const parts = [`Loop${loop.state === "waiting" ? ":" : ""} ${stateLabel}`];
+			const stateLabel = __ompZhValue(loop.state === "waiting" ? "next prompt repeats" : loop.state);
+			const parts = [`循环${loop.state === "waiting" ? ":" : ""} ${stateLabel}`];
 			const limit = formatLoopLimit(loop.limit, ctx.now?.getTime());
 			if (limit) parts.push(limit);
 			if (loop.condition) parts.push(summarizeLoopCondition(loop.condition, TRUNCATE_LENGTHS.SHORT));
@@ -972,7 +972,7 @@ const sessionSegment: StatusLineSegment = {
 	},
 	describe(ctx) {
 		const sessionId = ctx.session.sessionManager?.getSessionId?.();
-		return segView([span(sessionId?.slice(0, 8) || "new")], "session");
+		return segView([span(sessionId?.slice(0, 8) || "新会话")], "session");
 	},
 };
 
@@ -1053,13 +1053,13 @@ const collabSegment: StatusLineSegment = {
 	render(ctx) {
 		if (!ctx.collab) return { content: "", visible: false };
 		const participants = `${ctx.collab.participantCount}`;
-		const label = ctx.collab.role === "host" ? `⇄ collab:${participants}` : `⇄ collab guest:${participants}`;
+		const label = ctx.collab.role === "host" ? `⇄ 协作:${participants}` : `⇄ 协作访客:${participants}`;
 		return { content: accentFg(ctx, "accent", label), visible: true };
 	},
 	describe(ctx) {
 		if (!ctx.collab) return null;
 		const participants = `${ctx.collab.participantCount}`;
-		const label = ctx.collab.role === "host" ? `collab:${participants}` : `collab guest:${participants}`;
+		const label = ctx.collab.role === "host" ? `协作:${participants}` : `协作访客:${participants}`;
 		return segView([span(label, accentToken(ctx, "accent"))], "collab");
 	},
 };
@@ -1342,3 +1342,13 @@ export function describeSegment(id: StatusLineSegmentId, ctx: SegmentContext): S
 }
 
 export const ALL_SEGMENT_IDS: StatusLineSegmentId[] = Object.keys(SEGMENTS) as StatusLineSegmentId[];
+
+const __ompZhValueLabels: Readonly<Record<string, string>> = {"true":"开启","false":"关闭","on":"开启","off":"关闭","auto":"自动","inherit":"继承","minimal":"最低","min":"最低","low":"低","medium":"中","med":"中","mid":"中","high":"高","xhigh":"极高","max":"最高","enabled":"已启用","disabled":"已禁用","active":"进行中","inactive":"未激活","paused":"已暂停","running":"运行中","waiting":"等待中","complete":"已完成","dropped":"已放弃","budget-limited":"预算受限","next prompt repeats":"下一条提示词重复执行","always":"始终","never":"从不","smart":"智能","default":"默认","aggressive":"积极","view":"查看","control":"控制","global":"全局","project":"项目","per-project":"按项目","per-project-tagged":"按项目标签","session":"会话","per-call":"每次调用","append":"追加","rebuild":"重建","preserve":"保留","collapsed":"折叠","full":"完整","all":"全部","one-at-a-time":"逐条","immediate":"立即","wait":"等待","text":"文字","icon":"图标","none":"无","compact":"精简","reset":"重置","rewind":"回溯","tree":"树形","stable":"稳定版","canary":"预览版","notify":"通知","summary":"摘要","expanded":"展开","hidden":"隐藏","suggest":"建议","directory":"目录","repo":"仓库","idle":"空闲","display":"显示器","system":"系统","local":"本地","remote":"远程","discard":"丢弃","keep":"保留","once":"一次","after-gap":"间隔后","prose-only":"仅正文","tool-only":"仅工具","full-session":"完整会话","last-turn":"最后一轮","multilingual":"多语言","en":"英语","braille":"盲文","pulse":"脉冲","dots":"圆点","line":"线条","classic":"经典","kitt":"扫描灯"};
+function __ompZhValue(value: string): string {
+	return Object.hasOwn(__ompZhValueLabels, value) ? __ompZhValueLabels[value]! : value;
+}
+
+function __ompZhThinking(display: string, level: string | undefined): string {
+	if (level === undefined) return display;
+	return display.replace(/\b(?:minimal|min|low|medium|med|high|xhigh|max|off|auto)$/, () => __ompZhValue(level));
+}

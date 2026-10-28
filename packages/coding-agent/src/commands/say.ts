@@ -65,7 +65,7 @@ export default class Say extends Command {
 		const unsubscribe = ttsClient.onProgress(event => {
 			if (event.status === "progress" && typeof event.progress === "number") {
 				process.stderr.write(
-					`\r${chalk.dim(`downloading ${event.file ?? model}: ${Math.round(event.progress)}%`)}`,
+					`\r${chalk.dim(`正在下载 ${event.file ?? model}: ${Math.round(event.progress)}%`)}`,
 				);
 			} else if (event.status === "done" || event.status === "ready") {
 				// Clear the progress line once the download finishes.
@@ -112,7 +112,7 @@ export default class Say extends Command {
 				const durationSec = total / sampleRate;
 				process.stdout.write(
 					`${chalk.green("saved")} ${flags.out} ` +
-						`${chalk.dim(`(${voice}, ${model}, ${durationSec.toFixed(1)}s, ${wav.byteLength} bytes)`)}\n`,
+						`${chalk.dim(`(${voice}, ${model}, ${durationSec.toFixed(1)}秒, ${wav.byteLength} 字节)`)}\n`,
 				);
 				return;
 			}
@@ -134,7 +134,7 @@ export default class Say extends Command {
 			}
 			await player.end();
 			process.stdout.write(
-				`${chalk.green("spoke")} ${chalk.dim(`(${voice}, ${model}, ${seconds.toFixed(1)}s, ${spoken} segments)`)}\n`,
+				`${chalk.green("spoke")} ${chalk.dim(`(${voice}, ${model}, ${seconds.toFixed(1)}秒, ${spoken} 片段)`)}\n`,
 			);
 		} catch (err) {
 			process.stderr.write(chalk.red(`error: ${err instanceof Error ? err.message : String(err)}\n`));

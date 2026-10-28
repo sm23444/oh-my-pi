@@ -1077,7 +1077,7 @@ export class ToolExecutionComponent extends Container {
 				: node("col", { gap: "sm", role: "omp.tool.diagnostics" }, sections, "late");
 		return {
 			section,
-			chip: { text: count === 1 ? "1 diagnostic" : `${count} diagnostics`, tone: errored ? "error" : "warning" },
+			chip: { text: count === 1 ? "1 条诊断" : `${count} 条诊断`, tone: errored ? "error" : "warning" },
 		};
 	}
 
@@ -1115,7 +1115,7 @@ export class ToolExecutionComponent extends Container {
 				href: head?.href,
 				meta: head?.meta,
 				badges: badges.length > 0 ? badges : undefined,
-				note: head?.note ?? (status === "cancelled" && !this.#isBenignSkip() ? "cancelled" : undefined),
+				note: head?.note ?? (status === "cancelled" && !this.#isBenignSkip() ? "已取消" : undefined),
 				exit: head?.exit ?? undefined,
 				status,
 				age: live ? ms : undefined,
@@ -1146,7 +1146,7 @@ export class ToolExecutionComponent extends Container {
 		const target = typeof head.target === "string" ? span(head.target, "muted") : head.target?.map(s => ({ ...s }));
 		const meta = (head.meta ?? []).map(m => (typeof m === "string" ? m : m.map(s => s.t).join("")));
 		const spans = toolHead(title, ...(Array.isArray(target) ? target : [target]), ...meta);
-		if (head.exit) spans.push(span(" "), span(`exit ${head.exit}`, "error"));
+		if (head.exit) spans.push(span(" "), span(`退出 ${head.exit}`, "error"));
 		if (head.note)
 			spans.push(
 				span(" "),
@@ -1432,7 +1432,7 @@ export class ToolExecutionComponent extends Container {
 			// A detail-less custom summary (e.g. wait before its result
 			// parse) must not fold to a bare `╭─ Label` frame under viewport
 			// pressure — keep the generic liveness hint for in-flight calls.
-			return this.#isRunning() ? { ...summary, detail: "running" } : summary;
+			return this.#isRunning() ? { ...summary, detail: "运行中" } : summary;
 		}
 		if (isRecord(this.#args)) {
 			for (const key of ["command", "path", "input"] as const) {
@@ -1442,7 +1442,7 @@ export class ToolExecutionComponent extends Container {
 				}
 			}
 		}
-		return { label: this.#toolLabel, detail: this.#isRunning() ? "running" : undefined };
+		return { label: this.#toolLabel, detail: this.#isRunning() ? "运行中" : undefined };
 	}
 	/** Still executing: no settled result yet and the turn has not sealed it. */
 	#isRunning(): boolean {
@@ -1655,8 +1655,8 @@ export class ToolExecutionComponent extends Container {
 					const pendingText = renderStatusLine(
 						{
 							iconOverride: spinner,
-							title: "Edit",
-							description: theme.fg("dim", `${remaining} more file${remaining > 1 ? "s" : ""} pending…`),
+							title: "编辑",
+							description: theme.fg("dim", `还有 ${remaining} 个文件${remaining > 1 ? "" : ""} 待处理…`),
 						},
 						theme,
 					);

@@ -16,8 +16,8 @@ export const cfgPlanEnabled = register({
 	ui: {
 		tab: "tasks",
 		group: "Modes",
-		label: "Plan Mode",
-		description: "Enable plan mode for read-only exploration and planning before execution",
+		label: "计划模式",
+		description: "启用计划模式,在执行前进行只读探索和规划",
 	},
 });
 
@@ -28,8 +28,8 @@ export const cfgPlanDefaultOnStartup = register({
 	ui: {
 		tab: "tasks",
 		group: "Modes",
-		label: "Start in Plan Mode",
-		description: "Automatically enter plan mode at the start of every new session",
+		label: "以计划模式启动",
+		description: "每个新会话开始时自动进入计划模式",
 		condition: "planModeEnabled",
 	},
 });
@@ -41,8 +41,8 @@ export const cfgPlanAutosave = register({
 	ui: {
 		tab: "tasks",
 		group: "Modes",
-		label: "Autosave Plans",
-		description: "Automatically save approved plans to disk when plan mode completes",
+		label: "自动保存计划",
+		description: "计划模式结束时自动把已批准的计划保存到磁盘",
 		condition: "planModeEnabled",
 	},
 });
@@ -54,9 +54,9 @@ export const cfgPlanAutosaveDir = register({
 	ui: {
 		tab: "tasks",
 		group: "Modes",
-		label: "Autosave Directory",
+		label: "自动保存目录",
 		description:
-			"Directory for autosaved plans. Supports ~, absolute, and cwd-relative paths. Empty uses <project>/.omp/plans/.",
+			"自动保存计划的目录。支持 ~、绝对路径和 cwd 相对路径。留空使用 <project>/.omp/plans/.",
 		condition: "planAutosaveEnabled",
 	},
 });

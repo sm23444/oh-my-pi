@@ -108,9 +108,9 @@ export function tableCells(row: PsDaemonRow): string[] {
 export function scopeHeader(scope: PsScope): string {
 	const label =
 		scope.kind === "global"
-			? `global ${chalk.bold(scope.service ?? path.basename(scope.runtimeDir))}`
-			: `project ${chalk.bold(scope.projectDir ?? path.basename(scope.runtimeDir))}`;
+			? `全局 ${chalk.bold(scope.service ?? path.basename(scope.runtimeDir))}`
+			: `项目 ${chalk.bold(scope.projectDir ?? path.basename(scope.runtimeDir))}`;
 	const broker =
-		scope.brokerPid !== undefined ? chalk.green(`broker pid ${scope.brokerPid}`) : chalk.dim("broker not running");
+		scope.brokerPid !== undefined ? chalk.green(`broker pid ${scope.brokerPid}`) : chalk.dim("broker 未运行");
 	return `${label} ${chalk.dim("—")} ${broker}`;
 }

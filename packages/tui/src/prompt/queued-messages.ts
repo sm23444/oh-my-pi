@@ -66,7 +66,7 @@ export class QueuedMessagesBand extends Container {
 					children.push(
 						node(
 							"badge",
-							{ text: `${count} queued`, title: `${count} 条消息已排队`, role: "omp.queue.count" },
+							{ text: `${count} 已排队`, title: `${count} 条消息已排队`, role: "omp.queue.count" },
 							undefined,
 							"count",
 						),
@@ -82,7 +82,7 @@ export class QueuedMessagesBand extends Container {
 							title: editTitle,
 							actions: { click: "queue.edit" },
 						},
-						[kbd(dequeueKey), text("Edit")],
+						[kbd(dequeueKey), text("编辑")],
 						"edit",
 					),
 				);

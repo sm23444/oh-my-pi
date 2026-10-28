@@ -74,11 +74,11 @@ function resolveSessionModelSelector(
 
 /** `/fast status` label for the active model: "ultra" for the Ultrafast tier, "on" for priority, else "off". */
 function formatFastModeStatus(session: AgentSession): string {
-	if (session.isUltrafastModeEnabled()) return "ultra";
-	return session.isFastModeEnabled() ? "on" : "off";
+	if (session.isUltrafastModeEnabled()) return "极速";
+	return session.isFastModeEnabled() ? "开启" : "关闭";
 }
 
-const FAST_USAGE = "Usage: /fast [on|ultra|off|status]";
+const FAST_USAGE = "用法：/fast [on|ultra|off|status]";
 
 /**
  * `/fast [on|ultra|off|status]` for the active model: `on` selects the
@@ -90,26 +90,26 @@ function runFastCommand(arg: string, session: AgentSession): string | undefined 
 	switch (arg) {
 		case "":
 		case "toggle":
-			return `Fast mode ${session.toggleFastMode() ? "enabled" : "disabled"}.`;
+			return `快速模式 ${session.toggleFastMode() ? "已启用" : "已禁用"}。`;
 		case "on":
-			return session.setFastMode(true) ? "Fast mode enabled." : "Fast mode is unavailable for the current model.";
+			return session.setFastMode(true) ? "已启用快速模式。" : "当前模型不支持快速模式。";
 		case "ultra":
 		case "ultrafast":
 			return session.setUltrafastMode(true)
-				? "Ultrafast mode enabled."
-				: "Ultrafast is unavailable for the current model.";
+				? "已启用极速模式。"
+				: "当前模型不支持极速模式。";
 		case "off":
 			session.setFastMode(false);
-			return "Fast mode disabled.";
+			return "已关闭快速模式。";
 		case "status":
-			return `Fast mode is ${formatFastModeStatus(session)}.`;
+			return `快速模式：${formatFastModeStatus(session)}。`;
 		default:
 			return undefined;
 	}
 }
 
 const SLOW_UNSUPPORTED =
-	"The current model has no slow mode: /slow uses the flex tier on OpenAI/Google models and low priority on Anthropic subscriptions.";
+	"当前模型没有慢速模式：/slow 在 OpenAI/Google 模型上使用 flex 层级，在 Anthropic 订阅上使用低优先级。";
 
 /**
  * `/slow [on|off|status]` for the active model: the `flex` service tier on
@@ -122,27 +122,27 @@ function runSlowCommand(arg: string, session: AgentSession): string | undefined 
 	const anthropic = session.model?.provider === "anthropic";
 	if (arg === "status") {
 		const label = anthropic ? session.getAnthropicSlowModeLabel() : undefined;
-		if (!session.isSlowModeEnabled()) return label ? `Slow mode is off (${label}).` : "Slow mode is off.";
-		if (!anthropic) return "Slow mode is on (flex tier).";
-		return label ? `Slow mode is on (${label}).` : "Slow mode is on (low priority at the Claude session limit).";
+		if (!session.isSlowModeEnabled()) return label ? `慢速模式已关闭（${label}）。` : "慢速模式已关闭。";
+		if (!anthropic) return "慢速模式已开启（flex 层级）。";
+		return label ? `慢速模式已开启（${label}）。` : "慢速模式已开启（在 Claude 会话限额下为低优先级）。";
 	}
 	const enabled = arg === "on" || (arg !== "off" && !session.isSlowModeEnabled());
 	if (!session.setSlowMode(enabled)) return SLOW_UNSUPPORTED;
 	if (!session.isSlowModeEnabled()) {
 		return anthropic
-			? "Slow mode off: at your Claude usage limit, requests may get a short wrap-up allowance, then wait for the limit to reset."
-			: "Slow mode off.";
+			? "慢速模式已关闭：达到 Claude 使用限额时，请求可能会获得短暂的收尾额度，之后需等待限额重置。"
+			: "慢速模式已关闭。";
 	}
-	if (!anthropic) return "Slow mode on: requests use the flex tier (lower cost, higher latency).";
+	if (!anthropic) return "慢速模式已开启：请求使用 flex 层级（成本更低、延迟更高）。";
 	const resetsAtSec = session.getAnthropicSlowModeLane()?.activeResetsAtSec();
 	return resetsAtSec !== undefined
-		? `Slow mode on: continuing at low priority until your limit resets at ${formatSlowModeResetClock(resetsAtSec)}. Your weekly limit still applies, and responses may pause while waiting for spare capacity.`
-		: "Slow mode on: when your Claude subscription hits its session limit and Anthropic offers low priority, requests switch to it after any wrap-up allowance.";
+		? `慢速模式已开启：在 ${formatSlowModeResetClock(resetsAtSec)} 限额重置前，将继续以低优先级运行。每周限额仍然适用，等待空闲容量时响应可能会暂停。`
+		: "慢速模式已开启：当您的 Claude 订阅达到会话限额且 Anthropic 提供低优先级时，请求会在任何收尾额度用完后切换到该优先级。";
 }
 
 /** `/extended-context status` label for the premium long-context window setting. */
 function formatExtendedContextStatus(settings: Settings): string {
-	return cfgExtendedContext.get(settings) ? "on" : "off";
+	return cfgExtendedContext.get(settings) ? "开启" : "关闭";
 }
 
 /** Applies an `/extended-context` argument and returns its operator feedback. */
@@ -152,17 +152,17 @@ function applyExtendedContextCommand(settings: Settings, args: string): string |
 	if (!arg || arg === "toggle") {
 		const enabled = !current;
 		cfgExtendedContext.set(settings, enabled);
-		return `Extended context ${enabled ? "enabled" : "disabled"}.`;
+		return `扩展上下文：${enabled ? "已启用" : "已禁用"}。`;
 	}
 	if (arg === "on") {
 		cfgExtendedContext.set(settings, true);
-		return "Extended context enabled.";
+		return "已启用扩展上下文。";
 	}
 	if (arg === "off") {
 		cfgExtendedContext.set(settings, false);
-		return "Extended context disabled.";
+		return "已关闭扩展上下文。";
 	}
-	if (arg === "status") return `Extended context is ${formatExtendedContextStatus(settings)}.`;
+	if (arg === "status") return `扩展上下文当前为 ${formatExtendedContextStatus(settings)}。`;
 	return undefined;
 }
 
@@ -177,9 +177,9 @@ function formatComputerUseStatus(session: AgentSession): string {
 		backgroundFallback: cfgComputerBackgroundFallback.get(session.settings),
 	};
 	return [
-		`Computer use: ${enabled ? "enabled" : "disabled"}`,
-		`prelude: ${active ? "active" : "inactive"}`,
-		`configured: display=${configured.display}, maxWidth=${configured.maxWidth}, maxHeight=${configured.maxHeight}, backgroundFallback=${configured.backgroundFallback}`,
+		`计算机使用：${enabled ? "已启用" : "已禁用"}`,
+		`prelude 状态：${active ? "活动" : "未激活"}`,
+		`已配置：display=${configured.display}, maxWidth=${configured.maxWidth}, maxHeight=${configured.maxHeight}, backgroundFallback=${configured.backgroundFallback}`,
 	].join(" · ");
 }
 
@@ -193,11 +193,11 @@ function applyComputerUseToggle(session: AgentSession, enable: boolean): string 
 	cfgComputerEnabled.override(session.settings, enable);
 	if (enable && !session.getEvalPreludes().some(definition => definition.name === "computer")) {
 		cfgComputerEnabled.override(session.settings, previous);
-		return "Computer use is unavailable in this session.";
+		return "计算机使用功能在此会话中不可用。";
 	}
 	return enable
-		? `Computer use enabled for this session. ${formatComputerUseStatus(session)}`
-		: "Computer use disabled for this session.";
+		? `此会话已启用计算机使用。${formatComputerUseStatus(session)}`
+		: "此会话已禁用计算机使用。";
 }
 
 /** Tools the ratchet loop needs: the eval kernel hosts `ratchet()`, `task` runs its analyzer. */
@@ -349,7 +349,7 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			if (!cfgGoalEnabled.get(runtime.ctx.settings)) return "目标：已在设置中禁用";
 			if (runtime.ctx.planModeEnabled) return "目标：被计划模式阻止";
 			const state = runtime.ctx.session.getGoalModeState();
-			return state ? `目标：${state.goal.status} (${shortDetail(state.goal.objective)})` : "目标：关闭";
+			return state ? `目标：${__ompZhValue(state.goal.status)} (${shortDetail(state.goal.objective)})` : "目标：关闭";
 		},
 		handleTui: async (command, runtime) => {
 			await runWithDetachedDraft(command, runtime, () =>
@@ -426,25 +426,25 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				const match = resolved.model;
 				if (!match) {
 					return usage(
-						`Unknown model: ${selector}. Use ACP \`session/setModel\` for picker-driven selection or list available models with /model.`,
+						`未知模型：${selector}。使用 ACP \`session/setModel\` 通过选择器进行选择，或使用 /model. 列出可用模型。`,
 						runtime,
 					);
 				}
 				try {
 					await runtime.session.setModel(match);
 					if (resolved.thinkingLevel !== undefined) runtime.session.setThinkingLevel(resolved.thinkingLevel);
-					await runtime.output(`Model set to ${match.provider}/${match.id}.`);
+					await runtime.output(`模型已设置为 ${match.provider}/${match.id}。`);
 					await runtime.notifyTitleChanged?.();
 					await runtime.notifyConfigChanged?.();
 					return commandConsumed();
 				} catch (err) {
-					return usage(`Failed to set model: ${errorMessage(err)}`, runtime);
+					return usage(`设置模型失败：${errorMessage(err)}`, runtime);
 				}
 			}
 
 			const model = runtime.session.model;
 			await runtime.output(
-				model ? `Current model: ${model.provider}/${model.id}` : "No model is currently selected.",
+				model ? `当前模型：${model.provider}/${model.id}` : "当前未选择模型。",
 			);
 			return commandConsumed();
 		},
@@ -472,20 +472,20 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			if (!selector) {
 				const model = runtime.session.model;
 				await runtime.output(
-					model ? `Current model: ${model.provider}/${model.id}` : "No model is currently selected.",
+					model ? `当前模型：${model.provider}/${model.id}` : "当前未选择模型。",
 				);
 				return commandConsumed();
 			}
 			const resolved = resolveSessionModelSelector(selector, runtime.session, runtime.settings);
-			if (!resolved.model) return usage(`Unknown model: ${selector}`, runtime);
+			if (!resolved.model) return usage(`未知模型：${selector}`, runtime);
 			try {
 				await runtime.session.setModelTemporary(resolved.model, resolved.thinkingLevel);
-				await runtime.output(`Session-only model: ${formatModelString(resolved.model)}.`);
+				await runtime.output(`仅限本会话的模型：${formatModelString(resolved.model)}。`);
 				await runtime.notifyTitleChanged?.();
 				await runtime.notifyConfigChanged?.();
 				return commandConsumed();
 			} catch (err) {
-				return usage(`Failed to switch model: ${errorMessage(err)}`, runtime);
+				return usage(`切换模型失败：${errorMessage(err)}`, runtime);
 			}
 		},
 		handleTui: async (command, runtime) => {
@@ -549,14 +549,14 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			runtime.ctx.session.isSlowModeEnabled() ? "慢速模式：开启" : "慢速模式：关闭",
 		handle: async (command, runtime) => {
 			const message = runSlowCommand(command.args.trim().toLowerCase(), runtime.session);
-			if (message === undefined) return usage("Usage: /slow [on|off|status]", runtime);
+			if (message === undefined) return usage("用法：/slow [on|off|status]", runtime);
 			await runtime.output(message);
 			return commandConsumed();
 		},
 		handleTui: (command, runtime) => {
 			const message = runSlowCommand(command.args.trim().toLowerCase(), runtime.ctx.session);
 			refreshStatusLine(runtime.ctx);
-			runtime.ctx.showStatus(message ?? "Usage: /slow [on|off|status]");
+			runtime.ctx.showStatus(message ?? "用法：/slow [on|off|status]");
 			clearSubmittedText(runtime);
 		},
 	},
@@ -573,12 +573,12 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		],
 		allowArgs: true,
 		getTuiAutocompleteDescription: runtime =>
-			`技能列表：${cfgSkillful.get(runtime.ctx.session.settings) ? "on" : "off"}`,
+			`技能列表：${cfgSkillful.get(runtime.ctx.session.settings) ? "开启" : "关闭"}`,
 		handle: async (command, runtime) => {
 			const arg = command.args.trim().toLowerCase();
 			if (arg === "status") {
 				await runtime.output(
-					`Skill listing: ${cfgSkillful.get(runtime.session.settings) ? "on" : "off"} (session override; default from the skillful setting).`,
+					`技能列表：${cfgSkillful.get(runtime.session.settings) ? "开启" : "关闭"}（会话覆盖；默认取自 skillful 设置）。`,
 				);
 				return commandConsumed();
 			}
@@ -589,15 +589,15 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 						: arg === "off"
 							? await runtime.session.setSkillful(false)
 							: await runtime.session.toggleSkillful();
-				await runtime.output(`Skill listing ${enabled ? "enabled" : "disabled"} for this session.`);
+				await runtime.output(`本会话的技能列表已${enabled ? "已启用" : "已禁用"}。`);
 				return commandConsumed();
 			}
-			return usage("Usage: /skillful [on|off|status]", runtime);
+			return usage("用法：/skillful [on|off|status]", runtime);
 		},
 		handleTui: async (command, runtime) => {
 			const arg = command.args.trim().toLowerCase();
 			if (arg === "status") {
-				runtime.ctx.showStatus(`Skill listing: ${cfgSkillful.get(runtime.ctx.session.settings) ? "on" : "off"}.`);
+				runtime.ctx.showStatus(`技能列表：${cfgSkillful.get(runtime.ctx.session.settings) ? "开启" : "关闭"}。`);
 				clearSubmittedText(runtime);
 				return;
 			}
@@ -608,11 +608,11 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 						: arg === "off"
 							? await runtime.ctx.session.setSkillful(false)
 							: await runtime.ctx.session.toggleSkillful();
-				runtime.ctx.showStatus(`Skill listing ${enabled ? "enabled" : "disabled"} for this session.`);
+				runtime.ctx.showStatus(`本次会话的技能列表状态：${enabled ? "已启用" : "已禁用"}。`);
 				clearSubmittedText(runtime);
 				return;
 			}
-			runtime.ctx.showStatus("Usage: /skillful [on|off|status]");
+			runtime.ctx.showStatus("用法：/skillful [on|off|status]");
 			clearSubmittedText(runtime);
 		},
 	},
@@ -632,14 +632,14 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			`扩展上下文：${formatExtendedContextStatus(runtime.ctx.settings)}`,
 		handle: async (command, runtime) => {
 			const output = applyExtendedContextCommand(runtime.settings, command.args);
-			if (!output) return usage("Usage: /extended-context [on|off|status]", runtime);
+			if (!output) return usage("用法：/extended-context [on|off|status]", runtime);
 			await runtime.output(output);
 			return commandConsumed();
 		},
 		handleTui: (command, runtime) => {
 			const output = applyExtendedContextCommand(runtime.ctx.settings, command.args);
 			refreshStatusLine(runtime.ctx);
-			runtime.ctx.showStatus(output ?? "Usage: /extended-context [on|off|status]");
+			runtime.ctx.showStatus(output ?? "用法：/extended-context [on|off|status]");
 			clearSubmittedText(runtime);
 		},
 	},
@@ -656,7 +656,7 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		],
 		allowArgs: true,
 		getTuiAutocompleteDescription: runtime =>
-			`计算机：${cfgComputerEnabled.get(runtime.ctx.session.settings) ? "on" : "off"}`,
+			`计算机：${cfgComputerEnabled.get(runtime.ctx.session.settings) ? "开启" : "关闭"}`,
 		handle: async (command, runtime) => {
 			const arg = command.args.trim().toLowerCase();
 			if (arg === "status") {
@@ -668,7 +668,7 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				await runtime.output(applyComputerUseToggle(runtime.session, enable));
 				return commandConsumed();
 			}
-			return usage("Usage: /computer [on|off|status]", runtime);
+			return usage("用法：/computer [on|off|status]", runtime);
 		},
 		handleTui: async (command, runtime) => {
 			const arg = command.args.trim().toLowerCase();
@@ -684,7 +684,7 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				clearSubmittedText(runtime);
 				return;
 			}
-			runtime.ctx.showStatus("Usage: /computer [on|off|status]");
+			runtime.ctx.showStatus("用法：/computer [on|off|status]");
 			clearSubmittedText(runtime);
 		},
 	},
@@ -735,31 +735,31 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		],
 		handle: async (command, runtime) => {
 			const arg = command.args.trim().toLowerCase();
-			if (arg && arg !== "restart" && arg !== "off") return usage("Usage: /prewalk [restart|off]", runtime);
+			if (arg && arg !== "restart" && arg !== "off") return usage("用法：/prewalk [restart|off]", runtime);
 			if (arg === "off") {
 				const armed = runtime.session.getPrewalkState() !== undefined;
 				runtime.session.disarmPrewalk();
 				await runtime.output(
 					armed
-						? "Prewalk off: canceled this session's pending handoff; keeping the active model."
-						: "Prewalk already off for this session; keeping the active model.",
+						? "Prewalk 已关闭：已取消本次会话待处理的模型交接，保留当前活动模型。"
+						: "Prewalk 在本次会话中已关闭；保留当前活动模型。",
 				);
 				return commandConsumed();
 			}
 			const target = resolveSessionModelSelector("@smol", runtime.session, runtime.settings);
 			if (target.error || !target.model) {
-				return usage(target.error ?? 'Model "@smol" not found', runtime);
+				return usage(target.error ?? "未找到模型“@smol”", runtime);
 			}
 			if (!runtime.session.modelRegistry.hasConfiguredAuth(target.model)) {
-				return usage(`No API key for ${target.model.provider}/${target.model.id}`, runtime);
+				return usage(`缺少 API 密钥：${target.model.provider}/${target.model.id}`, runtime);
 			}
 			if (arg === "restart") {
 				const source = resolveSessionModelSelector("@default", runtime.session, runtime.settings);
 				if (source.error || !source.model) {
-					return usage(source.error ?? 'Model "@default" not found', runtime);
+					return usage(source.error ?? "未找到模型 \"@default\"", runtime);
 				}
 				if (!runtime.session.modelRegistry.hasConfiguredAuth(source.model)) {
-					return usage(`No API key for ${source.model.provider}/${source.model.id}`, runtime);
+					return usage(`缺少 API 密钥：${source.model.provider}/${source.model.id}`, runtime);
 				}
 				const result = await runtime.session.restartPrewalk(
 					source.model,
@@ -771,15 +771,15 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				const restartSource = `${source.model.provider}/${source.model.id}`;
 				await runtime.output(
 					result === "armed"
-						? `Prewalk restarted: using @default (${restartSource}) for planning, then switching to @smol (${target.model.provider}/${target.model.id}) at the next edit/write (todo-gated).`
-						: `Prewalk reset: using @default (${restartSource}); @smol resolves to the same model and thinking level, so no handoff was armed.`,
+						? `Prewalk 已重启：使用 @default（${restartSource}）进行规划，切换到 @smol（${target.model.provider}/${target.model.id}）将在下次 edit/write 时进行（由待办事项控制）。`
+						: `Prewalk 已重置：使用 @default（${restartSource}）；@smol 解析为相同的模型和思考级别，因此未启用交接。`,
 				);
 				return commandConsumed();
 			}
 			const armed = runtime.session.armPrewalk(target.model, target.thinkingLevel);
 			if (armed) {
 				await runtime.output(
-					`Prewalk on: switching to ${target.model.provider}/${target.model.id} at the next edit/write (todo-gated).`,
+					`Prewalk 已开启：切换目标为 ${target.model.provider}/${target.model.id}，触发时机为下次 edit/write（由待办事项控制）。`,
 				);
 			}
 			return commandConsumed();
@@ -850,13 +850,14 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			description: getConfiguredThinkingLevelMetadata(level).description,
 		})),
 		getTuiAutocompleteDescription: runtime =>
-			`思考：${runtime.ctx.viewSession.configuredThinkingLevel() ?? "model default"}`,
+			`思考：${__ompZhConfiguredThinking(runtime.ctx.viewSession.configuredThinkingLevel()) ?? "模型默认值"}`,
 		handle: async (command, runtime) => {
 			const session = runtime.session;
 			if (!command.args.trim()) {
 				await runtime.output(
 					session.model?.reasoning
-						? `Thinking: ${session.configuredThinkingLevel() ?? "model default"}\nAvailable: ${session.getAvailableEffortSelectors().join(", ")}`
+						? `思考强度： ${__ompZhConfiguredThinking(session.configuredThinkingLevel()) ?? "模型默认值"}
+可用选项： ${session.getAvailableEffortSelectors().join(", ")}`
 						: noThinkingMessage(session),
 				);
 				return commandConsumed();
@@ -864,7 +865,7 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			const resolved = resolveThinkingArgument(session, command.args);
 			if ("error" in resolved) return usage(resolved.error, runtime);
 			session.setThinkingLevel(resolved.level);
-			await runtime.output(`Thinking set to ${resolved.level}.`);
+			await runtime.output(`思考强度已设为 ${__ompZhValue(resolved.level)}.`);
 			// `setThinkingLevel` emits `thinking_level_changed`, which hosts with a
 			// session-lifetime subscription (ACP) already turn into a config push.
 			await runtime.notifyConfigChanged?.({ handledBySessionEvent: true });
@@ -886,13 +887,13 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			}
 			// thinking_level_changed refreshes the status line and editor border.
 			session.setThinkingLevel(resolved.level);
-			ctx.showStatus(`Thinking set to ${resolved.level}.`);
+			ctx.showStatus(`思考强度已设为 ${__ompZhValue(resolved.level)}.`);
 		},
 	},
 ];
 
-const PRESETS_USAGE = "Usage: /modelpreset [list | save <name> | switch <name> | delete <name>]";
-const NO_PRESETS_MESSAGE = "No model presets saved. Use /modelpreset save <name> to create one.";
+const PRESETS_USAGE = "用法：/modelpreset [list | save <name> | switch <name> | delete <name>]";
+const NO_PRESETS_MESSAGE = "尚未保存模型预设。使用 /modelpreset save <name> 创建一个。";
 
 interface PresetsCommandOutcome {
 	message: string;
@@ -953,4 +954,13 @@ async function runPresetsCommand(
 		default:
 			return { message: PRESETS_USAGE, usage: true };
 	}
+}
+
+const __ompZhValueLabels: Readonly<Record<string, string>> = {"true":"开启","false":"关闭","on":"开启","off":"关闭","auto":"自动","inherit":"继承","minimal":"最低","min":"最低","low":"低","medium":"中","med":"中","mid":"中","high":"高","xhigh":"极高","max":"最高","enabled":"已启用","disabled":"已禁用","active":"进行中","inactive":"未激活","paused":"已暂停","running":"运行中","waiting":"等待中","complete":"已完成","dropped":"已放弃","budget-limited":"预算受限","next prompt repeats":"下一条提示词重复执行","always":"始终","never":"从不","smart":"智能","default":"默认","aggressive":"积极","view":"查看","control":"控制","global":"全局","project":"项目","per-project":"按项目","per-project-tagged":"按项目标签","session":"会话","per-call":"每次调用","append":"追加","rebuild":"重建","preserve":"保留","collapsed":"折叠","full":"完整","all":"全部","one-at-a-time":"逐条","immediate":"立即","wait":"等待","text":"文字","icon":"图标","none":"无","compact":"精简","reset":"重置","rewind":"回溯","tree":"树形","stable":"稳定版","canary":"预览版","notify":"通知","summary":"摘要","expanded":"展开","hidden":"隐藏","suggest":"建议","directory":"目录","repo":"仓库","idle":"空闲","display":"显示器","system":"系统","local":"本地","remote":"远程","discard":"丢弃","keep":"保留","once":"一次","after-gap":"间隔后","prose-only":"仅正文","tool-only":"仅工具","full-session":"完整会话","last-turn":"最后一轮","multilingual":"多语言","en":"英语","braille":"盲文","pulse":"脉冲","dots":"圆点","line":"线条","classic":"经典","kitt":"扫描灯"};
+function __ompZhValue(value: string): string {
+	return Object.hasOwn(__ompZhValueLabels, value) ? __ompZhValueLabels[value]! : value;
+}
+
+function __ompZhConfiguredThinking(value: string | undefined): string | undefined {
+	return value === undefined ? undefined : __ompZhValue(value);
 }

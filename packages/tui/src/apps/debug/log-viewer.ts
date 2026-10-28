@@ -24,7 +24,7 @@ export interface LogViewerDeps {
 /** Separator marking logs captured before the current process started. */
 export const SESSION_BOUNDARY_WARNING = "### WARNING - Logs above are older than current session!";
 /** Action row for loading earlier log entries. */
-export const LOAD_OLDER_LABEL = "### MOVE UP TO LOAD MORE...";
+export const LOAD_OLDER_LABEL = "### MOVE 向上以 LOAD MORE...";
 
 const INITIAL_LOG_CHUNK = 50;
 const LOAD_OLDER_CHUNK = 50;
@@ -883,7 +883,7 @@ export class DebugLogViewerComponent implements Component {
 				const needle = query.toLowerCase();
 				for (const viewerRow of model.rows) {
 					if (viewerRow.kind === "warning") {
-						order.push({ group: "会话", label: "本次会话" });
+						order.push({ group: "session", label: "本次会话" });
 						continue;
 					}
 					if (viewerRow.kind === "load-older") {
@@ -917,7 +917,7 @@ export class DebugLogViewerComponent implements Component {
 					{
 						title: "最近日志",
 						subtitle,
-						noun: "entries",
+						noun: "条目",
 						size: "lg",
 						layout: "rows",
 						preview: preview ? "below" : "none",
@@ -1199,7 +1199,7 @@ export class DebugLogViewerComponent implements Component {
 		const selected = selectedPayload.length === 0 ? [] : selectedPayload.split("\n");
 
 		if (selected.length === 0) {
-			const message = "No log entry selected";
+			const message = "未选择日志条目";
 			this.#statusMessage = message;
 			this.#onStatus?.(message);
 			return;
@@ -1207,7 +1207,7 @@ export class DebugLogViewerComponent implements Component {
 
 		try {
 			this.#deps.copyToClipboard(selectedPayload);
-			const message = `Copied ${selected.length} log ${selected.length === 1 ? "entry" : "entries"}`;
+			const message = `已复制 ${selected.length} 条日志${selected.length === 1 ? "记录" : "条目"}`;
 			this.#statusMessage = message;
 			this.#onStatus?.(message);
 		} catch (error) {

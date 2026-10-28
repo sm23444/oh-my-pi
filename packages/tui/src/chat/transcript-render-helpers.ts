@@ -62,7 +62,7 @@ export function buildAsyncResultBlock(message: CustomOrHookMessage): ToolActivit
 		const duration = typeof job.durationMs === "number" ? formatDuration(job.durationMs) : undefined;
 		rows.push({
 			parts: [
-				{ text: `${theme.status.done} Background job completed`, color: "success" },
+				{ text: `${theme.status.done} 后台作业已完成`, color: "success" },
 				{ text: typeLabel, color: "dim" },
 				{ text: jobId, color: "accent" },
 				duration ? { text: `(${duration})`, color: "dim" } : undefined,
@@ -99,10 +99,10 @@ export function buildLaunchCompletionBlock(message: CustomOrHookMessage): ToolAc
 		rows.push({
 			parts: [
 				failed
-					? { text: `${theme.status.error} Supervised process failed`, color: "error" }
-					: { text: `${theme.status.done} Supervised process completed`, color: "success" },
+					? { text: `${theme.status.error} 受监督进程失败`, color: "error" }
+					: { text: `${theme.status.done} 受监督进程已完成`, color: "success" },
 				{ text: daemon.name, color: "accent" },
-				daemon.exitCode !== undefined ? { text: `(exit ${daemon.exitCode})`, color: "dim" } : undefined,
+				daemon.exitCode !== undefined ? { text: `(退出 ${daemon.exitCode})`, color: "dim" } : undefined,
 				duration ? { text: `(${duration})`, color: "dim" } : undefined,
 			],
 		});
@@ -174,7 +174,7 @@ export function buildFileMentionBlock(files: FileMentionMessage["files"], indent
 		rows.push({
 			parts: [
 				{ text: theme.tree.last, color: "dim", rowsOnly: true },
-				{ text: "Read", color: "muted" },
+				{ text: "读取", color: "muted" },
 				{ text: file.path, color: "accent" },
 				{ text: suffix, color: "dim" },
 			],
@@ -293,7 +293,7 @@ export function resolveAssistantErrorPresentation(
 		return { kind: "full", text: resolveAbortLabel(message, retryAttempt), isError: true };
 	}
 	if (message.stopReason === "error") {
-		return { kind: "full", text: message.errorMessage || "Error", isError: true };
+		return { kind: "full", text: message.errorMessage || "出错", isError: true };
 	}
 	if (message.errorMessage && shouldRenderAbortReason(message)) {
 		return { kind: "full", text: message.errorMessage, isError: true };

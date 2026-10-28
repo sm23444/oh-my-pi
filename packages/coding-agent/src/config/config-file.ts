@@ -94,7 +94,7 @@ export class ConfigError extends Error {
 			klass = "Unknown";
 		}
 
-		const title = `Failed to load config file ${id}, ${klass} error:`;
+		const title = `加载配置文件 ${id} 失败，${klass} 错误：`;
 		let message: string;
 		switch (messages?.length ?? 0) {
 			case 0:

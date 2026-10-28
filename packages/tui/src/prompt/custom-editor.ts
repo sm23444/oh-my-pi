@@ -1220,7 +1220,7 @@ export class CustomEditor extends Editor {
 			row(
 				[
 					node("icon", { name: "eye" }, undefined, "icon"),
-					node("text", { text: "Viewing", wrap: "none" }, undefined, "label"),
+					node("text", { text: "查看", wrap: "none" }, undefined, "label"),
 					...crumbs,
 					node("text", { role: "omp.composer.agent", text: agent, wrap: "none" }, undefined, "agent"),
 					node(
@@ -1234,7 +1234,7 @@ export class CustomEditor extends Editor {
 						},
 						[
 							node("kbd", { keys: [interruptKey] }, undefined, "key"),
-							node("text", { text: "main", wrap: "none" }, undefined, "label"),
+							node("text", { text: "主", wrap: "none" }, undefined, "label"),
 						],
 						"exit",
 					),
@@ -1350,7 +1350,7 @@ export class CustomEditor extends Editor {
 							? [node("spinner", { label: starting ? "正在启动…" : "正在转写…" }, undefined, "pending")]
 							: compact([
 									node("icon", { name: recording ? "stop" : "mic" }, undefined, "icon"),
-									recording && node("text", { text: "Recording · Stop", wrap: "none" }, undefined, "label"),
+									recording && node("text", { text: "正在录音 · 停止", wrap: "none" }, undefined, "label"),
 								]),
 						"dictation",
 					);
@@ -1360,7 +1360,7 @@ export class CustomEditor extends Editor {
 					"text",
 					{
 						role: "omp.composer.stop",
-						text: "Stop",
+						text: "停止",
 						tone: "error",
 						title: `停止  ${formatTooltipKey(interruptKey)}`,
 						actions: { click: "interrupt" },

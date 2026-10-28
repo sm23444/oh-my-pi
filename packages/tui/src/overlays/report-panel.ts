@@ -138,7 +138,7 @@ export class ReportPanel extends OverlayPanel {
 		const scroll = this.#scroll;
 		if (this.#native && this.#native.scroll === scroll) return this.#native.node;
 		const body: NativeNode = { ...col([this.#body], { role: "omp.report.body" }), key: "body", scroll };
-		const node = col([body, actionBar([null, actionButton("Close", "close", { keys: "escape" })])], { gap: "md" });
+		const node = col([body, actionBar([null, actionButton("关闭", "close", { keys: "escape" })])], { gap: "md" });
 		this.#native = { scroll, node };
 		return node;
 	}

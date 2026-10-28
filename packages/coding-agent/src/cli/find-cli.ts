@@ -40,15 +40,15 @@ function printReport(cmd: FindCommandArgs, rel: string, result: CascadeResult, e
 	console.log("");
 	if (coverage === "unavailable") {
 		console.log(
-			`${chalk.red("find unavailable")} ${chalk.dim(`for "${cmd.query}" in ${rel}: all ${stats.requests} judge requests failed, nothing was judged; use grep`)}`,
+			`${chalk.red("find unavailable")} ${chalk.dim(`查找 "${cmd.query}" 在 ${rel} 中的匹配：所有 ${stats.requests} 个判断请求均失败，未进行任何判断；请使用 grep`)}`,
 		);
 	} else if (hits.length === 0) {
 		console.log(
-			`${chalk.yellow("no hits")} ${chalk.dim(`for "${cmd.query}" in ${rel} · τ ${threshold.toFixed(2)}`)}`,
+			`${chalk.yellow("no hits")} ${chalk.dim(`查找 "${cmd.query}" 在 ${rel} 中的匹配 · τ ${threshold.toFixed(2)}`)}`,
 		);
 	} else {
 		console.log(
-			`${chalk.bold(`${hits.length} hit(s)`)} ${chalk.dim(`for "${cmd.query}" in ${rel} · τ ${threshold.toFixed(2)} · strongest first`)}`,
+			`${chalk.bold(`${hits.length} 个命中`)} ${chalk.dim(`查找 "${cmd.query}" 在 ${rel} 中的匹配 · τ ${threshold.toFixed(2)} · 最强优先`)}`,
 		);
 		console.log("");
 		for (const hit of hits) {
@@ -70,7 +70,7 @@ function printReport(cmd: FindCommandArgs, rel: string, result: CascadeResult, e
 	console.log("");
 	console.log(
 		chalk.dim(
-			`listed ${stats.listed} · judged ${stats.judged} · read ${stats.filesRead} files (${formatBytes(stats.fileBytes)}) · ${stats.requests} requests${stats.unanswered > 0 ? ` · ${stats.unanswered} unanswered` : ""} · ${formatNumber(stats.inputTokens)} tokens · $${stats.cost.toFixed(4)} · ${formatDuration(elapsedMs)} wall / ${formatDuration(stats.apiMs)} api`,
+			`列出 ${stats.listed} 个 · 已评估 ${stats.judged} 个 · 已读取 ${stats.filesRead} 个文件（${formatBytes(stats.fileBytes)}） · ${stats.requests} 次请求${stats.unanswered > 0 ? ` · ${stats.unanswered} 条未答复` : ""} · ${formatNumber(stats.inputTokens)} tokens · $${stats.cost.toFixed(4)} · 总耗时 ${formatDuration(elapsedMs)} ／ 接口耗时 ${formatDuration(stats.apiMs)}`,
 		),
 	);
 	for (const failure of stats.failures) console.log(chalk.yellow(failure));

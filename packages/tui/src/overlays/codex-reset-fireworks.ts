@@ -267,7 +267,7 @@ function drawBurst(
  * is ANSI-only art.
  */
 function describeCodexResetFireworks(event: CodexResetFireworksEvent): NativeNode {
-	const title = event.kind === "unscheduled-weekly-reset" ? "OpenAI reset" : "Saved reset";
+	const title = event.kind === "unscheduled-weekly-reset" ? "OpenAI 重置" : "已保存的重置";
 	const subtitle =
 		event.kind === "unscheduled-weekly-reset"
 			? "Weekly usage cleared early"
@@ -289,7 +289,7 @@ function describeCodexResetFireworks(event: CodexResetFireworksEvent): NativeNod
 				},
 			}),
 			text([span(subtitle, FIREWORK_THEME_COLORS.cyan)]),
-			actionBar([null, actionButton("Close", "close", { keys: "escape" })]),
+			actionBar([null, actionButton("关闭", "close", { keys: "escape" })]),
 		],
 		{ align: "center", gap: "sm" },
 	);

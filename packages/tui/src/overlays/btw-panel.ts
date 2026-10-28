@@ -179,14 +179,14 @@ export class BtwPanelComponent extends OverlayPanel {
 				if (canBranch) hints.push({ keys: ["b"], label: "创建分支" });
 				hints.push(esc);
 				if (!this.#copied) return hintsRow(hints);
-				return statusHintsRow([span("✓ Copied to clipboard", "success")], hints);
+				return statusHintsRow([span("✓ 已复制到剪贴板", "success")], hints);
 			}
 			case "branching":
-				return text([span(`${theme.status.pending} Branching to chat…`, "muted")]);
+				return text([span(`${theme.status.pending} 正在分叉到对话…`, "muted")]);
 			case "aborted":
-				return statusHintsRow([span(`${theme.status.warning} Cancelled`, "warning")], [esc]);
+				return statusHintsRow([span(`${theme.status.warning} 已取消`, "warning")], [esc]);
 			case "error":
-				return statusHintsRow([span(`${theme.status.error} Error`, "error")], [esc]);
+				return statusHintsRow([span(`${theme.status.error} 错误`, "error")], [esc]);
 		}
 	}
 

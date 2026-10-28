@@ -395,8 +395,8 @@ export class SelectList implements Component, MouseRoutable {
 			}
 			const message =
 				this.#selection.query.trim().length > 0
-					? (this.layout.noMatchText ?? "No matching items")
-					: (this.layout.emptyText ?? "No items");
+					? (this.layout.noMatchText ?? "无匹配项")
+					: (this.layout.emptyText ?? "无条目");
 			lines.push(this.theme.noMatch(`  ${message}`));
 			return lines;
 		}

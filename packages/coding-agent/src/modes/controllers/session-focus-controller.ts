@@ -106,7 +106,7 @@ export class SessionFocusController {
 		if (request !== this.#focusRequestSeq) return;
 		if (attached && this.#focusedAgentId === id && this.#attachedSession === session) {
 			this.ctx.showStatus(
-				`Viewing agent ${id} — ${appKey(this.ctx.keybindings, "app.interrupt")} returns to main, ${formatDoubleTap("left")} hops to parent`,
+				`正在查看智能体 ${id} — ${appKey(this.ctx.keybindings, "app.interrupt")} 返回主会话，${formatDoubleTap("left")} 跳转至父级`,
 			);
 		}
 	}
@@ -140,7 +140,7 @@ export class SessionFocusController {
 		this.#focusedAgentId = undefined;
 		this.#attachedSession = undefined;
 		const attached = await this.#attach(this.ctx.session);
-		if (attached && this.#focusedAgentId === undefined) this.ctx.showStatus("Returned to main session");
+		if (attached && this.#focusedAgentId === undefined) this.ctx.showStatus("已返回主会话");
 	}
 
 	dispose(): void {
@@ -167,7 +167,7 @@ export class SessionFocusController {
 		const dead = event.type === "status_changed" && (event.ref.status === "parked" || event.ref.status === "aborted");
 		if (!gone && !dead) return;
 		void this.#detachToMain().then(() => {
-			this.ctx.showStatus(`Agent ${event.ref.id} is ${gone ? "gone" : event.ref.status}; returned to main session`);
+			this.ctx.showStatus(`智能体 ${event.ref.id} 的状态为 ${gone ? "已消失" : event.ref.status}；已返回主会话`);
 		});
 	}
 

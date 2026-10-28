@@ -25,7 +25,7 @@
 实时结对：`/collab` 通过端到端加密中继链接共享你的会话 — 队友运行 `/join <link>` 即可观看工具调用流，并从自己的 omp 向代理发送提示
 按 {tap:left} 可深入查看正在运行或已完成的代理，并检查其工具调用和对话记录
 遇到 Codex 速率限制？`/usage reset` 会消耗一个已保存的重置额度，立即恢复你的配额
-没有原生 tool_calling？推理提供商对它们的解析频频出错？`PI_DIALECT=glm|kimi|anthropic…` 会在本地为它们实现该功能！
+没有原生的 tool_calling？推理提供商解析不好？`PI_DIALECT=glm|kimi|anthropic…` 会在本地帮你处理！
 开启 `/advisor` 可附加第二个模型，审查每一轮并悄悄注入建议
 尝试用 -> 开头编写提示，并写出列表（1. 做 X，2. 做 Y）
 按 {key:shift+tab} 可循环切换推理力度等级

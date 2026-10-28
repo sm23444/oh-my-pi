@@ -19,8 +19,8 @@ export const cfgTtsLocalVoice = register({
 	ui: {
 		tab: "providers",
 		group: "Services",
-		label: "Local TTS Voice",
-		description: "Kokoro voice used by the local TTS backend (American/British, female/male)",
+		label: "本地 TTS 语音",
+		description: "本地 TTS 后端使用的 Kokoro 语音（American/British, female/male）",
 		options: TTS_LOCAL_VOICE_OPTIONS,
 	},
 });
@@ -32,8 +32,8 @@ export const cfgTtsLocalSpeed = register({
 	ui: {
 		tab: "providers",
 		group: "Services",
-		label: "Local TTS Speed",
-		description: "Speaking rate of the local TTS backend (tts tool, omp say). 1 = normal; clamped to 0.5–2.5",
+		label: "本地 TTS 速度",
+		description: "本地 TTS 后端（tts 工具、omp say）的语速。1 表示正常；限制在 0.5–2.5",
 		options: TTS_SPEED_OPTIONS,
 	},
 });
@@ -45,8 +45,8 @@ export const cfgSpeechEnabled = register({
 	ui: {
 		tab: "providers",
 		group: "Services",
-		label: "Speech Vocalization",
-		description: "Speak the assistant's output aloud through the speakers as it streams",
+		label: "语音朗读",
+		description: "在流式输出时通过扬声器朗读助手输出",
 	},
 });
 
@@ -58,13 +58,13 @@ export const cfgSpeechMode = register({
 	ui: {
 		tab: "providers",
 		group: "Services",
-		label: "Speech Vocalization Mode",
+		label: "语音朗读模式",
 		description:
-			"What to speak: all = assistant messages + thinking; assistant = messages only; yield = only the final message at turn end",
+			"朗读什么:all = 助手消息 + 思考;assistant = 仅消息;yield = 仅轮次结束时的最后一条消息",
 		options: [
-			{ value: "all", label: "All (messages + thinking)" },
-			{ value: "assistant", label: "Assistant messages" },
-			{ value: "yield", label: "Final message only" },
+			{ value: "all", label: "全部(消息 + 思考)" },
+			{ value: "assistant", label: "仅助手消息" },
+			{ value: "yield", label: "仅最后一条消息" },
 		],
 	},
 });
@@ -76,9 +76,9 @@ export const cfgSpeechEnhanced = register({
 	ui: {
 		tab: "providers",
 		group: "Services",
-		label: "Enhanced Speech Rewriting",
+		label: "增强语音改写",
 		description:
-			"Rewrite assistant output into natural spoken prose with the tiny/smol model before synthesis (describes code, drops links and markdown). Falls back to mechanical cleanup on failure",
+			"在合成前用 tiny/smol 模型将助手输出改写为自然的朗读文本(描述代码,丢弃链接和 markdown)。失败时回退到机械清理",
 	},
 });
 
@@ -90,8 +90,8 @@ export const cfgSpeechVoice = register({
 	ui: {
 		tab: "providers",
 		group: "Services",
-		label: "Speech Vocalization Voice",
-		description: "Kokoro voice used when speaking the assistant's output aloud",
+		label: "语音朗读音色",
+		description: "朗读助手输出时使用的 Kokoro 语音",
 		options: TTS_LOCAL_VOICE_OPTIONS,
 	},
 });
@@ -103,8 +103,8 @@ export const cfgSpeechSpeed = register({
 	ui: {
 		tab: "providers",
 		group: "Services",
-		label: "Speech Vocalization Speed",
-		description: "Speaking rate when reading the assistant's output aloud. 1 = normal; clamped to 0.5–2.5",
+		label: "语音发声速度",
+		description: "朗读助手输出内容时的语速。1 表示正常；限制在 0.5–2.5",
 		options: TTS_SPEED_OPTIONS,
 	},
 });

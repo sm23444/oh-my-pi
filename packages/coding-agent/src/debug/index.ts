@@ -154,19 +154,19 @@ export class DebugSelectorComponent extends OverlayPanel {
 		try {
 			session = await startCpuProfile();
 		} catch (err) {
-			this.ctx.showError(`Failed to start profiler: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`无法启动性能分析器：${err instanceof Error ? err.message : String(err)}`);
 			return;
 		}
 
 		// Show message and wait for keypress
 		const block = new TranscriptBlock();
-		block.addChild(new Text(theme.fg("accent", `${theme.status.info} CPU profiling started`), 1, 0));
+		block.addChild(new Text(theme.fg("accent", `${theme.status.info} CPU 性能分析已启动`), 1, 0));
 		block.addChild(new Spacer(1));
 		block.addChild(
 			new Text(
 				theme.fg(
 					"muted",
-					`Reproduce the performance issue, then press ${editorKey("tui.input.submit")} to stop profiling.`,
+					`重现性能问题，然后按 ${editorKey("tui.input.submit")} 停止性能分析。`,
 				),
 				1,
 				0,
@@ -219,14 +219,14 @@ export class DebugSelectorComponent extends OverlayPanel {
 			this.ctx.statusContainer.clear();
 
 			const block = new TranscriptBlock();
-			block.addChild(new Text(theme.fg("success", `+ Performance report saved`), 1, 0));
+			block.addChild(new Text(theme.fg("success", `+ 性能报告已保存`), 1, 0));
 			block.addChild(new Text(theme.fg("dim", formatFileHyperlink(result.path)), 1, 0));
-			block.addChild(new Text(theme.fg("dim", `Files: ${result.files.length}`), 1, 0));
+			block.addChild(new Text(theme.fg("dim", `文件：${result.files.length}`), 1, 0));
 			this.ctx.present(block);
 		} catch (err) {
 			loader.stop();
 			this.ctx.statusContainer.clear();
-			this.ctx.showError(`Failed to create report: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`无法创建报告：${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 
@@ -235,7 +235,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 			const workProfile = getWorkProfile(30);
 
 			if (!workProfile.svg) {
-				this.ctx.showWarning(`No work profile data (${workProfile.sampleCount} samples)`);
+				this.ctx.showWarning(`无工作性能分析数据（${workProfile.sampleCount} 个样本）`);
 				return;
 			}
 
@@ -247,10 +247,10 @@ export class DebugSelectorComponent extends OverlayPanel {
 
 			this.ctx.present([
 				new Spacer(1),
-				new Text(theme.fg("dim", `Opened flamegraph (${workProfile.sampleCount} samples)`), 1, 0),
+				new Text(theme.fg("dim", `已打开火焰图（${workProfile.sampleCount} 个样本）`), 1, 0),
 			]);
 		} catch (err) {
-			this.ctx.showError(`Failed to open profile: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`打开性能分析失败：${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 
@@ -276,14 +276,14 @@ export class DebugSelectorComponent extends OverlayPanel {
 			this.ctx.statusContainer.clear();
 
 			const block = new TranscriptBlock();
-			block.addChild(new Text(theme.fg("success", `+ Report bundle saved`), 1, 0));
+			block.addChild(new Text(theme.fg("success", `+ 报告包已保存`), 1, 0));
 			block.addChild(new Text(theme.fg("dim", formatFileHyperlink(result.path)), 1, 0));
-			block.addChild(new Text(theme.fg("dim", `Files: ${result.files.length}`), 1, 0));
+			block.addChild(new Text(theme.fg("dim", `文件：${result.files.length}`), 1, 0));
 			this.ctx.present(block);
 		} catch (err) {
 			loader.stop();
 			this.ctx.statusContainer.clear();
-			this.ctx.showError(`Failed to create report: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`无法创建报告：${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 
@@ -313,14 +313,14 @@ export class DebugSelectorComponent extends OverlayPanel {
 			this.ctx.statusContainer.clear();
 
 			const block = new TranscriptBlock();
-			block.addChild(new Text(theme.fg("success", `+ Memory report saved`), 1, 0));
+			block.addChild(new Text(theme.fg("success", `+ 内存报告已保存`), 1, 0));
 			block.addChild(new Text(theme.fg("dim", formatFileHyperlink(result.path)), 1, 0));
-			block.addChild(new Text(theme.fg("dim", `Files: ${result.files.length}`), 1, 0));
+			block.addChild(new Text(theme.fg("dim", `文件：${result.files.length}`), 1, 0));
 			block.addChild(
 				new Text(
 					theme.fg(
 						"warning",
-						"Review before sharing: session data, artifacts, logs and settings may contain secrets.",
+						"分享前请检查：会话数据、产物、日志和设置可能包含机密。",
 					),
 					1,
 					0,
@@ -330,7 +330,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 		} catch (err) {
 			loader.stop();
 			this.ctx.statusContainer.clear();
-			this.ctx.showError(`Failed to create report: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`无法创建报告：${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 
@@ -339,7 +339,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 			const logSource = await createDebugLogSource();
 			const logs = await logSource.getInitialText();
 			if (!logs && !logSource.hasOlderLogs()) {
-				this.ctx.showWarning("No log entries found for today.");
+				this.ctx.showWarning("未找到今天的日志条目。");
 				return;
 			}
 
@@ -372,7 +372,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 			});
 			this.ctx.ui.setFocus(viewer);
 		} catch (err) {
-			this.ctx.showError(`Failed to read logs: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`读取日志失败：${err instanceof Error ? err.message : String(err)}`);
 		}
 
 		this.ctx.ui.requestRender();
@@ -412,7 +412,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 		try {
 			info = existing ?? (await startRemoteDebuggerServer());
 		} catch (err) {
-			this.ctx.showError(`Failed to start remote debugger: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`启动远程调试器失败：${err instanceof Error ? err.message : String(err)}`);
 			return;
 		}
 
@@ -421,18 +421,18 @@ export class DebugSelectorComponent extends OverlayPanel {
 			new Text(
 				theme.fg(
 					"success",
-					`${theme.status.success} JavaScriptCore remote inspector ${existing ? "already running" : "started"}`,
+					`${theme.status.success} JavaScriptCore 远程检查器 ${existing ? "已在运行" : "已启动"}`,
 				),
 				1,
 				0,
 			),
 		);
-		block.addChild(new Text(theme.fg("dim", `Listening on ${info.host}:${info.port}`), 1, 0));
+		block.addChild(new Text(theme.fg("dim", `正在监听 ${info.host}:${info.port}`), 1, 0));
 		block.addChild(
 			new Text(
 				theme.fg(
 					"muted",
-					"Experimental WebKit RemoteInspectorServer socket (Bun marks it untested on macOS). One-way for this process — there is no stop. Attach a compatible WebKit/Safari Web Inspector client.",
+					"实验性 WebKit RemoteInspectorServer 套接字（Bun 将其标记为未在 macOS 上测试）。此进程为单向——没有停止操作。请连接兼容的 WebKit/Safari Web Inspector 客户端。",
 				),
 				1,
 				0,
@@ -452,7 +452,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 			block.addChild(new DynamicBorder());
 			this.ctx.present(block);
 		} catch (err) {
-			this.ctx.showError(`Failed to collect system info: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`收集系统信息失败：${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 
@@ -503,7 +503,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 	async #handleOpenArtifacts(): Promise<void> {
 		const sessionFile = this.ctx.sessionManager.getSessionFile();
 		if (!sessionFile) {
-			this.ctx.showWarning("No active session file.");
+			this.ctx.showWarning("没有活动的会话文件。");
 			return;
 		}
 
@@ -512,16 +512,16 @@ export class DebugSelectorComponent extends OverlayPanel {
 		try {
 			const stat = await fs.stat(artifactsDir);
 			if (!stat.isDirectory()) {
-				this.ctx.showWarning("Artifact folder does not exist yet.");
+				this.ctx.showWarning("产物文件夹尚不存在。");
 				return;
 			}
 		} catch {
-			this.ctx.showWarning("Artifact folder does not exist yet.");
+			this.ctx.showWarning("产物文件夹尚不存在。");
 			return;
 		}
 
 		openPath(artifactsDir);
-		this.ctx.showStatus(`Opened: ${artifactsDir}`);
+		this.ctx.showStatus(`已打开：${artifactsDir}`);
 	}
 
 	async #handleClearCache(): Promise<void> {
@@ -531,7 +531,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 		const stats = await getArtifactCacheStats(sessionsDir);
 
 		if (stats.count === 0) {
-			this.ctx.showStatus("Artifact cache is empty.");
+			this.ctx.showStatus("产物缓存为空。");
 			return;
 		}
 
@@ -545,7 +545,7 @@ export class DebugSelectorComponent extends OverlayPanel {
 		);
 
 		if (!confirmed) {
-			this.ctx.showStatus("Cache clear cancelled.");
+			this.ctx.showStatus("缓存清除已取消。");
 			return;
 		}
 
@@ -568,12 +568,12 @@ export class DebugSelectorComponent extends OverlayPanel {
 
 			this.ctx.present([
 				new Spacer(1),
-				new Text(theme.fg("success", `- Cleared ${result.removed} artifact directories`), 1, 0),
+				new Text(theme.fg("success", `- 已清除 ${result.removed} 个产物目录`), 1, 0),
 			]);
 		} catch (err) {
 			loader.stop();
 			this.ctx.statusContainer.clear();
-			this.ctx.showError(`Failed to clear cache: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`清除缓存失败：${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 

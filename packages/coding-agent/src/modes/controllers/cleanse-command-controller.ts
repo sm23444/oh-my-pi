@@ -26,7 +26,7 @@ interface ParsedCleanseArgs {
 	error?: string;
 }
 
-const CLEANSE_USAGE = "Usage: /cleanse [request] [--all] [--tests] [-n <agents>] [-m <model>]";
+const CLEANSE_USAGE = "用法：/cleanse [request] [--all] [--tests] [-n <agents>] [-m <model>]";
 const CUSTOM_REQUEST_OPTION = "Describe what to fix…";
 
 export class CleanseCommandController {
@@ -60,7 +60,7 @@ export class CleanseCommandController {
 	async start(args: string): Promise<void> {
 		if (this.#active) {
 			this.ctx.showStatus(
-				`A /cleanse run is already active — ${appKey(this.ctx.keybindings, "app.interrupt")} cancels it.`,
+				`一次 /cleanse 运行已在进行中 — ${appKey(this.ctx.keybindings, "app.interrupt")} 会将其取消。`,
 			);
 			return;
 		}

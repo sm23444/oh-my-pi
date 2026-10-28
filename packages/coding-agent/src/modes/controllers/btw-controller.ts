@@ -158,7 +158,7 @@ export class BtwController {
 		const inlineRequest = options?.historyRecordId === undefined ? this.#activeRequest : undefined;
 		try {
 			await copyToClipboard(replaceTabs(answer).trim());
-			this.ctx.showStatus("Copied /btw answer to clipboard");
+			this.ctx.showStatus("已将 /btw 的回答复制到剪贴板。");
 			if (options?.historyRecordId !== undefined) this.#historyPanel?.markCopied(options.historyRecordId, answer);
 			else if (inlineRequest && this.#visible && this.#activeRequest === inlineRequest)
 				inlineRequest.component.markCopied();
@@ -179,7 +179,7 @@ export class BtwController {
 	async handleBranch(): Promise<boolean> {
 		const unavailableReason = this.#branchUnavailableReason();
 		if (unavailableReason) {
-			this.ctx.showStatus(`/btw branch unavailable: ${unavailableReason}`, { dim: true });
+			this.ctx.showStatus(`/btw 分支不可用：${unavailableReason}`, { dim: true });
 			return false;
 		}
 		const request = this.#activeRequest;
@@ -206,7 +206,7 @@ export class BtwController {
 
 	handleEscape(): boolean {
 		if (this.#branchInFlight) {
-			this.ctx.showStatus("/btw branch is in progress", { dim: true });
+			this.ctx.showStatus("/btw 分支正在进行中", { dim: true });
 			return true;
 		}
 		if (!this.#visible) return false;
@@ -303,7 +303,7 @@ export class BtwController {
 			this.#transitionCount > 0 ||
 			(this.#activeRequest && getBtwLatestTurn(this.#activeRequest.record).status === "running")
 		) {
-			this.ctx.showStatus("Wait for the current /btw answer to finish or cancel it before moving.", { dim: true });
+			this.ctx.showStatus("请等当前 /btw 回答结束，或先取消再继续。", { dim: true });
 			return false;
 		}
 		this.#transitionCount++;
@@ -381,7 +381,7 @@ export class BtwController {
 		if (signal?.aborted) return false;
 		const trimmedQuestion = question.trim();
 		if (this.#starting || this.#branchInFlight || this.#transitionCount > 0) {
-			this.ctx.showStatus("A /btw action is in progress. Please wait.", { dim: true });
+			this.ctx.showStatus("有 /btw 操作正在进行，请稍候。", { dim: true });
 			return false;
 		}
 		const viewSession = this.ctx.focusedAgentId ? this.ctx.viewSession : this.ctx.session;
@@ -390,13 +390,13 @@ export class BtwController {
 			if (active.session !== viewSession) {
 				// Opening this view's store would dispose (cancel) the other view's live question.
 				this.ctx.showStatus(
-					"A /btw question is still running in another session view. Wait for it or cancel it first.",
+					"/btw 问题仍在另一个会话视图中运行。请等待或先将其取消。",
 					{ dim: true },
 				);
 				return false;
 			}
 			if (trimmedQuestion && active.sessionId === this.#sessionManager.getSessionId()) {
-				this.ctx.showStatus("A /btw question is still running. Open /btw to view it or cancel it first.", {
+				this.ctx.showStatus("/btw 提问仍在执行。请先打开 /btw 查看，或先取消它。", {
 					dim: true,
 				});
 				return false;
@@ -429,7 +429,7 @@ export class BtwController {
 				return false;
 			const previous = recordId ? store.getRecords().find(record => record.id === recordId) : undefined;
 			if (recordId && (!previous || getBtwLatestTurn(previous).status === "running")) {
-				this.ctx.showStatus("This side conversation is unavailable or still running.", { dim: true });
+				this.ctx.showStatus("该侧边会话不可用或仍在执行。", { dim: true });
 				return false;
 			}
 			if (!viewSession.model) {
@@ -582,7 +582,7 @@ export class BtwController {
 		const request = this.#activeRequest;
 		if (request && this.#isActiveRequest(request) && getBtwLatestTurn(request.record).status === "running") {
 			if (this.ctx.ui.nativeRendering) {
-				this.ctx.showStatus("/btw is still answering in the background · /btw to reopen it", { dim: true });
+				this.ctx.showStatus("/btw 仍在后台回答 · /btw 可重新打开", { dim: true });
 			} else {
 				request.component.setAnswer(getBtwLatestTurn(request.record).answer);
 				this.#visible = true;
@@ -649,7 +649,7 @@ export class BtwController {
 				request.component.markComplete();
 				// Tern: the sheet was put away while answering; say where the answer is.
 				if (this.ctx.ui.nativeRendering && !this.#historyOverlay) {
-					this.ctx.showStatus("/btw answer ready · /btw to read it");
+					this.ctx.showStatus("/btw 回答已就绪 · /btw 即可阅读");
 				}
 				const copyText = request.component.getCopyText();
 				if (copyText !== undefined) {

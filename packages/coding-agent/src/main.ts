@@ -498,7 +498,7 @@ export async function submitInteractiveInput(
 			try {
 				forwarded = await session.prompt(input.text, { images: input.images, streamingBehavior });
 			} catch (error: unknown) {
-				mode.showError(error instanceof Error ? error.message : "Unknown error occurred");
+				mode.showError(error instanceof Error ? error.message : "发生未知错误");
 			}
 			// Dispatch consumed the body locally (void custom command) or rejected
 			// instead of starting a turn: when it is the armed loop body, park the
@@ -749,7 +749,7 @@ async function runInteractiveMode(
 		if (advisorConfigWarnings.length > 0) {
 			// Pulled here, not pushed from SessionAdvisors: the constructor-time
 			// `emitNotice` fired before the UI subscribed and was silently lost.
-			mode.showWarning(`WATCHDOG.yml: ${sanitizeDisplayWarnings(advisorConfigWarnings).join("; ")}`);
+			mode.showWarning(`文件 WATCHDOG.yml：${sanitizeDisplayWarnings(advisorConfigWarnings).join("; ")}`);
 		}
 
 		for (const notify of notifs) {
@@ -798,7 +798,7 @@ async function runInteractiveMode(
 		try {
 			await mode.startGoalAtStartup(startupGoal);
 		} catch (error: unknown) {
-			mode.showError(error instanceof Error ? error.message : "Unknown error occurred");
+			mode.showError(error instanceof Error ? error.message : "发生未知错误");
 		}
 	}
 
@@ -809,15 +809,15 @@ async function runInteractiveMode(
 			const agents = subagents.length === 1 ? "1 subagent" : `${subagents.length} subagents`;
 			mode.showStatus(
 				turn && subagents.length > 0
-					? `Restored: going on with the interrupted turn and ${agents}.`
+					? `已恢复：继续被中断的回合以及 ${agents}。`
 					: turn
-						? "Restored: going on with the interrupted turn."
+						? "已恢复：继续被中断的回合。"
 						: subagents.length > 0
-							? `Restored: ${agents} going on with their interrupted turns.`
-							: "Restored: nothing was left unfinished.",
+							? `已恢复：${agents} 继续各自被中断的回合。`
+							: "已恢复：没有留下未完成的内容。",
 			);
 		} catch (error: unknown) {
-			mode.showError(error instanceof Error ? error.message : "Unknown error occurred");
+			mode.showError(error instanceof Error ? error.message : "发生未知错误");
 		}
 	}
 

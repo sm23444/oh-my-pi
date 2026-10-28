@@ -158,7 +158,7 @@ export class InspectorPanel implements Component {
 	describePreview(): NativeNode[] {
 		const ext = this.#extension;
 		if (!ext) {
-			return [text([span("Select an extension to view details", "muted")], { wrap: "word" })];
+			return [text([span("选择一个扩展以查看详情", "muted")], { wrap: "word" })];
 		}
 		this.#toolFrame = snapshotToolRuntimeSource(this.#toolSource);
 		const view = this.#nativeKindView(ext);
@@ -233,7 +233,7 @@ export class InspectorPanel implements Component {
 
 	/** File content as markdown source, cut to the preview budget until expanded. */
 	#nativePreviewSection(heading: string, raw: string): NativeNode {
-		if (!raw) return this.#nativeSection(heading, [text([span("(empty)", "dim")])]);
+		if (!raw) return this.#nativeSection(heading, [text([span("（空）", "dim")])]);
 		const lines = sanitizeDisplayText(raw).split("\n");
 		const cut = !this.#expanded && lines.length > PREVIEW_LINE_BUDGET;
 		const shown = cut ? lines.slice(0, PREVIEW_LINE_BUDGET - 1) : lines;
@@ -243,12 +243,12 @@ export class InspectorPanel implements Component {
 	}
 
 	#nativeMore(hidden: number, noun: string): NativeNode {
-		return text([span(`… ${hidden} more ${noun} (${expandKeyHint()} to expand)`, "dim")]);
+		return text([span(`… 还有 ${hidden} 个 ${noun}（按 ${expandKeyHint()} 展开）`, "dim")]);
 	}
 
 	/** Tool/argument rows: name, type and required flag, then the description. */
 	#nativeParams(params: ToolParamView[]): NativeNode {
-		if (params.length === 0) return text([span("(no arguments)", "dim")]);
+		if (params.length === 0) return text([span("（无参数）", "dim")]);
 		return node("kv", {
 			items: params.map(param => ({
 				k: [span(param.name, "accent mono")],
@@ -281,7 +281,7 @@ export class InspectorPanel implements Component {
 				description ? text(sanitizeDisplayText(description), { wrap: "word" }) : undefined,
 				inline
 					? this.#nativeParams(params)
-					: text([span(`${params.length} args (${expandKeyHint()} to expand)`, "dim")]),
+					: text([span(`${params.length} 个参数（按 ${expandKeyHint()} 展开）`, "dim")]),
 			]),
 			{ gap: "xs" },
 		);
@@ -328,7 +328,7 @@ export class InspectorPanel implements Component {
 			case "rule": {
 				const data = ruleInspectorData(ext, this.#source);
 				const applies = kv([
-					["always", data.alwaysApply ? [span("always", "accent")] : undefined],
+					["always", data.alwaysApply ? [span("总是", "accent")] : undefined],
 					["globs", data.globs?.join(", ")],
 					["condition", this.#nativeList(data.condition)],
 					["ast", this.#nativeList(data.astCondition)],
@@ -339,21 +339,21 @@ export class InspectorPanel implements Component {
 				return {
 					...base,
 					description: data.description,
-					sections: [this.#nativeSection("Applies", [applies ?? text([span("(no apply conditions)", "dim")])])],
+					sections: [this.#nativeSection("Applies", [applies ?? text([span("（无应用条件）", "dim")])])],
 					preview: { heading: "Rule", text: data.content },
 				};
 			}
 			case "skill": {
 				const data = skillInspectorData(ext);
 				const surface = kv([
-					["apply", data.alwaysApply ? [span("always apply", "accent")] : undefined],
+					["apply", data.alwaysApply ? [span("始终应用", "accent")] : undefined],
 					["globs", data.globs?.join(", ")],
 				]);
 				return {
 					...base,
 					description: data.description,
 					runtime: data.hidden
-						? [["Visibility", [span("hidden", "warning"), span("  omitted from the system-prompt skill list")]]]
+						? [["Visibility", [span("隐藏", "warning"), span("  已从系统提示词技能列表中省略")]]]
 						: [],
 					sections: surface ? [keyed(surface, "surface")] : [],
 					preview: { heading: "Instruction", text: data.content },
@@ -366,7 +366,7 @@ export class InspectorPanel implements Component {
 					["hint", data.argumentHint ? [span(sanitizeDisplayText(data.argumentHint), "dim")] : undefined],
 				]);
 				if (facts) invocation.push(facts);
-				if (data.usesArguments) invocation.push(text([span("accepts $ARGUMENTS", "dim")]));
+				if (data.usesArguments) invocation.push(text([span("接受 $ARGUMENTS", "dim")]));
 				return {
 					...base,
 					description: data.description,
@@ -426,7 +426,8 @@ export class InspectorPanel implements Component {
 		const shown = items.slice(0, cap).map(item => sanitizeDisplayText(item));
 		const hidden = items.length - shown.length;
 		const spans: TspSpan[] = [span(shown.join("\n"), "accent")];
-		if (hidden > 0) spans.push(span(`\n… ${hidden} more (${expandKeyHint()} to expand)`, "dim"));
+		if (hidden > 0) spans.push(span(`
+… ${hidden} 更多（按 ${expandKeyHint()} 展开）`, "dim"));
 		return spans;
 	}
 
@@ -448,7 +449,7 @@ export class InspectorPanel implements Component {
 				"Health",
 				[
 					span(`${MCP_HEALTH_GLYPH[health]()} ${formatMcpHealthLabel(health)}`, MCP_HEALTH_STYLE[health]),
-					span(`  ${snap?.transport ?? "stdio"}`, "muted"),
+					span(`  ${snap?.transport ?? "标准输入输出（stdio）"}`, "muted"),
 				],
 			],
 		];
@@ -479,7 +480,7 @@ export class InspectorPanel implements Component {
 				["Command", snap?.command ? [span(shortenPath(snap.command, os.homedir()), "mono")] : undefined],
 				["URL", snap?.url ? [span(snap.url, "mono", { href: snap.url })] : undefined],
 				["Args", snap?.args && snap.args.length > 0 ? [span(snap.args.join(" "), "mono dim")] : undefined],
-				["Env vars", snap && snap.envCount > 0 ? [span(`${snap.envCount} defined`, "dim")] : undefined],
+				["Env vars", snap && snap.envCount > 0 ? [span(`${snap.envCount} 已定义`, "dim")] : undefined],
 			],
 		};
 	}

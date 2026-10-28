@@ -75,10 +75,10 @@ export async function runGrepCommand(cmd: GrepCommandArgs): Promise<void> {
 	}
 
 	const searchPath = path.resolve(expandPath(cmd.path));
-	console.log(chalk.dim(`Searching in: ${searchPath}`));
-	console.log(chalk.dim(`Pattern: ${cmd.pattern}`));
+	console.log(chalk.dim(`正在搜索：${searchPath}`));
+	console.log(chalk.dim(`模式：${cmd.pattern}`));
 	console.log(
-		chalk.dim(`Mode: ${cmd.mode}, Limit: ${cmd.limit}, Context: ${cmd.context}, Gitignore: ${cmd.gitignore}`),
+		chalk.dim(`模式：${cmd.mode}，限制：${cmd.limit}，上下文：${cmd.context}，Gitignore：${cmd.gitignore}`),
 	);
 
 	console.log("");
@@ -132,16 +132,16 @@ export async function runGrepCommand(cmd: GrepCommandArgs): Promise<void> {
 }
 
 export function printGrepHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} grep`)} - 测试 grep 工具
+	console.log(`${chalk.bold(`命令：${APP_NAME} grep`)} - 测试 grep 工具
 
-${chalk.bold("Usage:")}
+${chalk.bold("用法:")}
   ${APP_NAME} grep <pattern> [path] [options]
 
-${chalk.bold("Arguments:")}
+${chalk.bold("参数:")}
   pattern   要搜索的正则表达式模式
   path      要搜索的目录或文件（默认：.）
 
-${chalk.bold("Options:")}
+${chalk.bold("选项:")}
   -g, --glob <pattern>  按 glob 模式过滤文件
   -l, --limit <n>       最大匹配数（默认：20）
   -C, --context <n>     上下文行数（默认：2）
@@ -150,10 +150,10 @@ ${chalk.bold("Options:")}
   -h, --help            显示此帮助信息
   --no-gitignore        包含被 .gitignore 排除的文件
 
-${chalk.bold("Environment:")}
+${chalk.bold("环境变量:")}
   PI_WALK_WORKERS=N    设置文件系统遍历工作线程数（默认 4，0 = 自动）
 
-${chalk.bold("Examples:")}
+${chalk.bold("示例:")}
   ${APP_NAME} grep "import" src/
   ${APP_NAME} grep "TODO" . --glob "*.ts"
   ${APP_NAME} grep "function" --files

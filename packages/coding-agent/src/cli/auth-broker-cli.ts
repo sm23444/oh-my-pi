@@ -227,7 +227,9 @@ async function runLocalLogin(rl: readline.Interface, provider: string): Promise<
 	await storage.credentials.reload();
 	try {
 		await runTerminalOAuthLogin(rl, storage, provider);
-		process.stdout.write(`\nCredentials saved to ${getAgentDbPath()}\n`);
+		process.stdout.write(`
+凭据已保存到 ${getAgentDbPath()}
+`);
 	} finally {
 		store.close();
 	}
@@ -249,7 +251,8 @@ async function runRemoteLogin(provider: string, via: string, dryRun: boolean): P
 		`${APP_NAME} auth-broker login ${provider}`,
 	];
 	if (dryRun) {
-		process.stdout.write(`ssh ${sshArgs.map(a => (a.includes(" ") ? `'${a}'` : a)).join(" ")}\n`);
+		process.stdout.write(`ssh 命令：${sshArgs.map(a => (a.includes(" ") ? `'${a}'` : a)).join(" ")}
+`);
 		return;
 	}
 	const sshBin = $which("ssh");
@@ -275,7 +278,7 @@ async function runLogout(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 		if (!providerArg) {
 			const stored = store.listProviders();
 			if (stored.length === 0) {
-				process.stdout.write("No credentials stored.\n");
+				process.stdout.write("未存储任何凭据。\n");
 				return;
 			}
 			const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -286,7 +289,8 @@ async function runLogout(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 			}
 		}
 		await store.deleteAuthCredentials(providerArg, "logged out by user");
-		process.stdout.write(`Logged out of ${providerArg}\n`);
+		process.stdout.write(`已退出登录：${providerArg}
+`);
 	} finally {
 		store.close();
 	}
@@ -298,7 +302,7 @@ async function runList(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 		process.stdout.write(`${JSON.stringify(providers.map(p => ({ id: p.id, name: p.name })))}\n`);
 		return;
 	}
-	process.stdout.write("Available providers:\n\n");
+	process.stdout.write("可用提供商：\n\n");
 	for (const p of providers) {
 		process.stdout.write(`  ${p.id.padEnd(20)} ${p.name}\n`);
 	}
@@ -481,13 +485,15 @@ async function runImport(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 	}
 
 	if (entries.length === 0) {
-		if (!flags.json) process.stdout.write(`No importable credentials in ${resolvedTarget}.\n`);
+		if (!flags.json) process.stdout.write(`在 ${resolvedTarget} 中没有可导入的凭据。
+`);
 		return;
 	}
 
 	if (flags.dryRun === true) {
 		if (!flags.json) {
-			process.stdout.write(`Dry run — would import ${entries.length} credential(s):\n`);
+			process.stdout.write(`试运行 — 将导入 ${entries.length} 个凭据：
+`);
 			for (const entry of entries) process.stdout.write(`  ${describeImportEntry(entry)}\n`);
 		}
 		return;
@@ -693,13 +699,14 @@ async function runMigrate(flags: AuthBrokerCommandArgs["flags"]): Promise<void> 
 	}
 
 	if (plan.length === 0) {
-		if (!flags.json) process.stdout.write("Nothing to migrate.\n");
+		if (!flags.json) process.stdout.write("没有要迁移的内容。\n");
 		return;
 	}
 
 	if (flags.dryRun === true) {
 		if (!flags.json) {
-			process.stdout.write(`Dry run — would upload ${plan.length} credential(s):\n`);
+			process.stdout.write(`试运行 — 将上传 ${plan.length} 个凭据：
+`);
 			for (const entry of plan) {
 				process.stdout.write(`  [${entry.source}] ${entry.provider} ${entry.identity}\n`);
 			}
@@ -728,7 +735,7 @@ async function runMigrate(flags: AuthBrokerCommandArgs["flags"]): Promise<void> 
 async function runStatus(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 	const cfg = await resolveAuthBrokerConfig();
 	if (!cfg) {
-		const message = "No auth-broker configured (set OMP_AUTH_BROKER_URL to enable).";
+		const message = "未配置认证代理 (设置 OMP_AUTH_BROKER_URL 以启用).";
 		if (flags.json) process.stdout.write(`${JSON.stringify({ ok: false, reason: "not_configured" })}\n`);
 		else process.stdout.write(`${chalk.yellow(message)}\n`);
 		return;
@@ -739,7 +746,8 @@ async function runStatus(flags: AuthBrokerCommandArgs["flags"]): Promise<void> {
 		if (flags.json) {
 			process.stdout.write(`${JSON.stringify({ url: cfg.url, ...health })}\n`);
 		} else {
-			process.stdout.write(`${chalk.green("OK")} ${cfg.url} (version=${health.version ?? "unknown"})\n`);
+			process.stdout.write(`${chalk.green("OK")} ${cfg.url} (版本=${health.version ?? "未知"})
+`);
 		}
 	} catch (error) {
 		const message = error instanceof Error ? error.message : String(error);

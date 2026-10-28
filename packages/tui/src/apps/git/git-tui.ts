@@ -846,7 +846,7 @@ class GitTuiComponent implements Component {
 					? tintChip(file.kind === "untracked" ? " Untracked " : " Unstaged ", theme.getColorHex("warning"))
 					: file
 						? tintChip(` ${this.#model.headCommit?.shortSha ?? "commit"} `, theme.getColorHex("accent"))
-						: theme.fg("dim", ` ${this.#model.branch ?? "detached"} `);
+						: theme.fg("dim", ` ${this.#model.branch ?? "分离头指针"} `);
 		row.add(scope);
 
 		// Hunk nav + one segmented view control ⟨file│split│inline│hunk⟩,
@@ -1031,13 +1031,13 @@ class GitTuiComponent implements Component {
 			}
 			const scope =
 				file.area === "staged"
-					? { text: "Staged", tone: "success" as const }
+					? { text: "已暂存", tone: "success" as const }
 					: file.area === "unstaged"
-						? { text: file.kind === "untracked" ? "Untracked" : "Unstaged", tone: "warning" as const }
-						: { text: this.#model.headCommit?.shortSha ?? "commit", tone: "accent" as const };
+						? { text: file.kind === "untracked" ? "未跟踪" : "未暂存", tone: "warning" as const }
+						: { text: this.#model.headCommit?.shortSha ?? "提交", tone: "accent" as const };
 			left.push(node("badge", { text: scope.text, tone: scope.tone }));
 		} else {
-			left.push(text([span(this.#model.branch ?? "detached", "muted")], { role: "omp.app.git.path" }));
+			left.push(text([span(this.#model.branch ?? "分离头指针", "muted")], { role: "omp.app.git.path" }));
 		}
 		const iconButton = (name: string, act: string, title: string, on?: boolean): NativeNode =>
 			node(
@@ -1082,9 +1082,9 @@ class GitTuiComponent implements Component {
 		}
 		if (file?.area === "unstaged" || file?.area === "staged") {
 			right.push(
-				actionButton(file.area === "unstaged" ? "Stage file" : "Unstage file", "stage-file", {
+				actionButton(file.area === "unstaged" ? "暂存文件" : "取消暂存文件", "stage-file", {
 					keys: "s",
-					title: `${file.area === "unstaged" ? "Stage" : "Unstage"} ${file.path}`,
+					title: `${file.area === "unstaged" ? "暂存" : "取消暂存"} ${file.path}`,
 				}),
 			);
 		}
@@ -1138,7 +1138,7 @@ class GitTuiComponent implements Component {
 			return keyed(
 				col(
 					[
-						text([span("Binary or media file", "strong")]),
+						text([span("二进制或媒体文件", "strong")]),
 						node("kv", {
 							items: [
 								{ k: "before", v: assetText(contents.old) },
@@ -1154,7 +1154,7 @@ class GitTuiComponent implements Component {
 		}
 		if (this.#pane.state === "streaming" || this.#pane.state === "loading") {
 			return keyed(
-				row([node("spinner", { style: "dots" }), text([span(`Loading ${file?.path ?? "diff"}…`, "muted")])], {
+				row([node("spinner", { style: "dots" }), text([span(`正在加载 ${file?.path ?? "差异"}…`, "muted")])], {
 					gap: "sm",
 					align: "center",
 					role: "omp.app.git.state",
@@ -1168,7 +1168,7 @@ class GitTuiComponent implements Component {
 					text([span(this.#pane.emptyMessage, "strong")]),
 					text([
 						span(
-							this.#model.clean ? "The working tree is clean." : "Pick a file on the right to see its changes.",
+							this.#model.clean ? "工作区是干净的。" : "选择右侧文件以查看其更改。",
 							"muted",
 						),
 					]),
@@ -1247,7 +1247,7 @@ function mediaColumn(side: "before" | "after", asset: FileAssetSide, ref: MediaR
 		: keyed(
 				text(
 					asset.kind === "empty"
-						? [span(side === "before" ? "Did not exist" : "Deleted", "muted")]
+						? [span(side === "before" ? "不存在" : "已删除", "muted")]
 						: assetText(asset).map(fact => span(fact.t, "muted")),
 					{ role: "omp.app.git.media-none" },
 				),
@@ -1262,17 +1262,17 @@ function assetText(asset: AssetFileContents["old"]): TspSpan[] {
 		bytes === undefined ? "" : bytes < 1024 ? ` · ${bytes} B` : ` · ${(bytes / 1024).toFixed(1)} KB`;
 	switch (asset.kind) {
 		case "empty":
-			return [span("none", "dim")];
+			return [span("无", "dim")];
 		case "text":
-			return [span(`text${size(asset.byteLength)}`)];
+			return [span(`文本${size(asset.byteLength)}`)];
 		case "image":
-			return [span(`image ${asset.image.widthPx}×${asset.image.heightPx}${size(asset.image.byteLength)}`)];
+			return [span(`图片 ${asset.image.widthPx}×${asset.image.heightPx}${size(asset.image.byteLength)}`)];
 		case "binary":
-			return [span(`binary${size(asset.byteLength)}`)];
+			return [span(`二进制${size(asset.byteLength)}`)];
 		case "tooLarge":
-			return [span(`too large to diff${size(asset.byteLength)}`)];
+			return [span(`太大，无法比较${size(asset.byteLength)}`)];
 		case "lfsMissing":
-			return [span(`LFS object ${asset.oid.slice(0, 12)} not fetched${size(asset.byteLength)}`)];
+			return [span(`LFS 对象 ${asset.oid.slice(0, 12)} 未获取${size(asset.byteLength)}`)];
 	}
 }
 

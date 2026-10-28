@@ -198,7 +198,7 @@ export class ProtocolProbeComponent extends Container {
 			theme.fg("muted", "样式 (SGR)"),
 			`  ${theme.bold("粗体")}  ${theme.italic("斜体")}  ${theme.underline("underline")}  ${theme.strikethrough("删除线")}  ${theme.inverse(" inverse ")}  ${theme.fg("dim", "暗淡")}`,
 			`  ${theme.fg("accent", "强调色")}  ${theme.fg("success", "成功")}  ${theme.fg("warning", "警告")}  ${theme.fg("error", "出错")}`,
-			`  truecolor: ${truecolorBar(32)} (${theme.fg("muted", `24 位 ${TERMINAL.trueColor ? "on" : "off"}`)})`,
+			`  truecolor: ${truecolorBar(32)} (${theme.fg("muted", `24 位 ${TERMINAL.trueColor ? "开启" : "关闭"}`)})`,
 		].join("\n");
 		this.addChild(new Text(styling, 1, 0));
 		this.addChild(new Spacer(1));

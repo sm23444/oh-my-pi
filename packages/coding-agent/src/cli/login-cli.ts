@@ -54,7 +54,9 @@ export async function runLoginCommand(provider: string | undefined): Promise<voi
 		const broker = await resolveAuthBrokerConfig();
 		process.stdout.write(
 			chalk.dim(
-				broker ? `Credentials saved to auth broker ${broker.url}\n` : `Credentials saved to ${getAgentDbPath()}\n`,
+				broker ? `凭据已保存到身份验证代理 ${broker.url}
+` : `凭据已保存到 ${getAgentDbPath()}
+`,
 			),
 		);
 	} catch (error) {

@@ -571,7 +571,7 @@ export class SettingsList implements Component {
 
 	#renderSearchStatus(width: number): string {
 		const query = sanitizeSingleLine(this.#filterQuery);
-		const statusText = query ? `  Search: ${query}` : "  Type to search";
+		const statusText = query ? `  搜索：${query}` : "  输入以搜索";
 		return this.#theme.hint(truncateToWidth(statusText, width, Ellipsis.Omit));
 	}
 
@@ -697,7 +697,7 @@ export class SettingsList implements Component {
 	}
 
 	#describeItem(item: NativeDescribedSetting): NativeNode {
-		const value = plainLine(String(item.currentValue ?? ""));
+		const value = plainLine(__ompZhSettingValue(item));
 		const changed = item.changed === true;
 		const signature = `${item.heading === true}\0${item.label}\0${value}\0${changed}\0${item.warning ?? ""}\0${item.description ?? ""}`;
 		const cached = item[kNativeItem];
@@ -706,7 +706,7 @@ export class SettingsList implements Component {
 		if (item.heading) {
 			described = node(
 				"item",
-				{ label: [span(plainLine(item.label), "strong")], disabled: true, role: "omp.settings.heading" },
+				{ label: [span(plainLine(__ompZhGroup(item.label)), "strong")], disabled: true, role: "omp.settings.heading" },
 				undefined,
 				item.id,
 			);
@@ -762,7 +762,7 @@ export class SettingsList implements Component {
 		if (item.heading) {
 			const headingStyle = this.#theme.heading ?? ((text: string) => this.#theme.hint(text));
 			const prefix = headingCursor ? this.#theme.cursor : "  ";
-			return truncateToWidth(`${prefix}${headingStyle(item.label, dimmed)}`, Math.max(0, rowWidth));
+			return truncateToWidth(`${prefix}${headingStyle(__ompZhGroup(item.label), dimmed)}`, Math.max(0, rowWidth));
 		}
 		// While section focus owns the keyboard, the row cursor hides so the
 		// section cursor is the single focus indicator.
@@ -774,7 +774,7 @@ export class SettingsList implements Component {
 		const labelPad = padding(Math.max(0, maxLabelWidth - visibleWidth(labelPlain)));
 		const separator = "  ";
 		const valueMaxWidth = rowWidth - prefixWidth - maxLabelWidth - visibleWidth(separator) - 2;
-		const valuePlain = truncateToWidth(String(item.currentValue ?? ""), valueMaxWidth, Ellipsis.Omit);
+		const valuePlain = truncateToWidth(__ompZhSettingValue(item), valueMaxWidth, Ellipsis.Omit);
 		const hovered = !isSelected && this.#theme.hovered !== undefined && item.id === this.#hoveredItemId;
 		// De-emphasized rows (outside the active section) render as plain text
 		// under one dim wash so inner label/value colors don't fight it.
@@ -918,7 +918,7 @@ export class SettingsList implements Component {
 	 * both panes, falling back to the flat single-column layout.
 	 */
 	#renderSplitList(width: number, sections: SettingSection[]): string[] | null {
-		const sectionNames = sections.map(section => section.name || "Other");
+		const sectionNames = sections.map(section => __ompZhGroup(section.name) || "Other");
 		let nameWidth = 0;
 		for (const name of sectionNames) nameWidth = Math.max(nameWidth, visibleWidth(name));
 		const sidebarWidth = this.#options.sidebarWidth ?? Math.min(22, nameWidth) + 4; // 2-space indent + 2-space gap
@@ -1128,4 +1128,24 @@ export class SettingsFormField extends FormField {
 		});
 		this.settingsList = settingsList;
 	}
+}
+
+const __ompZhGroupLabels: Readonly<Record<string, string>> = {"Theme":"主题","Composer":"输入框","Status Line":"状态栏","Display":"显示","Images":"图像","Thinking":"思考","Sampling":"采样","Prompt":"提示词","Retry & Fallback":"重试与回退","Advisor":"顾问","Prewalk":"预处理","Vision":"视觉","Input":"输入","Approvals":"审批","Notifications":"通知","Speech":"语音","Collab":"协作","Stream":"直播","Magic Keywords":"魔法关键词","Startup & Updates":"启动与更新","Power":"电源","Agent":"智能体","Git":"Git","Skills":"技能","General":"常规","Compaction":"压缩","Rules (TTSR)":"规则 (TTSR)","Experimental":"实验功能","Auto-Learn":"自动学习","Mnemopi":"Mnemopi","Hindsight":"Hindsight","Sharpshooter":"Sharpshooter","Editing":"编辑","Reading":"读取","Read Summaries":"读取摘要","LSP":"LSP","Bash":"Bash","Eval & Runtimes":"求值与运行时","Available Tools":"可用工具","Todos":"待办事项","Grep & Browser":"搜索与浏览器","Computer":"计算机","IDA Pro":"IDA Pro","GitHub":"GitHub","Output Limits":"输出限制","Execution":"执行","Discovery & MCP":"发现与 MCP","Extensions":"扩展","Developer":"开发者","Modes":"模式","Subagents":"子智能体","Isolation":"隔离","Commands & Skills":"命令与技能","Services":"服务","Fireworks":"Fireworks","Tiny Model":"微型模型","Protocol":"协议","Timeouts":"超时","Privacy":"隐私","Other":"其他"};
+function __ompZhGroup(value: string): string {
+	return Object.hasOwn(__ompZhGroupLabels, value) ? __ompZhGroupLabels[value]! : value;
+}
+const __ompZhValueLabels: Readonly<Record<string, string>> = {"true":"开启","false":"关闭","on":"开启","off":"关闭","auto":"自动","inherit":"继承","minimal":"最低","min":"最低","low":"低","medium":"中","med":"中","mid":"中","high":"高","xhigh":"极高","max":"最高","enabled":"已启用","disabled":"已禁用","active":"进行中","inactive":"未激活","paused":"已暂停","running":"运行中","waiting":"等待中","complete":"已完成","dropped":"已放弃","budget-limited":"预算受限","next prompt repeats":"下一条提示词重复执行","always":"始终","never":"从不","smart":"智能","default":"默认","aggressive":"积极","view":"查看","control":"控制","global":"全局","project":"项目","per-project":"按项目","per-project-tagged":"按项目标签","session":"会话","per-call":"每次调用","append":"追加","rebuild":"重建","preserve":"保留","collapsed":"折叠","full":"完整","all":"全部","one-at-a-time":"逐条","immediate":"立即","wait":"等待","text":"文字","icon":"图标","none":"无","compact":"精简","reset":"重置","rewind":"回溯","tree":"树形","stable":"稳定版","canary":"预览版","notify":"通知","summary":"摘要","expanded":"展开","hidden":"隐藏","suggest":"建议","directory":"目录","repo":"仓库","idle":"空闲","display":"显示器","system":"系统","local":"本地","remote":"远程","discard":"丢弃","keep":"保留","once":"一次","after-gap":"间隔后","prose-only":"仅正文","tool-only":"仅工具","full-session":"完整会话","last-turn":"最后一轮","multilingual":"多语言","en":"英语","braille":"盲文","pulse":"脉冲","dots":"圆点","line":"线条","classic":"经典","kitt":"扫描灯"};
+function __ompZhValue(value: string): string {
+	return Object.hasOwn(__ompZhValueLabels, value) ? __ompZhValueLabels[value]! : value;
+}
+
+function __ompZhSettingLabel(value: string, id: string): string {
+	if (value === "true" || value === "false") return __ompZhValue(value);
+	// Provider/model IDs, paths, commands, and protocols are technical text.
+	if (/(provider|model|path|directory|endpoint|command|protocol|url|host|(?:^|\.)id$)/i.test(id)) return value;
+	return __ompZhValue(value);
+}
+
+function __ompZhSettingValue(item: { id: string; currentValue: string; values?: readonly string[] }): string {
+	return item.values ? __ompZhSettingLabel(String(item.currentValue ?? ""), item.id) : String(item.currentValue ?? "");
 }

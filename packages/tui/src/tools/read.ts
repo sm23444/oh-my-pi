@@ -292,14 +292,14 @@ interface ReadUrlCard {
 /** Read cards keyed by URL scheme. */
 const READ_URL_CARDS: Record<string, ReadUrlCard> = {
 	proc: {
-		label: "Process",
+		label: "进程",
 		rootDetail: "jobs & services",
 		detailsKey: "proc",
 		render: (_url, target, result, details, options, uiTheme) =>
 			renderProcRead(target, result, details?.proc, options, uiTheme),
 	},
 	cfg: {
-		label: "Config",
+		label: "配置",
 		rootDetail: "all settings",
 		detailsKey: "cfg",
 		render: (url, _target, result, details, options, uiTheme) =>
@@ -439,20 +439,20 @@ function readNativeHead(
 		target += `:${startLine}${endLine ? `-${endLine}` : ""}`;
 	}
 	const meta: string[] = [];
-	if (suffix) meta.push(`corrected from ${shortenPath(suffix.from)}`);
+	if (suffix) meta.push(`更正自 ${shortenPath(suffix.from)}`);
 	if (details?.summary) {
 		const n = details.summary.elidedSpans;
-		meta.push(`summary: ${n} elided span${n === 1 ? "" : "s"}`);
+		meta.push(`摘要: ${n} 处省略的 span${n === 1 ? "" : ""}`);
 	}
 	const conflicts = details?.conflictCount ?? 0;
 	return {
-		title: "Read",
+		title: "读取",
 		target: sanitizeText(target) || "…",
 		targetKind: "path",
 		href: fileHref(linkPath ?? details?.resolvedPath ?? details?.displayTarget ?? readSourceFsPath(details)),
 		meta,
 		badges:
-			conflicts > 0 ? [{ text: `${conflicts} conflict${conflicts === 1 ? "" : "s"}`, tone: "warning" }] : undefined,
+			conflicts > 0 ? [{ text: `${conflicts} 个冲突${conflicts === 1 ? "" : ""}`, tone: "warning" }] : undefined,
 	};
 }
 
@@ -524,7 +524,7 @@ export const readToolRenderer = {
 			typeof input?.file_path === "string" ? input.file_path : typeof input?.path === "string" ? input.path : "";
 		const routed = readUrlCard(rawPath);
 		if (routed) return { label: routed.card.label, detail: routed.target || routed.card.rootDetail };
-		return { label: "Read", detail: sanitizeText(shortenPath(rawPath)) };
+		return { label: "读取", detail: sanitizeText(shortenPath(rawPath)) };
 	},
 	renderCall(args: ReadRenderArgs, _options: RenderResultOptions, uiTheme: Theme): Component {
 		const rawPath =
@@ -545,7 +545,7 @@ export const readToolRenderer = {
 			pathDisplay += `:${startLine}${endLine ? `-${endLine}` : ""}`;
 		}
 
-		const text = renderStatusLine({ icon: "pending", title: "Read", description: pathDisplay }, uiTheme);
+		const text = renderStatusLine({ icon: "pending", title: "读取", description: pathDisplay }, uiTheme);
 		return new Text(text, 0, 0);
 	},
 
@@ -584,7 +584,7 @@ export const readToolRenderer = {
 					offset: args?.offset,
 					sourcePath: linkPath ?? result.details?.displayTarget ?? readSourceFsPath(result.details),
 				}) || sanitizeText(shortenPath(rawPath));
-			let title = filePath ? `Read ${filePath}` : "Read";
+			let title = filePath ? `读取 ${filePath}` : "读取";
 			if (args?.offset !== undefined || args?.limit !== undefined) {
 				const startLine = args.offset ?? 1;
 				const endLine = args.limit !== undefined ? startLine + args.limit - 1 : "";
@@ -621,7 +621,7 @@ export const readToolRenderer = {
 		}
 		if (truncation) {
 			if (fallback?.firstLineExceedsLimit) {
-				let warning = `First line exceeds ${formatBytes(fallback.outputBytes ?? fallback.totalBytes)} limit`;
+				let warning = `第一行超出 ${formatBytes(fallback.outputBytes ?? fallback.totalBytes)} 限制`;
 				if (truncation.artifactId) {
 					warning += `. ${formatFullOutputReference(truncation.artifactId)}`;
 				}
@@ -640,9 +640,9 @@ export const readToolRenderer = {
 				suffixResolution: suffix,
 				fallbackLabel: "image",
 			});
-			const correction = suffix ? ` ${uiTheme.fg("dim", `(corrected from ${shortenPath(suffix.from)})`)}` : "";
+			const correction = suffix ? ` ${uiTheme.fg("dim", `(更正自 ${shortenPath(suffix.from)})`)}` : "";
 			const header = renderStatusLine(
-				{ icon: suffix ? "warning" : "success", title: "Read", description: `${displayPath}${correction}` },
+				{ icon: suffix ? "warning" : "success", title: "读取", description: `${displayPath}${correction}` },
 				uiTheme,
 			);
 			const detailLines = contentText
@@ -654,8 +654,8 @@ export const readToolRenderer = {
 				phase: "success",
 				sections: [
 					{
-						label: uiTheme.fg("toolTitle", "Details"),
-						content: lines.length > 0 ? lines : [uiTheme.fg("dim", "(image)")],
+						label: uiTheme.fg("toolTitle", "详情"),
+						content: lines.length > 0 ? lines : [uiTheme.fg("dim", "(图像)")],
 					},
 				],
 			}));
@@ -672,8 +672,8 @@ export const readToolRenderer = {
 			suffixResolution: suffix,
 			offset: args?.offset,
 		});
-		const correction = suffix ? ` ${uiTheme.fg("dim", `(corrected from ${shortenPath(suffix.from)})`)}` : "";
-		let title = displayPath ? `Read ${displayPath}${correction}` : "Read";
+		const correction = suffix ? ` ${uiTheme.fg("dim", `(更正自 ${shortenPath(suffix.from)})`)}` : "";
+		let title = displayPath ? `读取 ${displayPath}${correction}` : "读取";
 		if (args?.offset !== undefined || args?.limit !== undefined) {
 			const startLine = args.offset ?? 1;
 			const endLine = args.limit !== undefined ? startLine + args.limit - 1 : "";
@@ -684,7 +684,7 @@ export const readToolRenderer = {
 		}
 		if (details?.conflictCount && details.conflictCount > 0) {
 			const n = details.conflictCount;
-			title += ` ${uiTheme.fg("warning", `(⚠ ${n} conflict${n === 1 ? "" : "s"})`)}`;
+			title += ` ${uiTheme.fg("warning", `(⚠ ${n} 个冲突${n === 1 ? "" : ""})`)}`;
 		}
 		const isMarkdown = readResultIsMarkdown(details, args);
 		let cachedWidth: number | undefined;

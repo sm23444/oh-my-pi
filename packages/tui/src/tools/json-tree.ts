@@ -332,7 +332,7 @@ export function renderJsonTreeLines(
 			const displayKey = item.key ? sanitize(item.key) : undefined;
 			const label = theme.fg(
 				"muted",
-				displayKey || (item.kind === "array" ? "array" : item.kind === "object" ? "object" : "value"),
+				displayKey || (item.kind === "array" ? "数组" : item.kind === "object" ? "对象" : "值"),
 			);
 			if (item.kind === "placeholder") {
 				body = [theme.fg("dim", item.placeholder ?? "…")];
@@ -360,7 +360,7 @@ export function renderJsonTreeLines(
 					if (sourceLines.length > displayedCount) {
 						scalarTruncated = true;
 						scalarLines.push(
-							`${indent}${theme.fg("dim", `…(${sourceLines.length - displayedCount} more lines)"`)}`,
+							`${indent}${theme.fg("dim", `…（还有 ${sourceLines.length - displayedCount} 行）"`)}`,
 						);
 					} else {
 						const lastIndex = scalarLines.length - 1;
@@ -449,7 +449,7 @@ export function describeJsonTree(value: unknown, options: JsonTreeDescribeOption
 		for (let index = 0; index < entries.length; index++) {
 			if (budget <= 0) {
 				truncated = true;
-				out.push(leaf([span(`… ${entries.length - index} more`, "dim")]));
+				out.push(leaf([span(`… 还有 ${entries.length - index} 项`, "dim")]));
 				break;
 			}
 			const [key, child] = entries[index];
@@ -481,7 +481,7 @@ export function describeJsonTree(value: unknown, options: JsonTreeDescribeOption
 			for (let index = 0; index < lines.length; index++) {
 				if (budget <= 0) {
 					truncated = true;
-					children.push(leaf([span(`… ${lines.length - index} more lines`, "dim")]));
+					children.push(leaf([span(`… 还有 ${lines.length - index} 行`, "dim")]));
 					break;
 				}
 				budget--;
@@ -489,7 +489,7 @@ export function describeJsonTree(value: unknown, options: JsonTreeDescribeOption
 			}
 			return {
 				id,
-				label: [...prefix, span(`"${first}…"`, "syntaxString"), span(` (${lines.length} lines)`, "dim")],
+				label: [...prefix, span(`"${first}…"`, "syntaxString"), span(` （${lines.length} 行）`, "dim")],
 				open: false,
 				children,
 			};

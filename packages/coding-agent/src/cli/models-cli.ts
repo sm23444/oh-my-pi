@@ -229,7 +229,9 @@ export function renderProviderModels(
 	if (json) {
 		if (configError) {
 			process.stderr.write(
-				`Warning: models.yml validation failed — custom providers disabled\n${configError.message}\n`,
+				`警告：models.yml 验证失败 — 自定义提供商已禁用
+${configError.message}
+`,
 			);
 		}
 		const output: ModelsJson = { models: filtered.slice().sort(byProviderThenId).map(toModelJson) };
@@ -352,7 +354,8 @@ export async function runModelsListing(options: RunModelsListingOptions): Promis
 
 	try {
 		for (const { path: extPath, error } of extensionsResult.errors) {
-			process.stderr.write(`Failed to load extension: ${extPath}: ${error}\n`);
+			process.stderr.write(`加载扩展失败：${extPath}：${error}
+`);
 		}
 
 		// Mirror sdk.ts: drain pending provider registrations into the registry.
@@ -386,7 +389,7 @@ export async function runModelsCommand(command: ModelsCommandArgs): Promise<void
 	const kind = command.flags.kind ?? "chat";
 
 	if (action === "find" && (!pattern || pattern.trim().length === 0)) {
-		process.stderr.write("`omp models find` requires a search substring, e.g. `omp models find minimax`\n");
+		process.stderr.write("`omp models find` 需要指定搜索子串，e.g。`omp models find minimax`\n");
 		process.exitCode = 1;
 		return;
 	}
@@ -398,7 +401,7 @@ export async function runModelsCommand(command: ModelsCommandArgs): Promise<void
 		const modelRegistry = new ModelRegistry(authStorage);
 
 		if (action === "refresh" && !json && process.stderr.isTTY) {
-			process.stderr.write("Refreshing models from all providers…\n");
+			process.stderr.write("正在刷新所有提供商的模型…\n");
 		}
 		await modelRegistry.refresh(
 			action === "refresh" ? "online" : "online-if-uncached",

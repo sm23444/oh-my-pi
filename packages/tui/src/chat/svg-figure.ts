@@ -214,7 +214,7 @@ export class SvgFigure implements Component {
 		const raster = this.#raster;
 		if (!raster) {
 			if (!this.#options.markdown) return [];
-			this.#placeholder ??= [` ${theme.fg("dim", "Drawing SVG…")}`];
+			this.#placeholder ??= [` ${theme.fg("dim", "正在绘制 SVG…")}`];
 			return this.#placeholder;
 		}
 		return this.#imageFor(raster).render(width);

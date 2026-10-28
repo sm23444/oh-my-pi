@@ -11,7 +11,7 @@ export const cfgShareServerUrl = register({
 	default: DEFAULT_SHARE_URL,
 	ui: {
 		tab: "interaction",
-		group: "协作",
+		group: "Collab",
 		label: "分享服务器",
 		description:
 			"分享 viewer/upload 基地址，供 /share 使用（加密 blob 上传 + 查看器；链接格式为 <base>/<id>#<key>）",
@@ -25,7 +25,7 @@ export const cfgShareStore = register({
 	default: "blob",
 	ui: {
 		tab: "interaction",
-		group: "协作",
+		group: "Collab",
 		label: "分享存储",
 		description: "/share 将加密的会话 blob 上传到哪里",
 		options: [
@@ -49,7 +49,7 @@ export const cfgShareRedactSecrets = register({
 	default: true,
 	ui: {
 		tab: "interaction",
-		group: "协作",
+		group: "Collab",
 		label: "分享机密脱敏",
 		description: "上传前对 /share 快照运行机密混淆器(使用 secrets.* 配置)",
 	},

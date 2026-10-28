@@ -398,12 +398,12 @@ export class PsTopComponent implements Component {
 			const running = this.#flat.filter(flat => !TERMINAL_STATES[flat.row.snapshot.state]).length;
 			const stopped = this.#flat.length - running;
 			left.push(
-				text("Processes", { role: "omp.app.title" }),
+				text("进程", { role: "omp.app.title" }),
 				text(
 					[
-						span(`${running} running`, running > 0 ? "success" : "muted"),
-						...(stopped > 0 ? [span(` · ${stopped} stopped`, "muted")] : []),
-						span(` · ${this.#reports.length} scope${this.#reports.length === 1 ? "" : "s"}`, "muted"),
+						span(`${running} 个正在运行`, running > 0 ? "success" : "muted"),
+						...(stopped > 0 ? [span(` · ${stopped} 个已停止`, "muted")] : []),
+						span(` · ${this.#reports.length} 个作用域${this.#reports.length === 1 ? "" : ""}`, "muted"),
 					],
 					{ truncate: "end" },
 				),
@@ -418,7 +418,7 @@ export class PsTopComponent implements Component {
 					actions: { click: "back" },
 				}),
 				text(
-					this.#view === "logs" ? `Logs · ${entry?.row.snapshot.name ?? "?"}` : (entry?.row.snapshot.name ?? "?"),
+					this.#view === "logs" ? `日志 · ${entry?.row.snapshot.name ?? "?"}` : (entry?.row.snapshot.name ?? "?"),
 					{
 						role: "omp.app.title",
 						truncate: "end",
@@ -456,14 +456,14 @@ export class PsTopComponent implements Component {
 		right.push(
 			this.#lastRefresh
 				? row(
-						[text([span("updated", "dim")]), elapsed(Date.now() - this.#lastRefresh), text([span("ago", "dim")])],
+						[text([span("更新于", "dim")]), elapsed(Date.now() - this.#lastRefresh), text([span("前", "dim")])],
 						{
 							gap: "xs",
 							align: "center",
 							role: "omp.app.fresh",
 						},
 					)
-				: row([node("spinner", { style: "dots" }), text([span("updating", "dim")])], {
+				: row([node("spinner", { style: "dots" }), text([span("正在更新", "dim")])], {
 						gap: "xs",
 						align: "center",
 						role: "omp.app.fresh",
@@ -497,13 +497,13 @@ export class PsTopComponent implements Component {
 					[
 						text(
 							[
-								span(`Kill ${entry.row.snapshot.name}${pid === undefined ? "" : ` (pid ${pid})`}?`, "strong"),
-								span("  It stops at once, without cleanup.", "muted"),
+								span(`终止${entry.row.snapshot.name}${pid === undefined ? "" : ` (进程 ID ${pid})`}？`, "strong"),
+								span("  它会立即停止，不进行清理。", "muted"),
 							],
 							{ truncate: "end", grow: 1 },
 						),
-						actionButton("Cancel", "kill-cancel"),
-						actionButton("Kill", "kill-confirm", { tone: "error" }),
+						actionButton("取消", "kill-cancel"),
+						actionButton("终止", "kill-confirm", { tone: "error" }),
 					],
 					{ gap: "sm", align: "center", role: "omp.app.confirm", tone: "error" },
 				),
@@ -512,19 +512,19 @@ export class PsTopComponent implements Component {
 		}
 		if (this.#view !== "table") {
 			return actionBar([
-				actionButton("Back", "back", { keys: "escape", tone: "accent" }),
-				...(this.#view === "info" ? [actionButton("Logs", "logs")] : []),
+				actionButton("返回", "back", { keys: "escape", tone: "accent" }),
+				...(this.#view === "info" ? [actionButton("日志", "logs")] : []),
 			]);
 		}
-		if (!entry) return actionBar([null, actionButton("Quit", "quit", { keys: "q" })]);
+		if (!entry) return actionBar([null, actionButton("退出", "quit", { keys: "q" })]);
 		return actionBar([
-			actionButton("Info", "info", { keys: "enter", tone: "accent" }),
-			actionButton("Logs", "logs", { keys: "l" }),
-			actionButton("Restart", "restart", { keys: "r" }),
-			actionButton("Stop", "stop", { keys: "s" }),
-			actionButton("Kill", "kill", { keys: "x", tone: "error", title: "终止进程（先询问）" }),
+			actionButton("信息", "info", { keys: "enter", tone: "accent" }),
+			actionButton("日志", "logs", { keys: "l" }),
+			actionButton("重启", "restart", { keys: "r" }),
+			actionButton("停止", "stop", { keys: "s" }),
+			actionButton("终止", "kill", { keys: "x", tone: "error", title: "终止进程（先询问）" }),
 			null,
-			actionButton("Quit", "quit", { keys: "q" }),
+			actionButton("退出", "quit", { keys: "q" }),
 		]);
 	}
 
@@ -533,10 +533,10 @@ export class PsTopComponent implements Component {
 			return keyed(
 				col(
 					[
-						text("No broker scopes", { role: "omp.app.empty-title" }),
+						text("无 broker 作用域", { role: "omp.app.empty-title" }),
 						text([
-							span("No omp process broker runs here. ", "muted"),
-							span(this.#all ? "Nothing runs anywhere." : "Show every scope with ", "muted"),
+							span("此处未运行 omp 进程 broker。", "muted"),
+							span(this.#all ? "所有位置均未运行任何内容。" : "显示每个作用域，使用 ", "muted"),
 							...(this.#all ? [] : [span("a", "key"), span(".", "muted")]),
 						]),
 					],
@@ -574,7 +574,7 @@ export class PsTopComponent implements Component {
 		const info = this.#info;
 		if (!info) {
 			return keyed(
-				row([node("spinner", { style: "dots" }), text([span("Loading…", "muted")])], { gap: "sm" }),
+				row([node("spinner", { style: "dots" }), text([span("正在加载…", "muted")])], { gap: "sm" }),
 				"info",
 			);
 		}
@@ -593,7 +593,7 @@ export class PsTopComponent implements Component {
 		const body: NativeNode[] = [];
 		if (!TERMINAL_STATES[daemon.state]) {
 			body.push(
-				row([text([span("Up for", "muted")]), elapsed(Date.now() - daemon.startedAt)], {
+				row([text([span("已运行", "muted")]), elapsed(Date.now() - daemon.startedAt)], {
 					gap: "xs",
 					role: "omp.app.fresh",
 				}),
@@ -631,7 +631,7 @@ export class PsTopComponent implements Component {
 
 	#header(width: number, title: string): string {
 		const age = this.#lastRefresh ? `updated ${formatDuration(Date.now() - this.#lastRefresh)} ago` : "updating…";
-		const left = ` ${chalk.bold("omp ps")} ${chalk.dim("·")} ${title}`;
+		const left = ` ${chalk.bold("omp ps 命令")} ${chalk.dim("·")} ${title}`;
 		const right = chalk.dim(age);
 		const pad = Math.max(1, width - Bun.stringWidth(left) - Bun.stringWidth(right) - 1);
 		return truncateToWidth(`${left}${" ".repeat(pad)}${right}`, width);
@@ -679,7 +679,7 @@ export class PsTopComponent implements Component {
 		for (const report of this.#reports) {
 			body.push({ text: ` ${scopeHeader(report.scope)}` });
 			if (report.daemons.length === 0) {
-				body.push({ text: chalk.dim("   no processes") });
+				body.push({ text: chalk.dim("   无进程") });
 			} else {
 				body.push({ text: chalk.dim(renderRow([...TABLE_HEADER])) });
 				for (const row of report.daemons) {
@@ -693,7 +693,7 @@ export class PsTopComponent implements Component {
 			}
 			body.push({ text: "" });
 		}
-		if (body.length === 0) body.push({ text: chalk.dim(" No daemon broker scopes found.") });
+		if (body.length === 0) body.push({ text: chalk.dim(" 未找到守护进程 broker 作用域。") });
 
 		// Keep the selected logical row visible through refreshes and resizes.
 		const selectedLine = body.findIndex(line => line.flat === this.#selected);
@@ -734,9 +734,9 @@ export class PsTopComponent implements Component {
 			rows.push({ label: "所有者：", value: daemon.owner ?? "-" });
 			this.#infoList.setRows(rows);
 			body.push(...this.#infoList.render(width));
-			body.push(`   pty: ${info.spec.pty}  persist: ${info.spec.persist}  detached: ${info.spec.detached}`);
+			body.push(`   pty: ${info.spec.pty}  持久化: ${info.spec.persist}  已分离: ${info.spec.detached}`);
 		} else {
-			body.push(chalk.dim(" loading…"));
+			body.push(chalk.dim(" 加载中…"));
 		}
 		this.#infoView.setLines(body);
 		this.#infoView.setHeight(height - 1 - footer.length);
@@ -779,13 +779,13 @@ function daemonTone(snapshot: DaemonSnapshot): TspTone {
 function scopeSpans(scope: PsScope): TspSpan[] {
 	const spans =
 		scope.kind === "global"
-			? [span("global "), span(scope.service ?? path.basename(scope.runtimeDir), "strong")]
-			: [span("project "), span(scope.projectDir ?? path.basename(scope.runtimeDir), "strong path")];
+			? [span("全局 "), span(scope.service ?? path.basename(scope.runtimeDir), "strong")]
+			: [span("项目 "), span(scope.projectDir ?? path.basename(scope.runtimeDir), "strong path")];
 	spans.push(span(" — ", "dim"));
 	spans.push(
 		scope.brokerPid !== undefined
-			? span(`broker pid ${scope.brokerPid}`, "success")
-			: span("broker not running", "dim"),
+			? span(`broker 进程号 ${scope.brokerPid}`, "success")
+			: span("broker 未运行", "dim"),
 	);
 	return spans;
 }

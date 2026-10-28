@@ -126,14 +126,14 @@ export async function selectSessionTextReviewSource(
 	const branch = ctx.sessionManager.getBranch();
 	if (options?.autoSelect === "latest-assistant") {
 		const source = latestAssistantTextReviewSource(branch, ctx.sessionManager.getSessionId());
-		if (!source) ctx.ui.notify("No non-empty assistant reply is available on the active session branch.", "warning");
+		if (!source) ctx.ui.notify("活动会话分支上没有可用的非空助手回复。", "warning");
 		return source;
 	}
 	const latest = latestAssistantEntry(branch);
 
 	const entries = branch.filter(isTranscriptEntry);
 	if (entries.length === 0) {
-		ctx.ui.notify("No messages to annotate yet.", "warning");
+		ctx.ui.notify("暂无要批注的消息。", "warning");
 		return undefined;
 	}
 	const selection = await ctx.ui.custom<SessionPick | undefined>((tui, _theme, _keybindings, done) => {

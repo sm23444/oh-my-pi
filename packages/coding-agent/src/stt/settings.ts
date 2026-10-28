@@ -13,8 +13,8 @@ export const cfgSttEnabled = register({
 	ui: {
 		tab: "interaction",
 		group: "Speech",
-		label: "Speech-to-Text",
-		description: "Enable speech-to-text input via microphone",
+		label: "语音转文字",
+		description: "通过麦克风启用语音转文字输入",
 	},
 });
 
@@ -28,9 +28,9 @@ export const cfgSttSubmitTrigger = register({
 	ui: {
 		tab: "interaction",
 		group: "Speech",
-		label: "Speech-to-Text Submit Trigger",
+		label: "语音转文字提交触发",
 		description:
-			"Choose when speech dictation automatically submits: Never, Release (2+ words), Release with complete sentence, or When I Say Submit.",
+			"选择语音听写何时自动提交:从不、松开(2 个以上词)、松开并完成整句,或当我说提交时。",
 		options: STT_SUBMIT_TRIGGER_OPTIONS,
 	},
 });

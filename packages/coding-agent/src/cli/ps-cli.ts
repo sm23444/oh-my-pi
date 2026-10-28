@@ -178,7 +178,7 @@ async function runList(cmd: PsCommandArgs): Promise<void> {
 		return;
 	}
 	if (reports.length === 0) {
-		console.log(chalk.dim("No daemon broker scopes found."));
+		console.log(chalk.dim("未找到守护进程代理作用域。"));
 		return;
 	}
 	let first = true;
@@ -187,13 +187,13 @@ async function runList(cmd: PsCommandArgs): Promise<void> {
 		first = false;
 		console.log(scopeHeader(report.scope));
 		if (report.daemons.length === 0) {
-			console.log(chalk.dim("  no processes"));
+			console.log(chalk.dim("  无进程"));
 			continue;
 		}
 		printTable(report.daemons);
 	}
 	if (!cmd.flags.all) {
-		console.log(chalk.dim("\nUse --all to include other projects and exited global services."));
+		console.log(chalk.dim("\n使用 --all 来包含其他项目和已退出的全局服务。"));
 	}
 }
 

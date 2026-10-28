@@ -224,7 +224,7 @@ export function formatVisionMarker(
 	n: number,
 	dims?: { width: number; height: number },
 ): string {
-	const label = `${kind === "video" ? "Video" : "Image"} #${n}`;
+	const label = `${kind === "video" ? "视频" : "图片"} #${n}`;
 	return dims ? `[${label}, ${dims.width}x${dims.height}]` : `[${label}]`;
 }
 

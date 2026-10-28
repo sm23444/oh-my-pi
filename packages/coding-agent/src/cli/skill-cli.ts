@@ -75,30 +75,30 @@ export interface SkillCommandArgs {
 	};
 }
 
-export const SKILL_USAGE = `Usage: omp skill <action> [...]
+export const SKILL_USAGE = `用法：omp skill <action> [...]
 
-Install and discover:
-  install [@scope/name[@range]...] [-g] [--yes]   Install skills (no specs: install from skills.json)
-  update [name...] [-g] [--yes]                   Update installed skills within their ranges
-  uninstall <name...> [-g]                        Remove installed skills
+安装与发现：
+  install [@scope/name[@range]...] [-g] [--yes]   安装技能（无规格时：从 skills.json 安装）
+  update [name...] [-g] [--yes]                   在各自范围内更新已安装技能
+  uninstall <name...> [-g]                        移除已安装技能
   search <query> [--sort relevance|downloads|recent] [--json]
   info <@scope/name[@version]> [--json]
-  list [dir] [--json]                             Skills a session in dir resolves, with warnings
+  list [dir] [--json]                             会话在目录中解析出的技能（含警告）
 
-Publish and manage:
+发布与管理：
   publish [dir] [--scope s] [--tag t] [--dry-run] [--allow-secrets]
-  version <patch|minor|major|x.y.z> [dir]         Bump metadata.version in SKILL.md
-  tag <@scope/name@version> <tag>                 Point a dist-tag at a version
-  tag rm <@scope/name> <tag>                      Remove a dist-tag
-  yank <@scope/name@version> [--undo]             Hide a version from range resolution
+  version <patch|minor|major|x.y.z> [dir]         更新 metadata.version（位于 SKILL.md 中）
+  tag <@scope/name@version> <tag>                 将 dist-tag 指向某个版本
+  tag rm <@scope/name> <tag>                      移除 dist-tag
+  yank <@scope/name@version> [--undo]             在范围解析中隐藏某个版本
   deprecate <@scope/name[@range]> <message|--undo>
   owner add|rm <@scope/name> <username>
   token create <name> [--package @scope/name]... [--expires days]
   token ls [--json]
   token revoke <id>
-  import <file.skill>                             Publish a Claude .skill archive
+  import <file.skill>                             发布 Claude .skill 归档
 
-Management commands accept --registry <url> (default: skills.registryUrl).
+管理命令接受 --registry <url>（默认：skills.registryUrl）。
 `;
 
 function specOrThrow(raw: string | undefined, usage: string): SkillSpec {
@@ -225,7 +225,7 @@ function printPack(pack: PackResult, id: string): void {
 		out.write(`  ${chalk.dim(size)}  ${file.path}${file.executable ? chalk.yellow(" (executable)") : ""}\n`);
 	}
 	out.write(`${pack.files.length} files, ${formatBytes(unpacked)} unpacked, ${formatBytes(pack.tgz.length)} packed\n`);
-	out.write(`${chalk.dim(`integrity ${pack.integrity}`)}\n`);
+	out.write(`${chalk.dim(`完整性 ${pack.integrity}`)}\n`);
 	if (pack.hasScripts) {
 		out.write(`${chalk.yellow("ships scripts: installers are asked to confirm before installing")}\n`);
 	}
@@ -253,14 +253,14 @@ async function handlePublish(cmd: SkillCommandArgs): Promise<number> {
 			}
 			if (!cmd.flags.allowSecrets) {
 				process.stderr.write(
-					"refusing to publish: remove them, list the files in .skillignore, or pass --allow-secrets\n",
+					"拒绝发布：请移除这些文件、在 .skillignore 中列出文件，或传递 --allow-secrets\n",
 				);
 				return 1;
 			}
 		}
 
 		if (cmd.flags.dryRun) {
-			process.stdout.write(chalk.dim("dry run: nothing published\n"));
+			process.stdout.write(chalk.dim("试运行：未发布任何内容\n"));
 			return 0;
 		}
 		if (scope === undefined) throw new Error("publishing scope could not be resolved");
@@ -328,7 +328,7 @@ async function handleYank(cmd: SkillCommandArgs): Promise<number> {
 	const version = exactVersionOrThrow(spec, usage);
 	const yanked = !cmd.flags.undo;
 	await withClient(cmd.flags, false, client => client.yank(spec.scope, spec.name, version, yanked));
-	process.stdout.write(`${yanked ? "yanked" : "restored"} @${spec.scope}/${spec.name}@${version}\n`);
+	process.stdout.write(`${yanked ? "已撤回" : "已恢复"} @${spec.scope}/${spec.name}@${version}\n`);
 	return 0;
 }
 
@@ -354,14 +354,15 @@ async function handleDeprecate(cmd: SkillCommandArgs): Promise<number> {
 				version => range === undefined || Bun.semver.satisfies(version, range),
 			);
 			if (versions.length === 0) {
-				process.stderr.write(`skill deprecate: no versions of @${spec.scope}/${spec.name} match ${range}\n`);
+				process.stderr.write(`skill deprecate：@${spec.scope}/${spec.name} 没有版本匹配 ${range}
+`);
 				return 1;
 			}
 		}
 		for (const version of versions) {
 			await client.deprecate(spec.scope, spec.name, version, message);
 			process.stdout.write(
-				`${message === null ? "undeprecated" : "deprecated"} @${spec.scope}/${spec.name}@${version}\n`,
+				`${message === null ? "已取消弃用" : "已弃用"} @${spec.scope}/${spec.name}@${version}\n`,
 			);
 		}
 		return 0;
@@ -411,7 +412,8 @@ async function handleToken(cmd: SkillCommandArgs): Promise<number> {
 			process.stdout.write(`${JSON.stringify(created, null, 2)}\n`);
 			return 0;
 		}
-		process.stderr.write(`created token ${created.name} (${created.id})\n`);
+		process.stderr.write(`已创建令牌 ${created.name} (${created.id})
+`);
 		process.stdout.write(`${created.token}\n`);
 		process.stderr.write(
 			chalk.yellow(`store it now (e.g. as the ${SKILLS_TOKEN_ENV} CI secret); it cannot be shown again\n`),
@@ -425,13 +427,14 @@ async function handleToken(cmd: SkillCommandArgs): Promise<number> {
 			return 0;
 		}
 		if (tokens.length === 0) {
-			process.stdout.write(chalk.dim("no tokens\n"));
+			process.stdout.write(chalk.dim("没有令牌\n"));
 			return 0;
 		}
 		for (const token of tokens) {
 			const scope = token.packages.length > 0 ? token.packages.join(", ") : "all your packages";
 			process.stdout.write(
-				`${chalk.bold(token.id)}  ${token.name}  ${chalk.dim(scope)}  created ${formatDate(token.createdAt)}  expires ${formatDate(token.expiresAt)}  last used ${formatDate(token.lastUsedAt)}\n`,
+				`${chalk.bold(token.id)}  ${token.name}  ${chalk.dim(scope)}  创建于 ${formatDate(token.createdAt)}  到期于 ${formatDate(token.expiresAt)}  上次使用 ${formatDate(token.lastUsedAt)}
+`,
 			);
 		}
 		return 0;
@@ -440,7 +443,8 @@ async function handleToken(cmd: SkillCommandArgs): Promise<number> {
 		const id = cmd.args[1];
 		if (!id) throw new CliUsageError("usage: omp skill token revoke <id>");
 		await withClient(cmd.flags, false, client => client.revokeToken(id));
-		process.stdout.write(`revoked ${id}\n`);
+		process.stdout.write(`已撤销 ${id}
+`);
 		return 0;
 	}
 	throw new CliUsageError("usage: omp skill token create|ls|revoke");
@@ -520,7 +524,8 @@ export async function runSkillCommand(cmd: SkillCommandArgs): Promise<number> {
 	} catch (error) {
 		if (error instanceof CliUsageError) throw error;
 		const message = error instanceof Error ? error.message : String(error);
-		process.stderr.write(`skill ${cmd.action}: ${message}\n`);
+		process.stderr.write(`技能 ${cmd.action}: ${message}
+`);
 		return 1;
 	}
 }

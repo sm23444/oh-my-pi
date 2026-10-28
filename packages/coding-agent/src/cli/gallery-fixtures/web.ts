@@ -3,7 +3,7 @@ import type { GalleryFixture } from "./types";
 
 export const webFixtures: Record<string, GalleryFixture> = {
 	web_search: {
-		label: "Web 搜索",
+		label: "Web Search",
 		// Streaming: query still being typed, no recency/limit yet.
 		streamingArgs: { query: "bun vs node performance" },
 		args: {
@@ -38,7 +38,7 @@ export const webFixtures: Record<string, GalleryFixture> = {
 					searchQueries: ["bun vs node.js performance benchmarks 2026", "bun http throughput vs node"],
 					sources: [
 						{
-							title: "Bun 1.2 基准测试：HTTP、SQLite 和启动时间",
+							title: "Bun 1.2 Benchmarks: HTTP, SQLite, and Startup Time",
 							url: "https://bun.sh/blog/bun-v1.2-benchmarks",
 							snippet:
 								"Bun serves roughly 2.5x the requests per second of Node.js on a simple HTTP server and starts in under 10ms.",
@@ -46,7 +46,7 @@ export const webFixtures: Record<string, GalleryFixture> = {
 							author: "The Bun Team",
 						},
 						{
-							title: "Node.js 与 Bun：2026 年性能深度解析",
+							title: "Node.js vs Bun: A 2026 Performance Deep Dive",
 							url: "https://blog.platformatic.dev/nodejs-vs-bun-2026",
 							snippet:
 								"Across CPU-bound workloads the gap narrows, but Bun's faster module resolution keeps cold starts ahead.",
@@ -54,14 +54,14 @@ export const webFixtures: Record<string, GalleryFixture> = {
 							author: "Matteo Collina",
 						},
 						{
-							title: "真实世界 API 延迟：Bun、Deno 与 Node 对比",
+							title: "Real-world API latency: Bun, Deno, and Node compared",
 							url: "https://www.theregister.com/2026/05/18/js_runtime_latency/",
 							snippet:
 								"Under sustained load p99 latencies converge, suggesting runtime choice matters less for steady-state services.",
 							ageSeconds: 86400 * 19,
 						},
 						{
-							title: "我们为何将 CLI 工具链从 Node 迁移到 Bun",
+							title: "Why we migrated our CLI tooling from Node to Bun",
 							url: "https://engineering.example.com/posts/bun-cli-migration",
 							snippet:
 								"Startup dropped from 180ms to 22ms, shaving seconds off every developer command invocation.",
@@ -72,7 +72,7 @@ export const webFixtures: Record<string, GalleryFixture> = {
 					citations: [
 						{
 							url: "https://bun.sh/blog/bun-v1.2-benchmarks",
-							title: "Bun 1.2 基准测试",
+							title: "Bun 1.2 Benchmarks",
 							citedText: "Bun serves roughly 2.5x the requests per second of Node.js",
 						},
 					],
@@ -99,7 +99,7 @@ export const webFixtures: Record<string, GalleryFixture> = {
 	},
 
 	browser: {
-		label: "浏览器",
+		label: "Browser",
 		// Streaming: code body still arriving for a `run` action.
 		streamingArgs: {
 			action: "run",

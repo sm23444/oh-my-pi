@@ -69,7 +69,7 @@ export class OmfgController {
 	async start(complaint: string): Promise<void> {
 		const trimmedComplaint = complaint.trim();
 		if (!trimmedComplaint) {
-			this.ctx.showStatus("Usage: /omfg <complaint>");
+			this.ctx.showStatus("用法：/omfg <complaint>");
 			return;
 		}
 

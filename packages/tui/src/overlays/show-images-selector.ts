@@ -38,7 +38,7 @@ export class ShowImagesSelectorComponent extends OverlayPanel {
 		this.#sheet = new SelectListSheet(this.#selectList, {
 			title: "显示图片",
 			icon: "image",
-			noun: "options",
+			noun: "选项",
 			current: [currentValue ? "yes" : "no"],
 		});
 	}

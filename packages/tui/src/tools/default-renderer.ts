@@ -83,7 +83,7 @@ function buildDefaultToolBody(input: DefaultToolRenderInput, uiTheme: Theme, con
 
 	if (options.expanded && input.args !== undefined) {
 		body.push("");
-		body.push(uiTheme.fg("dim", "Args"));
+		body.push(uiTheme.fg("dim", "参数"));
 		const tree = renderJsonTreeLines(
 			input.args,
 			uiTheme,
@@ -101,7 +101,7 @@ function buildDefaultToolBody(input: DefaultToolRenderInput, uiTheme: Theme, con
 	if (result) {
 		const textContent = result.output.trimEnd();
 		if (!textContent) {
-			body.push(uiTheme.fg("dim", "(no output)"));
+			body.push(uiTheme.fg("dim", "(无输出)"));
 		} else {
 			let renderedAsJson = false;
 			if (isTreeSafeJson(textContent)) {
@@ -202,7 +202,7 @@ export function describeDefaultToolExecution(input: DefaultToolRenderInput): Nat
 	if (!result) return { tool };
 	const output = result.output.trimEnd();
 	const tone = result.skipped ? "info" : result.isError ? "error" : undefined;
-	if (!output) return { tool, tone, body: [noteText("(no output)")] };
+	if (!output) return { tool, tone, body: [noteText("(无输出)")] };
 	if (isTreeSafeJson(output)) {
 		let parsed: unknown;
 		try {

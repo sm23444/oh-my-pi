@@ -72,14 +72,14 @@ async function editTextSource(
 		tui.start();
 		tui.requestRender(true);
 	}
-	if (exitCode !== 0) ctx.ui.notify(`Editor exited with code ${exitCode}; using what it saved.`, "warning");
+	if (exitCode !== 0) ctx.ui.notify(`编辑器退出，代码为 ${exitCode}；将使用其已保存的内容。`, "warning");
 	if (next === null || next === current) return;
 	const dropped = overlay.replaceTextSource(next);
 	if (dropped > 0) {
 		ctx.ui.notify(
 			dropped === 1
-				? "Dropped 1 line note that no longer matches the edited text."
-				: `Dropped ${dropped} line notes that no longer match the edited text.`,
+				? "已丢弃 1 条不再与编辑后文本匹配的行批注。"
+				: `已丢弃 ${dropped} 条不再与编辑后文本匹配的行批注。`,
 			"warning",
 		);
 	}
@@ -103,8 +103,8 @@ async function editReviewedFile(tui: TUI, ctx: AnnotationOverlayContext, overlay
 		tui.start();
 		tui.requestRender(true);
 	}
-	if (exitCode !== 0) ctx.ui.notify(`Editor exited with code ${exitCode}.`, "warning");
-	ctx.ui.notify(`Opened ${relative}. The review still uses the frozen diff.`, "info");
+	if (exitCode !== 0) ctx.ui.notify(`编辑器退出，代码为 ${exitCode}。`, "warning");
+	ctx.ui.notify(`已打开 ${relative}。审查仍使用冻结的差异。`, "info");
 }
 
 /** Mount the frozen diff in the TUI overlay surface owned by the command host, resuming its saved draft. */
@@ -115,7 +115,7 @@ export async function showCodeReviewOverlay(
 	resumed?: AnnotationDraft,
 ): Promise<CodeReviewOverlayResult | undefined> {
 	const draft = await openAnnotationDraft(ctx.sessionManager, { kind: "diff", target, focus }, resumed);
-	if (draft.restored && !resumed) ctx.ui.notify("Restored the saved annotation draft.", "info");
+	if (draft.restored && !resumed) ctx.ui.notify("已恢复保存的批注草稿。", "info");
 	const result = await ctx.ui.custom<CodeReviewOverlayResult | undefined>(
 		(tui, theme, keybindings, done) => {
 			const overlay: AnnotationOverlay = new AnnotationOverlay(
@@ -140,7 +140,7 @@ export async function showCodeReviewOverlay(
 		},
 		{ overlay: true, overlayOptions: ANNOTATION_OVERLAY_OPTIONS },
 	);
-	await draft.close(result).catch(error => ctx.ui.notify(`Could not save the annotation draft: ${error}`, "warning"));
+	await draft.close(result).catch(error => ctx.ui.notify(`无法保存批注草稿：${error}`, "warning"));
 	return result;
 }
 
@@ -151,7 +151,7 @@ export async function showTextReviewOverlay(
 	resumed?: AnnotationDraft,
 ): Promise<TextReviewOverlayResult | undefined> {
 	const draft = await openAnnotationDraft(ctx.sessionManager, { kind: "text", source }, resumed);
-	if (draft.restored && !resumed) ctx.ui.notify("Restored the saved annotation draft.", "info");
+	if (draft.restored && !resumed) ctx.ui.notify("已恢复保存的批注草稿。", "info");
 	const result = await ctx.ui.custom<TextReviewOverlayResult | undefined>(
 		(tui, theme, keybindings, done) => {
 			const provenance = source.provenance;
@@ -167,6 +167,6 @@ export async function showTextReviewOverlay(
 		},
 		{ overlay: true, overlayOptions: ANNOTATION_OVERLAY_OPTIONS },
 	);
-	await draft.close(result).catch(error => ctx.ui.notify(`Could not save the annotation draft: ${error}`, "warning"));
+	await draft.close(result).catch(error => ctx.ui.notify(`无法保存批注草稿：${error}`, "warning"));
 	return result;
 }

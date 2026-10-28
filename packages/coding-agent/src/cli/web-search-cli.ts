@@ -69,7 +69,7 @@ export async function runSearchCommand(cmd: SearchCommandArgs): Promise<void> {
 
 	if (cmd.recency && !RECENCY_OPTIONS.includes(cmd.recency)) {
 		process.stderr.write(`${chalk.red(`Error: Invalid recency "${cmd.recency}"`)}\n`);
-		process.stderr.write(`${chalk.dim(`Valid recency values: ${RECENCY_OPTIONS.join(", ")}`)}\n`);
+		process.stderr.write(`${chalk.dim(`有效的时间范围值：${RECENCY_OPTIONS.join(", ")}`)}\n`);
 		process.exit(1);
 	}
 
@@ -104,29 +104,29 @@ export async function runSearchCommand(cmd: SearchCommandArgs): Promise<void> {
 }
 
 export function printSearchHelp(): void {
-	process.stdout.write(`${chalk.bold(`${APP_NAME} q`)} - Test web search models
+	process.stdout.write(`${chalk.bold(`${APP_NAME} q`)} - 测试网络搜索模型
 
-${chalk.bold("Usage:")}
+${chalk.bold("用法:")}
   ${APP_NAME} q [options] <query>
   ${APP_NAME} web-search [options] <query>
 
-${chalk.bold("Arguments:")}
-  query      Search query text
+${chalk.bold("参数:")}
+  query      搜索查询文本
 
-${chalk.bold("Options:")}
-  --model <selector>  Catalog model selector (for example, web/duckduckgo)
-  --recency <value>   Recency filter (when supported): ${RECENCY_OPTIONS.join(", ")}
-  -l, --limit <n>     Max results to return
-  --compact           Render condensed output
-  -h, --help          Show this help
+${chalk.bold("选项:")}
+  --model <selector>  目录模型选择器（例如 web/duckduckgo）
+  --recency <value>   时效过滤（如果支持）：${RECENCY_OPTIONS.join(", ")}
+  -l, --limit <n>     最大返回结果数
+  --compact           渲染紧凑输出
+  -h, --help          显示此帮助
 
-${chalk.bold("Query directives:")}
+${chalk.bold("查询指令:")}
   site:/-site:  after:/before: (YYYY-MM-DD)  inurl:  intitle:  filetype:
-  "exact phrase"  -term  OR
-  Mapped to native provider filters where available, otherwise applied as a
-  lenient post-filter (a constraint matching nothing is relaxed, not fatal).
+  "精确短语"  -term  OR
+  在可用时映射到原生提供商过滤器；否则应用为
+  宽松的后置过滤器（匹配不到任何内容的约束会被放宽，而不会报错）。
 
-${chalk.bold("Examples:")}
+${chalk.bold("示例:")}
   ${APP_NAME} q --model=web/duckduckgo "what's the color of the sky"
   ${APP_NAME} q --model=openrouter/google/gemini-2.5-flash --recency=week "latest TypeScript changes"
   ${APP_NAME} q 'transformer scaling site:arxiv.org after:2024 -site:reddit.com'

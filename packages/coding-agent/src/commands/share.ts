@@ -53,7 +53,8 @@ export default class Share extends Command {
 			}
 		}
 		if (!sm) {
-			process.stderr.write(`Session "${sessionArg}" not found.\n`);
+			process.stderr.write(`找不到会话“${sessionArg}”。
+`);
 			process.exitCode = 1;
 			return;
 		}
@@ -73,9 +74,9 @@ export default class Share extends Command {
 			store: flags.gist ? "gist" : cfgShareStore.get(settings),
 			obfuscator,
 		});
-		const lines = [`Share URL: ${result.url}`];
-		if (result.gistUrl) lines.push(`Gist: ${result.gistUrl}`);
-		if (result.truncated) lines.push("Note: large content was trimmed to fit the share size limit.");
+		const lines = [`分享 URL：${result.url}`];
+		if (result.gistUrl) lines.push(`Gist 地址：${result.gistUrl}`);
+		if (result.truncated) lines.push("注意：为符合分享大小限制，大量内容已被截断。");
 		console.log(lines.join("\n"));
 	}
 }

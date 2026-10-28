@@ -12,9 +12,9 @@ export const cfgIdaEnabled = register({
 	ui: {
 		tab: "tools",
 		group: "Available Tools",
-		label: "IDA Pro",
+		label: "IDA Pro（专业版）",
 		description:
-			"Open executables read with `read` in IDA Pro (idalib) and enable the `ida` tool; inert when no IDA install is found",
+			"将使用 `read` 读取的可执行文件在 IDA Pro (idalib) 中打开，并启用 `ida` 工具；未找到 IDA 安装时不起作用。",
 	},
 });
 
@@ -26,8 +26,8 @@ export const cfgIdaPython = register({
 	ui: {
 		tab: "tools",
 		group: "IDA Pro",
-		label: "IDA Python",
-		description: "Python interpreter that can import ida_domain and idapro; empty auto-detects",
+		label: "IDA Python 解释器",
+		description: "可导入 ida_domain 和 idapro 的 Python 解释器；留空自动检测。",
 	},
 });
 
@@ -39,9 +39,9 @@ export const cfgIdaInstallDir = register({
 	ui: {
 		tab: "tools",
 		group: "IDA Pro",
-		label: "IDA Install Dir",
+		label: "IDA 安装目录",
 		description:
-			"Directory containing libidalib, exported as IDADIR; empty auto-detects ($IDADIR, ida-config.json, standard install paths)",
+			"包含 libidalib 的目录，导出为 IDADIR；留空自动检测（$IDADIR、ida-config.json、标准安装路径）",
 	},
 });
 
@@ -53,9 +53,9 @@ export const cfgIdaMaxOpen = register({
 	ui: {
 		tab: "tools",
 		group: "IDA Pro",
-		label: "IDA Max Open Databases",
+		label: "IDA 最大打开数据库数",
 		description:
-			"Most IDA databases (omp.ida.* daemons in omp ps) open at once per project; opening another saves and closes the least recently used idle one",
+			"每个项目最多可同时打开 IDA 数据库（omp ps 中的 omp.ida.* 守护进程）；打开另一个数据库时会保存并关闭最久未使用的空闲数据库",
 		options: [
 			{ value: "2", label: "2" },
 			{ value: "4", label: "4" },
@@ -73,15 +73,15 @@ export const cfgIdaIdleCloseSec = register({
 	ui: {
 		tab: "tools",
 		group: "IDA Pro",
-		label: "IDA Idle Close Timeout",
+		label: "IDA 空闲关闭超时",
 		description:
-			"Save and close IDA databases idle longer than this many seconds (0 = never); the exec namespace resets on reopen",
+			"保存并关闭空闲超过该秒数的 IDA 数据库（0 = 从不）；重新打开时 exec 命名空间会重置",
 		options: [
-			{ value: "0", label: "Never" },
-			{ value: "300", label: "5 minutes" },
-			{ value: "900", label: "15 minutes" },
-			{ value: "1800", label: "30 minutes" },
-			{ value: "3600", label: "1 hour" },
+			{ value: "0", label: "从不" },
+			{ value: "300", label: "5 分钟" },
+			{ value: "900", label: "15 分钟" },
+			{ value: "1800", label: "30 分钟" },
+			{ value: "3600", label: "1 小时" },
 		],
 	},
 });

@@ -766,7 +766,7 @@ export class AgentTranscriptViewer implements Component {
 				{ keys: [this.#deps.expandKeys[0] ?? "ctrl+o"], label: "展开" },
 			]),
 		);
-		const head = [span("Agent Hub", "accent"), span(` ${theme.sep.dot} `, "dim"), span(id, "accent")];
+		const head = [span("Agent 中心", "accent"), span(` ${theme.sep.dot} `, "dim"), span(id, "accent")];
 		const described = overlayCard("omp.hub.transcript", head, children);
 		this.#nativeCache = { signature, node: described };
 		return described;
@@ -816,7 +816,7 @@ export class AgentTranscriptViewer implements Component {
 	#headerLines(status: AgentStatus | undefined, kind: string | undefined, parentId: string | undefined): string[] {
 		const lines = [theme.fg("accent", `Agent 中心 ${theme.sep.dot} ${this.#deps.agentId}`)];
 		if (status && kind) {
-			const kindTag = theme.fg("dim", ` ${parentId ? `${kind} ${theme.sep.dot} of ${parentId}` : kind}`);
+			const kindTag = theme.fg("dim", ` ${parentId ? `${kind} ${theme.sep.dot} 属于 ${parentId}` : kind}`);
 			const modelLabel = this.#model ? theme.fg("muted", `${theme.sep.dot}${this.#model}`) : "";
 			lines.push(`${theme.bold(this.#deps.agentId)} ${statusBadge(status)}${kindTag}${modelLabel}`);
 		}
@@ -830,7 +830,7 @@ export class AgentTranscriptViewer implements Component {
 		const keys =
 			`${formatKeyHint("escape")}:close  ${formatKeyHint(this.#deps.expandKeys[0] ?? "ctrl+o")}:expand  ` +
 			`${this.#editor ? "empty input → " : ""}${formatKeyHints(["j", "k"])}:scroll  ${formatKeyHints(["g", "shift+g"])}:top/bottom`;
-		const hint = this.#editor ? `${editorKey("tui.input.submit")}:send  ${keys}` : keys;
+		const hint = this.#editor ? `${editorKey("tui.input.submit")}:发送  ${keys}` : keys;
 		lines.push(theme.fg("dim", hint));
 		return lines;
 	}

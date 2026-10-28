@@ -130,9 +130,9 @@ export function resolveAbortLabel(
 		return message.errorMessage!;
 	}
 	if (retryAttempt > 0) {
-		return `Aborted after ${retryAttempt} retry attempt${retryAttempt > 1 ? "s" : ""}`;
+		return `${retryAttempt} 次重试尝试${retryAttempt > 1 ? "" : ""}后中止`;
 	}
-	return "Operation aborted";
+	return "操作已中止";
 }
 
 /** True when a persisted or extension-supplied value can be sent as custom-message content. */

@@ -13,19 +13,19 @@ import { getEditorCommand, openInEditor } from "../../utils/external-editor";
 import type { InteractiveModeContext } from "../types";
 
 const USAGE = [
-	"Usage: /todo <verb> [args]",
-	"  /todo                              Show current todos",
-	"  /todo edit                         Open todos in $EDITOR",
-	"  /todo copy                         Copy todos as Markdown to clipboard",
-	"  /todo expand                       Show every phase and task in the HUD",
-	"  /todo collapse                     Restore the bounded HUD preview",
-	"  /todo export [<path>]              Write todos to file (default: TODO.md)",
-	"  /todo import [<path>]              Replace todos from file (default: TODO.md)",
-	"  /todo append [<phase>] <task...>   Append a task; phase fuzzy-matched or auto-created",
-	"  /todo start  <task>                Mark task in_progress (fuzzy content match)",
-	"  /todo done   [<task|phase>]        Mark task/phase/all completed",
-	"  /todo drop   [<task|phase>]        Mark task/phase/all abandoned",
-	"  /todo rm     [<task|phase>]        Remove task/phase/all",
+	"用法：/todo <verb> [args]",
+	"  /todo                              显示当前待办事项",
+	"  /todo edit                         在 $EDITOR 中打开待办事项",
+	"  /todo copy                         将待办事项以 Markdown 格式复制到剪贴板",
+	"  /todo expand                       在 HUD 中显示每个阶段和任务",
+	"  /todo collapse                     恢复受限的 HUD 预览",
+	"  /todo export [<path>]              将待办事项写入文件（默认：TODO.md）",
+	"  /todo import [<path>]              从文件替换待办事项（默认：TODO.md）",
+	"  /todo append [<phase>] <task...>   追加任务；阶段采用模糊匹配或自动创建",
+	"  /todo start  <task>                将任务标记为 in_progress（模糊内容匹配）",
+	"  /todo done   [<task|phase>]        将 task/phase/all 标记为已完成",
+	"  /todo drop   [<task|phase>]        将 task/phase/all 标记为已放弃",
+	"  /todo rm     [<task|phase>]        移除 task/phase/all",
 ].join("\n");
 
 // =============================================================================
@@ -119,15 +119,15 @@ function findTaskFuzzy(phases: TodoPhase[], query: string): { task: TodoItem; ph
 
 function buildSystemReminder(action: string, phases: TodoPhase[], removed = false): string {
 	const md = phases.length === 0 ? "(empty)" : phasesToMarkdown(phases).trimEnd();
-	const lines = ["<system-reminder>", `The user manually modified the todo list (${action}).`];
+	const lines = ["<系统提醒>", `用户手动修改了待办事项列表（${action}）。`];
 	if (removed) {
 		lines.push(
 			phases.length === 0
-				? "The user intentionally cleared the todo list. Do NOT recreate or re-populate it unless the user explicitly asks; continue the current request without a todo list."
-				: "The user intentionally removed the entries no longer shown below. Do NOT re-add them unless the user explicitly asks.",
+				? "用户有意清空了待办事项列表。除非用户明确要求，否则NOT重新创建或重新填充该列表；请在没有待办事项列表的情况下继续当前请求。"
+				: "用户有意移除了下方不再显示的条目。除非用户明确要求，请勿NOT重新添加这些条目。",
 		);
 	}
-	lines.push("Current todo list:", "", md, "</system-reminder>");
+	lines.push("当前待办事项列表：", "", md, "</system-reminder>");
 	return lines.join("\n");
 }
 
@@ -202,7 +202,7 @@ ${USAGE}`);
 	#showCurrent(): void {
 		const phases = this.#currentPhases();
 		if (phases.length === 0) {
-			this.ctx.showStatus("No todos. Use /todo append <task> to start one.");
+			this.ctx.showStatus("没有待办事项。请使用 /todo append <task> 来创建一项。");
 			return;
 		}
 		this.ctx.showStatus(phasesToMarkdown(phases).trimEnd());
@@ -216,7 +216,7 @@ ${USAGE}`);
 		}
 		try {
 			copyToClipboard(phasesToMarkdown(phases));
-			this.ctx.showStatus("Copied todos as Markdown to clipboard.");
+			this.ctx.showStatus("已将待办事项以 Markdown 格式复制到剪贴板。");
 		} catch (error) {
 			this.ctx.showError(error instanceof Error ? error.message : String(error));
 		}
@@ -235,7 +235,7 @@ ${USAGE}`);
 		try {
 			const target = this.#resolveTodoPath(rest);
 			await fs.writeFile(target, phasesToMarkdown(phases), "utf8");
-			this.ctx.showStatus(`Wrote todos to ${target}`);
+			this.ctx.showStatus(`已将待办事项写入 ${target}`);
 		} catch (error) {
 			this.ctx.showError(`写入待办事项失败：${error instanceof Error ? error.message : String(error)}`);
 		}
@@ -259,7 +259,7 @@ ${USAGE}`);
 		}
 		this.#commit(phases, `/todo import ${source}`);
 		const taskCount = phases.reduce((sum, p) => sum + p.tasks.length, 0);
-		this.ctx.showStatus(`Imported ${phases.length} phase(s), ${taskCount} task(s) from ${source}.`);
+		this.ctx.showStatus(`已导入 ${phases.length} 个阶段、${taskCount} 个任务，来源：${source}。`);
 	}
 
 	// ------------------------------------------------------------- append
@@ -305,7 +305,7 @@ ${USAGE}`);
 		});
 
 		this.#commit(next, `/todo append → ${targetPhase.name}`);
-		this.ctx.showStatus(`Appended to ${targetPhase.name}: ${finalContent}`);
+		this.ctx.showStatus(`已追加到 ${targetPhase.name}: ${finalContent}`);
 	}
 
 	// ------------------------------------------------------------- start / done / drop / rm
@@ -327,7 +327,7 @@ ${USAGE}`);
 			return;
 		}
 		this.#commit(phases, `/todo start ${hit.task.content}`);
-		this.ctx.showStatus(`Started: ${hit.task.content}`);
+		this.ctx.showStatus(`已开始：${hit.task.content}`);
 	}
 
 	#mutateStatus(rest: string, target: "completed" | "abandoned"): void {
@@ -342,7 +342,7 @@ ${USAGE}`);
 				return;
 			}
 			this.#commit(phases, `/todo ${op} (all)`);
-			this.ctx.showStatus(`Marked all tasks ${target}.`);
+			this.ctx.showStatus(`已将全部任务标记为${target}。`);
 			return;
 		}
 
@@ -354,7 +354,7 @@ ${USAGE}`);
 				return;
 			}
 			this.#commit(phases, `/todo ${op} ${taskHit.task.content}`);
-			this.ctx.showStatus(`Marked ${target}: ${taskHit.task.content}`);
+			this.ctx.showStatus(`已标记 ${target}：${taskHit.task.content}`);
 			return;
 		}
 
@@ -366,7 +366,7 @@ ${USAGE}`);
 				return;
 			}
 			this.#commit(phases, `/todo ${op} ${phaseHit.name}`);
-			this.ctx.showStatus(`Marked phase ${phaseHit.name} ${target}.`);
+			this.ctx.showStatus(`已将阶段 ${phaseHit.name} 标记为 ${target}。`);
 			return;
 		}
 
@@ -378,7 +378,7 @@ ${USAGE}`);
 		const trimmed = rest.trim();
 		if (!trimmed) {
 			this.#commit([], "/todo rm (all)", { removed: true });
-			this.ctx.showStatus("Cleared all todos.");
+			this.ctx.showStatus("已清除所有待办事项。");
 			return;
 		}
 		const taskHit = findTaskFuzzy(current, trimmed);
@@ -389,7 +389,7 @@ ${USAGE}`);
 				return;
 			}
 			this.#commit(phases, `/todo rm ${taskHit.task.content}`, { removed: true });
-			this.ctx.showStatus(`Removed: ${taskHit.task.content}`);
+			this.ctx.showStatus(`已移除：${taskHit.task.content}`);
 			return;
 		}
 		const phaseHit = findPhaseFuzzy(current, trimmed);
@@ -400,7 +400,7 @@ ${USAGE}`);
 				return;
 			}
 			this.#commit(phases, `/todo rm ${phaseHit.name}`, { removed: true });
-			this.ctx.showStatus(`Removed phase: ${phaseHit.name}`);
+			this.ctx.showStatus(`已移除阶段：${phaseHit.name}`);
 			return;
 		}
 		this.ctx.showError(`没有匹配“${trimmed}”的任务或阶段。`);
@@ -434,7 +434,7 @@ ${USAGE}`);
 			}
 			this.#commit(parsed, "/todo edit");
 			const taskCount = parsed.reduce((sum, p) => sum + p.tasks.length, 0);
-			this.ctx.showStatus(`Todos updated from editor: ${parsed.length} phase(s), ${taskCount} task(s).`);
+			this.ctx.showStatus(`已从编辑器更新待办事项：${parsed.length} 个阶段、${taskCount} 个任务。`);
 		} catch (error) {
 			this.ctx.showWarning(
 				`无法打开外部编辑器：${error instanceof Error ? error.message : String(error)}`,

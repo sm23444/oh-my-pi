@@ -25,8 +25,8 @@ export function createBackgroundTanDispatchBlock(message: CustomMessage<unknown>
 	return new TranscriptStatusBlock([
 		{
 			parts: [
-				{ text: `${theme.icon.output} Tangent dispatched`, color: "muted" },
-				{ text: "[task]", color: "dim" },
+				{ text: `${theme.icon.output} Tangent 已调度`, color: "muted" },
+				{ text: "[任务]", color: "dim" },
 				{ text: jobId, color: "accent" },
 				work ? { text: `${theme.format.dash} ${work}`, color: "dim" } : undefined,
 			],

@@ -221,15 +221,15 @@ export class CleansePanelComponent extends OverlayPanel {
 			case undefined:
 				return hintsRow([{ ...esc, label: "取消 /cleanse" }]);
 			case "clean":
-				return statusHintsRow([span(`${theme.status.success} Clean`, "success")], [esc]);
+				return statusHintsRow([span(`${theme.status.success} 干净`, "success")], [esc]);
 			case "unresolved":
-				return statusHintsRow([span(`${theme.status.warning} Diagnostics remain`, "warning")], [esc]);
+				return statusHintsRow([span(`${theme.status.warning} 诊断仍存在`, "warning")], [esc]);
 			case "unsupported":
-				return statusHintsRow([span(`${theme.status.warning} No runnable checker`, "warning")], [esc]);
+				return statusHintsRow([span(`${theme.status.warning} 无可运行的检查器`, "warning")], [esc]);
 			case "cancelled":
-				return statusHintsRow([span(`${theme.status.warning} Cancelled`, "warning")], [esc]);
+				return statusHintsRow([span(`${theme.status.warning} 已取消`, "warning")], [esc]);
 			case "error":
-				return statusHintsRow([span(`${theme.status.error} Error`, "error")], [esc]);
+				return statusHintsRow([span(`${theme.status.error} 错误`, "error")], [esc]);
 		}
 	}
 

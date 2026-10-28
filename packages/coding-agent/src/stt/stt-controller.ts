@@ -114,7 +114,7 @@ export class STTController {
 	/** Start dictating into `editor`, reporting to `options` until the capture ends. A no-op while a
 	 *  capture is starting, recording, or transcribing. */
 	async start(editor: SttTarget, options: SttCallbacks): Promise<void> {
-		if (this.#state === "transcribing") options.showStatus("Transcription in progress...");
+		if (this.#state === "transcribing") options.showStatus("正在进行转录...");
 		if (this.#disposed || this.#toggling || this.#state !== "idle") return;
 		await this.#transition(options, () => this.#start(editor, options));
 	}
@@ -224,7 +224,7 @@ export class STTController {
 			return;
 		}
 		if (model && model.api !== "local-inference") {
-			options.showWarning(`Unsupported speech-to-text API: ${model.api}`);
+			options.showWarning(`不支持的语音转文本 API：${model.api}`);
 			return;
 		}
 
@@ -236,7 +236,7 @@ export class STTController {
 			return;
 		}
 		if (model && model.api !== "local-inference") {
-			options.showWarning(`Unsupported speech-to-text API: ${model.api}`);
+			options.showWarning(`不支持的语音转文本 API：${model.api}`);
 			return;
 		}
 		const startModelKey = this.#resolveModelKey(model);
@@ -310,7 +310,7 @@ export class STTController {
 		}
 
 		this.#setState("transcribing", options);
-		options.showStatus("Transcribing...");
+		options.showStatus("正在转录...");
 		try {
 			recorder?.stop();
 		} catch (err) {
@@ -501,7 +501,7 @@ export class STTController {
 		} else {
 			this.#streamEditor?.clearVolatileText();
 		}
-		if (!failed) options.showStatus(this.#streamCommitted ? "" : "No speech detected.");
+		if (!failed) options.showStatus(this.#streamCommitted ? "" : "未检测到语音。");
 
 		if (!options.manualSubmit && this.#streamCommitted && !failed && this.#streamEditor) {
 			const trigger = cfgSttSubmitTrigger.get(this.#settings);

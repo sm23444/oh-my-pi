@@ -801,7 +801,8 @@ export async function runClaudeMessagesCapture(args: ClaudeTraceCommandArgs = {}
 
 export async function runClaudeTraceCommand(args: ClaudeTraceCommandArgs = {}): Promise<void> {
 	process.stderr.write(
-		`Starting Claude trace proxy on ${args.host ?? DEFAULT_PROXY_HOST}:${args.port ?? DEFAULT_PROXY_PORT}\n`,
+		`正在 ${args.host ?? DEFAULT_PROXY_HOST}:${args.port ?? DEFAULT_PROXY_PORT} 上启动 Claude 跟踪代理
+`,
 	);
 	const exchange = await runClaudeMessagesCapture(args);
 	const output = args.json ? `${JSON.stringify(exchange, null, 2)}\n` : formatCapturedMessagesExchange(exchange);

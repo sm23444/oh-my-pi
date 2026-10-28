@@ -44,7 +44,7 @@ export function formatBackgroundNotice(jobId: string, timeoutSec: number | undef
 		timeoutSec === undefined
 			? " (no deadline)"
 			: ` (killed once it has run ${timeoutSec}s in total; \`timeout: 0\` disables the deadline)`;
-	return `Backgrounded as job ${jobId}${deadline}; its output is injected into the conversation as a follow-up the moment it finishes. Do NOT poll for it (no \`sleep\`, \`ps\`, \`pgrep\`, \`top\`, \`pidwait\`, log tailing): every poll is a wasted turn. Do other work, or end your reply and wait to be woken.`;
+	return `已转为后台作业 ${jobId}${deadline}；其输出会在完成时立即作为后续消息注入会话。请NOT轮询它（不要使用 \`sleep\`、\`ps\`、\`pgrep\`、\`top\`、\`pidwait\`、日志跟踪）：每次轮询都是浪费的一轮。请继续其他工作，或结束回复并等待被唤醒。`;
 }
 
 /**
@@ -199,12 +199,12 @@ export const WALL_TIME_NOTICE_MIN_MS = 1000;
 
 /** Formats the model-facing command duration notice. */
 export function formatWallTimeNotice(wallTimeMs: number): string {
-	return `Wall time: ${formatWallTimeSeconds(wallTimeMs)} seconds`;
+	return `墙钟时间：${formatWallTimeSeconds(wallTimeMs)} 秒`;
 }
 
 /** Formats the model-facing command exit status notice. */
 export function formatExitCodeNotice(exitCode: number): string {
-	return `Command exited with code ${exitCode}`;
+	return `命令已退出，退出码为 ${exitCode}`;
 }
 
 /** Shell arguments used to build a command preview. */
@@ -325,32 +325,32 @@ function bashStatsParts(
 	const wallTimeMs = details?.wallTimeMs;
 	const statsParts: string[] = [];
 	if (details?.async?.state === "running") {
-		statsParts.push(`Backgrounded: ${details.async.jobId}`);
+		statsParts.push(`后台运行: ${details.async.jobId}`);
 	}
 	if (details?.service) {
 		const service = details.service;
-		statsParts.push(`Service: ${service.name}`, `State: ${service.state}`);
-		statsParts.push(`Ready: ${service.ready ? "yes" : service.timedOut ? "timed out" : "no"}`);
+		statsParts.push(`服务：${service.name}`, `状态：${service.state}`);
+		statsParts.push(`就绪：${service.ready ? "是" : service.timedOut ? "已超时" : "否"}`);
 		if (service.pid !== undefined) statsParts.push(`PID: ${service.pid}`);
 	}
 	if (wallTimeMs !== undefined) {
-		statsParts.push(`Wall: ${formatWallTimeSeconds(wallTimeMs)}s`);
+		statsParts.push(`耗时: ${formatWallTimeSeconds(wallTimeMs)}s`);
 	}
 	if (timeoutDisabled) {
-		statsParts.push("Timeout: disabled");
+		statsParts.push("超时: 已禁用");
 	}
 	if (typeof timeoutSeconds === "number") {
 		statsParts.push(
 			requestedTimeoutSeconds !== undefined && requestedTimeoutSeconds !== timeoutSeconds
-				? `Timeout: ${timeoutSeconds}s (requested ${requestedTimeoutSeconds}s clamped)`
-				: `Timeout: ${timeoutSeconds}s`,
+				? `超时: ${timeoutSeconds}s (请求 ${requestedTimeoutSeconds}s 已截断)`
+				: `超时: ${timeoutSeconds}s`,
 		);
 	}
 	if (artifactId) {
-		statsParts.push(`Artifact: ${artifactId}`);
+		statsParts.push(`产物：${artifactId}`);
 	}
 	if (isError && typeof details?.exitCode === "number") {
-		statsParts.push(`Exit: ${details.exitCode}`);
+		statsParts.push(`退出码: ${details.exitCode}`);
 	}
 	return statsParts;
 }
@@ -375,7 +375,7 @@ function shellToolHead(
 		targetKind: intent ? "text" : undefined,
 		command,
 		exit,
-		note: settled && details?.timedOut === true ? "timed out" : undefined,
+		note: settled && details?.timedOut === true ? "已超时" : undefined,
 	};
 }
 
@@ -460,7 +460,7 @@ export function createShellRenderer<TArgs>(config: ShellRendererConfig<TArgs>) {
 					footerMeta:
 						elapsedMs === undefined || elapsedMs < 1000
 							? undefined
-							: uiTheme.fg("dim", `elapsed ${formatDuration(Math.floor(elapsedMs / 1000) * 1000)}`),
+							: uiTheme.fg("dim", `耗时 ${formatDuration(Math.floor(elapsedMs / 1000) * 1000)}`),
 					sections: [{ content: capPreviewLines(cmdLines, uiTheme, { expanded: options.expanded }) }],
 				};
 			});
@@ -620,7 +620,7 @@ export function createShellRenderer<TArgs>(config: ShellRendererConfig<TArgs>) {
 									{ expanded },
 								),
 							},
-							{ label: uiTheme.fg("toolTitle", "Output"), content: outputLines },
+							{ label: uiTheme.fg("toolTitle", "输出"), content: outputLines },
 						],
 					};
 

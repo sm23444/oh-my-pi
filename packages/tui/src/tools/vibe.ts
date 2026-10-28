@@ -260,7 +260,7 @@ function tvScreen(
 	const footer = settledStatus
 		? uiTheme.fg(
 				settledStatus === "completed" ? "success" : settledStatus === "failed" ? "error" : "warning",
-				`turn ${settledStatus} — result delivered`,
+				`轮次 ${settledStatus} — 结果已送达`,
 			)
 		: undefined;
 	return miniFrame(uiTheme, headParts.join(" "), body, footer);
@@ -287,17 +287,17 @@ function linesComponent(lines: string[] | (() => string[])): Component {
 function describeCall(op: VibeOp, args: VibeRenderArgs | undefined): string {
 	switch (op) {
 		case "spawn":
-			return `spawn ${args?.cli ?? "?"}${args?.name ? ` · ${frameText(args.name, 40)}` : ""}`;
+			return `启动 ${args?.cli ?? "?"}${args?.name ? ` · ${frameText(args.name, 40)}` : ""}`;
 		case "send":
-			return `send → ${args?.session ? frameText(args.session, 40) : "?"}`;
+			return `发送 → ${args?.session ? frameText(args.session, 40) : "?"}`;
 		case "wait":
 			return args?.sessions?.length
-				? `wait on ${frameText(args.sessions.join(", "), 60)}`
-				: "wait on running sessions";
+				? `等待 ${frameText(args.sessions.join(", "), 60)}`
+				: "等待运行中的会话";
 		case "kill":
-			return `kill ${args?.session ? frameText(args.session, 40) : "?"}`;
+			return `终止 ${args?.session ? frameText(args.session, 40) : "?"}`;
 		case "list":
-			return "sessions";
+			return "会话";
 	}
 }
 
@@ -395,7 +395,7 @@ function describeVibeScreen(
 		body.push(
 			text([
 				span(
-					`turn ${settled} — result delivered`,
+					`轮次 ${settled} — 结果已送达`,
 					settled === "completed" ? "success" : settled === "failed" ? "error" : "warning",
 				),
 			]),
@@ -427,7 +427,7 @@ function describeVibeResult(
 	if (result.isError) return { ...errorView("Vibe", resultText(result) || "vibe failed", label), inline: true };
 	if (!details) {
 		const fallback = resultText(result).trim();
-		return { head: toolHead("Vibe", label), inline: true, body: fallback ? [noteText(fallback)] : [] };
+		return { head: toolHead("Vibe 工具", label), inline: true, body: fallback ? [noteText(fallback)] : [] };
 	}
 
 	if (op === "spawn" || op === "send") {
@@ -435,21 +435,21 @@ function describeVibeResult(
 		const head: TspSpan[] =
 			op === "spawn"
 				? [
-						...toolHead("Vibe", "spawn"),
+						...toolHead("Vibe 工具", "spawn"),
 						span(" "),
 						span(details.spawned?.cli ?? args?.cli ?? "?", "accent strong"),
 						span(" "),
 						span(plainText(details.spawned?.id ?? args?.name ?? ""), "accent"),
 					]
-				: [...toolHead("Vibe", "send →"), span(" "), span(plainText(args?.session ?? "?"), "accent")];
+				: [...toolHead("Vibe 工具", "send →"), span(" "), span(plainText(args?.session ?? "?"), "accent")];
 		const ack: TspSpan =
 			op === "spawn"
-				? span(`turn started${details.spawned ? ` (job ${details.spawned.jobId})` : ""}`, "success")
+				? span(`轮次已开始${details.spawned ? ` (任务 ${details.spawned.jobId})` : ""}`, "success")
 				: details.send?.mode === "steered"
-					? span("steered into the running turn", "success")
+					? span("已切入正在进行的回合", "success")
 					: details.send?.mode === "queued"
-						? span("mid-turn — queued as the next turn", "warning")
-						: span(`turn started${details.send?.jobId ? ` (job ${details.send.jobId})` : ""}`, "success");
+						? span("回合进行中 — 已排队为下一回合", "warning")
+						: span(`轮次已开始${details.send?.jobId ? ` (任务 ${details.send.jobId})` : ""}`, "success");
 		return {
 			head,
 			inline: true,
@@ -461,15 +461,15 @@ function describeVibeResult(
 
 	if (op === "kill") {
 		const note = details.killed?.cancelledTurn ? "in-flight turn cancelled" : undefined;
-		return { head: toolHead("Vibe", `kill ${details.killed?.id ?? args?.session ?? "?"}`, note), inline: true };
+		return { head: toolHead("Vibe 工具", `kill ${details.killed?.id ?? args?.session ?? "?"}`, note), inline: true };
 	}
 
 	const screens = details.screens;
 	const hiddenKilled = details.hiddenKilled?.length ?? 0;
-	const killedMeta = hiddenKilled > 0 ? span(` · ${hiddenKilled} killed hidden`, "dim") : undefined;
+	const killedMeta = hiddenKilled > 0 ? span(` · ${hiddenKilled} 个隐藏会话已终止`, "dim") : undefined;
 	if (screens.length === 0) {
 		const gist = hiddenKilled > 0 ? "no live sessions" : resultText(result).trim() || "no sessions";
-		const head = toolHead("Vibe", op, gist);
+		const head = toolHead("Vibe 工具", op, gist);
 		if (killedMeta) head.push(killedMeta);
 		return { head, tone: "warning", inline: true };
 	}
@@ -478,13 +478,13 @@ function describeVibeResult(
 	const title =
 		op === "wait"
 			? details.wait?.waiting === true
-				? "wait — watching the wall"
+				? "等待 — 静观其变"
 				: "wait"
-			: `sessions (${screens.length})`;
-	const head: TspSpan[] = toolHead("Vibe", title);
-	if (running > 0) head.push(span(` · ${running} on air`, "accent"));
-	if (settledById.size > 0) head.push(span(` · ${settledById.size} settled`, "success"));
-	if (details.wait?.timedOut) head.push(span(" · timed out", "warning"));
+			: `会话 (${screens.length})`;
+	const head: TspSpan[] = toolHead("Vibe 工具", title);
+	if (running > 0) head.push(span(` · ${running} 个正在运行`, "accent"));
+	if (settledById.size > 0) head.push(span(` · ${settledById.size} 个已结束`, "success"));
+	if (details.wait?.timedOut) head.push(span(" · 已超时", "warning"));
 	if (killedMeta) head.push(killedMeta);
 	const nowMs = Date.now();
 	return {
@@ -508,7 +508,7 @@ export function createVibeToolRenderer(op: VibeOp) {
 		animatedPartialResult: op === "wait",
 
 		renderCall(args: VibeRenderArgs, options: RenderResultOptions, uiTheme: Theme): Component {
-			const title = uiTheme.fg("muted", `vibe ${describeCall(op, args)}`);
+			const title = uiTheme.fg("muted", `vibe ${describeCall(op, args)} 调用`);
 			if (composerOp) {
 				const message = op === "spawn" ? (args?.prompt ?? "") : (args?.message ?? "");
 				return linesComponent(() => {
@@ -517,11 +517,11 @@ export function createVibeToolRenderer(op: VibeOp) {
 						uiTheme,
 						title,
 						composerRows(uiTheme, message, { cursor: cursorOn, expanded: options.expanded }),
-						uiTheme.fg("dim", op === "spawn" ? "booting CLI…" : "delivering…"),
+						uiTheme.fg("dim", op === "spawn" ? "正在启动 CLI…" : "正在投递…"),
 					);
 				});
 			}
-			return new Text(renderStatusLine({ icon: "pending", title: `vibe ${describeCall(op, args)}` }, uiTheme), 0, 0);
+			return new Text(renderStatusLine({ icon: "pending", title: `vibe ${describeCall(op, args)} 调用` }, uiTheme), 0, 0);
 		},
 
 		renderResult(
@@ -534,7 +534,7 @@ export function createVibeToolRenderer(op: VibeOp) {
 			if (!details || result.isError) {
 				const fallback = result.content.find(part => part.type === "text")?.text ?? "";
 				const header = renderStatusLine(
-					{ icon: result.isError ? "error" : "done", title: `vibe ${describeCall(op, args)}` },
+					{ icon: result.isError ? "error" : "done", title: `vibe ${describeCall(op, args)} 调用` },
 					uiTheme,
 				);
 				const body = fallback
@@ -547,18 +547,18 @@ export function createVibeToolRenderer(op: VibeOp) {
 				const message = op === "spawn" ? (args?.prompt ?? "") : (args?.message ?? "");
 				const target =
 					op === "spawn"
-						? `${uiTheme.fg("muted", "vibe spawn")} ${formatBadge(details.spawned?.cli ?? args?.cli ?? "?", "accent", uiTheme)} ${uiTheme.fg("accent", frameText(details.spawned?.id ?? args?.name ?? "", 40))}`
-						: `${uiTheme.fg("muted", "vibe send →")} ${uiTheme.fg("accent", frameText(args?.session ?? "?", 40))}`;
+						? `${uiTheme.fg("muted", "vibe 启动")} ${formatBadge(details.spawned?.cli ?? args?.cli ?? "?", "accent", uiTheme)} ${uiTheme.fg("accent", frameText(details.spawned?.id ?? args?.name ?? "", 40))}`
+						: `${uiTheme.fg("muted", "vibe 发送 →")} ${uiTheme.fg("accent", frameText(args?.session ?? "?", 40))}`;
 				const ack =
 					op === "spawn"
-						? uiTheme.fg("success", `turn started${details.spawned ? ` (job ${details.spawned.jobId})` : ""}`)
+						? uiTheme.fg("success", `轮次已开始${details.spawned ? ` (任务 ${details.spawned.jobId})` : ""}`)
 						: details.send?.mode === "steered"
-							? uiTheme.fg("success", "steered into the running turn")
+							? uiTheme.fg("success", "已切入正在进行的回合")
 							: details.send?.mode === "queued"
-								? uiTheme.fg("warning", "mid-turn — queued as the next turn")
+								? uiTheme.fg("warning", "回合进行中 — 已排队为下一回合")
 								: uiTheme.fg(
 										"success",
-										`turn started${details.send?.jobId ? ` (job ${details.send.jobId})` : ""}`,
+										`轮次已开始${details.send?.jobId ? ` (任务 ${details.send.jobId})` : ""}`,
 									);
 				const lines = miniFrame(
 					uiTheme,
@@ -574,7 +574,7 @@ export function createVibeToolRenderer(op: VibeOp) {
 				const header = renderStatusLine(
 					{
 						icon: "done",
-						title: `vibe kill ${frameText(details.killed?.id ?? args?.session ?? "?", 40)}${killedNote}`,
+						title: `vibe 终止 ${frameText(details.killed?.id ?? args?.session ?? "?", 40)}${killedNote}`,
 					},
 					uiTheme,
 				);
@@ -585,7 +585,7 @@ export function createVibeToolRenderer(op: VibeOp) {
 			// (see `hiddenKilled`) so a long-running director's wall stays legible.
 			const screens = details.screens;
 			const hiddenKilled = details.hiddenKilled?.length ?? 0;
-			const killedMeta = hiddenKilled > 0 ? [uiTheme.fg("dim", `${hiddenKilled} killed hidden`)] : [];
+			const killedMeta = hiddenKilled > 0 ? [uiTheme.fg("dim", `${hiddenKilled} 个隐藏会话已终止`)] : [];
 			if (screens.length === 0) {
 				const fallback = result.content.find(part => part.type === "text")?.text ?? "no sessions";
 				const gist = hiddenKilled > 0 ? "no live sessions" : fallback;
@@ -593,7 +593,7 @@ export function createVibeToolRenderer(op: VibeOp) {
 					renderStatusLine(
 						{
 							icon: "warning",
-							title: `vibe ${op}`,
+							title: `vibe 操作 ${op}`,
 							meta: [uiTheme.fg("dim", frameText(gist, 60)), ...killedMeta],
 						},
 						uiTheme,
@@ -609,16 +609,16 @@ export function createVibeToolRenderer(op: VibeOp) {
 			return linesComponent(() => {
 				const running = screens.filter(screen => screen.state === "running" || screen.state === "starting").length;
 				const meta: string[] = [];
-				if (running > 0) meta.push(uiTheme.fg("accent", `${running} on air`));
-				if (settledById.size > 0) meta.push(uiTheme.fg("success", `${settledById.size} settled`));
-				if (details.wait?.timedOut) meta.push(uiTheme.fg("warning", "timed out"));
+				if (running > 0) meta.push(uiTheme.fg("accent", `${running} 个运行中`));
+				if (settledById.size > 0) meta.push(uiTheme.fg("success", `${settledById.size} 个已结束`));
+				if (details.wait?.timedOut) meta.push(uiTheme.fg("warning", "已超时"));
 				meta.push(...killedMeta);
 				const title =
 					op === "wait"
 						? waiting
-							? "vibe wait — watching the wall"
-							: "vibe wait"
-						: `vibe sessions (${screens.length})`;
+							? "vibe wait — 正在观看电视墙"
+							: "vibe 等待"
+						: `vibe 会话 (${screens.length})`;
 				const header = renderStatusLine(
 					{
 						icon: details.wait?.timedOut ? "warning" : running > 0 ? "info" : "done",
@@ -647,14 +647,14 @@ export function createVibeToolRenderer(op: VibeOp) {
 		describeCall(args: VibeRenderArgs): NativeToolView | undefined {
 			const message = op === "spawn" ? (args?.prompt ?? "") : op === "send" ? (args?.message ?? "") : "";
 			return callMemo.get(args, [vibeNativeLabel(op, args), message], () => {
-				const head = toolHead("Vibe", vibeNativeLabel(op, args));
+				const head = toolHead("Vibe 工具", vibeNativeLabel(op, args));
 				if (!composerOp) return { head, inline: true };
 				return {
 					head,
 					inline: true,
 					body: compact([
 						vibeComposer(message),
-						node("spinner", { label: [span(op === "spawn" ? "booting CLI…" : "delivering…", "dim")] }),
+						node("spinner", { label: [span(op === "spawn" ? "正在启动 CLI…" : "正在投递…", "dim")] }),
 					]),
 					preview: { lines: 3 },
 				};

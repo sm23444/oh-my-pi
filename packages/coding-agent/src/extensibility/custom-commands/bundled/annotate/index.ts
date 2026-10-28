@@ -237,7 +237,7 @@ export async function runAnnotateCommand(
 	}
 	if (!ctx.hasUI) {
 		ctx.ui.notify(
-			"Text annotation requires the interactive UI. Re-run /annotate from an interactive session; no message was sent.",
+			"文本标注需要交互式 UI。请从交互式会话重新运行 /annotate；未发送任何消息。",
 			"error",
 		);
 		return undefined;
@@ -282,7 +282,7 @@ export async function runAnnotateCommand(
 			case "draft": {
 				const drafts = await loadAnnotationDrafts(ctx.sessionManager);
 				if (drafts.length === 0) {
-					ctx.ui.notify("No saved annotation drafts in this session.", "info");
+					ctx.ui.notify("此会话中没有保存的批注草稿。", "info");
 					return undefined;
 				}
 				const labels = drafts.map(
@@ -314,13 +314,13 @@ export async function runAnnotateCommand(
 				typeof generated === "string" ? normalizeTextReviewContextSummary(generated) || undefined : undefined;
 			if (!contextSummary) {
 				ctx.ui.notify(
-					"Source summary unavailable; including the full source verbatim beyond the normal 999-character context limit.",
+					"源代码摘要不可用；将超出正常的 999 字符上下文限制，逐字包含完整源代码。",
 					"warning",
 				);
 			}
 		} catch {
 			ctx.ui.notify(
-				"Source summary failed; including the full source verbatim beyond the normal 999-character context limit.",
+				"源代码摘要失败；将超出正常的 999 字符上下文限制，逐字包含完整源代码。",
 				"warning",
 			);
 		} finally {

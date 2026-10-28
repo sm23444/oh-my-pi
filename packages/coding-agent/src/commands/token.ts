@@ -109,7 +109,7 @@ export default class Token extends Command {
 				const accounts = authStorage.oauth.accounts(provider);
 				if (accounts.length === 0) {
 					process.stderr.write(`${chalk.red(`No OAuth accounts found for provider "${providerName}".`)}\n`);
-					process.stderr.write("--account/--list select among OAuth accounts; this provider has none stored.\n");
+					process.stderr.write("--account/--list 用于在 OAuth 账户之间选择；此提供商没有存储任何账户。\n");
 					process.exitCode = 1;
 					return;
 				}
@@ -130,7 +130,8 @@ export default class Token extends Command {
 				const n = flags.account;
 				if (n === undefined || n < 1 || n > accounts.length) {
 					process.stderr.write(
-						`${chalk.red(`Invalid --account ${n ?? "(missing)"}.`)} Provider "${providerName}" has ${accounts.length} OAuth account(s) (1-${accounts.length}).\n`,
+						`${chalk.red(`Invalid --account ${n ?? "(missing)"}.`)} 提供商“${providerName}”有 ${accounts.length} 个 OAuth 账户（1-${accounts.length}）。
+`,
 					);
 					process.exitCode = 1;
 					return;
@@ -202,7 +203,8 @@ export default class Token extends Command {
 				const msg = `No active credential found for provider "${providerName}".`;
 				process.stderr.write(`${chalk.red(msg)}\n`);
 				if (activeProviders.size > 0) {
-					process.stderr.write(`Configured providers: ${Array.from(activeProviders).sort().join(", ")}\n`);
+					process.stderr.write(`已配置的提供商：${Array.from(activeProviders).sort().join(", ")}
+`);
 				}
 				process.exitCode = 1;
 				return;

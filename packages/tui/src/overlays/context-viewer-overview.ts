@@ -254,14 +254,14 @@ export function contextSnapcompactLines(breakdown: ContextBreakdown): string[] {
 	const snap = breakdown.snapcompact;
 	if (!snap) return [];
 	if (!snap.visionCapable) return ["Snapcompact: inactive (model has no image input)"];
-	const lines = ["Snapcompact (estimated wire savings)"];
+	const lines = ["Snapcompact（预计线上节省）"];
 	if (snap.systemPrompt) {
 		const sp = snap.systemPrompt;
 		const scope = sp.scope === "agents-md" ? "AGENTS.md" : "all";
 		if (sp.applied) {
 			const frames = `${sp.frames} frame${sp.frames === 1 ? "" : "s"}`;
 			lines.push(
-				`  System prompt (${scope}): saves ~${formatNumber(sp.savedTokens)} (${formatNumber(sp.textTokens)} text → ${frames} ≈ ${formatNumber(sp.imageTokens)})`,
+				`  系统提示词（${scope}）：节省约 ${formatNumber(sp.savedTokens)}（${formatNumber(sp.textTokens)} 文本 → ${frames} ≈ ${formatNumber(sp.imageTokens)}）`,
 			);
 		} else {
 			const reason =
@@ -270,20 +270,20 @@ export function contextSnapcompactLines(breakdown: ContextBreakdown): string[] {
 					: sp.reason === "empty"
 						? "nothing to image"
 						: "frames would not save tokens";
-			lines.push(`  System prompt (${scope}): stays text (${reason})`);
+			lines.push(`  系统提示词（${scope}）：保持文本（${reason}）`);
 		}
 	}
 	if (snap.toolResults) {
 		const tr = snap.toolResults;
 		lines.push(
 			tr.swapped > 0
-				? `  Tool results: saves ~${formatNumber(tr.savedTokens)} (${tr.swapped}/${tr.total} imaged, ${formatNumber(tr.textTokens)} text → ${tr.frames} frames ≈ ${formatNumber(tr.imageTokens)})`
-				: `  Tool results: none imaged (${tr.total} in history)`,
+				? `  工具结果：节省约 ${formatNumber(tr.savedTokens)}（${tr.swapped}/${tr.total} 已图像化，${formatNumber(tr.textTokens)} 文本 → ${tr.frames} 帧 ≈ ${formatNumber(tr.imageTokens)}）`
+				: `  工具结果：无已图像化项（历史中共 ${tr.total} 项）`,
 		);
 	}
 	if (snap.savedTokens > 0) {
 		lines.push(
-			`  Next request: ~${formatNumber(Math.max(0, breakdown.usedTokens - snap.savedTokens))} tokens on the wire`,
+			`  下一次请求：线上传输约 ${formatNumber(Math.max(0, breakdown.usedTokens - snap.savedTokens))} 个 token`,
 		);
 	}
 	return lines;

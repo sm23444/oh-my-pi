@@ -278,7 +278,7 @@ export class PauseScreenComponent implements Component, OverlayFocusOwner {
 	}
 
 	/** A glass sheet titled "Paused" (not the whole pane: the transcript stays visible, frozen). */
-	readonly nativeOverlay = { role: "omp.overlay.pause", size: "md", anchor: "center", head: "Paused" } as const;
+	readonly nativeOverlay = { role: "omp.overlay.pause", size: "md", anchor: "center", head: "已暂停" } as const;
 
 	/**
 	 * The sheet: a hero (the pause glyph beside the live hold clock and the
@@ -295,7 +295,7 @@ export class PauseScreenComponent implements Component, OverlayFocusOwner {
 					text(
 						[
 							span(
-								outstanding ? "Pausing — waiting for work to settle" : "Paused — ready to suspend",
+								outstanding ? "正在暂停 — 等待工作稳定" : "已暂停 — 准备挂起",
 								outstanding ? "warning" : "success",
 							),
 						],
@@ -306,13 +306,13 @@ export class PauseScreenComponent implements Component, OverlayFocusOwner {
 				...(outstanding
 					? [
 							keyed(
-								text([span(`Unsettled turns: ${snapshot.unsettledTurns}`, "muted")], {
+								text([span(`未完成的回合：${snapshot.unsettledTurns}`, "muted")], {
 									role: "omp.pause.unsettled-turn-count",
 								}),
 								"unsettled-turns",
 							),
 							keyed(
-								text([span(`Unfinished jobs: ${snapshot.unfinishedJobs}`, "muted")], {
+								text([span(`未完成的任务：${snapshot.unfinishedJobs}`, "muted")], {
 									role: "omp.pause.unfinished-job-count",
 								}),
 								"unfinished-jobs",
@@ -340,7 +340,7 @@ export class PauseScreenComponent implements Component, OverlayFocusOwner {
 							"clock",
 						),
 						keyed(
-							text([span(this.host.sessionName ?? "Every agent in this session", "muted")], {
+							text([span(this.host.sessionName ?? "此会话中的每个智能体", "muted")], {
 								role: "omp.pause.session",
 								wrap: "none",
 								truncate: "end",
@@ -379,7 +379,7 @@ export class PauseScreenComponent implements Component, OverlayFocusOwner {
 				keyed(facts, "facts"),
 				actionBar([
 					null,
-					actionButton("Resume", "resume", {
+					actionButton("继续", "resume", {
 						keys: resumeKey,
 						tone: "accent",
 						// Each ` · ` clause ending in two spaces and a key is a keycap: `Resume [esc] · [⏎] · [space]`.
@@ -434,7 +434,7 @@ export async function runPauseScreen(host: PauseScreenHost, options?: PauseScree
 		overlay.hide();
 		const heldMs = agentPauseGate.resume();
 		if (heldMs !== undefined) {
-			host.showStatus(`Resumed after ${formatCoarseDuration(heldMs)} — agents are running again.`);
+			host.showStatus(`在 ${formatCoarseDuration(heldMs)} 后已恢复 — 代理已恢复运行。`);
 		}
 	}
 }

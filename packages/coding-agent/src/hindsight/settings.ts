@@ -21,8 +21,8 @@ export const cfgHindsightApiUrl = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight API URL",
-		description: "Hindsight server URL (Cloud or self-hosted)",
+		label: "后见之明 API URL",
+		description: "Hindsight 服务器 URL(云或自托管)",
 		condition: "hindsightActive",
 	},
 });
@@ -36,8 +36,8 @@ export const cfgHindsightApiToken = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight API Token",
-		description: "Bearer token for authenticated Hindsight servers",
+		label: "Hindsight API 令牌",
+		description: "用于需要认证的 Hindsight 服务器的 Bearer token",
 		condition: "hindsightActive",
 	},
 });
@@ -50,8 +50,8 @@ export const cfgHindsightBankId = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight Bank ID",
-		description: "Memory bank identifier (default: project name)",
+		label: "Hindsight 库 ID",
+		description: "记忆 bank 标识(默认:项目名)",
 		condition: "hindsightActive",
 	},
 });
@@ -67,25 +67,25 @@ export const cfgHindsightScoping = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight Scoping",
+		label: "Hindsight 作用域",
 		description:
-			"global = one shared bank; per-project = isolated bank per cwd; per-project-tagged = shared bank with project tags so global + project memories merge on recall",
+			"global = 一个共享 bank;per-project = 每个 cwd 一个隔离 bank;per-project-tagged = 带项目标签的共享 bank,使全局 + 项目记忆在回忆时合并",
 		options: [
 			{
 				value: "global",
-				label: "Global",
-				description: "One shared bank — every project sees the same memories",
+				label: "全局",
+				description: "一个共享 bank——所有项目看到相同的记忆",
 			},
 			{
 				value: "per-project",
-				label: "Per project",
-				description: "Isolated bank per cwd basename — projects cannot see each other's memories",
+				label: "按项目",
+				description: "每个 cwd 基名一个隔离 bank——项目之间看不到彼此的记忆",
 			},
 			{
 				value: "per-project-tagged",
-				label: "Per project (tagged)",
+				label: "按项目(带标签)",
 				description:
-					"Shared bank, retains tagged with project:<cwd>. Recall surfaces project + untagged global memories together",
+					"共享 bank,记忆以 project:<cwd> 标记。回忆时项目 + 未标记的全局记忆一起浮现",
 			},
 		],
 		condition: "hindsightActive",
@@ -113,8 +113,8 @@ export const cfgHindsightAutoRecall = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight Auto Recall",
-		description: "Recall memories on the first turn of each session",
+		label: "Hindsight 自动回忆",
+		description: "在每个会话的第一轮回忆记忆",
 		condition: "hindsightActive",
 	},
 });
@@ -127,8 +127,8 @@ export const cfgHindsightAutoRetain = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight Auto Retain",
-		description: "Retain transcript every N turns and at session boundaries",
+		label: "Hindsight 自动保留",
+		description: "每 N 轮及会话边界保留记录",
 		condition: "hindsightActive",
 	},
 });
@@ -142,15 +142,15 @@ export const cfgHindsightRetainMode = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight Retain Mode",
-		description: "full-session = upsert one document per session, last-turn = chunked",
+		label: "Hindsight 保留模式",
+		description: "full-session = 每个会话 upsert 一个文档,last-turn = 分块",
 		options: [
 			{
 				value: "full-session",
-				label: "Full session",
-				description: "Upsert one document per session (recommended)",
+				label: "完整会话",
+				description: "每个会话 upsert 一个文档(推荐)",
 			},
-			{ value: "last-turn", label: "Last turn", description: "Chunked retention sliced by turn boundaries" },
+			{ value: "last-turn", label: "最后一轮", description: "按轮次边界切分的分块保留" },
 		],
 		condition: "hindsightActive",
 	},
@@ -248,9 +248,9 @@ export const cfgHindsightMentalModelsEnabled = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight Mental Models",
+		label: "Hindsight 心智模型",
 		description:
-			"Read curated reflect summaries (mental models) into developer instructions at boot. Loads existing models on the bank — does not write. Pair with hindsight.mentalModelAutoSeed to also auto-create the built-in seed set.",
+			"启动时将精选的 reflect 摘要(心智模型)读入开发者指令。加载 bank 上已有的模型——不写入。配合 hindsight.mentalModelAutoSeed 可同时自动创建内置种子集。",
 		condition: "hindsightActive",
 	},
 });
@@ -262,9 +262,9 @@ export const cfgHindsightMentalModelAutoSeed = register({
 	ui: {
 		tab: "memory",
 		group: "Hindsight",
-		label: "Hindsight Mental Model Auto-Seed",
+		label: "Hindsight 心智模型自动播种",
 		description:
-			"At session start, create any built-in mental models (project-conventions, project-decisions, user-preferences) that do not yet exist on the bank.",
+			"会话开始时,创建 bank 上尚不存在的内置心智模型(project-conventions、project-decisions、user-preferences)。",
 		condition: "hindsightActive",
 	},
 });

@@ -18,22 +18,22 @@ export const cfgMemoryBackend = register({
 	ui: {
 		tab: "memory",
 		group: "General",
-		label: "Memory Backend",
-		description: "Off, local summary pipeline, Mnemopi SQLite, Hindsight remote memory, or Sharpshooter",
+		label: "记忆后端",
+		description: "关闭、本地摘要管线、Mnemopi SQLite、Hindsight 远程记忆或 Sharpshooter",
 		options: [
-			{ value: "off", label: "Off", description: "No memory subsystem runs" },
-			{ value: "local", label: "Local", description: "Local rollout summarisation pipeline (memory_summary.md)" },
-			{ value: "hindsight", label: "Hindsight", description: "Vectorize Hindsight remote memory service" },
+			{ value: "off", label: "关闭", description: "不运行任何记忆子系统" },
+			{ value: "local", label: "本地", description: "本地 rollout 总结流水线 (memory_summary.md)" },
+			{ value: "hindsight", label: "Hindsight 远程记忆", description: "Vectorize Hindsight 远程记忆服务" },
 			{
 				value: "mnemopi",
-				label: "Mnemopi",
-				description: "Local SQLite recall/retain backend with optional embeddings",
+				label: "Mnemopi 记忆后端",
+				description: "本地 SQLite recall/retain 后端，支持可选嵌入",
 			},
 			{
 				value: "sharpshooter",
-				label: "Sharpshooter",
+				label: "Sharpshooter 决策",
 				description:
-					"Friction-gated project decision files (architecture/product/style), consolidated in the background",
+					"受摩擦阈值控制的项目决策文件（architecture/product/style），在后台汇总",
 			},
 		],
 	},

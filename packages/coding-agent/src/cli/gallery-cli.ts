@@ -125,7 +125,7 @@ export interface GallerySection {
 }
 
 const GENERIC_ERROR: GalleryResult = {
-	content: [{ type: "text", text: "Error: operation failed" }],
+	content: [{ type: "text", text: "错误：操作失败" }],
 	isError: true,
 };
 
@@ -156,8 +156,8 @@ export function resolveFixture(name: string): GalleryFixture {
 	return (
 		galleryFixtures[name] ??
 		({
-			args: { note: `sample ${name} call` },
-			result: { content: [{ type: "text", text: `${name} completed` }] },
+			args: { note: `示例 ${name} 调用` },
+			result: { content: [{ type: "text", text: `${name} 已完成` }] },
 		} satisfies GalleryFixture)
 	);
 }
@@ -343,19 +343,22 @@ export async function runGalleryCommand(args: GalleryCommandArgs): Promise<void>
 	if (surfaces.includes("tool") && args.tool) {
 		const knownTools = Array.from(new Set([...Object.keys(toolRenderers), ...Object.keys(galleryFixtures)])).sort();
 		if (!knownTools.includes(args.tool)) {
-			process.stdout.write(`Unknown tool '${args.tool}'. Known tools: ${knownTools.join(", ")}\n`);
+			process.stdout.write(`未知工具 '${args.tool}'。已知工具：${knownTools.join(", ")}
+`);
 			return;
 		}
 	}
 	if (surfaces.includes("composer") && args.composer && !getComposerGalleryInventory().includes(args.composer)) {
 		process.stdout.write(
-			`Unknown composer '${args.composer}'. Known composers: ${getComposerGalleryInventory().join(", ")}\n`,
+			`未知 composer '${args.composer}'。已知 composer：${getComposerGalleryInventory().join(", ")}
+`,
 		);
 		return;
 	}
 	if (surfaces.includes("segment") && args.segment && !getSegmentGalleryInventory().some(id => id === args.segment)) {
 		process.stdout.write(
-			`Unknown segment '${args.segment}'. Known segments: ${getSegmentGalleryInventory().join(", ")}\n`,
+			`未知片段 '${args.segment}'。已知片段：${getSegmentGalleryInventory().join(", ")}
+`,
 		);
 		return;
 	}

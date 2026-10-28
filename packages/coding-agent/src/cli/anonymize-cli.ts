@@ -72,13 +72,17 @@ export async function runAnonymizeCommand(args: AnonymizeCommandArgs): Promise<v
 	for (const [name, content] of result.files) await Bun.write(path.join(outDir, name), content);
 
 	const count = result.files.length;
-	process.stdout.write(`Anonymized ${count} transcript${count === 1 ? "" : "s"} → ${outDir}\n`);
-	if (result.subagentError) process.stdout.write(`Subagent transcripts unavailable: ${result.subagentError}\n`);
+	process.stdout.write(`已匿名化 ${count} 份 transcript${count === 1 ? "" : ""} → ${outDir}
+`);
+	if (result.subagentError) process.stdout.write(`子代理 transcript 不可用：${result.subagentError}
+`);
 	for (const [member, skipped] of result.malformed) {
-		process.stdout.write(`Skipped ${skipped} malformed record${skipped === 1 ? "" : "s"} in ${member}\n`);
+		process.stdout.write(`已跳过 ${skipped} 条格式错误的 record${skipped === 1 ? "" : ""}，位于 ${member}
+`);
 	}
 	for (const member of result.unreadable)
-		process.stdout.write(`Not exported (no readable session header): ${member}\n`);
+		process.stdout.write(`未导出（没有可读的会话头）：${member}
+`);
 	process.stdout.write(`${ANONYMIZED_REVIEW_NOTE}\n`);
 }
 

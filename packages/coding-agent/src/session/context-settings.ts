@@ -16,9 +16,9 @@ export const cfgWorkspaceAdditionalDirectories = register({
 	ui: {
 		tab: "context",
 		group: "General",
-		label: "Additional Workspace Dirs",
+		label: "附加工作区目录",
 		description:
-			"Extra workspace directories added to every session as additional roots (multi-root workspace). Managed live via /add-dir and /remove-dir. Paths resolve relative to cwd; absolute paths recommended. The agent is told these roots exist and can read/grep/glob them.",
+			"将额外工作区目录作为附加根目录添加到每个会话（多根工作区）。通过 /add-dir 和 /remove-dir. 实时管理。路径相对于 cwd 解析；建议使用绝对路径。代理会被告知这些根目录存在，并可对它们执行 read/grep/glob。",
 	},
 });
 
@@ -52,10 +52,10 @@ export const cfgContextFilesExtra = register({
 	ui: {
 		tab: "context",
 		group: "General",
-		label: "Extra Context Files",
+		label: "额外上下文文件",
 		editor: "json",
 		description:
-			'Extra instruction filenames loaded beside AGENTS.md. Use a JSON list of names, not paths, e.g. ["AGENTS.local.md"]; [] disables extras. Start a new session to load them.',
+			"与 AGENTS.md 一同加载的额外指令文件名。请使用 JSON 名称列表（而非路径），e.g [\"AGENTS.local.md\"]；[] 会禁用额外项。启动新会话以加载它们。",
 		condition: "contextFilesExtraNotProject",
 	},
 	validate: raw => {
@@ -80,9 +80,9 @@ export const cfgContextPromotionEnabled = register({
 	ui: {
 		tab: "context",
 		group: "General",
-		label: "Auto-Promote Context",
+		label: "自动提升上下文",
 		description:
-			"Promote to the model's contextPromotionTarget on context overflow instead of compacting. Retry fallback switches are controlled by Retry Model Fallback",
+			"上下文溢出时提升到模型的 contextPromotionTarget，而不是进行压缩。重试回退切换由 Retry Model Fallback 控制。",
 	},
 });
 
@@ -96,9 +96,9 @@ export const cfgExtendedContext = register({
 	ui: {
 		tab: "context",
 		group: "General",
-		label: "Extended Context",
+		label: "扩展上下文",
 		description:
-			"Use larger context windows where supported; may incur premium pricing. Off keeps default or standard-pricing windows",
+			"在支持的模型上使用更大的上下文窗口，可能产生溢价费用；关闭则保持默认或按标准计价收费的窗口",
 	},
 });
 
@@ -110,8 +110,8 @@ export const cfgCompactionEnabled = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Auto-Compact",
-		description: "Automatically compact context when it gets too large",
+		label: "自动压缩",
+		description: "上下文过大时自动压缩",
 	},
 });
 
@@ -122,8 +122,8 @@ export const cfgCompactionExperimentalContextManagement = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Notes-backed context windows (experimental)",
-		description: "Keep persistent notes and searchable raw history across context windows.",
+		label: "基于笔记的上下文窗口（实验性）",
+		description: "跨上下文窗口保留持久笔记和可搜索的原始历史记录。",
 	},
 });
 
@@ -134,9 +134,9 @@ export const cfgCompactionMidTurnEnabled = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Mid-Turn Compaction",
+		label: "轮中压缩",
 		description:
-			"Check thresholds at safe mid-turn tool-loop boundaries before the next provider request; subagents always check, since their whole assignment is one turn",
+			"在发起下一次提供商请求前，在轮次中途的安全工具循环边界处检查阈值；子代理始终会检查，因为它们的整个任务就是一轮",
 	},
 });
 
@@ -147,9 +147,9 @@ export const cfgCompactionMethodOrder = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Compaction Method Order",
+		label: "压缩方式顺序",
 		description:
-			"Preferred fallback order for automatic context maintenance; unavailable or failed methods advance to the next choice",
+			"自动上下文维护的首选回退顺序；不可用或失败的方法会进入下一选择",
 		options: COMPACTION_METHOD_CHOICES,
 		ordered: true,
 	},
@@ -162,22 +162,22 @@ export const cfgCompactionThresholdPercent = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Compaction Threshold",
-		description: "Percent threshold for context maintenance; set to Default to use legacy reserve-based behavior",
+		label: "压缩阈值",
+		description: "上下文维护的百分比阈值;设为默认以使用旧的基于预留的行为",
 		options: [
-			{ value: "default", label: "Default", description: "Legacy reserve-based threshold" },
-			{ value: "10", label: "10%", description: "Extremely early maintenance" },
-			{ value: "20", label: "20%", description: "Very early maintenance" },
-			{ value: "30", label: "30%", description: "Early maintenance" },
-			{ value: "40", label: "40%", description: "Moderately early maintenance" },
-			{ value: "50", label: "50%", description: "Halfway point" },
-			{ value: "60", label: "60%", description: "Moderate context usage" },
-			{ value: "70", label: "70%", description: "Balanced" },
-			{ value: "75", label: "75%", description: "Slightly aggressive" },
-			{ value: "80", label: "80%", description: "Typical threshold" },
-			{ value: "85", label: "85%", description: "Aggressive context usage" },
-			{ value: "90", label: "90%", description: "Very aggressive" },
-			{ value: "95", label: "95%", description: "Near context limit" },
+			{ value: "default", label: "默认", description: "旧的基于预留的阈值" },
+			{ value: "10", label: "10%", description: "极早维护" },
+			{ value: "20", label: "20%", description: "很早维护" },
+			{ value: "30", label: "30%", description: "较早维护" },
+			{ value: "40", label: "40%", description: "中等偏早维护" },
+			{ value: "50", label: "50%", description: "中点" },
+			{ value: "60", label: "60%", description: "中等上下文占用" },
+			{ value: "70", label: "70%", description: "均衡" },
+			{ value: "75", label: "75%", description: "略激进" },
+			{ value: "80", label: "80%", description: "典型阈值" },
+			{ value: "85", label: "85%", description: "激进的上下文占用" },
+			{ value: "90", label: "90%", description: "非常激进" },
+			{ value: "95", label: "95%", description: "接近上下文上限" },
 		],
 	},
 });
@@ -189,17 +189,17 @@ export const cfgCompactionThresholdTokens = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Compaction Token Limit",
-		description: "Fixed token limit for context maintenance; overrides percentage if set",
+		label: "压缩 Token 上限",
+		description: "上下文维护的固定 token 上限;设置后覆盖百分比",
 		options: [
-			{ value: "default", label: "Default", description: "Use percentage-based threshold" },
-			{ value: "25000", label: "25K tokens", description: "1/8 of a 200K window" },
-			{ value: "50000", label: "50K tokens", description: "1/4 of a 200K window" },
-			{ value: "100000", label: "100K tokens", description: "1/2 of a 200K window" },
-			{ value: "150000", label: "150K tokens", description: "3/4 of a 200K window" },
-			{ value: "200000", label: "200K tokens", description: "Full standard context window" },
-			{ value: "300000", label: "300K tokens", description: "Large context window" },
-			{ value: "500000", label: "500K tokens", description: "Very large context window" },
+			{ value: "default", label: "默认", description: "使用基于百分比的阈值" },
+			{ value: "25000", label: "25K 个 token", description: "200K 窗口的 1/8" },
+			{ value: "50000", label: "50K 个 token", description: "200K 窗口的 1/4" },
+			{ value: "100000", label: "100K 个 token", description: "200K 窗口的 1/2" },
+			{ value: "150000", label: "15 万 tokens", description: "200K 窗口的 3/4" },
+			{ value: "200000", label: "20 万 tokens", description: "完整标准上下文窗口" },
+			{ value: "300000", label: "30 万 tokens", description: "大上下文窗口" },
+			{ value: "500000", label: "50 万 tokens", description: "超大上下文窗口" },
 		],
 	},
 });
@@ -239,8 +239,8 @@ export const cfgCompactionHandoffSaveToDisk = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Save Handoff Docs",
-		description: "Save generated handoff documents to markdown files for the auto-handoff flow",
+		label: "保存交接文档",
+		description: "为自动交接流程将生成的交接文档保存为 markdown 文件",
 	},
 });
 
@@ -251,8 +251,8 @@ export const cfgCompactionRemoteStreamingV2Enabled = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Remote Compaction V2",
-		description: "Use Responses streaming compaction for compatible remote compaction models",
+		label: "远程压缩 V2",
+		description: "对兼容的远程压缩模型使用 Responses 流式压缩",
 	},
 });
 
@@ -263,9 +263,9 @@ export const cfgCompactionAsyncEnabled = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Async Compaction",
+		label: "异步压缩",
 		description:
-			"Speculatively summarize in the background as context nears the compaction threshold, then splice the ready result in when the threshold is crossed",
+			"当上下文接近压缩阈值时，在后台预先进行摘要，待跨越阈值时即插入已就绪的结果",
 	},
 });
 
@@ -307,8 +307,8 @@ export const cfgCompactionIdleEnabled = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Idle Compaction",
-		description: "Compact context while idle when token count exceeds threshold",
+		label: "空闲压缩",
+		description: "空闲时,当 token 数超过阈值则压缩上下文",
 	},
 });
 
@@ -319,18 +319,18 @@ export const cfgCompactionIdleThresholdTokens = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Idle Compaction Threshold",
-		description: "Token count above which idle compaction triggers",
+		label: "空闲压缩阈值",
+		description: "触发空闲压缩的 token 数",
 		options: [
-			{ value: "100000", label: "100K tokens" },
-			{ value: "200000", label: "200K tokens" },
-			{ value: "300000", label: "300K tokens" },
-			{ value: "400000", label: "400K tokens" },
-			{ value: "500000", label: "500K tokens" },
-			{ value: "600000", label: "600K tokens" },
-			{ value: "700000", label: "700K tokens" },
-			{ value: "800000", label: "800K tokens" },
-			{ value: "900000", label: "900K tokens" },
+			{ value: "100000", label: "100K 个 token" },
+			{ value: "200000", label: "20 万 tokens" },
+			{ value: "300000", label: "30 万 tokens" },
+			{ value: "400000", label: "40 万 tokens" },
+			{ value: "500000", label: "50 万 tokens" },
+			{ value: "600000", label: "60 万 tokens" },
+			{ value: "700000", label: "70 万 tokens" },
+			{ value: "800000", label: "80 万 tokens" },
+			{ value: "900000", label: "90 万 tokens" },
 		],
 	},
 });
@@ -342,16 +342,16 @@ export const cfgCompactionIdleTimeoutSeconds = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Idle Compaction Delay",
+		label: "空闲压缩延迟",
 		description:
-			"Seconds to wait while idle before compacting; with a 1-hour prompt cache, compaction instead runs just before the cache expires",
+			"空闲等待多少秒后执行压缩；使用 1 小时提示缓存时，压缩会在缓存即将过期前运行",
 		options: [
-			{ value: "60", label: "1 minute" },
-			{ value: "120", label: "2 minutes" },
-			{ value: "300", label: "5 minutes" },
-			{ value: "600", label: "10 minutes" },
-			{ value: "1800", label: "30 minutes" },
-			{ value: "3600", label: "1 hour" },
+			{ value: "60", label: "1 分钟" },
+			{ value: "120", label: "2 分钟" },
+			{ value: "300", label: "5 分钟" },
+			{ value: "600", label: "10 分钟" },
+			{ value: "1800", label: "30 分钟" },
+			{ value: "3600", label: "1 小时" },
 		],
 	},
 });
@@ -363,8 +363,8 @@ export const cfgCompactionSupersedeReads = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Supersede Stale Reads",
-		description: "Prune older read results when the same file is read again (cache-aware, runs every turn)",
+		label: "取代过期读取",
+		description: "再次读取同一文件时清理较旧的读取结果(缓存感知,每轮运行)",
 	},
 });
 
@@ -375,9 +375,9 @@ export const cfgCompactionDropUseless = register({
 	ui: {
 		tab: "context",
 		group: "Compaction",
-		label: "Elide Uneventful Results",
+		label: "省略无事件结果",
 		description:
-			"Prune tool results flagged contextually useless (no matches, timed-out waits) once consumed (cache-aware)",
+			"消费后清理被标记为上下文无用的工具结果(无匹配、等待超时)(缓存感知)",
 	},
 });
 
@@ -420,20 +420,20 @@ export const cfgSnapcompactSystemPrompt = register({
 	ui: {
 		tab: "context",
 		group: "Experimental",
-		label: "Snapcompact System Prompt",
+		label: "Snapcompact 系统提示",
 		description:
-			"Experimental: render selected system prompt text as dense PNG image(s) and attach to the first user message (vision models only). Saves tokens; loses prompt caching for imaged text.",
+			"实验性:将选定的系统提示文本渲染为密集 PNG 图片,并附加到第一条用户消息(仅限视觉模型)。节省 tokens;但被成像的文本会失去 prompt 缓存。",
 		options: [
-			{ value: "none", label: "None", description: "Keep the system prompt as text." },
+			{ value: "none", label: "无", description: "保持系统提示为文本。" },
 			{
 				value: "agents-md",
-				label: "AGENTS.md",
-				description: "Only move loaded context-file instructions to images, when that saves tokens.",
+				label: "AGENTS.md 文件",
+				description: "仅在节省 tokens 时,将已加载的上下文文件指令移动到图片。",
 			},
 			{
 				value: "all",
-				label: "All",
-				description: "Move the full system prompt to images, when that saves tokens.",
+				label: "全部",
+				description: "仅在节省 tokens 时,将完整系统提示移动到图片。",
 			},
 		],
 	},
@@ -446,9 +446,9 @@ export const cfgSnapcompactToolResults = register({
 	ui: {
 		tab: "context",
 		group: "Experimental",
-		label: "Snapcompact Tool Results",
+		label: "Snapcompact 工具结果",
 		description:
-			"Experimental: render large tool results, the newest one included, as dense PNG image(s) instead of text (vision models only). Saves tokens on accumulated search and command output; read results stay text unless the model is known to edit exactly from images.",
+			"实验性：将大型工具结果（包括最新结果）渲染为高密度 PNG 图像而非文本（仅限视觉模型）。可节省累积搜索和命令输出消耗的 token；读取结果仍为文本，除非已知该模型能严格依据图像进行编辑。",
 	},
 });
 
@@ -474,27 +474,27 @@ export const cfgToolsFormat = register({
 	ui: {
 		tab: "context",
 		group: "Experimental",
-		label: "Tool Calling Mode",
+		label: "工具调用模式",
 		description:
-			"Controls how tools are exposed to the model. Auto uses provider-native tool calls unless the selected model is marked as not supporting them, then falls back to the GLM owned dialect. Native forces provider-native tools; the other values force the named owned dialect.",
+			"控制工具向模型呈现的方式。自动模式会使用提供商原生工具调用；若所选模型被标记为不支持，则回退到 GLM 自有方言。原生模式强制使用提供商原生工具；其他值强制使用指定的自有方言。",
 		options: [
 			{
 				value: "auto",
-				label: "Auto",
-				description: "Use native tool calls unless the model is known not to support them.",
+				label: "自动",
+				description: "除非已知模型不支持,否则使用原生工具调用。",
 			},
-			{ value: "native", label: "Native", description: "Use provider-native tool calls." },
-			{ value: "glm", label: "GLM", description: "Use GLM-style in-band tool calls." },
-			{ value: "hermes", label: "Hermes", description: "Use Hermes-style in-band tool calls." },
-			{ value: "kimi", label: "Kimi", description: "Use Kimi-style in-band tool calls." },
-			{ value: "xml", label: "XML", description: "Use generic XML in-band tool calls." },
-			{ value: "anthropic", label: "Anthropic", description: "Use Anthropic-style in-band tool calls." },
-			{ value: "deepseek", label: "DeepSeek", description: "Use DeepSeek-style in-band tool calls." },
-			{ value: "harmony", label: "Harmony", description: "Use Harmony-style in-band tool calls." },
-			{ value: "qwen3", label: "Qwen3", description: "Use the Qwen3 owned dialect." },
-			{ value: "gemini", label: "Gemini", description: "Use the Gemini owned dialect." },
-			{ value: "gemma", label: "Gemma", description: "Use the Gemma owned dialect." },
-			{ value: "minimax", label: "MiniMax", description: "Use the MiniMax owned dialect." },
+			{ value: "native", label: "原生", description: "使用提供商原生工具调用。" },
+			{ value: "glm", label: "GLM", description: "使用 GLM 风格带内工具调用。" },
+			{ value: "hermes", label: "Hermes 风格", description: "使用 Hermes 风格带内工具调用。" },
+			{ value: "kimi", label: "Kimi 风格", description: "使用 Kimi 风格带内工具调用。" },
+			{ value: "xml", label: "XML", description: "使用通用 XML 带内工具调用。" },
+			{ value: "anthropic", label: "Anthropic", description: "使用 Anthropic 风格带内工具调用。" },
+			{ value: "deepseek", label: "DeepSeek 风格", description: "使用 DeepSeek 风格带内工具调用。" },
+			{ value: "harmony", label: "Harmony 风格", description: "使用 Harmony 风格带内工具调用。" },
+			{ value: "qwen3", label: "Qwen3 方言", description: "使用 Qwen3 自有方言。" },
+			{ value: "gemini", label: "Gemini", description: "使用 Gemini 自有方言。" },
+			{ value: "gemma", label: "Gemma 方言", description: "使用 Gemma 自有方言。" },
+			{ value: "minimax", label: "MiniMax 提供商", description: "使用 MiniMax 自有方言。" },
 		],
 	},
 });
@@ -507,102 +507,102 @@ export const cfgSnapcompactShape = register({
 	ui: {
 		tab: "context",
 		group: "Experimental",
-		label: "Snapcompact Shape",
+		label: "Snapcompact 形状",
 		description:
-			"Frame shape snapcompact prints text with (compaction archive and inline imaging). Auto picks a shape tuned for the current model.",
+			"snapcompact 打印文本所用的帧形状(压缩归档和内联成像)。Auto 会挑选针对当前模型调优的形状。",
 		options: [
 			{
 				value: "auto",
-				label: "Auto",
-				description: "Picks a shape tuned for the current model, falling back to its provider family.",
+				label: "自动",
+				description: "挑选针对当前模型调优的形状,否则回退到其提供商家族。",
 			},
 			{
 				value: "8x8r-bw",
-				label: "8x8 repeated, black",
+				label: "8x8 重复,黑色",
 				description:
-					"unscii square cell, black ink, every line printed twice with the copy on a pale highlight band.",
+					"unscii 方形单元,黑色墨迹,每行打印两次,副本位于浅色高亮带上。",
 			},
 			{
 				value: "8x8r-sent",
-				label: "8x8 repeated, sentence hues",
-				description: "Repeated grid with ink cycling six hues at sentence boundaries.",
+				label: "8x8 重复,句子色",
+				description: "重复网格,墨迹在句子边界循环六种色调。",
 			},
 			{
 				value: "8x8u-bw",
-				label: "8x8, black",
-				description: "Plain unscii square cell, single-printed lines, black ink.",
+				label: "8x8,黑色",
+				description: "普通 unscii 方形单元,单次打印行,黑色墨迹。",
 			},
 			{
 				value: "8x8u-sent",
-				label: "8x8, sentence hues",
-				description: "Plain unscii square cell with sentence-hue ink.",
+				label: "8x8,句子色",
+				description: "普通 unscii 方形单元,句子色调墨迹。",
 			},
 			{
 				value: "6x6u-bw",
-				label: "6x6 dense, black",
-				description: "unscii squeezed to 6x6 — densest readable cell, fewest frames — in black ink.",
+				label: "6x6 密集,黑色",
+				description: "unscii 压缩到 6x6——最密集的可读单元,帧数最少——黑色墨迹。",
 			},
 			{
 				value: "6x6u-sent",
-				label: "6x6 dense, sentence hues",
-				description: "Densest cell with sentence-hue ink.",
+				label: "6x6 密集,句子色",
+				description: "最密集的单元,句子色调墨迹。",
 			},
 			{
 				value: "5x8-bw",
-				label: "5x8 legacy, black",
-				description: "Original X.org 5x8 glyphs on the 2576px frame, black ink.",
+				label: "5x8 传统,黑色",
+				description: "2576px 帧上的原始 X.org 5x8 字形,黑色墨迹。",
 			},
 			{
 				value: "5x8-sent",
-				label: "5x8 legacy, sentence hues",
-				description: "The original snapcompact shape (pre-shape-table sessions rendered this).",
+				label: "5x8 传统,句子色",
+				description: "原始 snapcompact 形状(shape 表之前的会话以此渲染)。",
 			},
 			{
 				value: "6x12-dim",
-				label: "6x12, dimmed stopwords",
-				description: "X.org 6x12 glyphs, black ink, function words dimmed gray.",
+				label: "6x12,弱化虚词",
+				description: "X.org 6x12 字形,黑色墨迹,功能词弱化为灰色。",
 			},
 			{
 				value: "8x13-bw",
-				label: "8x13, black",
-				description: "X.org 8x13 glyphs, black ink.",
+				label: "8x13,黑色",
+				description: "X.org 8x13 字形,黑色墨迹。",
 			},
 			{
 				value: "8on16-bw",
-				label: "8x13 on 16px pitch, black",
-				description: "8x13 glyphs on an 8x16 cell (extra leading), black ink.",
+				label: "8x13 / 16px 间距,黑色",
+				description: "8x16 单元上的 8x13 字形(额外行距),黑色墨迹。",
 			},
 			{
 				value: "8on22-bw",
-				label: "8x13 on 22px pitch (leading), black",
+				label: "8x13 / 22px 行距,黑色",
 				description:
-					"8x13 glyphs on an 8x22 cell — extra line spacing so rows don't crowd. Default for OpenAI/Google.",
+					"8x13 字形配 8x22 单元格——增加行间距以避免行与行拥挤。OpenAI/Google. 的默认设置",
 			},
 			{
 				value: "11on16-bw",
-				label: "8x13 on 11px advance (tracking), black",
+				label: "8x13 / 11px 字距,黑色",
 				description:
-					"8x13 glyphs on an 11x16 cell — extra letter spacing so characters don't merge. Default for Anthropic.",
+					"11x16 单元上的 8x13 字形——额外的字间距,避免字符粘连。Anthropic 的默认值。",
 			},
 			{
 				value: "silver16-bw",
-				label: "Silver 16, CJK",
-				description: "Embedded Silver TrueType font on a 16px grid for CJK and other non-Latin text.",
+				label: "Silver 16 版，CJK",
+				description: "16px 网格上的内嵌 Silver TrueType 字体,用于 CJK 和其他非拉丁文本。",
 			},
 			{
 				value: "doc-8on16-bw",
-				label: "Doc 8on16, black",
-				description: "Two word-wrapped newspaper columns of 8x13 glyphs on a 16px pitch, black ink.",
+				label: "文档 8on16,黑色",
+				description: "16px 间距上的两栏自动换行报纸式 8x13 字形,黑色墨迹。",
 			},
 			{
 				value: "doc-8on16-sent",
-				label: "Doc 8on16, sentence hues",
-				description: "Two-column doc layout with sentence-hue ink.",
+				label: "文档 8on16,句子色",
+				description: "双栏文档布局,句子色调墨迹。",
 			},
 			{
 				value: "doc-8on16-sent-dim",
-				label: "Doc 8on16, sentence hues + dimmed stopwords",
-				description: "Two-column doc layout, sentence-hue ink, function words dimmed gray.",
+				label: "文档 8on16,句子色 + 弱化虚词",
+				description: "双栏文档布局,句子色调墨迹,功能词弱化为灰色。",
 			},
 		],
 	},
@@ -616,8 +616,8 @@ export const cfgBranchSummaryEnabled = register({
 	ui: {
 		tab: "context",
 		group: "General",
-		label: "Branch Summaries",
-		description: "Prompt to summarize when leaving a branch",
+		label: "分支摘要",
+		description: "离开分支时提示生成摘要",
 	},
 });
 

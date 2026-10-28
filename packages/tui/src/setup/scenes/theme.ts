@@ -96,34 +96,34 @@ function renderThemePreview(width: number): string[] {
 function describeThemePreview(): NativeNode {
 	return col(
 		[
-			text([span("Preview", "strong")]),
+			text([span("预览", "strong")]),
 			text([
-				span(`${theme.status.success} success`, "success"),
+				span(`${theme.status.success} 成功`, "success"),
 				span("  "),
-				span(`${theme.status.warning} warning`, "warning"),
+				span(`${theme.status.warning} 警告`, "warning"),
 				span("  "),
-				span(`${theme.status.error} error`, "error"),
+				span(`${theme.status.error} 错误`, "error"),
 				span("  "),
-				span("accent", "accent"),
+				span("强调色", "accent"),
 			]),
-			text([span("Status line", "muted")]),
+			text([span("状态栏", "muted")]),
 			node("status", {}, [
-				node("seg", { spans: [span(`${theme.icon.model} sonnet`, "statusLineModel")], side: "left" }),
+				node("seg", { spans: [span(`${theme.icon.model} sonnet 模型`, "statusLineModel")], side: "left" }),
 				node("seg", { spans: [span("~/project", "statusLinePath")], side: "left" }),
-				node("seg", { spans: [span(`${theme.icon.git} main +2`, "statusLineGitDirty")], side: "left" }),
+				node("seg", { spans: [span(`${theme.icon.git} main +2 分支`, "statusLineGitDirty")], side: "left" }),
 				node("seg", { spans: [span(`${theme.icon.context} 42%`, "statusLineContext")], side: "right" }),
 				node("seg", { spans: [span(`${theme.icon.cost} 0.18`, "statusLineCost")], side: "right" }),
 			]),
-			text([span("Editor", "muted")]),
+			text([span("编辑器", "muted")]),
 			node("input", {
-				text: "Ask anything, edit files, run tools",
+				text: "问任何问题，编辑文件，运行工具",
 				cursor: "Ask anything, edit files, run tools".length,
 				prompt: [span(">", "accent")],
 				readonly: true,
 			}),
 			text([
 				span(
-					`${editorKey("tui.input.submit")} send · ${editorKey("tui.input.newLine")} newline · / commands`,
+					`${editorKey("tui.input.submit")} 发送 · ${editorKey("tui.input.newLine")} 换行 · / 命令`,
 					"dim",
 				),
 			]),
@@ -257,19 +257,19 @@ class ThemeSceneController implements SetupSceneController {
 			() => {
 				const children: NativeChild[] = [
 					col([
-						text([span(`Theme changes preview live. Nothing is saved until you press ${confirm}.`, "muted")]),
+						text([span(`主题更改实时预览。按下 ${confirm} 之前不会保存任何内容。`, "muted")]),
 						text([
 							span(
 								this.#mode === "all"
-									? `Browsing all themes · ${cancel} returns to curated choices`
-									: `${cancel} skips this step`,
+									? `浏览全部主题 · ${cancel} 返回精选主题`
+									: `${cancel} 跳过此步骤`,
 								"dim",
 							),
 						]),
 					]),
 					describeThemePreview(),
 					this.#loadingAllThemes
-						? node("spinner", { label: [span("Loading themes…", "dim")] }, undefined, "loading")
+						? node("spinner", { label: [span("正在加载主题…", "dim")] }, undefined, "loading")
 						: this.#selectList,
 				];
 				if (this.#message)

@@ -114,7 +114,7 @@ export async function resolveLocalReviewTarget(
 		case "base-branch": {
 			const branches = await listGitBranches(cwd);
 			if (branches.length === 0) {
-				ui.notify("No git branches found", "error");
+				ui.notify("未找到 git 分支", "error");
 				return undefined;
 			}
 			const baseBranch = await ui.select("Select base branch to compare against", branches);
@@ -129,12 +129,12 @@ export async function resolveLocalReviewTarget(
 				if (!mergeBase) {
 					// No common ancestor: `git diff base...head` aborts here
 					// rather than comparing unrelated trees tip-to-tip.
-					ui.notify(`No common history between ${baseBranch} and ${currentBranch}`, "error");
+					ui.notify(`${baseBranch} 与 ${currentBranch} 之间没有共同历史`, "error");
 					return undefined;
 				}
 				diffText = await repository.diffText({ base: mergeBase, head: currentBranch });
 			} catch (error) {
-				ui.notify(`Failed to get diff: ${errorMessage(error)}`, "error");
+				ui.notify(`获取差异失败：${errorMessage(error)}`, "error");
 				return undefined;
 			}
 			return createResolvedReviewTarget(
@@ -148,13 +148,13 @@ export async function resolveLocalReviewTarget(
 			try {
 				return await readUncommittedReviewTarget(cwd);
 			} catch (error) {
-				ui.notify(`Failed to get diff: ${errorMessage(error)}`, "error");
+				ui.notify(`获取差异失败：${errorMessage(error)}`, "error");
 				return undefined;
 			}
 		case "commit": {
 			const commits = await recentCommits(cwd, 20);
 			if (commits.length === 0) {
-				ui.notify("No commits found", "error");
+				ui.notify("未找到提交", "error");
 				return undefined;
 			}
 			const selectedCommit = await ui.select("Select commit to review", commits);
@@ -164,7 +164,7 @@ export async function resolveLocalReviewTarget(
 			try {
 				diffText = (await vcs.requireGit(cwd).showCommit(hash)).data.toString("utf8");
 			} catch (error) {
-				ui.notify(`Failed to get commit: ${errorMessage(error)}`, "error");
+				ui.notify(`获取提交失败：${errorMessage(error)}`, "error");
 				return undefined;
 			}
 			return createResolvedReviewTarget(

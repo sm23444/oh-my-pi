@@ -97,7 +97,7 @@ function formatHeader(options: CodeCellOptions, theme: Theme): { title: string; 
 	if (title) {
 		parts.push(theme.fg("toolTitle", title));
 	}
-	const headerTitle = parts.length > 0 ? parts.join(" ") : theme.fg("toolTitle", "Code");
+	const headerTitle = parts.length > 0 ? parts.join(" ") : theme.fg("toolTitle", "代码");
 
 	const metaParts: string[] = [];
 	if (duration !== undefined) {
@@ -202,7 +202,7 @@ export function renderCodeCell(options: CodeCellOptions, theme: Theme): string[]
 
 	const sections: Array<{ label?: string; lines: readonly string[] }> = [{ lines: displayCodeLines }];
 	if (outputLines.length > 0) {
-		sections.push({ label: theme.fg("toolTitle", "Output"), lines: outputLines });
+		sections.push({ label: theme.fg("toolTitle", "输出"), lines: outputLines });
 	}
 
 	return renderOutputBlock({ header: title, headerMeta: meta, state, sections, width }, theme);
@@ -225,7 +225,7 @@ function describeHeader(options: CellHeaderOptions, theme: Theme): { head: TspSp
 		push([span(`[${options.index + 1}/${options.total}]`, "accent")]);
 	}
 	if (options.title) push([span(options.title, "toolTitle")]);
-	if (head.length === 0) head.push(span("Code", "toolTitle"));
+	if (head.length === 0) head.push(span("代码", "toolTitle"));
 	return {
 		head,
 		meta: options.duration === undefined ? undefined : [span(formatDuration(options.duration), "dim")],
@@ -239,7 +239,7 @@ function describeCellOutput(
 ): NativeOutputBlockSection | undefined {
 	if (!output?.trim()) return undefined;
 	return {
-		label: [span("Output", "toolTitle")],
+		label: [span("输出", "toolTitle")],
 		key: "output",
 		body: [describeOutputLines(splitTerminalOutputLines(output), { expanded, collapsedMaxLines: outputMaxLines })],
 	};
@@ -351,7 +351,7 @@ export function renderMarkdownCell(options: MarkdownCellOptions, theme: Theme): 
 
 	const sections: Array<{ label?: string; lines: readonly string[] }> = [{ lines: contentLines }];
 	if (outputLines.length > 0) {
-		sections.push({ label: theme.fg("toolTitle", "Output"), lines: outputLines });
+		sections.push({ label: theme.fg("toolTitle", "输出"), lines: outputLines });
 	}
 
 	return renderOutputBlock({ header: title, headerMeta: meta, state, sections, width }, theme);

@@ -89,10 +89,10 @@ const MIN_VISIBLE = 5;
 /** Fraction of the terminal height the floating overlay occupies. */
 const HEIGHT_FRACTION = 0.4;
 
-const STATUS_HINT = "Session-only switch — role models stay unchanged";
-const QUICK_ROLE_STATUS_HINT = "Quick role switch — applies its model and thinking for this session";
-const TASK_STATUS_HINT = "Task subagent switch — spawned task agents use this model (session-only)";
-const SELECT_ONLY_STATUS_HINT = "Selection only — does not change the session model";
+const STATUS_HINT = "仅会话内切换 — 角色模型保持不变";
+const QUICK_ROLE_STATUS_HINT = "快速角色切换 — 本次会话中应用其模型和思考方式";
+const TASK_STATUS_HINT = "任务子代理切换 — 生成的任务代理使用此模型（仅会话）";
+const SELECT_ONLY_STATUS_HINT = "仅选择 — 不更改会话模型";
 
 /** Footer hint for the active mode; keys resolve at render time so theme/keybinding changes apply. */
 function footerHint(mode: "session" | "role" | "task" | "selection"): string {
@@ -420,7 +420,7 @@ export class ModelPickerComponent implements Component {
 				title: mode === "task" ? "切换任务模型" : mode === "selection" ? "选择模型" : "切换模型",
 				subtitle,
 				icon: "cpu",
-				noun: mode === "role" ? "roles" : "models",
+				noun: mode === "role" ? "角色" : "模型",
 				size: "md",
 				layout: "rows",
 				preview: "below",
@@ -503,7 +503,7 @@ export class ModelPickerComponent implements Component {
 		const node = card(
 			{
 				role: "omp.overlay.model-picker",
-				head: mode === "task" ? "Switch Task Model" : mode === "selection" ? "Select Model" : "Switch Model",
+				head: mode === "task" ? "切换任务模型" : mode === "selection" ? "选择模型" : "切换模型",
 				tone: this.#taskMode ? "error" : undefined,
 			},
 			[text([status], { wrap: "word" }), this.#browser, hintsRow(hints)],

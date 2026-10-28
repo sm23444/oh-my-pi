@@ -1185,7 +1185,7 @@ export class UiHelpers {
 			}
 			if (compactionCount > 0) {
 				const times = compactionCount === 1 ? "1 time" : `${compactionCount} times`;
-				this.ctx.showStatus(`Session compacted ${times}`);
+				this.ctx.showStatus(`会话已压缩 ${times}`);
 			}
 			if (options.clearTerminalHistory) {
 				this.ctx.ui.requestRender(true, { clearScrollback: true });
@@ -1229,7 +1229,7 @@ export class UiHelpers {
 	showNewVersionNotification(newVersion: string): void {
 		const block = new TranscriptBlock();
 		block.addChild(new DynamicBorder(text => theme.fg("warning", text)));
-		const title = "Update Available";
+		const title = "更新可用";
 		const prefix = `New version ${newVersion} is available. Run: `;
 		const command = "omp update";
 		block.addChild(
@@ -1280,7 +1280,7 @@ export class UiHelpers {
 		else this.ctx.editor.clearDraft(text);
 		this.ctx.updatePendingMessagesDisplay();
 		this.ctx.showStatus(
-			queuedImages ? "Queued message with image for after compaction" : "Queued message for after compaction",
+			queuedImages ? "已排队带图片的消息，压缩后发送" : "已排队消息，压缩后发送",
 		);
 	}
 
@@ -1393,7 +1393,7 @@ export class UiHelpers {
 		const reportFailure = (count: number, error: unknown) => {
 			this.ctx.updatePendingMessagesDisplay();
 			this.ctx.showError(
-				`未能发送排队的消息${count > 1 ? "s" : ""}：${
+				`未能发送排队的消息${count > 1 ? "" : ""}：${
 					error instanceof Error ? error.message : String(error)
 				}`,
 			);

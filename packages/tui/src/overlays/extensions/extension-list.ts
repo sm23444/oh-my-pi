@@ -241,7 +241,7 @@ export class ExtensionList implements Component {
 			const [field = ""] = this.#search.render(Math.min(fieldWidth, visibleWidth(query) + 1));
 			lines.push(searchPrefix + field);
 		} else {
-			lines.push(searchPrefix + (query || theme.fg("dim", "键入以筛选")));
+			lines.push(searchPrefix + (query || theme.fg("dim", "输入以筛选")));
 		}
 		lines.push("");
 
@@ -452,7 +452,7 @@ export class ExtensionList implements Component {
 				label: `启用 ${sanitizeDisplayLine(entry.providerName)}`,
 				icon: "power",
 				dot: entry.enabled ? "success" : "muted",
-				badges: [{ text: "Master Switch", tone: "warning" }],
+				badges: [{ text: "总开关", tone: "warning" }],
 				tone: entry.enabled ? undefined : "muted",
 			};
 		}
@@ -491,7 +491,7 @@ export class ExtensionList implements Component {
 			badges: shadowed
 				? [
 						{
-							text: "shadowed",
+							text: "已遮蔽",
 							tone: "warning",
 							title: ext.shadowedBy ? `被 ${sanitizeDisplayLine(ext.shadowedBy)} 覆盖` : undefined,
 						},
@@ -531,7 +531,7 @@ export class ExtensionList implements Component {
 		const checkbox = item.enabled
 			? theme.fg("success", theme.checkbox.checked)
 			: theme.fg("dim", theme.checkbox.unchecked);
-		const label = `Load ~/ ${item.providerName} config`;
+		const label = `加载 ~/ ${item.providerName} 配置`;
 		const badge = theme.fg("muted", "（选择加入；项目配置始终加载）");
 
 		let line = `${checkbox} ${theme.icon.folder} ${label}  ${badge}`;
@@ -551,7 +551,7 @@ export class ExtensionList implements Component {
 			? theme.fg("success", theme.checkbox.checked)
 			: theme.fg("dim", theme.checkbox.unchecked);
 		const icon = theme.icon.package;
-		const label = `Enable ${item.providerName}`;
+		const label = `启用 ${item.providerName}`;
 		const badge = theme.fg("warning", "（总开关）");
 
 		let line = `${checkbox} ${icon} ${label}  ${badge}`;

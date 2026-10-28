@@ -294,7 +294,7 @@ export function formatStyledArtifactReference(artifactId: string, theme: Theme):
 
 /** Describe an incomplete artifact capture. */
 export function formatArtifactErrorNotice(error: OutputArtifactError): string {
-	return `Full output was not saved completely (artifact ${error} failed)`;
+	return `完整输出未能完全保存（产物 ${error} 失败）`;
 }
 
 /**

@@ -352,7 +352,7 @@ function formatReportIdentity(
 	const org = typeof metaOrgName === "string" && metaOrgName ? metaOrgName : metaOrgId;
 	if (typeof org === "string" && org && org !== label) identity += chalk.dim(` · ${redaction?.get(org) ?? org}`);
 	const plan = report.metadata?.planType;
-	if (typeof plan === "string" && plan.trim()) identity += chalk.dim(` · plan: ${plan.trim()}`);
+	if (typeof plan === "string" && plan.trim()) identity += chalk.dim(` · 方案：${plan.trim()}`);
 	return identity;
 }
 
@@ -370,7 +370,7 @@ function formatAccountHeader(
 	if (resets && resets.bankedCount > 0) {
 		header += chalk.cyan(` · ✦ ${resets.bankedCount} saved reset${resets.bankedCount === 1 ? "" : "s"}`);
 		if (resets.redeemableCount !== resets.bankedCount) {
-			header += chalk.dim(` · ${resets.redeemableCount} usable now`);
+			header += chalk.dim(` · ${resets.redeemableCount} 当前可用`);
 		}
 		const expiring = classifyResetExpiry(report, nowMs);
 		if (expiring) {
@@ -383,19 +383,19 @@ function formatAccountHeader(
 			const expiryMs = Date.parse(resets.soonestExpiry);
 			if (expiryMs > nowMs) {
 				header += chalk.dim(
-					` · soonest expires in ${formatDuration(expiryMs - nowMs)} (${resets.soonestExpiry.slice(0, 10)})`,
+					` · 最快将于 ${formatDuration(expiryMs - nowMs)} 后到期（${resets.soonestExpiry.slice(0, 10)}）`,
 				);
 			} else {
-				header += chalk.dim(` · expired (${resets.soonestExpiry.slice(0, 10)})`);
+				header += chalk.dim(` · 已过期（${resets.soonestExpiry.slice(0, 10)}）`);
 			}
 		}
 		if (resets.redeemableCount === 0 && resets.unavailableReason) {
 			const reason = sanitizeText(resets.unavailableReason.replace(/[\r\n\t]+/g, " "));
-			header += chalk.dim(` · unavailable: ${reason}`);
+			header += chalk.dim(` · 不可用：${reason}`);
 		}
 	}
 	if (report.fetchedAt && nowMs - report.fetchedAt > 90_000) {
-		header += chalk.dim(` · fetched ${formatDuration(nowMs - report.fetchedAt)} ago`);
+		header += chalk.dim(` · 已于 ${formatDuration(nowMs - report.fetchedAt)} 前获取`);
 	}
 	return header;
 }
@@ -474,7 +474,7 @@ function collectProviderLimitTemplates(
 
 function formatMissingLimitLine(template: ProviderLimitTemplate, labelWidth: number): string {
 	const padded = template.title.padEnd(labelWidth);
-	return `      ${chalk.dim("○")} ${padded}  ${chalk.dim("·".repeat(BAR_WIDTH))}  ${chalk.dim("not reported")}`;
+	return `      ${chalk.dim("○")} ${padded}  ${chalk.dim("·".repeat(BAR_WIDTH))}  ${chalk.dim("未报告")}`;
 }
 
 /** Per-window capacity stat: how much account quota is burned and left. */
@@ -717,10 +717,10 @@ function formatPolicyLine(policy: UsagePolicyDiagnostics): string {
 	const reclaimLabel = policy.reclaimAbovePct === undefined ? "" : ` · reclaim above ${policy.reclaimAbovePct}%`;
 	const prefix = `policy: priority ${policy.priority} · reserve ${policy.reservePct}% (${policy.reserveSource})${reclaimLabel}`;
 	if (policy.remainingPct === undefined) {
-		return `${prefix} · ${policy.state === "exhausted" ? "exhausted" : "reserve unknown"}`;
+		return `${prefix} · ${policy.state === "exhausted" ? "已用尽" : "预留量未知"}`;
 	}
 	const state = policy.state === "inside-reserve" ? "inside reserve" : policy.state;
-	return `${prefix} · ${state} · ${policy.remainingPct.toFixed(1)}% left`;
+	return `${prefix} · ${state} · ${policy.remainingPct.toFixed(1)}% 剩余`;
 }
 
 /** Add policy only where the text view displays it (providers with a configured account policy). */
@@ -813,7 +813,7 @@ function formatResetExpiryBanner(
 		const command =
 			stored.length === 1 ? `/usage reset ${warning.provider}/${stored[0]!.credentialId}` : "/usage reset";
 		lines.push(
-			`    ${verdicts[index]!.kind === "off" ? "spend it" : "or now"}:  ${chalk.cyan(command)} ${chalk.dim("in omp")}`,
+			`    ${verdicts[index]!.kind === "off" ? "立即使用" : "或立即"}:  ${chalk.cyan(command)} ${chalk.dim("在 omp 中")}`,
 		);
 	});
 	return lines;
@@ -862,8 +862,8 @@ export function formatUsageBreakdown(
 
 	const lines: string[] = [];
 	const latestFetchedAt = Math.max(0, ...displayReports.map(report => report.fetchedAt ?? 0));
-	const headerSuffix = latestFetchedAt ? chalk.dim(` · fetched ${formatDuration(nowMs - latestFetchedAt)} ago`) : "";
-	lines.push(`${chalk.bold("Usage")}${headerSuffix}`);
+	const headerSuffix = latestFetchedAt ? chalk.dim(` · 于 ${formatDuration(nowMs - latestFetchedAt)} 前获取`) : "";
+	lines.push(`${chalk.bold("用量")}${headerSuffix}`);
 	const expiring = displayReports.flatMap(report => {
 		const warning = classifyResetExpiry(report, nowMs);
 		return warning?.tier === "imminent" ? [{ report, warning }] : [];
@@ -878,7 +878,7 @@ export function formatUsageBreakdown(
 		const accountCount = providerReports.length + providerUnreported.length;
 		lines.push("");
 		lines.push(
-			`${chalk.bold.cyan(formatProviderName(provider))} ${chalk.dim(`— ${accountCount} ${accountCount === 1 ? "account" : "accounts"}`)}`,
+			`${chalk.bold.cyan(formatProviderName(provider))} ${chalk.dim(`— ${accountCount} ${accountCount === 1 ? "账户" : "账户"}`)}`,
 		);
 		// Provider-wide disclaimers render once per provider, not per limit.
 		const providerNotes = [...new Set(providerReports.flatMap(report => report.notes ?? []))];
@@ -902,7 +902,7 @@ export function formatUsageBreakdown(
 				);
 			}
 			if (report.limits.length === 0) {
-				lines.push(`      ${chalk.dim("no limits reported")}`);
+				lines.push(`      ${chalk.dim("未报告限制")}`);
 				return;
 			}
 			const limitsByKey = Map.groupBy(report.limits, limitRowKey);
@@ -918,7 +918,7 @@ export function formatUsageBreakdown(
 
 		for (const account of providerUnreported) {
 			const label = accountIdentityLabel(account, redaction);
-			lines.push(`  ${chalk.dim("○")} ${chalk.dim(`${label} — no usage data`)}`);
+			lines.push(`  ${chalk.dim("○")} ${chalk.dim(`${label} — 无使用数据`)}`);
 			if (policyOptions && account.type === "oauth" && policyProviders.has(provider)) {
 				lines.push(
 					`      ${chalk.dim(formatPolicyLine(computePolicyDiagnostics(provider, accountOAuthIdentity(account), undefined, policyOptions)))}`,
@@ -930,7 +930,7 @@ export function formatUsageBreakdown(
 			const label = disabledIdentityLabel(summary, redaction);
 			const ago = summary.disabledAtMs !== undefined ? ` ${formatDuration(nowMs - summary.disabledAtMs)} ago` : "";
 			lines.push(
-				`  ${chalk.red(`✗ ${label} — disabled${ago}: ${sanitizeText(shortDisableCause(summary.cause))}`)} ${chalk.dim("(re-login to restore)")}`,
+				`  ${chalk.red(`✗ ${label} — disabled${ago}: ${sanitizeText(shortDisableCause(summary.cause))}`)} ${chalk.dim("(重新登录以恢复)")}`,
 			);
 		}
 
@@ -946,7 +946,7 @@ export function formatUsageBreakdown(
 				const meterLabel = stat.meter ? ` (${stat.meter.charAt(0).toUpperCase()}${stat.meter.slice(1)})` : "";
 				return `${stat.window}${meterLabel} → ${stat.usedAccounts.toFixed(2)}/${stat.accounts} ${stat.accounts === 1 ? "account" : "accounts"} used (${stat.remainingAccounts.toFixed(2)}× quota left)`;
 			});
-			lines.push(`  ${chalk.dim(`capacity: ${parts.join(" · ")}`)}`);
+			lines.push(`  ${chalk.dim(`容量：${parts.join(" · ")}`)}`);
 		}
 	}
 
@@ -1067,14 +1067,14 @@ export function formatUsageHistory(
 
 	const lines: string[] = [];
 	lines.push(
-		`${chalk.bold("Usage history")}${chalk.dim(` · last ${formatDuration(nowMs - sinceMs)} · peak per bucket`)}`,
+		`${chalk.bold("用量历史")}${chalk.dim(` · 最近 ${formatDuration(nowMs - sinceMs)} · 每桶峰值`)}`,
 	);
 
 	for (const provider of [...providers.keys()].sort((a, b) => a.localeCompare(b))) {
 		const accounts = providers.get(provider) ?? new Map<string, HistoryAccount>();
 		lines.push("");
 		lines.push(
-			`${chalk.bold.cyan(formatProviderName(provider))} ${chalk.dim(`— ${accounts.size} ${accounts.size === 1 ? "account" : "accounts"}`)}`,
+			`${chalk.bold.cyan(formatProviderName(provider))} ${chalk.dim(`— ${accounts.size} ${accounts.size === 1 ? "账户" : "账户"}`)}`,
 		);
 		const sortedAccounts = [...accounts.values()].sort((a, b) => a.label.localeCompare(b.label));
 		const reports = provider === "openai-codex" ? sortedAccounts.map(historyIdentityReport) : undefined;
@@ -1141,8 +1141,8 @@ function formatNoProviderCredentials(provider: string, storedAccounts: UsageAcco
 	const stored = [...new Set(storedAccounts.map(account => account.provider))].sort();
 	const hint =
 		stored.length > 0
-			? `Providers with stored credentials: ${stored.join(", ")}.`
-			: "Run `omp` and use /login to add accounts.";
+			? `已存储凭据的提供商：${stored.join(", ")}。`
+			: "运行 `omp` 并使用 /login 添加账户。";
 	return `No credentials stored for provider "${provider}". ${hint}\n`;
 }
 
@@ -1194,7 +1194,7 @@ function formatTokenCount(value: number): string {
  */
 export function formatClientUsage(clients: ClientUsageClientSummary[], sinceMs: number, nowMs: number): string {
 	const lines: string[] = [];
-	lines.push(chalk.bold(`Per-client token burn since ${new Date(sinceMs).toISOString().slice(0, 10)}`));
+	lines.push(chalk.bold(`自 ${new Date(sinceMs).toISOString().slice(0, 10)} 以来各客户端的令牌消耗`));
 	const headers = ["app", "provider", "requests", "input", "output", "cache r", "cache w", "total", "est cost"];
 	for (const client of clients) {
 		const label = client.hostname ?? client.installId;
@@ -1203,7 +1203,7 @@ export function formatClientUsage(clients: ClientUsageClientSummary[], sinceMs: 
 		lines.push("");
 		lines.push(`${chalk.cyan(label)}${chalk.dim(idNote)} ${chalk.dim(`· ${lastSeen}`)}`);
 		if (client.providers.length === 0) {
-			lines.push(chalk.dim("  no usage in this window"));
+			lines.push(chalk.dim("  此窗口内无用量"));
 			continue;
 		}
 		const rows: string[][] = client.providers.map(usage => [
@@ -1228,7 +1228,7 @@ export function formatClientUsage(clients: ClientUsageClientSummary[], sinceMs: 
 		);
 		rows.push([
 			"",
-			"total",
+			"总计",
 			formatNumber(total.requests),
 			"",
 			"",
@@ -1295,7 +1295,7 @@ function formatOAuthIdentityKeys(rows: readonly OAuthIdentityKeyRow[]): string {
 			lines.push(chalk.bold(provider));
 		}
 		if (row.identityKey === null) {
-			lines.push(chalk.dim("  (no identity key: no pool can name this account)"));
+			lines.push(chalk.dim("  （无身份密钥：没有池可以命名此账户）"));
 			continue;
 		}
 		const orgName = row.orgName ? sanitizeText(row.orgName.replace(/[\r\n\t]+/g, " ")) : undefined;
@@ -1445,8 +1445,8 @@ async function runUsageResetCommand(
 			process.exitCode = 1;
 			return;
 		}
-		const lines = ["Saved rate-limit resets:", ...accounts.map(formatResetUsageAccountLine)];
-		lines.push("", `Spend one with \`${RESET_COMMAND} <provider>/<credential id>\`.`);
+		const lines = ["已保存的速率限制重置：", ...accounts.map(formatResetUsageAccountLine)];
+		lines.push("", `使用 \`${RESET_COMMAND} <provider>/<credential id>\` 消耗一次额度。`);
 		process.stdout.write(`${lines.join("\n")}\n`);
 		return;
 	}
@@ -1531,9 +1531,10 @@ export async function runUsageCommand(cmd: UsageCommandArgs): Promise<void> {
 			}
 			await authStorage.usage.invalidate(provider);
 			if (provider) {
-				process.stdout.write(`Invalidated cached usage reports for provider "${provider}".\n`);
+				process.stdout.write(`已使提供商 "${provider}" 的缓存用量报告失效。
+`);
 			} else {
-				process.stdout.write("Invalidated cached usage reports for all providers.\n");
+				process.stdout.write("已使所有提供商的缓存用量报告失效。\n");
 			}
 			return;
 		}

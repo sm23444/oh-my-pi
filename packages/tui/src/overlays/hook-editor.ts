@@ -171,8 +171,8 @@ export class HookEditorComponent extends OverlayPanel implements Focusable {
 		const [primaryFollowUpKey = "ctrl+q"] = followUpKeys;
 		const externalEditorKey = editorKey("app.editor.external") || formatKeyHint("ctrl+g");
 		const hint = this.#promptStyle
-			? `${formatKeyHint("enter")} or ${formatKeyHint(primaryFollowUpKey)} submit  ${formatKeyHint("escape")} cancel  ${externalEditorKey} external editor`
-			: `${formatKeyHints(followUpKeys)} submit  ${interruptKey()} cancel  ${externalEditorKey} external editor`;
+			? `${formatKeyHint("enter")} 或 ${formatKeyHint(primaryFollowUpKey)} 提交  ${formatKeyHint("escape")} 取消  ${externalEditorKey} 外部编辑器`
+			: `${formatKeyHints(followUpKeys)} 提交  ${interruptKey()} 取消  ${externalEditorKey} 外部编辑器`;
 		this.#field = new FormField(this.#editor, {
 			theme: formTheme,
 			details:
@@ -187,7 +187,7 @@ export class HookEditorComponent extends OverlayPanel implements Focusable {
 		// Native: the field drops its terminal frame for the sheet's, and says what to type while empty.
 		const fieldRole = this.#promptStyle ? `${PART}.line` : `${PART}.field`;
 		this.#editor.describeLayout = input => ({ role: fieldRole, children: [input], caret: "input" });
-		const placeholder = [span(this.#promptStyle ? "Type your answer" : "Type here")];
+		const placeholder = [span(this.#promptStyle ? "输入你的回答" : "在此输入")];
 		this.#editor.describePlaceholder = () => placeholder;
 
 		const head: NativeChild[] = [];
@@ -240,7 +240,7 @@ export class HookEditorComponent extends OverlayPanel implements Focusable {
 		if (this.#externalEditor) {
 			const [externalKey] = boundKeys("app.editor.external", ["ctrl+g"]);
 			buttons.push(
-				actionButton("Open in editor", "external", {
+				actionButton("在编辑器中打开", "external", {
 					...(externalKey ? { keys: externalKey } : {}),
 					title: tip([["Edit in your external editor", externalKey]]),
 				}),
@@ -248,8 +248,8 @@ export class HookEditorComponent extends OverlayPanel implements Focusable {
 		}
 		buttons.push(
 			null,
-			actionButton("Cancel", "cancel", { keys: cancelKey, title: tip([["Cancel", cancelKey]]) }),
-			actionButton("Submit", "submit", {
+			actionButton("取消", "cancel", { keys: cancelKey, title: tip([["Cancel", cancelKey]]) }),
+			actionButton("提交", "submit", {
 				keys: submitKey,
 				tone: "accent",
 				title: tip([

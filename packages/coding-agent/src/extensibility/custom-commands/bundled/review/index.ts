@@ -353,7 +353,7 @@ async function resolveChangeRequestSource(
 		ghMessage = error instanceof Error ? error.message : String(error);
 	}
 	if (!gitlab.available()) {
-		ctx.ui.notify(`Failed to resolve repository for PR picker: ${ghMessage}`, "error");
+		ctx.ui.notify(`无法解析 PR 选择器的仓库：${ghMessage}`, "error");
 		return undefined;
 	}
 	try {
@@ -381,7 +381,7 @@ async function resolveChangeRequestSource(
 		};
 	} catch (error) {
 		const glMessage = error instanceof Error ? error.message : String(error);
-		ctx.ui.notify(`Failed to resolve repository for PR picker: GitHub: ${ghMessage}; GitLab: ${glMessage}`, "error");
+		ctx.ui.notify(`无法解析 PR 选择器的仓库：GitHub：${ghMessage}；GitLab：${glMessage}`, "error");
 		return undefined;
 	}
 }
@@ -404,7 +404,7 @@ async function selectPullRequestRef(cwd: string, ctx: HookCommandContext): Promi
 			return pickablePrs(await source.fetch(search));
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
-			ctx.ui.notify(`Failed to list open ${plural} in ${repo}: ${message}`, "error");
+			ctx.ui.notify(`无法列出打开的 ${plural}（在 ${repo} 中）：${message}`, "error");
 			return undefined;
 		} finally {
 			ctx.ui.setStatus("review", undefined);
@@ -413,7 +413,7 @@ async function selectPullRequestRef(cwd: string, ctx: HookCommandContext): Promi
 	const openPrs = await listOpen(undefined);
 	if (openPrs === undefined) return undefined;
 	if (openPrs.length === 0) {
-		ctx.ui.notify(`No open ${plural} in ${repo}`, "warning");
+		ctx.ui.notify(`没有打开的 ${plural}（在 ${repo} 中）`, "warning");
 		return undefined;
 	}
 	let activeQuery: string | undefined;
@@ -447,7 +447,7 @@ async function selectPullRequestRef(cwd: string, ctx: HookCommandContext): Promi
 		// The failure was already reported; stay in the picker on the list shown before.
 		if (matches === undefined) continue;
 		if (matches.length === 0) {
-			ctx.ui.notify(`No open ${plural} matching "${query}" in ${repo}`, "warning");
+			ctx.ui.notify(`没有打开的 ${plural} 匹配“${query}”（位于 ${repo}）`, "warning");
 			activeQuery = undefined;
 			currentPrs = openPrs;
 			continue;

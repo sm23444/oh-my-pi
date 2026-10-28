@@ -412,7 +412,7 @@ ${cmdRows}
 
 	// Per-subcommand argument functions.
 	for (const c of spec.commands) {
-		const specs = ["'(-h --help)'{-h,--help}'[Show help]'", ...c.flags.map(zshFlagSpec), ...c.args.map(zshArgSpec)];
+		const specs = ["'(-h --help)'{-h,--help}'[显示帮助]'", ...c.flags.map(zshFlagSpec), ...c.args.map(zshArgSpec)];
 		parts.push(`_omp_cmd_${bashFn(c.name)}() {
 	_arguments -s \\
 		${specs.join(" \\\n\t\t")}
@@ -425,8 +425,8 @@ ${cmdRows}
 		.map(c => `\t\t\t${commandTokens(c).join("|")}) _omp_cmd_${bashFn(c.name)} ;;`)
 		.join("\n");
 	const rootSpecs = [
-		"'(-h --help)'{-h,--help}'[Show help]'",
-		"'(-v --version)'{-v,--version}'[Show version]'",
+		"'(-h --help)'{-h,--help}'[显示帮助]'",
+		"'(-v --version)'{-v,--version}'[显示版本]'",
 		...spec.root.flags.map(zshFlagSpec),
 		"'1: :_omp_commands'",
 		"'*::arg:->args'",

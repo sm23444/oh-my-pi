@@ -29,7 +29,7 @@ export function formatAgentStatRun(stats: AgentStats, theme: Theme): string {
 		line += `${theme.sep.dot}${theme.fg("dim", `${formatNumber(stats.toolCount)} ${theme.icon.extensionTool}`)}`;
 	}
 	if (stats.requests) {
-		line += `${theme.sep.dot}${theme.fg("dim", `${formatNumber(stats.requests)} req`)}`;
+		line += `${theme.sep.dot}${theme.fg("dim", `${formatNumber(stats.requests)} 个请求`)}`;
 	}
 	if (stats.contextTokens && stats.contextTokens > 0) {
 		const context =

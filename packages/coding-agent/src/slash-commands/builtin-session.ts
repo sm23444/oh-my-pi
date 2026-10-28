@@ -50,16 +50,16 @@ async function handleUsageResetCommand(
 	try {
 		accounts = toResetUsageAccounts(await session.listResetCredits());
 	} catch (error) {
-		await output(`Could not load saved resets: ${oneLine(errorMessage(error))}`);
+		await output(`无法加载已保存的重置：${oneLine(errorMessage(error))}`);
 		return;
 	}
 	if (accounts.length === 0) {
-		await output("No provider accounts found. Use /login to add one.");
+		await output("未找到提供商账户。请使用 /login 添加一个。");
 		return;
 	}
 	if (!arg.trim()) {
-		const lines = ["Saved rate-limit resets:", ...accounts.map(formatResetUsageAccountLine)];
-		lines.push("", "Spend one with `/usage reset <provider>/<credential id>` or `/usage reset <provider>/active`.");
+		const lines = ["已保存的速率限制重置：", ...accounts.map(formatResetUsageAccountLine)];
+		lines.push("", "使用 `/usage reset <provider>/<credential id>` 或 `/usage reset <provider>/active` 消耗一次。");
 		await output(lines.join("\n"));
 		return;
 	}
@@ -85,12 +85,12 @@ async function handleJobsKillCommand(
 ): Promise<void> {
 	const target = arg.trim();
 	if (!target) {
-		await output("Usage: /jobs kill <id>|all");
+		await output("用法：/jobs kill <id>|all");
 		return;
 	}
 	const snapshot = session.getAsyncJobSnapshot({ recentLimit: 0 });
 	if (!snapshot) {
-		await output("Async background jobs are unavailable in this session.");
+		await output("此会话中无法使用异步后台作业。");
 		return;
 	}
 	if (target === "all") {
@@ -100,20 +100,20 @@ async function handleJobsKillCommand(
 		}
 		await output(
 			cancelled === 0
-				? "No running background jobs to cancel."
-				: `Cancelled ${cancelled} background job${cancelled === 1 ? "" : "s"}.`,
+				? "没有正在运行的后台作业可取消。"
+				: `已取消 ${cancelled} 个后台作业${cancelled === 1 ? "" : ""}。`,
 		);
 		return;
 	}
 	const safeTarget = truncateToWidth(sanitizeText(target).replace(/\s+/g, " ").trim(), 60);
 	if (!snapshot.running.some(job => job.id === target)) {
-		await output(`No running background job with id "${safeTarget}".`);
+		await output(`没有正在运行的、ID 为“${safeTarget}”的后台作业。`);
 		return;
 	}
 	await output(
 		session.cancelAsyncJob(target)
-			? `Cancelled background job ${safeTarget}.`
-			: `Could not cancel background job ${safeTarget}.`,
+			? `已取消后台作业 ${safeTarget}。`
+			: `无法取消后台作业 ${safeTarget}。`,
 	);
 }
 
@@ -123,18 +123,18 @@ async function handleSessionPinCommand(
 	output: SlashCommandRuntime["output"],
 ): Promise<void> {
 	if (session.isStreaming) {
-		await output("Cannot pin an account while the session is streaming.");
+		await output("会话正在流式输出时无法固定账户。");
 		return;
 	}
 	let accountList: SessionOAuthAccountList | undefined;
 	try {
 		accountList = await session.listCurrentProviderOAuthAccounts();
 	} catch (error) {
-		await output(`Could not load provider accounts: ${errorMessage(error)}`);
+		await output(`无法加载提供商账户：${errorMessage(error)}`);
 		return;
 	}
 	if (!accountList) {
-		await output("Select a model before pinning a provider account.");
+		await output("固定提供商账户前，请先选择模型。");
 		return;
 	}
 	const provider = getOAuthProviders().find(candidate => candidate.id === accountList.provider);
@@ -144,42 +144,42 @@ async function handleSessionPinCommand(
 		const source = session.modelRegistry.authStorage.keys.describe(accountList.provider, session.sessionId);
 		await output(
 			source
-				? `No stored OAuth accounts for ${providerName}. Current auth comes from ${source}.`
-				: `No stored OAuth accounts for ${providerName}. Use /login to add one.`,
+				? `没有为 ${providerName} 存储的 OAuth 账户。当前认证来自 ${source}。`
+				: `没有为 ${providerName} 存储的 OAuth 账户。使用 /login 添加一个。`,
 		);
 		return;
 	}
 
 	const selector = arg.trim();
 	if (!selector) {
-		const lines = [`OAuth accounts for ${providerName}:`];
+		const lines = [`${providerName} 的 OAuth 账户：`];
 		for (const account of accounts) {
-			lines.push(`${account.position + 1}. ${account.label}${account.active ? " (active)" : ""}`);
+			lines.push(`${account.position + 1}. ${account.label}${account.active ? " (活跃)" : ""}`);
 		}
-		lines.push("", "Pin one with `/session pin <number|email|account id>`.");
+		lines.push("", "使用 `/session pin <number|email|account id>` 固定一个。");
 		await output(lines.join("\n"));
 		return;
 	}
 
 	const matches = matchSessionPinAccounts(accounts, selector);
 	if (matches.length === 0) {
-		await output(`No ${providerName} account matches "${selector}".`);
+		await output(`没有 ${providerName} 账户与 "${selector}" 匹配。`);
 		return;
 	}
 	if (matches.length > 1) {
 		await output(
-			`"${selector}" matches multiple ${providerName} accounts: ${matches
+			`"${selector}" 与多个 ${providerName} 账户匹配：${matches
 				.map(account => `${account.position + 1}. ${account.label}`)
-				.join(", ")}. Use the account number.`,
+				.join(", ")}。请使用账户编号。`,
 		);
 		return;
 	}
 	const account = matches[0];
 	if (!account || !session.pinCurrentProviderOAuthAccount(account.credentialId)) {
-		await output(`${account?.label ?? selector} is no longer available to pin.`);
+		await output(`${account?.label ?? selector} 不再可用于固定。`);
 		return;
 	}
-	await output(`Pinned ${account.label} to this session for ${providerName}.`);
+	await output(`已将 ${account.label} 固定到此会话，用于 ${providerName}。`);
 }
 
 /**
@@ -222,7 +222,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				description: "追加任务；阶段模糊匹配或自动创建",
 				usage: "[<phase>] <task...>",
 			},
-			{ name: "start", description: "将任务标记为进行中（模糊匹配）", usage: "<task>" },
+			{ name: "start", description: "标记任务 in_progress（模糊匹配）", usage: "<task>" },
 			{ name: "done", description: "将 task/phase/all 标记为已完成（模糊匹配）", usage: "[<task|phase>]" },
 			{ name: "drop", description: "将 task/phase/all 标记为已放弃（模糊匹配）", usage: "[<task|phase>]" },
 			{ name: "rm", description: "移除 task/phase/all（模糊匹配）", usage: "[<task|phase>]" },
@@ -263,17 +263,17 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			if (!verb || (verb === "info" && !rest)) {
 				await runtime.output(
 					[
-						`Session: ${runtime.session.sessionId}`,
-						`Title: ${runtime.session.sessionName}`,
+						`会话：${runtime.session.sessionId}`,
+						`标题：${runtime.session.sessionName}`,
 						`CWD: ${runtime.cwd}`,
 					].join("\n"),
 				);
 				return commandConsumed();
 			}
 			if (verb === "delete" && !rest) {
-				if (runtime.session.isStreaming) return usage("Cannot delete the session while streaming.", runtime);
+				if (runtime.session.isStreaming) return usage("流式传输期间无法删除会话。", runtime);
 				const sessionFile = runtime.sessionManager.getSessionFile();
-				if (!sessionFile) return usage("No session file to delete (in-memory session).", runtime);
+				if (!sessionFile) return usage("没有可删除的会话文件（内存中的会话）。", runtime);
 				// Route through the active SessionManager so the persist writer is
 				// closed before the file is deleted. Constructing a fresh
 				// FileSessionStorage and calling deleteSessionWithArtifacts leaves
@@ -282,10 +282,10 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				try {
 					await runtime.sessionManager.dropSession(sessionFile);
 				} catch (err) {
-					return usage(`Failed to delete session: ${errorMessage(err)}`, runtime);
+					return usage(`删除会话失败：${errorMessage(err)}`, runtime);
 				}
 				await runtime.output(
-					`Session deleted: ${sessionFile}. Use ACP \`session/load\` to switch to another session.`,
+					`会话已删除：${sessionFile}。使用 ACP \`session/load\` 切换到其他会话。`,
 				);
 				return commandConsumed();
 			}
@@ -293,7 +293,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				await handleSessionPinCommand(rest, runtime.session, runtime.output);
 				return commandConsumed();
 			}
-			return usage("Usage: /session [info|delete|pin [account]]", runtime);
+			return usage("用法：/session [info|delete|pin [account]]", runtime);
 		},
 		handleTui: async (command, runtime) => {
 			const { verb, rest } = parseSubcommand(command.args);
@@ -315,7 +315,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			if (!verb || (verb === "info" && !rest)) {
 				await runtime.ctx.handleSessionCommand();
 			} else {
-				runtime.ctx.showStatus("Usage: /session [info|delete|pin [account]]");
+				runtime.ctx.showStatus("用法：/session [info|delete|pin [account]]");
 			}
 			clearSubmittedText(runtime);
 		},
@@ -342,12 +342,12 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				await handleJobsKillCommand(rest, runtime.session, runtime.output);
 				return commandConsumed();
 			}
-			if (rest || (verb && verb !== "full")) return usage("Usage: /jobs [full|kill <id>|kill all]", runtime);
+			if (rest || (verb && verb !== "full")) return usage("用法：/jobs [full|kill <id>|kill all]", runtime);
 			const full = verb === "full";
 			const tree = runtime.session.getAsyncJobTree();
 			if (!tree || (tree.running.length === 0 && tree.recent.length === 0)) {
 				await runtime.output(
-					"No background jobs running. (Background jobs run async tools — e.g. long-running bash, debug, or task subagents that would otherwise tie up a turn. They appear here while alive and briefly after (until their result is delivered; at most ~5 minutes).)",
+					"没有正在运行的后台任务。（后台任务会运行异步工具——e.g 长时间运行的 bash、调试或任务子代理，否则这些任务会占用一轮对话。它们存活期间会显示在这里，并在结束后短暂显示（直到结果送达；最多约 5 分钟）。）",
 				);
 				return commandConsumed();
 			}
@@ -374,7 +374,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			const body = rows.join("\n");
 			const fence = markdownFenceFor(body);
 			await runtime.output(
-				["Background Jobs", `Running: ${tree.running.length}`, "", `${fence}text`, body, fence].join("\n"),
+				["后台任务", `运行中：${tree.running.length}`, "", `${fence}文本`, body, fence].join("\n"),
 			);
 			return commandConsumed();
 		},
@@ -383,7 +383,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			if (verb === "kill") {
 				await handleJobsKillCommand(rest, runtime.ctx.session, text => runtime.ctx.showStatus(text));
 			} else if (rest || (verb && verb !== "full")) {
-				runtime.ctx.showStatus("Usage: /jobs [full|kill <id>|kill all]");
+				runtime.ctx.showStatus("用法：/jobs [full|kill <id>|kill all]");
 			} else {
 				await runtime.ctx.handleJobsCommand({ full: verb === "full" });
 			}
@@ -415,7 +415,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				await handleUsageResetCommand(rest, runtime.session, runtime.output);
 				return commandConsumed();
 			}
-			return usage("Usage: /usage [show|reset [provider/credential-id|provider/active]]", runtime);
+			return usage("用法：/usage [show|reset [provider/credential-id|provider/active]]", runtime);
 		},
 		handleTui: async (command, runtime) => {
 			const { verb, rest } = parseSubcommand(command.args);
@@ -433,7 +433,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				clearSubmittedText(runtime);
 				return;
 			}
-			runtime.ctx.showStatus("Usage: /usage [show|reset [provider/credential-id|provider/active]]");
+			runtime.ctx.showStatus("用法：/usage [show|reset [provider/credential-id|provider/active]]");
 			clearSubmittedText(runtime);
 		},
 	},
@@ -447,12 +447,12 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			const parsed = parseStatsDashboardArgs(command.args);
 			if ("error" in parsed) return usage(parsed.error, runtime);
 
-			await runtime.output("Syncing session files...");
+			await runtime.output("正在同步会话文件…");
 			try {
 				const result = await launchSessionStatsDashboard(parsed, runtime);
 				await runtime.output(result.message);
 			} catch (error) {
-				await runtime.output(`Stats dashboard failed: ${errorMessage(error)}`);
+				await runtime.output(`统计信息仪表板失败：${errorMessage(error)}`);
 				// Mark the failure like `usage()` does, for hosts that report a
 				// failed builtin (print mode does not dispatch `/stats`).
 				return commandConsumed({ failed: true });
@@ -493,7 +493,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			const allEntries = await parseChangelog(changelogPath);
 			const entriesToShow = selectChangelogEntries(allEntries, view);
 			if (entriesToShow.length === 0) {
-				await runtime.output("No changelog entries found.");
+				await runtime.output("未找到更新日志。");
 				return commandConsumed();
 			}
 			await runtime.output(renderChangelogEntries(entriesToShow).markdown);
@@ -527,7 +527,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			const active = runtime.session.getActiveToolNames();
 			const all = runtime.session.getAllToolNames();
 			if (all.length === 0) {
-				await runtime.output("No tools are available.");
+				await runtime.output("没有可用工具。");
 				return commandConsumed();
 			}
 			const lines = all.map(name => `${active.includes(name) ? "*" : "-"} ${name}`);
@@ -690,8 +690,8 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 					if (manualInput.hasPending()) {
 						const pendingProvider = manualInput.pendingProviderId;
 						const message = pendingProvider
-							? `OAuth login already in progress for ${pendingProvider}. Paste the redirect URL with /login <url>.`
-							: "OAuth login already in progress. Paste the redirect URL with /login <url>.";
+							? `正在为 ${pendingProvider} 进行 OAuth 登录。请粘贴重定向 URL（使用 /login <url>）。`
+							: "OAuth 登录已在进行中。请粘贴重定向 URL（使用 /login <url>）。";
 						runtime.ctx.showWarning(message);
 						clearSubmittedText(runtime);
 						return;
@@ -702,7 +702,7 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				}
 				const submitted = manualInput.submit(args);
 				if (submitted) {
-					runtime.ctx.showStatus("OAuth callback received; completing login…");
+					runtime.ctx.showStatus("已收到 OAuth 回调；正在完成登录…");
 				} else {
 					runtime.ctx.showWarning("当前没有等待手动回调的 OAuth 登录。");
 				}
@@ -713,8 +713,8 @@ export const BUILTIN_SESSION_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 			if (manualInput.hasPending()) {
 				const provider = manualInput.pendingProviderId;
 				const message = provider
-					? `OAuth login already in progress for ${provider}. Paste the redirect URL with /login <url>.`
-					: "OAuth login already in progress. Paste the redirect URL with /login <url>.";
+					? `正在为 ${provider} 进行 OAuth 登录。请粘贴重定向 URL（使用 /login <url>）。`
+					: "OAuth 登录已在进行中。请粘贴重定向 URL（使用 /login <url>）。";
 				runtime.ctx.showWarning(message);
 				clearSubmittedText(runtime);
 				return;

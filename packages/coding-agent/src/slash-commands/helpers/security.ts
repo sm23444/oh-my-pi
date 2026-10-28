@@ -170,7 +170,7 @@ async function importResults(runtime: SlashCommandRuntime, rest: string): Promis
 		? await importCodexSecurityBundle(absolute, { repositoryRoot: store.repositoryRoot })
 		: await importSarifFile(absolute, { repositoryRoot: store.repositoryRoot });
 	await store.putBundle(bundle);
-	await runtime.output(`Imported ${bundle.findings.length} finding(s) as security scan ${bundle.scan.id}.`);
+	await runtime.output(`已导入 ${bundle.findings.length} 个发现作为安全扫描 ${bundle.scan.id}。`);
 }
 
 async function exportResults(runtime: SlashCommandRuntime, rest: string): Promise<void> {
@@ -206,7 +206,7 @@ async function exportResults(runtime: SlashCommandRuntime, rest: string): Promis
 	}
 	const absolute = path.resolve(runtime.cwd, outputPath);
 	await writeSecurityFileAtomic(absolute, content, { hardenParent: false });
-	await runtime.output(`Exported security scan ${scanId} to ${shortenPath(absolute)}.`);
+	await runtime.output(`已将安全扫描 ${scanId} 导出到 ${shortenPath(absolute)}。`);
 }
 
 interface CloudCliOptions {
@@ -276,7 +276,7 @@ async function handleCloudCommand(runtime: SlashCommandRuntime, rest: string): P
 			const configurations = await client.listAllConfigurations();
 			await runtime.output(
 				configurations.length === 0
-					? "No Codex Security cloud scan configurations are available for this account."
+					? "此账户没有可用的 Codex Security 云扫描配置。"
 					: configurations
 							.map(item =>
 								[
@@ -306,7 +306,7 @@ async function handleCloudCommand(runtime: SlashCommandRuntime, rest: string): P
 				lookbackDays: options.lookbackDays,
 			});
 			await runtime.output(
-				`Codex Security cloud scan ${configuration.id} started for ${configuration.repositoryUrl}. This consumes cloud scan allowance.`,
+				`Codex Security 云扫描 ${configuration.id} 已针对 ${configuration.repositoryUrl} 启动。这会消耗云扫描配额。`,
 			);
 			return;
 		}
@@ -324,7 +324,7 @@ async function handleCloudCommand(runtime: SlashCommandRuntime, rest: string): P
 				store,
 			});
 			await runtime.output(
-				`Imported ${bundle.findings.length} Codex Security cloud finding(s) as security scan ${bundle.scan.id}.`,
+				`已导入 ${bundle.findings.length} 个 Codex Security 云发现作为安全扫描 ${bundle.scan.id}。`,
 			);
 			return;
 		}
@@ -348,7 +348,7 @@ async function updateDisposition(runtime: SlashCommandRuntime, rest: string): Pr
 		updatedAt: new Date().toISOString(),
 		actor: "operator",
 	});
-	await runtime.output(`Finding ${finding.id} disposition is now ${finding.disposition.status}.`);
+	await runtime.output(`发现 ${finding.id} 的处置状态现在为 ${finding.disposition.status}。`);
 }
 
 export async function handleSecurityCommand(
@@ -356,21 +356,21 @@ export async function handleSecurityCommand(
 	runtime: SlashCommandRuntime,
 ): Promise<SlashCommandResult> {
 	if (!cfgSecurityEnabled.get(runtime.settings)) {
-		return usage("Security is disabled. Enable security.enabled before using /security.", runtime);
+		return usage("安全功能已禁用。请先启用 security.enabled 再使用 /security.。", runtime);
 	}
 	const { verb, rest } = parseSubcommand(command.args);
 	try {
 		switch (verb || "scans") {
 			case "plan": {
 				const plan = await preflight(runtime, rest);
-				await runtime.output(`Security plan ${plan.id} is ready. Fingerprint: ${plan.fingerprint}.`);
+				await runtime.output(`安全计划 ${plan.id} 已就绪。指纹：${plan.fingerprint}。`);
 				return commandConsumed();
 			}
 			case "scan": {
 				const coordinator = coordinatorFor(runtime);
 				const planId = rest.trim().startsWith("secplan_") ? rest.trim() : (await preflight(runtime, rest)).id;
 				const operation = await coordinator.start({ planId });
-				await runtime.output(`Security scan ${operation.scanId} started as ${operation.operationId}.`);
+				await runtime.output(`安全扫描 ${operation.scanId} 已作为 ${operation.operationId} 启动。`);
 				return commandConsumed();
 			}
 			case "status": {
@@ -390,8 +390,8 @@ export async function handleSecurityCommand(
 				if (!operationId) throw new Error("cancel requires an operation id");
 				await runtime.output(
 					(await coordinatorFor(runtime).cancel(operationId))
-						? `Cancellation requested for ${operationId}.`
-						: `No cancellable security operation ${operationId}.`,
+						? `已请求取消 ${operationId}。`
+						: `没有可取消的安全操作 ${operationId}。`,
 				);
 				return commandConsumed();
 			}
@@ -399,7 +399,7 @@ export async function handleSecurityCommand(
 				const scans = await (await SecurityStore.openForCwd(runtime.cwd)).listScans();
 				await runtime.output(
 					scans.length === 0
-						? "No security scans are stored for this project."
+						? "此项目未存储任何安全扫描。"
 						: scans
 								.map(scan => `${scan.id} ${scan.status} ${scan.findingCount} finding(s) ${scan.producer.name}`)
 								.join("\n"),
@@ -442,12 +442,12 @@ export async function handleSecurityCommand(
 				return commandConsumed();
 			default:
 				return usage(
-					"Usage: /security <plan|scan|status|cancel|scans|cloud|show|import|export|validate|compare|disposition>",
+					"用法：/security <plan|scan|status|cancel|scans|cloud|show|import|export|validate|compare|disposition>",
 					runtime,
 				);
 		}
 	} catch (error) {
-		await runtime.output(`Security: ${errorMessage(error)}`);
+		await runtime.output(`安全：${errorMessage(error)}`);
 		return commandConsumed();
 	}
 }

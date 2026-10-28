@@ -797,9 +797,9 @@ function formatCostDetail(model: Model): string {
 
 /** Fact columns of a model picker (Stencil `NATIVE_REDESIGN.md` §4.7); the lowest priority hides first. */
 export const MODEL_PICKER_COLUMNS: readonly TspPickerColumn[] = [
-	{ id: "int", head: "Int", format: "num", priority: 1 },
+	{ id: "int", head: "智能", format: "num", priority: 1 },
 	{ id: "speed", head: "t/s", format: "num", priority: 2 },
-	{ id: "ctx", head: "Ctx", format: "num", priority: 4 },
+	{ id: "ctx", head: "上下文", format: "num", priority: 4 },
 	{ id: "price", head: "$/M", format: "price", priority: 3 },
 ];
 
@@ -1617,7 +1617,7 @@ export class ModelBrowser implements Component {
 		const line1 = truncateToWidth(theme.fg("muted", `  ${facts.join(" · ")}`), width);
 
 		if (this.isOverContext(selected)) {
-			const warning = `  ${theme.status.disabled} context ${formatNumber(this.#currentContextTokens).toLowerCase()} exceeds ${formatNumber(model.contextWindow ?? 0).toLowerCase()} limit · compacts with current model, then switches`;
+			const warning = `  ${theme.status.disabled} 上下文 ${formatNumber(this.#currentContextTokens).toLowerCase()} 超出 ${formatNumber(model.contextWindow ?? 0).toLowerCase()} 限制 · 先使用当前模型压缩，然后切换`;
 			return [line1, truncateToWidth(theme.fg("warning", warning), width)];
 		}
 
@@ -1659,7 +1659,7 @@ export class ModelBrowser implements Component {
 
 		if (total === 0) {
 			const message =
-				this.#emptyText?.() ?? (this.query.trim() ? "  No matching models" : "  No models available in this scope");
+				this.#emptyText?.() ?? (this.query.trim() ? "  没有匹配的模型" : "  此范围内没有可用模型");
 			lines.push(truncateToWidth(theme.fg("muted", message), width));
 			for (let i = 1; i < this.#maxVisible; i++) lines.push("");
 		} else {
@@ -1789,7 +1789,7 @@ export class ModelBrowser implements Component {
 			items.length > 0
 				? ""
 				: plainText(this.#emptyText?.() ?? "").trim() ||
-					(filter ? "No matching models" : "No models available in this scope");
+					(filter ? "没有匹配的模型" : "此范围内没有可用模型");
 		const prev = this.#nativeListNode;
 		if (
 			prev?.children === cached.children &&
@@ -1840,7 +1840,7 @@ export class ModelBrowser implements Component {
 				detail: overContext
 					? [
 							span(
-								`${theme.status.disabled} context>${formatNumber(item.model.contextWindow ?? 0).toLowerCase()}`,
+								`${theme.status.disabled} 上下文>${formatNumber(item.model.contextWindow ?? 0).toLowerCase()}`,
 								"warning",
 							),
 						]
@@ -1866,9 +1866,9 @@ export class ModelBrowser implements Component {
 		if (selected) {
 			const model = selected.model;
 			const head: NativeChild[] = [text([span(model.name, "strong")])];
-			if (model.isNew) head.push(node("badge", { text: "new", tone: "accent" }));
-			if (model.isBeta) head.push(node("badge", { text: "beta", tone: "warning" }));
-			if (model.isRecommended) head.push(node("badge", { text: "recommended", tone: "success" }));
+			if (model.isNew) head.push(node("badge", { text: "新", tone: "accent" }));
+			if (model.isBeta) head.push(node("badge", { text: "测试版", tone: "warning" }));
+			if (model.isRecommended) head.push(node("badge", { text: "推荐", tone: "success" }));
 			children.push(row(head, { gap: "sm", align: "center", wrap: true }));
 
 			const facts: string[] = [];
@@ -1891,12 +1891,12 @@ export class ModelBrowser implements Component {
 			if (description) children.push(text([span(description, "dim")], { wrap: "word", lines: 2 }));
 
 			if (this.isOverContext(selected)) {
-				const warning = `${theme.status.disabled} context ${formatNumber(this.#currentContextTokens).toLowerCase()} exceeds ${formatNumber(model.contextWindow ?? 0).toLowerCase()} limit · compacts with current model, then switches`;
+				const warning = `${theme.status.disabled} 上下文 ${formatNumber(this.#currentContextTokens).toLowerCase()} 超出 ${formatNumber(model.contextWindow ?? 0).toLowerCase()} 限制 · 使用当前模型压缩，然后切换`;
 				children.push(text([span(warning, "warning")], { wrap: "word" }));
 			} else {
 				const chips: TspSpan[] = [];
 				if (selected.selector === this.#currentSelector) {
-					chips.push(span(`${theme.status.enabled} current`, "success"));
+					chips.push(span(`${theme.status.enabled} 当前`, "success"));
 				}
 				const seen = new Set<string>();
 				const pushRole = (role: string) => {
@@ -2003,14 +2003,14 @@ export class ModelBrowser implements Component {
 		const badges: { text: string; tone?: "accent" | "warning" | "success"; title?: string }[] = [];
 		if (this.isOverContext(item)) {
 			badges.push({
-				text: `ctx>${formatNumber(model.contextWindow ?? 0).toLowerCase()}`,
+				text: `上下文>${formatNumber(model.contextWindow ?? 0).toLowerCase()}`,
 				tone: "warning",
 				title: `上下文 ${formatNumber(this.#currentContextTokens).toLowerCase()} 超过此模型的限制；选择它会先进行压缩`,
 			});
 		}
-		if (model.isNew) badges.push({ text: "new", tone: "accent" });
-		if (model.isBeta) badges.push({ text: "beta", tone: "warning" });
-		if (isFreeModel(model)) badges.push({ text: "free", tone: "success" });
+		if (model.isNew) badges.push({ text: "新", tone: "accent" });
+		if (model.isBeta) badges.push({ text: "测试版", tone: "warning" });
+		if (isFreeModel(model)) badges.push({ text: "免费", tone: "success" });
 		const chips = heldRoles.map(({ role, assignment }) => {
 			const info = this.#settings.getRoleInfo(role);
 			const dot = thinkingDotToken(assignment.thinkingLevel);
@@ -2086,13 +2086,13 @@ export class ModelBrowser implements Component {
 			pushRows(visible);
 		} else {
 			if (recent.length > 0) {
-				order.push({ group: "最近", label: "最近", count: recent.length });
+				order.push({ group: "recent", label: "最近", count: recent.length });
 				pushRows(recent);
 			}
 			if (grouping.providers) this.#pushProviderGroups(order, rest, pushRows);
 			else {
 				if (recent.length > 0 && rest.length > 0) {
-					order.push({ group: "其余", label: grouping.rest, count: rest.length });
+					order.push({ group: "rest", label: grouping.rest, count: rest.length });
 				}
 				pushRows(rest);
 			}
@@ -2124,7 +2124,7 @@ export class ModelBrowser implements Component {
 			const provider = rest[start]!.provider;
 			let end = start + 1;
 			while (end < rest.length && rest[end]!.provider === provider) end++;
-			order.push({ group: `提供商:${provider}:${start}`, label: provider, count: end - start });
+			order.push({ group: `provider:${provider}:${start}`, label: provider, count: end - start });
 			pushRows(rest.slice(start, end));
 			start = end;
 		}
@@ -2167,7 +2167,7 @@ export class ModelBrowser implements Component {
 			? text(
 					[
 						span(
-							`Context ${formatNumber(this.#currentContextTokens).toLowerCase()} exceeds the ${formatNumber(ctx).toLowerCase()} limit · compacts with the current model, then switches`,
+							`上下文 ${formatNumber(this.#currentContextTokens).toLowerCase()} 超出 ${formatNumber(ctx).toLowerCase()} 限制 · 使用当前模型压缩，然后切换`,
 							"warning",
 						),
 					],
@@ -2185,7 +2185,7 @@ export class ModelBrowser implements Component {
 				text: (info.tag ?? info.name ?? role).toLowerCase(),
 				...(assignment ? { tone: assignment.autoSelected ? "muted" : "accent" } : {}),
 				title: assignment
-					? `${info.name}${assignment.autoSelected ? " (auto-selected)" : ""}${level ? ` · thinking ${level}` : ""}`
+					? `${info.name}${assignment.autoSelected ? " （自动选择）" : ""}${level ? ` · 思考 ${level}` : ""}`
 					: `${info.name}: 未分配`,
 			});
 		};
@@ -2198,7 +2198,7 @@ export class ModelBrowser implements Component {
 			facts.push({ k: "reasoning", v: model.reasoning ? "yes" : "no" });
 			const children: NativeChild[] = [node("kv", { items: facts, layout: "inline" })];
 			const chips: NativeChild[] = [];
-			if (item.selector === current) chips.push(node("badge", { text: "current", tone: "success" }));
+			if (item.selector === current) chips.push(node("badge", { text: "当前", tone: "success" }));
 			for (const { role, assignment } of held) chips.push(roleBadge(role, assignment));
 			if (chips.length > 0) children.push(row(chips, { gap: "xs", wrap: true }));
 			if (warning) children.push(warning);
@@ -2210,12 +2210,12 @@ export class ModelBrowser implements Component {
 			text([span(selector, "mono")], { actions: { click: "copy" }, title: "复制模型 ID", truncate: "middle" }),
 		];
 		const badges: NativeChild[] = [];
-		if (item.selector === current) badges.push(node("badge", { text: "current", tone: "success" }));
-		if (model.isNew) badges.push(node("badge", { text: "new", tone: "accent" }));
-		if (model.isBeta) badges.push(node("badge", { text: "beta", tone: "warning" }));
-		if (model.isRecommended) badges.push(node("badge", { text: "recommended", tone: "success" }));
-		if (model.reasoning) badges.push(node("badge", { text: "reasoning" }));
-		if (model.input.includes("image")) badges.push(node("badge", { text: "vision" }));
+		if (item.selector === current) badges.push(node("badge", { text: "当前", tone: "success" }));
+		if (model.isNew) badges.push(node("badge", { text: "新", tone: "accent" }));
+		if (model.isBeta) badges.push(node("badge", { text: "测试版", tone: "warning" }));
+		if (model.isRecommended) badges.push(node("badge", { text: "推荐", tone: "success" }));
+		if (model.reasoning) badges.push(node("badge", { text: "推理" }));
+		if (model.input.includes("image")) badges.push(node("badge", { text: "视觉" }));
 		if (badges.length > 0) children.push(row(badges, { gap: "xs", wrap: true }));
 
 		const speed: string[] = [];
@@ -2240,7 +2240,7 @@ export class ModelBrowser implements Component {
 					? "off"
 					: `${compaction.tokens.toLocaleString("en-US")}${compaction.basis !== undefined ? ` · ${compaction.basis}` : ""}`;
 			facts.push({
-				k: [span("Compacts at", "muted")],
+				k: [span("压缩阈值", "muted")],
 				v: [span(value, "mono"), span(` · ${compaction.source}`, "dim")],
 			});
 		}
@@ -2261,7 +2261,7 @@ export class ModelBrowser implements Component {
 			roleBadges.push(roleBadge(role, heldBy.get(role)));
 		}
 		if (roleBadges.length > 0) {
-			children.push(node("section", { head: "Roles" }, [row(roleBadges, { gap: "xs", wrap: true })]));
+			children.push(node("section", { head: "角色" }, [row(roleBadges, { gap: "xs", wrap: true })]));
 		}
 		const description = model.description ? sanitizeText(model.description).trim() : "";
 		if (description) children.push(md(description));

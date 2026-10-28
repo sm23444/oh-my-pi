@@ -546,8 +546,8 @@ export class SelectorController {
 					}
 					this.ctx.showStatus(
 						count > 0
-							? `Saved ${scope} WATCHDOG.yml — ${count} advisor${count === 1 ? "" : "s"} active.`
-							: `Saved ${scope} WATCHDOG.yml. Run /advisor on to activate the configured advisors.`,
+							? `已保存 ${scope} WATCHDOG.yml — ${count} 个 advisor${count === 1 ? "" : ""} 已激活。`
+							: `已保存 ${scope} WATCHDOG.yml。运行 /advisor on 来激活已配置的 advisor。`,
 					);
 					this.ctx.ui.requestRender();
 				},
@@ -777,11 +777,11 @@ export class SelectorController {
 			this.ctx.statusLine.invalidate();
 			this.ctx.updateEditorBorderColor();
 			if (focusedAgentId) {
-				this.ctx.showStatus(`Agent ${focusedAgentId} model: ${selector}`);
+				this.ctx.showStatus(`Agent ${focusedAgentId} 模型：${selector}`);
 				return;
 			}
 			const roleSelectorHint = appKey(this.ctx.keybindings, "app.model.select") || formatKeyHint("alt+m");
-			this.ctx.showStatus(`Session-only model: ${selector}. Use ${roleSelectorHint} or /model for roles.`);
+			this.ctx.showStatus(`会话专用模型：${selector}。使用 ${roleSelectorHint} 或 /model 来配置角色。`);
 		};
 		if (!compactFirst || focusedAgentId) {
 			await apply();
@@ -891,7 +891,7 @@ export class SelectorController {
 						...cfgTaskAgentModelOverrides.get(this.ctx.settings),
 						task: selector,
 					});
-					this.ctx.showStatus(`Task subagent model (session-only): ${selector}. Use /agents to persist.`);
+					this.ctx.showStatus(`任务子代理模型（会话专用）：${selector}。使用 /agents 来持久化。`);
 					done();
 				},
 				onCancel: done,
@@ -1009,7 +1009,7 @@ export class SelectorController {
 								this.ctx.statusLine.invalidate();
 								this.ctx.updateEditorBorderColor();
 							}
-							this.ctx.showStatus(`${defaultStatusLabel} model: ${selector ?? model.id}`);
+							this.ctx.showStatus(`${defaultStatusLabel} 模型：${selector ?? model.id}`);
 						} else {
 							// Other roles (smol, slow, custom): update settings, not the current model.
 							const modelRoleValue = formatModelSelectorValue(selectorValue, thinkingLevel);
@@ -1020,7 +1020,7 @@ export class SelectorController {
 							}
 							const roleInfo = getRoleInfo(role, settings);
 							this.ctx.showStatus(
-								`${scopeLabel}${roleInfo?.tag ?? roleInfo?.name ?? role} model: ${selector ?? model.id}`,
+								`${scopeLabel}${roleInfo?.tag ?? roleInfo?.name ?? role} 模型：${selector ?? model.id}`,
 							);
 						}
 						return true;
@@ -1048,7 +1048,7 @@ export class SelectorController {
 						}
 						const roleInfo = getRoleInfo(role, settings);
 						this.ctx.showStatus(
-							`${scopeLabel}${roleInfo?.tag ?? roleInfo?.name ?? role} role cleared — auto-selection applies`,
+							`${scopeLabel}${roleInfo?.tag ?? roleInfo?.name ?? role} 角色已清除 — 自动选择生效`,
 						);
 						// Clearing either persisted scope can also remove a captured
 						// runtime override. When that changes the effective default, or
@@ -1105,7 +1105,7 @@ export class SelectorController {
 									}
 									this.ctx.statusLine.invalidate();
 									this.ctx.updateEditorBorderColor();
-									this.ctx.showStatus(`Default model: ${fallbackModel.provider}/${fallbackModel.id}`);
+									this.ctx.showStatus(`默认模型：${fallbackModel.provider}/${fallbackModel.id}`);
 								}
 							}
 						}
@@ -1122,8 +1122,8 @@ export class SelectorController {
 						const roleInfo = getRoleInfo(role, settings);
 						this.ctx.showStatus(
 							chain.length > 0
-								? `${roleInfo?.tag ?? roleInfo?.name ?? role} fallbacks: ${chain.join(" → ")}`
-								: `${roleInfo?.tag ?? roleInfo?.name ?? role} fallbacks cleared`,
+								? `${roleInfo?.tag ?? roleInfo?.name ?? role} 回退：${chain.join(" → ")}`
+								: `${roleInfo?.tag ?? roleInfo?.name ?? role} 回退已清除`,
 						);
 					} catch (error) {
 						this.ctx.showError(error instanceof Error ? error.message : String(error));
@@ -1138,7 +1138,7 @@ export class SelectorController {
 					try {
 						cfgCycleOrder.set(this.ctx.settings, order);
 						this.ctx.showStatus(
-							order.length > 0 ? `Quick-switch cycle: ${order.join(" → ")}` : "Quick-switch cycle cleared",
+							order.length > 0 ? `快速切换循环：${order.join(" → ")}` : "快速切换循环已清除",
 						);
 					} catch (error) {
 						this.ctx.showError(error instanceof Error ? error.message : String(error));
@@ -1153,7 +1153,7 @@ export class SelectorController {
 						if (update.kind === "confirm") return update;
 						const { described, summary } = update;
 						this.ctx.showStatus(
-							`Compaction limit for ${model.provider}/${model.id}: ${described}${summary ? ` · ${summary}` : ""}`,
+							`${model.provider}/${model.id} 的压缩限制：${described}${summary ? ` · ${summary}` : ""}`,
 						);
 						this.ctx.statusLine.invalidate();
 						// The entry can move the model between window tiers; the open hub's
@@ -1255,13 +1255,13 @@ export class SelectorController {
 					onSelect: async (name, marketplace, scope) => {
 						done();
 						const pluginId = `${name}@${marketplace}`;
-						this.ctx.showStatus(`Uninstalling ${pluginId}...`);
+						this.ctx.showStatus(`正在卸载 ${pluginId}...`);
 						this.ctx.ui.requestRender();
 						try {
 							await mgr.uninstallPlugin(pluginId, scope);
-							this.ctx.showStatus(`Uninstalled ${pluginId}`);
+							this.ctx.showStatus(`已卸载 ${pluginId}`);
 						} catch (err) {
-							this.ctx.showStatus(`Uninstall failed: ${err}`);
+							this.ctx.showStatus(`卸载失败：${err}`);
 						}
 						this.ctx.ui.requestRender();
 					},
@@ -1291,14 +1291,14 @@ export class SelectorController {
 			const selector = new PluginSelectorComponent(marketplaces.length, allPlugins, installedIds, {
 				onSelect: async (name, marketplace) => {
 					done();
-					this.ctx.showStatus(`Installing ${name} from ${marketplace}...`);
+					this.ctx.showStatus(`正在安装 ${name}，来自 ${marketplace}...`);
 					this.ctx.ui.requestRender();
 					try {
 						const force = installedIds.has(`${name}@${marketplace}`);
 						await mgr.installPlugin(name, marketplace, { force });
-						this.ctx.showStatus(`Installed ${name} from ${marketplace}`);
+						this.ctx.showStatus(`已安装 ${name}，来自 ${marketplace}`);
 					} catch (err) {
-						this.ctx.showStatus(`Install failed: ${err}`);
+						this.ctx.showStatus(`安装失败：${err}`);
 					}
 					this.ctx.ui.requestRender();
 				},
@@ -1314,7 +1314,7 @@ export class SelectorController {
 	showUserMessageSelector(): void {
 		const entries = this.ctx.sessionManager.getBranch().filter(isTranscriptEntry);
 		if (entries.length === 0) {
-			this.ctx.showStatus("No messages to branch from");
+			this.ctx.showStatus("没有可分支的消息");
 			return;
 		}
 
@@ -1341,7 +1341,7 @@ export class SelectorController {
 		});
 		if (selector.targetCount === 0) {
 			selector.dispose();
-			this.ctx.showStatus("No messages to branch from");
+			this.ctx.showStatus("没有可分支的消息");
 			return;
 		}
 		// Fullscreen alternate-screen overlay: the transcript replica draws over
@@ -1413,7 +1413,7 @@ export class SelectorController {
 		const realLeafId = this.ctx.sessionManager.getLeafId();
 		if (entryId === realLeafId && !isUserTarget) {
 			done();
-			this.ctx.showStatus("Already at this point");
+			this.ctx.showStatus("已在此位置");
 			return;
 		}
 		const treeRewind = this.#treeRewindBoundary(entryId, realLeafId);
@@ -1421,7 +1421,7 @@ export class SelectorController {
 			const result = await this.ctx.session.navigateTree(entryId, { summarize: false });
 			if (result.cancelled) {
 				done();
-				this.ctx.showStatus("Navigation cancelled");
+				this.ctx.showStatus("导航已取消");
 				return;
 			}
 			const fastRewind =
@@ -1436,7 +1436,7 @@ export class SelectorController {
 				this.ctx.editor.setDraft(result.editorText, result.editorImages);
 			}
 			done();
-			this.ctx.showStatus("Rewound to selected point");
+			this.ctx.showStatus("已回退到所选位置");
 		} catch (error) {
 			done();
 			this.ctx.showError(error instanceof Error ? error.message : String(error));
@@ -1446,7 +1446,7 @@ export class SelectorController {
 	showCopySelector(): void {
 		const entries = this.ctx.sessionManager.getBranch().filter(isTranscriptEntry);
 		if (entries.length === 0) {
-			this.ctx.showStatus("Nothing to copy yet.");
+			this.ctx.showStatus("暂无可复制的内容。");
 			return;
 		}
 
@@ -1470,22 +1470,22 @@ export class SelectorController {
 			onPick: (content, label) => {
 				done();
 				if (!content.trim()) {
-					this.ctx.showStatus("Nothing to copy in that item");
+					this.ctx.showStatus("该项中没有可复制的内容");
 					return;
 				}
 				void copyToClipboard(content);
-				this.ctx.showStatus(`Copied ${label} to clipboard`);
+				this.ctx.showStatus(`已将 ${label} 复制到剪贴板`);
 			},
 			onOpen: (href, label) => {
 				done();
 				openPath(href);
-				this.ctx.showStatus(`Opening ${label}: ${href}`);
+				this.ctx.showStatus(`正在打开 ${label}：${href}`);
 			},
 			onCancel: done,
 		});
 		if (selector.targetCount === 0) {
 			selector.dispose();
-			this.ctx.showStatus("Nothing to copy yet.");
+			this.ctx.showStatus("暂无可复制的内容。");
 			return;
 		}
 		const overlayHandle = this.ctx.ui.showOverlay(selector, {
@@ -1504,7 +1504,7 @@ export class SelectorController {
 		const realLeafId = this.ctx.sessionManager.getLeafId();
 
 		if (tree.length === 0) {
-			this.ctx.showStatus("No entries in session");
+			this.ctx.showStatus("会话中没有条目");
 			return;
 		}
 
@@ -1526,7 +1526,7 @@ export class SelectorController {
 							currentEntry.message.toolName === "ask";
 						if (!currentIsAskResult) {
 							done();
-							this.ctx.showStatus("Already at this point");
+							this.ctx.showStatus("已在此位置");
 							return;
 						}
 					}
@@ -1608,7 +1608,7 @@ export class SelectorController {
 						if (result.reopenAsk) {
 							const reanswer = await this.#reanswerAsk(result.reopenAsk.questions);
 							if (!reanswer) {
-								this.ctx.showStatus("Re-answer cancelled");
+								this.ctx.showStatus("重新回答已取消");
 								return;
 							}
 							result = await this.ctx.session.navigateTree(entryId, {
@@ -1621,12 +1621,12 @@ export class SelectorController {
 
 						if (result.aborted) {
 							// Summarization aborted - re-show tree selector
-							this.ctx.showStatus("Branch summarization cancelled");
+							this.ctx.showStatus("分支摘要已取消");
 							this.showTreeSelector();
 							return;
 						}
 						if (result.cancelled) {
-							this.ctx.showStatus("Navigation cancelled");
+							this.ctx.showStatus("导航已取消");
 							return;
 						}
 
@@ -1646,7 +1646,7 @@ export class SelectorController {
 						if (result.editorText && !this.ctx.editor.getText().trim()) {
 							this.ctx.editor.setDraft(result.editorText, result.editorImages);
 						}
-						this.ctx.showStatus("Navigated to selected point");
+						this.ctx.showStatus("已导航到选定位置");
 
 						// Re-answering a past `ask` commits a new sibling answer but,
 						// unlike a live `ask`, leaves the agent idle. Resume it now —
@@ -2044,10 +2044,10 @@ export class SelectorController {
 		await this.ctx.reloadTodos();
 		this.ctx.showStatus(
 			target.movedFrom
-				? `Resumed session, moved here from removed worktree ${shortenPath(target.movedFrom)}`
+				? `已恢复会话，从已移除的工作树 ${shortenPath(target.movedFrom)} 移到这里`
 				: movedProject
-					? `Resumed session in ${shortenPath(newCwd)}`
-					: "Resumed session",
+					? `已在 ${shortenPath(newCwd)} 中恢复会话`
+					: "已恢复会话",
 		);
 		if (continuation) this.ctx.showWarning(formatSessionContinuationNotice(continuation));
 		if (modelFallbackWarning) this.ctx.showWarning(modelFallbackWarning);
@@ -2103,12 +2103,12 @@ export class SelectorController {
 		);
 
 		if (!confirmed) {
-			this.ctx.showStatus("Delete cancelled");
+			this.ctx.showStatus("已取消删除");
 			return;
 		}
 
 		if (!(await this.#detachActiveSessionBeforeDeletion(sessionFile))) {
-			this.ctx.showStatus("Delete cancelled");
+			this.ctx.showStatus("已取消删除");
 			return;
 		}
 
@@ -2116,7 +2116,7 @@ export class SelectorController {
 		await storage.deleteSessionWithArtifacts(sessionFile);
 
 		// Show session selector
-		this.ctx.showStatus("Session deleted");
+		this.ctx.showStatus("会话已删除");
 		await this.showSessionSelector();
 	}
 
@@ -2128,7 +2128,7 @@ export class SelectorController {
 	 * credentials were stored.
 	 */
 	async #handleOAuthLogin(providerId: string): Promise<boolean> {
-		this.ctx.showStatus(`Logging in to ${providerId}…`);
+		this.ctx.showStatus(`正在登录 ${providerId}…`);
 		const { getOAuthCredentialProvider, LoginDialogComponent, PASTE_CODE_LOGIN_PROVIDERS } = loadProviderAuthUi();
 		const useManualInput = PASTE_CODE_LOGIN_PROVIDERS.has(providerId);
 		let restored = false;
@@ -2204,7 +2204,7 @@ export class SelectorController {
 				new Text(
 					theme.fg(
 						"success",
-						`${theme.status.success} 成功登录到 ${providerId}${who ? ` as ${who}` : ""}`,
+						`${theme.status.success} 成功登录到 ${providerId}${who ? ` 作为 ${who}` : ""}`,
 					),
 					1,
 					0,
@@ -2320,7 +2320,7 @@ export class SelectorController {
 				this.ctx.session.modelRegistry.authStorage.credentials.has(provider.id),
 			);
 			if (loggedInProviders.length === 0) {
-				this.ctx.showStatus("No stored provider credentials to log out. Remove env or config auth at its source.");
+				this.ctx.showStatus("没有存储的提供商凭据可注销。请从源头移除环境变量或配置中的认证信息。");
 				return;
 			}
 		}
@@ -2364,10 +2364,10 @@ export class SelectorController {
 	async showSessionPinSelector(): Promise<void> {
 		const session = this.ctx.session;
 		if (session.isStreaming) {
-			this.ctx.showStatus("Cannot pin an account while the session is streaming.");
+			this.ctx.showStatus("会话流式输出期间无法固定账户。");
 			return;
 		}
-		this.ctx.showStatus("Loading provider accounts…", { dim: true });
+		this.ctx.showStatus("正在加载提供商账户…", { dim: true });
 		let accountList: SessionOAuthAccountList | undefined;
 		try {
 			accountList = await session.listCurrentProviderOAuthAccounts();
@@ -2378,7 +2378,7 @@ export class SelectorController {
 			return;
 		}
 		if (!accountList) {
-			this.ctx.showStatus("Select a model before pinning a provider account.");
+			this.ctx.showStatus("请先选择模型，再固定提供商账户。");
 			return;
 		}
 		const { getOAuthProviders } = loadProviderAuthUi();
@@ -2389,8 +2389,8 @@ export class SelectorController {
 			const source = session.modelRegistry.authStorage.keys.describe(accountList.provider, session.sessionId);
 			this.ctx.showStatus(
 				source
-					? `No stored OAuth accounts for ${providerName}. Current auth comes from ${source}.`
-					: `No stored OAuth accounts for ${providerName}. Use /login to add one.`,
+					? `没有为 ${providerName} 存储的 OAuth 账户。当前认证来自 ${source}。`
+					: `没有为 ${providerName} 存储的 OAuth 账户。使用 /login 添加一个。`,
 			);
 			return;
 		}
@@ -2405,7 +2405,7 @@ export class SelectorController {
 						this.ctx.showWarning(`${account.label} 不再可用于固定。`);
 						return;
 					}
-					this.ctx.showStatus(`Pinned ${account.label} to this session for ${providerName}.`);
+					this.ctx.showStatus(`已将 ${account.label} 固定到 ${providerName} 的当前会话。`);
 					this.ctx.statusLine.invalidate();
 					this.ctx.ui.requestRender();
 				},
@@ -2420,7 +2420,7 @@ export class SelectorController {
 
 	async showResetUsageSelector(): Promise<void> {
 		const session = this.ctx.session;
-		this.ctx.showStatus("Checking saved rate-limit resets…", { dim: true });
+		this.ctx.showStatus("正在检查已保存的速率限制重置…", { dim: true });
 		let statuses: ResetCreditAccountStatus[];
 		try {
 			statuses = await session.listResetCredits();
@@ -2437,14 +2437,14 @@ export class SelectorController {
 		}
 		const accounts = toResetUsageAccounts(statuses);
 		if (accounts.length === 0) {
-			this.ctx.showStatus("No provider accounts found. Use /login to add one.");
+			this.ctx.showStatus("未找到提供商账户。使用 /login 添加一个。");
 			return;
 		}
 		if (!accounts.some(account => account.availableCount > 0)) {
 			this.ctx.showStatus(
 				accounts.some(account => account.error)
-					? "No saved resets available — some accounts couldn't be reached (try /login)."
-					: "No saved rate-limit resets available to spend right now.",
+					? "暂无可用重置额度——部分账户无法访问(试试 /login)。"
+					: "当前没有可消耗的限流重置额度。",
 			);
 			return;
 		}
@@ -2466,7 +2466,7 @@ export class SelectorController {
 
 	async #redeemReset(account: ResetUsageAccount): Promise<void> {
 		this.ctx.showStatus(
-			`Spending 1 saved reset for ${sanitizeText(account.label.replace(/[\r\n\t]+/g, " "))} (${account.providerLabel})…`,
+			`正在为 ${sanitizeText(account.label.replace(/[\r\n\t]+/g, " "))} (${account.providerLabel}) 消耗 1 次已保存的重置…`,
 			{ dim: true },
 		);
 		let outcome: ResetCreditRedeemOutcome;

@@ -123,7 +123,7 @@ export class JobsSheet implements Component {
 		role: "omp.overlay.jobs",
 		size: "lg",
 		anchor: "center",
-		head: "Background jobs",
+		head: "后台任务",
 	} as const;
 	readonly #source: JobsSheetSource;
 	#selectedId: string | undefined;
@@ -158,7 +158,7 @@ export class JobsSheet implements Component {
 		].join("|");
 		const output = detail?.output;
 		if (this.#native?.key === key && this.#native.output === output) return this.#native.node;
-		const close = actionButton("Close", "close", { keys: "escape" });
+		const close = actionButton("关闭", "close", { keys: "escape" });
 		const described = selected
 			? col([
 					node(
@@ -183,7 +183,7 @@ export class JobsSheet implements Component {
 		const now = Date.now();
 		const running = jobs.filter(job => job.status === "running").length;
 		const lines = [truncateToWidth(` Background jobs · ${running} running`, width)];
-		if (jobs.length === 0) lines.push(" No background jobs");
+		if (jobs.length === 0) lines.push(" 无后台任务");
 		for (const entry of rows) {
 			const guide = jobTreeGuide(entry, theme);
 			if (entry.kind === "agent") {
@@ -376,8 +376,8 @@ function describeEmpty(): NativeNode {
 		{ role: "omp.jobs.empty", align: "center" },
 		[
 			node("icon", { name: "jobs" }),
-			text("No background jobs", { role: "omp.jobs.empty.title" }),
-			text("Commands and subagent tasks started in the background show up here while they run.", {
+			text("无后台任务", { role: "omp.jobs.empty.title" }),
+			text("在后台启动的命令和子代理任务会在运行时显示在这里。", {
 				role: "omp.jobs.empty.note",
 				wrap: "word",
 			}),
@@ -426,7 +426,7 @@ function describeDetail(
 				}),
 				text([span(`${job.type} · ${job.id}`, "mono")], { role: "omp.jobs.id", wrap: "none", truncate: "end" }),
 				node("spacer", { grow: 1 }),
-				cancellable && !settled && actionButton("Cancel job", "cancel", { keys: "x", tone: "error" }),
+				cancellable && !settled && actionButton("取消任务", "cancel", { keys: "x", tone: "error" }),
 			]),
 			{ role: "omp.jobs.status", gap: "sm", align: "center" },
 		),
@@ -439,10 +439,10 @@ function describeDetail(
 			"col",
 			{ role: "omp.jobs.out", gap: "sm" },
 			[
-				text("Output", { role: "omp.jobs.label" }),
+				text("输出", { role: "omp.jobs.label" }),
 				detail?.output
 					? ansi(detail.output, { follow: !settled, role: "omp.jobs.output", max: { h: "16lines" } })
-					: text(settled ? "No output" : "No output yet", { role: "omp.jobs.nooutput" }),
+					: text(settled ? "无输出" : "暂无输出", { role: "omp.jobs.nooutput" }),
 			],
 			"out",
 		),

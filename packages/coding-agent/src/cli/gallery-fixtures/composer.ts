@@ -35,7 +35,7 @@ export function getComposerGalleryEntries(): readonly GalleryPreviewEntry[] {
 		heading: `composer · ${option.value} — ${option.label}`,
 		variants: [
 			{
-				label: "标准预览",
+				label: "canonical preview",
 				render: width => renderComposer(option.value, width),
 			},
 		],

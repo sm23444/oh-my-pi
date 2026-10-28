@@ -107,13 +107,13 @@ class Lane {
 
 	/** Loading, the error, or confidence and latency of the latest answer. */
 	#summary(): { text: string; error: boolean } | undefined {
-		if (this.pending > 0 && !this.answer) return { text: "loading…", error: false };
+		if (this.pending > 0 && !this.answer) return { text: "加载中…", error: false };
 		const answer = this.answer;
 		if (!answer) return undefined;
 		if (answer.error) return { text: answer.error, error: true };
 		const ms = answer.ms < 10 ? answer.ms.toFixed(1) : Math.round(answer.ms).toString();
 		const confidence = answer.confidence === undefined ? "—" : answer.confidence.toFixed(2);
-		return { text: `p ${confidence} · ${ms} ms${this.pending > 0 ? " …" : ""}`, error: false };
+		return { text: `p ${confidence} · ${ms} 毫秒${this.pending > 0 ? " …" : ""}`, error: false };
 	}
 }
 
@@ -290,9 +290,9 @@ class PredictCompareComponent implements Component, Focusable {
 		return keyed(
 			node("table", {
 				cols: [
-					{ id: "engine", head: "Engine", truncate: "end" },
-					{ id: "completion", head: "Completion", truncate: "start", grow: 1 },
-					{ id: "stats", head: "Confidence · latency", align: "end", priority: 1 },
+					{ id: "engine", head: "引擎", truncate: "end" },
+					{ id: "completion", head: "补全", truncate: "start", grow: 1 },
+					{ id: "stats", head: "置信度 · 延迟", align: "end", priority: 1 },
 				],
 				rows: this.#lanes.map((lane, index) => {
 					const ghost = ghosts[index] ?? "";
@@ -312,8 +312,8 @@ class PredictCompareComponent implements Component, Focusable {
 
 	render(width: number): readonly string[] {
 		const value = this.#input.getValue();
-		const header = `${chalk.bold("omp predict")} ${chalk.dim(
-			`· type to compare engines · ${formatKeyHint("tab")} accepts ${ENGINES[0]} · ${formatKeyHint("enter")} clears · ${formatKeyHint("escape")} quits`,
+		const header = `${chalk.bold("omp predict 命令")} ${chalk.dim(
+			`· 键入以比较引擎 · ${formatKeyHint("tab")} 接受 ${ENGINES[0]} · ${formatKeyHint("enter")} 清除 · ${formatKeyHint("escape")} 退出`,
 		)}`;
 		const textWidth = Math.max(8, width - LABEL_WIDTH - STATS_WIDTH - 2);
 		const rows = this.#lanes.map(lane => {

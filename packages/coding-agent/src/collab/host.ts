@@ -439,7 +439,7 @@ export class CollabHost {
 				return;
 			}
 			if (willReconnect) {
-				this.#ctx.showStatus(`Collab relay connection lost (${reason}), reconnecting…`, { dim: true });
+				this.#ctx.showStatus(`Collab 中继连接丢失（${reason}），正在重连…`, { dim: true });
 			} else {
 				void this.#teardown();
 				this.#ctx.session.emitNotice("warning", `Collab ended: ${reason}`, "collab");
@@ -519,7 +519,7 @@ export class CollabHost {
 			publication => publication,
 			err => {
 				logger.warn("Collab host registry publication failed", { error: String(err) });
-				this.#ctx.showStatus("Collab host discovery unavailable (omp collab list will not show this session)", {
+				this.#ctx.showStatus("Collab 主机发现不可用（omp collab list 不会显示此会话）", {
 					dim: true,
 				});
 				return null;

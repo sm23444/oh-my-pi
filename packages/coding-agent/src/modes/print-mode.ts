@@ -176,11 +176,13 @@ async function runPrintModeCore(
 		mode: mode === "json" ? "json" : "print",
 		reportSendError: (action, err) => {
 			process.stderr.write(
-				`Extension ${action === "extension_send" ? "sendMessage" : "sendUserMessage"} failed: ${err.message}\n`,
+				`扩展程序 ${action === "extension_send" ? "发送消息" : "发送用户消息"} 失败：${err.message}
+`,
 			);
 		},
 		reportRuntimeError: err => {
-			process.stderr.write(`Extension error (${err.extensionPath}): ${err.error}\n`);
+			process.stderr.write(`扩展错误 (${err.extensionPath}): ${err.error}
+`);
 		},
 	});
 
@@ -200,7 +202,7 @@ async function runPrintModeCore(
 		!planYolo;
 	if (planStartupIgnored) {
 		process.stderr.write(
-			"Note: plan.defaultOnStartup is ignored in print mode (no interactive surface to review the plan). Use --plan-yolo for a headless plan flow.\n",
+			"注意：plan.defaultOnStartup 在打印模式下会被忽略（没有可交互界面来查看计划）。使用 --plan-yolo 进行无界面计划流程。\n",
 		);
 	}
 
@@ -425,7 +427,7 @@ async function runPrintModeCore(
 	let wroteTextWorkingIndicator = false;
 	const writeTextWorkingIndicator = (): void => {
 		if (mode !== "text" || wroteTextWorkingIndicator) return;
-		process.stderr.write("Working...\n");
+		process.stderr.write("正在处理...\n");
 		wroteTextWorkingIndicator = true;
 	};
 	/**

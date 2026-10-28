@@ -38,7 +38,7 @@ class ModelSceneController implements SetupSceneController {
 	}
 
 	async onMount(): Promise<void> {
-		this.#status = { text: "Discovering available models…", color: "muted", busy: true };
+		this.#status = { text: "正在发现可用模型…", color: "muted", busy: true };
 		this.#host.requestRender();
 		await this.#refreshModels();
 	}
@@ -105,7 +105,7 @@ class ModelSceneController implements SetupSceneController {
 			} else if (status) {
 				intro = text([span(status.text, status.color)]);
 			} else {
-				intro = text([span(`Type to search. ${enter} saves the highlighted model as your default.`, "muted")]);
+				intro = text([span(`输入以搜索。${enter} 将高亮显示的模型保存为默认模型。`, "muted")]);
 			}
 			return col([{ ...intro, key: "intro" }, this.#browser], { gap: "sm", role: "omp.setup.model" });
 		});
@@ -146,7 +146,7 @@ class ModelSceneController implements SetupSceneController {
 	async #select(model: Model, selector: string): Promise<void> {
 		if (this.#selecting) return;
 		this.#selecting = true;
-		this.#status = { text: `Saving ${selector} as the default model…`, color: "muted", busy: true };
+		this.#status = { text: `正在将 ${selector} 保存为默认模型…`, color: "muted", busy: true };
 		this.#host.requestRender();
 		try {
 			await this.#host.ctx.selectModel(model, selector);

@@ -13,8 +13,8 @@ export const cfgEvalPy = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "Python Eval Backend",
-		description: "Allow the eval tool to dispatch Python cells to the IPython kernel",
+		label: "Python Eval 后端",
+		description: "允许 eval 工具将 Python 单元派发给 IPython 内核",
 	},
 });
 
@@ -26,8 +26,8 @@ export const cfgEvalJs = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "JavaScript Eval Backend",
-		description: "Allow the eval tool to dispatch JavaScript cells to the in-process runtime",
+		label: "JavaScript Eval 后端",
+		description: "允许 eval 工具将 JavaScript 单元派发给进程内运行时",
 	},
 });
 
@@ -38,8 +38,8 @@ export const cfgEvalAutoProvision = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "Eval Environment Provisioning",
-		description: "Automatically create the managed JavaScript eval package environment on first install",
+		label: "评估环境预配",
+		description: "首次安装时自动创建托管式 JavaScript eval 包环境",
 	},
 });
 
@@ -50,9 +50,9 @@ export const cfgEvalToolsEnabled = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "Eval-Defined Tools",
+		label: "Eval 定义的工具",
 		description:
-			"Let eval cells define tools (@tool in Python, tool(fn) in JS) that task, agent(), and workpool() subagents can call",
+			"允许 eval 单元定义工具（Python 中使用 @tool，JS 中使用 tool(fn)），task、agent() 和 workpool() 子代理可调用这些工具",
 	},
 });
 
@@ -63,8 +63,8 @@ export const cfgEvalWorkpoolFreshAgents = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "Fresh Workpool Agents",
-		description: "Spawn a new subagent for every workpool item instead of reusing workers or batching queued items",
+		label: "全新工作池代理",
+		description: "为每个 workpool 项生成新的子代理，而不是重用工作进程或批量处理排队项",
 	},
 });
 
@@ -76,8 +76,8 @@ export const cfgEvalAutoBackgroundEnabled = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "Eval Auto-Background",
-		description: "Automatically background long-running eval cells and deliver the result later",
+		label: "Eval 自动转后台",
+		description: "长时间运行的 eval 单元自动转入后台，稍后交付结果",
 	},
 });
 
@@ -97,8 +97,8 @@ export const cfgPythonKernelMode = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "Python Kernel Mode",
-		description: "Keep the IPython kernel alive across eval calls or start fresh each time",
+		label: "Python 内核模式",
+		description: "在多次 eval 调用之间保持 IPython 内核存活,或每次都重新启动",
 	},
 });
 
@@ -109,8 +109,8 @@ export const cfgPythonInterpreter = register({
 	ui: {
 		tab: "shell",
 		group: "Eval & Runtimes",
-		label: "Python Interpreter",
+		label: "Python 解释器",
 		description:
-			"Optional path to an exact Python executable. When set, automatic Python runtime discovery is skipped.",
+			"指定 Python 可执行文件的可选路径。设置后将跳过自动 Python 运行时发现。",
 	},
 });

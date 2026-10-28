@@ -24,12 +24,14 @@ export default class Join extends Command {
 		const { args } = await this.parse(Join);
 		const link = args.link?.trim();
 		if (!link) {
-			process.stderr.write(`Usage: ${APP_NAME} join <link>\n`);
+			process.stderr.write(`用法: ${APP_NAME} join <link>
+`);
 			process.exitCode = 1;
 			return;
 		}
 		if (!process.stdin.isTTY || !process.stdout.isTTY) {
-			process.stderr.write(`${APP_NAME} join requires an interactive terminal\n`);
+			process.stderr.write(`${APP_NAME} join 需要交互式终端
+`);
 			process.exitCode = 1;
 			return;
 		}

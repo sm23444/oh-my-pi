@@ -50,7 +50,7 @@ export class QueueModeSelectorComponent extends OverlayPanel {
 			title: "队列模式",
 			subtitle: "omp 工作时发送消息的送达方式",
 			icon: "list",
-			noun: "modes",
+			noun: "模式",
 			current: [currentMode],
 			// The terminal list shows the setting's values; the sheet names them for people.
 			decorate: item =>
@@ -58,7 +58,7 @@ export class QueueModeSelectorComponent extends OverlayPanel {
 					? {
 							label: "一次一条",
 							detail: "每条排队消息各自占用一轮",
-							badges: [{ text: "recommended" }],
+							badges: [{ text: "推荐" }],
 						}
 					: { label: "一次性全部发送", detail: "排队消息会在同一轮中一起发送" },
 		});

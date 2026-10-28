@@ -54,9 +54,9 @@ const EMPTY_STABLE_RENDER: readonly string[] = [];
 
 /** The native head of a finished thinking block: "Thought for 12s", or "Thought" when it was never seen streaming. */
 function thoughtLabel(clock: { start: number; end?: number } | undefined): string {
-	if (clock?.end === undefined) return "Thought";
+	if (clock?.end === undefined) return "思考完成";
 	const ms = clock.end - clock.start;
-	return `Thought for ${ms < 60_000 ? `${Math.max(1, Math.round(ms / 1000))}s` : formatDuration(ms)}`;
+	return `思考用时 ${ms < 60_000 ? `${Math.max(1, Math.round(ms / 1000))}s` : formatDuration(ms)}`;
 }
 
 type ThinkingContentBlock = Extract<AssistantMessage["content"][number], { type: "thinking" }>;
@@ -695,7 +695,7 @@ export class AssistantMessageComponent extends Container {
 	#thinkingDotsLabel(): string {
 		const glyph = THINKING_DOTS_FRAMES[this.#thinkingDotsFrame % THINKING_DOTS_FRAMES.length] ?? "…";
 		const coloredGlyph = theme.fg("thinkingText", glyph);
-		const thinkingLabel = theme.fg("muted", " Thinking");
+		const thinkingLabel = theme.fg("muted", " 思考");
 		const rate = Math.min(SPEED_MAX, sharedSpeedTracker.getSpeed());
 		// The numeric badge ("<total> · <rate> toks/s") only renders while this block
 		// is genuinely streaming provider tokens. A block that has observed no token
@@ -948,7 +948,7 @@ export class AssistantMessageComponent extends Container {
 					// Hidden (Ctrl+T): only the live "Thinking…" head shows; a finished thought leaves nothing.
 					if (this.#hideThinkingBlock && !thinkingLive) continue;
 					const tokens = thinkingLive ? this.#thinkingTokens : (clock?.tokens ?? 0);
-					const title = tokens > 0 ? `${formatNumber(tokens)} tokens` : undefined;
+					const title = tokens > 0 ? `${formatNumber(tokens)} 个 token` : undefined;
 					// Live: starburst · "Thinking…" · ticking timer · tok/s. Done: "Thought for 12s".
 					const head = thinkingLive
 						? node(
@@ -956,7 +956,7 @@ export class AssistantMessageComponent extends Container {
 								{ gap: "sm", title },
 								[
 									node("spinner", { style: "starburst", role: "omp.thinking.spin" }),
-									text([span("Thinking…", "muted")]),
+									text([span("正在思考…", "muted")]),
 									elapsed(performance.now() - (this.#thinkingClock.get(index)?.start ?? performance.now())),
 									...(rate >= 0.05 ? [node("rate", { value: rate, unit: "tok/s" })] : []),
 								],
@@ -1020,7 +1020,7 @@ export class AssistantMessageComponent extends Container {
 			children.push(
 				node(
 					"badge",
-					{ text: "↺ rewound", tone: "muted", role: "omp.assistant.rewound-tag" },
+					{ text: "↺ 已回退", tone: "muted", role: "omp.assistant.rewound-tag" },
 					undefined,
 					"rewound",
 				),
@@ -1038,7 +1038,7 @@ export class AssistantMessageComponent extends Container {
 						{
 							name: "copy",
 							role: "omp.turn.copy",
-							title: "Copy answer",
+							title: "复制回答",
 							aria: "Copy answer",
 							actions: { click: "copy-answer" },
 						},
@@ -1074,7 +1074,7 @@ export class AssistantMessageComponent extends Container {
 				"section",
 				{
 					role: "omp.assistant.recovered",
-					head: [span(`↻ Recovered after ${attempt} ${attempt === 1 ? "retry" : "retries"}`, "muted")],
+					head: [span(`↻ 在 ${attempt} 次${attempt === 1 ? "重试" : "重试"}后已恢复`, "muted")],
 					collapsible: true,
 					collapsed: true,
 				},
@@ -1096,13 +1096,13 @@ export class AssistantMessageComponent extends Container {
 		const code = /^(\d{3})\s+/.exec(lines[0] ?? "");
 		if (code) lines[0] = lines[0]!.slice(code[0].length);
 		const detail = lines.filter((line, index) => !lines.slice(index + 1).some(next => next.startsWith(line)));
-		const errorText = detail.join("\n") || "Unknown error";
+		const errorText = detail.join("\n") || "未知错误";
 		const children: NativeChild[] = [
 			node(
 				"row",
 				{ gap: "sm" },
 				[
-					text([span("Request failed", "error strong")]),
+					text([span("请求失败", "error strong")]),
 					...(code ? [node("badge", { text: code[1]!, tone: "error", role: "omp.error.code" })] : []),
 				],
 				"head",
@@ -1127,9 +1127,9 @@ export class AssistantMessageComponent extends Container {
 					"row",
 					{ gap: "sm", role: "omp.error.actions" },
 					[
-						button("retry", "Retry", ["F5"], "Retry the failed turn"),
-						button("copy-error", "Copy error", [], "Copy the error message"),
-						button("switch-model", "Switch model", ["⌥P"], "Pick another model for this session"),
+						button("retry", "重试", ["F5"], "重试失败的回合"),
+						button("copy-error", "复制错误", [], "复制错误信息"),
+						button("switch-model", "切换模型", ["⌥P"], "为当前会话选择其他模型"),
 					],
 					"actions",
 				),
@@ -1532,7 +1532,7 @@ export class AssistantMessageComponent extends Container {
 			new WidthAwareText(
 				contentWidth =>
 					formatErrorBlock(message, contentWidth, maxRows, (line, index) =>
-						theme.fg("error", index === 0 ? `Error: ${line}` : line),
+						theme.fg("error", index === 0 ? `错误：${line}` : line),
 					),
 				1,
 				0,

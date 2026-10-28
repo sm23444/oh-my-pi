@@ -704,26 +704,26 @@ async function collectPurge(
 
 function renderStatus(result: ImagesStatusResult): string {
 	const lines = [
-		`Image backends: ${result.backends.length > 0 ? result.backends.join(" → ") : "none"}`,
-		`Enabled: ${result.enabled ? "yes" : "no"}`,
-		`Daemon: ${result.daemon.state}${result.daemon.baseUrl ? ` (${result.daemon.baseUrl})` : ""}`,
+		`图像后端：${result.backends.length > 0 ? result.backends.join(" → ") : "无"}`,
+		`已启用：${result.enabled ? "是" : "否"}`,
+		`守护进程：${result.daemon.state}${result.daemon.baseUrl ? ` (${result.daemon.baseUrl})` : ""}`,
 	];
 	const metrics = result.daemon.metrics;
 	if (metrics) {
 		lines.push(
-			`Blobs: ${metrics.activeBlobs} active (${metrics.eagerBlobs} eager, ${metrics.lazyBlobs} lazy)`,
-			`Storage: ${formatBytes(metrics.residentBytes)} resident, ${formatBytes(metrics.diskBytes)} disk`,
-			`Fetch: ${metrics.hits} hits, ${metrics.misses} misses, ${metrics.duplicateTokenGets} duplicate GETs`,
-			`Bytes served: ${formatBytes(metrics.bytesServed)}`,
+			`Blob：${metrics.activeBlobs} 个活跃（${metrics.eagerBlobs} 个急切，${metrics.lazyBlobs} 个惰性）`,
+			`存储：${formatBytes(metrics.residentBytes)} 常驻，${formatBytes(metrics.diskBytes)} 磁盘`,
+			`获取：命中 ${metrics.hits} 次，未命中 ${metrics.misses} 次，重复获取 ${metrics.duplicateTokenGets} 次`,
+			`已提供字节数：${formatBytes(metrics.bytesServed)}`,
 		);
 	}
 	lines.push(
-		`Bytes saved: ${formatBytes(result.savings.savedBytes)} (${formatBytes(result.savings.inlineBytes)} inline → ${formatBytes(result.savings.referenceBytes)} references)`,
-		`Provider files: ${result.providerFiles.entries} active, ${formatBytes(result.providerFiles.bytes)}`,
+		`节省字节数：${formatBytes(result.savings.savedBytes)}（${formatBytes(result.savings.inlineBytes)} 内联 → ${formatBytes(result.savings.referenceBytes)} 引用）`,
+		`提供商文件：${result.providerFiles.entries} 个活跃，${formatBytes(result.providerFiles.bytes)}`,
 	);
 	for (const event of result.daemon.recentFetches ?? []) {
 		lines.push(
-			`Recent fetch: ${event.fetcherId ?? "unknown"}; corroborated=${event.corroborated ? "yes" : "no"}; ${event.method} ${event.found ? "hit" : "miss"}`,
+			`最近获取：${event.fetcherId ?? "未知"}；已证实=${event.corroborated ? "是" : "否"}；${event.method} ${event.found ? "命中" : "未命中"}`,
 		);
 	}
 	return `${lines.join("\n")}\n`;
@@ -731,7 +731,7 @@ function renderStatus(result: ImagesStatusResult): string {
 
 function renderDoctor(result: ImagesDoctorResult): string {
 	const lines = result.checks.map(check => `[${check.severity.toUpperCase()}] ${check.name}: ${check.detail}`);
-	lines.push(result.healthy ? "Image diagnostics passed." : "Image diagnostics found errors.");
+	lines.push(result.healthy ? "镜像诊断已通过。" : "镜像诊断发现错误。");
 	return `${lines.join("\n")}\n`;
 }
 
@@ -744,17 +744,17 @@ function renderPurge(result: ImagesPurgeResult): string {
 	const daemonSelected = result.daemon?.purgedBlobs ?? 0;
 	const daemonBytes = result.daemon?.reclaimedBytes ?? 0;
 	const lines = [
-		result.applied ? "Image purge applied." : "Image purge dry-run; pass --apply to delete.",
-		`Daemon blobs: ${daemonSelected}, ${formatBytes(daemonBytes)}`,
-		`Provider files: ${result.providerFiles.selected} selected, ${result.providerFiles.deleted} deleted, ${formatBytes(result.providerFiles.bytes)}`,
+		result.applied ? "镜像清理已应用。" : "镜像清理试运行；传入 --apply 以删除。",
+		`守护进程 blob：${daemonSelected}、${formatBytes(daemonBytes)}`,
+		`提供商文件：已选择 ${result.providerFiles.selected} 个，已删除 ${result.providerFiles.deleted} 个，${formatBytes(result.providerFiles.bytes)}`,
 	];
 	if (result.providerFiles.skippedAuth > 0) {
 		lines.push(
-			`Skipped ${result.providerFiles.skippedAuth} provider file(s): matching authentication was unavailable.`,
+			`已跳过 ${result.providerFiles.skippedAuth} 个提供商文件：匹配的身份验证不可用。`,
 		);
 	}
-	for (const error of result.daemon?.errors ?? []) lines.push(`Daemon error: ${error}`);
-	for (const error of result.providerFiles.errors) lines.push(`Provider error: ${error}`);
+	for (const error of result.daemon?.errors ?? []) lines.push(`守护进程错误：${error}`);
+	for (const error of result.providerFiles.errors) lines.push(`提供商错误：${error}`);
 	return `${lines.join("\n")}\n`;
 }
 

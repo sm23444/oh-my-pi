@@ -243,7 +243,7 @@ export function modelBadgeSpans(ref: AgentRecordLike, observed: ObservableSessio
 	const badge = resolveModelBadge(ref, observed);
 	if (!badge) return undefined;
 	const spans: TspSpan[] = [];
-	if (badge.fallback) spans.push(span("fallback → ", "warning"));
+	if (badge.fallback) spans.push(span("回退 → ", "warning"));
 	spans.push(span(sanitizeDisplaySingleLine(badge.model), "muted"));
 	if (showsThinkingLevel(badge.level)) {
 		spans.push(span(` ${theme.thinking[badge.level] ?? badge.level}`, thinkingToken(badge.level)));
@@ -297,9 +297,9 @@ export function formatMetricColumns(metrics: AgentMetrics, age: string): string 
 		[
 			{ text: formatCost(metrics.cost) },
 			{ text: formatMetricDuration(metrics) ?? "—" },
-			{ text: `${formatNumber(metrics.requests)} req` },
-			{ text: `${formatNumber(metrics.tools)} tools` },
-			{ text: `${formatNumber(metrics.tokens)} tok` },
+			{ text: `${formatNumber(metrics.requests)} 请求` },
+			{ text: `${formatNumber(metrics.tools)} 工具` },
+			{ text: `${formatNumber(metrics.tokens)} 令牌` },
 			{ text: age },
 		],
 		[

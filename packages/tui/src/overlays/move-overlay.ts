@@ -164,7 +164,7 @@ export class MoveOverlay implements Component, Focusable {
 
 		lines.push(row("", w));
 		const nav = editorKeys("tui.select.up", "tui.select.down");
-		const hint = `Type to filter · ${nav} navigate · ${formatKeyHint("tab")} accept · ${formatKeyHint("enter")} confirm · ${editorKey("tui.select.cancel")} cancel`;
+		const hint = `输入以筛选 · ${nav} 导航 · ${formatKeyHint("tab")} 接受 · ${formatKeyHint("enter")} 确认 · ${editorKey("tui.select.cancel")} 取消`;
 		lines.push(row(theme.fg("dim", hint), w));
 		lines.push(bottomBorder(w));
 		this.#renderMemo = { width: w, fieldLines, revision: this.#revision, lines };
@@ -181,22 +181,22 @@ export class MoveOverlay implements Component, Focusable {
 			"list",
 			{
 				selected: this.#results[this.#selectedIndex]?.value ?? null,
-				empty: this.#field.getValue().length > 0 ? [span("No matching directories", "dim")] : undefined,
+				empty: this.#field.getValue().length > 0 ? [span("没有匹配的目录", "dim")] : undefined,
 			},
 			items,
 			"results",
 		);
 		const hints = statusHintsRow(
-			[span("Type to filter", "dim")],
+			[span("输入以筛选", "dim")],
 			[actionHint(["tui.select.up", "tui.select.down"], "navigate")],
 		);
 		// Accept, Confirm and Cancel run what Tab, Enter and Esc run.
 		const actions = actionBar([
-			actionButton("Accept", "accept", { keys: "tab" }),
+			actionButton("接受", "accept", { keys: "tab" }),
 			null,
 			// The bound cancel key; Esc also cancels when it is unbound.
-			actionButton("Cancel", "cancel", { keys: getKeybindings().getKeys("tui.select.cancel")[0] ?? "escape" }),
-			actionButton("Confirm", "confirm", { keys: "enter", tone: "accent" }),
+			actionButton("取消", "cancel", { keys: getKeybindings().getKeys("tui.select.cancel")[0] ?? "escape" }),
+			actionButton("确认", "confirm", { keys: "enter", tone: "accent" }),
 		]);
 		const described = overlayCard("omp.dialog.move", "Move to directory", [this.#field, list, hints, actions]);
 		this.#native = { revision: this.#revision, node: described };

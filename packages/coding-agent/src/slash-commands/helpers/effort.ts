@@ -4,7 +4,7 @@ import { type ConfiguredThinkingLevel, parseCliThinkingLevel } from "@oh-my-pi/p
 /** Text shown when the active model has no thinking dial. */
 export function noThinkingMessage(session: AgentSession): string {
 	const model = session.model;
-	return `${model ? `${model.provider}/${model.id}` : "The current model"} has no adjustable thinking level.`;
+	return `${model ? `${model.provider}/${model.id}` : "当前模型"} 没有可调节的思考级别。`;
 }
 
 /**

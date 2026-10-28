@@ -186,8 +186,8 @@ export class HookInputComponent extends OverlayPanel {
 		const cancelKey = boundKeys("app.interrupt", ["escape"])[0];
 		this.#nativeActions = actionBar([
 			null,
-			actionButton("Cancel", "cancel", cancelKey ? { keys: cancelKey } : {}),
-			actionButton("Submit", "submit", { tone: "accent", ...(submitKey ? { keys: submitKey } : {}) }),
+			actionButton("取消", "cancel", cancelKey ? { keys: cancelKey } : {}),
+			actionButton("提交", "submit", { tone: "accent", ...(submitKey ? { keys: submitKey } : {}) }),
 		]);
 		return this.#nativeActions;
 	}

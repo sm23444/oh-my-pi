@@ -55,7 +55,7 @@ export async function runCollabListCommand(
 	}
 
 	if (hosts.length === 0) {
-		print(chalk.dim("No active Collab hosts."));
+		print(chalk.dim("没有活跃的 Collab 宿主。"));
 		return;
 	}
 
@@ -83,7 +83,7 @@ export async function runCollabListCommand(
 		print(`${host.instanceId}  ${session}  ${chalk.dim(cwd)}`);
 		print(`  ${chalk.dim(details.join(" · "))}`);
 	}
-	print(chalk.dim("Get a link: omp collab link <instanceId|pid> [--view]"));
+	print(chalk.dim("获取链接：omp collab link <instanceId|pid> [--view]"));
 }
 
 export async function runCollabLinkCommand(

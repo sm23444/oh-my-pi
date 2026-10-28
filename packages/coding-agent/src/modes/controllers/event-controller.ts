@@ -173,11 +173,11 @@ const ASYNC_WAIT_LISTED_JOBS = 3;
 
 /** Working-row text while the run only waits on background jobs; short enough for a narrow terminal. */
 function formatAsyncWaitLabel(jobIds: readonly string[]): string {
-	if (jobIds.length === 0) return "Waiting for background work";
-	if (jobIds.length === 1) return `Waiting for background job ${jobIds[0]}`;
+	if (jobIds.length === 0) return "正在等待后台工作";
+	if (jobIds.length === 1) return `正在等待后台任务 ${jobIds[0]}`;
 	const listed = jobIds.slice(0, ASYNC_WAIT_LISTED_JOBS).join(", ");
 	const more = jobIds.length > ASYNC_WAIT_LISTED_JOBS ? ` +${jobIds.length - ASYNC_WAIT_LISTED_JOBS}` : "";
-	return `Waiting for ${jobIds.length} background jobs: ${listed}${more}`;
+	return `正在等待 ${jobIds.length} 个后台任务：${listed}${more}`;
 }
 
 /** Render args for a live card: the harness strips `i` from executed args, but the stored block keeps it. */
@@ -2234,7 +2234,7 @@ export class EventController {
 			// error stays full-fidelity for the transcript and for replays.
 			const detail = textContent ? previewLine(sanitizeText(textContent), TRUNCATE_LENGTHS.LINE) : "";
 			this.ctx.showWarning(
-				`待办事项更新失败${detail ? `: ${detail}` : ". Progress may be stale until todo succeeds."}`,
+				`待办事项更新失败${detail ? `: ${detail}` : "。在 todo 成功之前，进度可能已过时。"}`,
 				{ hideWithToolActivity: true },
 			);
 		}
@@ -2443,7 +2443,7 @@ export class EventController {
 				const running = session.getAsyncJobSnapshot()?.running.length ?? 0;
 				if (running > 0) {
 					this.ctx.showStatus(
-						`Stopped waiting · ${running} background ${running === 1 ? "job" : "jobs"} still running (/jobs)`,
+						`已停止等待 · ${running} 个后台${running === 1 ? "任务" : "任务"}仍在运行 (/jobs)`,
 					);
 				}
 			});
@@ -2626,14 +2626,14 @@ export class EventController {
 		if (event.aborted) {
 			this.ctx.showStatus(
 				isHandoffAction
-					? "Auto-handoff cancelled"
+					? "自动交接已取消"
 					: isRemoteAction
-						? "Auto server compaction cancelled"
+						? "自动服务器压缩已取消"
 						: isShakeAction
-							? "Auto-shake cancelled"
+							? "Auto-shake 已取消"
 							: isSnapcompactAction
-								? "Auto-snapcompact cancelled"
-								: "Auto context-full maintenance cancelled",
+								? "自动快照压缩已取消"
+								: "自动上下文满载维护已取消",
 			);
 		} else if (isShakeAction) {
 			// Shake produces no CompactionResult; rebuild on success, suppress benign skips.
@@ -2652,7 +2652,7 @@ export class EventController {
 				this.ctx.rebuildChatFromMessages();
 				this.ctx.statusLine.invalidate();
 				this.ctx.ui.requestRender(true, { clearScrollback: true });
-				this.ctx.showStatus("Auto-shake completed");
+				this.ctx.showStatus("自动握手已完成");
 			}
 		} else if (event.result) {
 			this.ctx.lastAssistantUsage = undefined;
@@ -2677,7 +2677,7 @@ export class EventController {
 			this.ctx.statusLine.invalidate();
 			await this.ctx.reloadTodos();
 			this.ctx.ui.requestRender(true, { clearScrollback: true });
-			this.ctx.showStatus("Auto-handoff completed");
+			this.ctx.showStatus("自动交接已完成");
 		} else if (event.skipped) {
 			// Benign skip: no model selected, no candidate models available, or nothing
 			// to compact yet. Not a failure — suppress the warning.
@@ -2793,7 +2793,7 @@ export class EventController {
 				if (terminalError) this.ctx.showPinnedError(terminalError);
 				this.#restorePinnedErrorInline = true;
 			} else {
-				this.ctx.showError(`重试在 ${event.attempt} 次尝试后失败：${event.finalError || "Unknown error"}`);
+				this.ctx.showError(`重试在 ${event.attempt} 次尝试后失败：${event.finalError || "未知错误"}`);
 			}
 		}
 		this.#ensureWorkingLoaderWhileStreaming();
@@ -2812,7 +2812,7 @@ export class EventController {
 	async #handleRetryFallbackSucceeded(
 		event: Extract<AgentSessionEvent, { type: "retry_fallback_succeeded" }>,
 	): Promise<void> {
-		this.ctx.showStatus(`Fallback succeeded on ${event.model}`);
+		this.ctx.showStatus(`在 ${event.model} 上回退成功`);
 	}
 
 	async #handleTtsrTriggered(event: Extract<AgentSessionEvent, { type: "ttsr_triggered" }>): Promise<void> {

@@ -289,7 +289,7 @@ export async function fetchBuild(selector: BuildSelector, options: FetchBuildOpt
 
 	if (response.status === 404 && isRecord(body) && body.error === "no_build") {
 		const hint =
-			"channel" in selector && selector.channel === "canary" ? ` Try \`${APP_NAME} update --stable\`.` : "";
+			"channel" in selector && selector.channel === "canary" ? ` 尝试 \`${APP_NAME} update --stable\`。` : "";
 		throw new Error(`No ${what} is published on ${origin} yet.${hint}`);
 	}
 	if (!response.ok) {

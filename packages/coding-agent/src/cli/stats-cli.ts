@@ -83,12 +83,14 @@ export async function runStatsCommand(cmd: StatsCommandArgs): Promise<void> {
 	// One-shot reports need fully ingested, fully rolled-up data before printing.
 	if (cmd.json || cmd.summary) {
 		const progress = createSyncProgressReporter();
-		process.stderr.write("Syncing session files...\n");
+		process.stderr.write("正在同步会话文件...\n");
 		const { processed, files } = await syncAllSessions({ onProgress: progress.onProgress });
 		progress.finish();
 		await refreshRollups();
 		const total = await getTotalMessageCount();
-		process.stderr.write(`Synced ${processed} new entries from ${files} files (${total} total)\n\n`);
+		process.stderr.write(`已同步 ${processed} 个新条目，来自 ${files} 个文件（共 ${total} 个）
+
+`);
 		if (cmd.json) {
 			console.log(JSON.stringify(await getDashboardStats(), null, 2));
 		} else {

@@ -128,7 +128,7 @@ function renderQueuedXdevCall(
 ): Component {
 	return renderDefaultToolExecution(
 		{
-			label: `queued ${label}`,
+			label: `已排队 ${label}`,
 			args: displayDeviceArgs(args),
 			options: { ...options, isPartial: true, spinnerFrame: undefined },
 		},
@@ -186,7 +186,7 @@ export function describeXdevCall(
 	const args = decodeInnerArgs(content);
 	if (!options.executionStarted) {
 		return describeDefaultToolExecution({
-			label: `queued ${displayDeviceLabel(name, mounted)}`,
+			label: `已排队 ${displayDeviceLabel(name, mounted)}`,
 			args: displayDeviceArgs(args),
 			options: { ...options, isPartial: true, spinnerFrame: undefined },
 		});

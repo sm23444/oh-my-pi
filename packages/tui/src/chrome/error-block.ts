@@ -41,7 +41,7 @@ export function formatErrorBlock(
 		.split("\n")
 		.map(line => line.trim())
 		.filter(line => line.length > 0);
-	if (lines.length === 0) lines.push("Unknown error");
+	if (lines.length === 0) lines.push("未知错误");
 	const wrapWidth = Math.max(1, contentWidth - CONTINUATION_INDENT.length);
 	const rows: string[] = [];
 	for (let index = 0; index < lines.length; index++) {
@@ -55,7 +55,7 @@ export function formatErrorBlock(
 		rows.push(
 			theme.fg(
 				"dim",
-				`${CONTINUATION_INDENT}… +${hidden} more line${hidden === 1 ? "" : "s"} (${expandKeyHint()} to expand)`,
+				`${CONTINUATION_INDENT}… 还有 ${hidden} 行${hidden === 1 ? "" : ""}（${expandKeyHint()} 展开）`,
 			),
 		);
 	}

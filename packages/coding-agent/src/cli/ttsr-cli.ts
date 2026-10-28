@@ -449,7 +449,8 @@ function renderTestReport(report: TestReport, verbose: boolean, isolated: boolea
 	const ctxLabel = report.source === "tool" ? `tool:${report.tool ?? "?"}` : report.source;
 	const pathLabel = report.filePath ? ` path=${report.filePath}` : "";
 	process.stdout.write(
-		`${chalk.bold("TTSR test")} — source=${chalk.cyan(ctxLabel)}${pathLabel} agent=${chalk.cyan(report.agent)} snippet=${chalk.dim(`${report.snippetBytes}b`)}\n`,
+		`${chalk.bold("TTSR 测试")} — 来源=${chalk.cyan(ctxLabel)}${pathLabel} 代理=${chalk.cyan(report.agent)} 片段=${chalk.dim(`${report.snippetBytes}b`)}
+`,
 	);
 	process.stdout.write(`${chalk.dim(`  "${report.snippetPreview}"`)}\n\n`);
 	if (report.inferenceNote) {
@@ -457,14 +458,15 @@ function renderTestReport(report: TestReport, verbose: boolean, isolated: boolea
 	}
 
 	if (report.triggered.length === 0) {
-		process.stdout.write(`${chalk.red("No rules triggered.")} (evaluated ${report.evaluated})\n`);
+		process.stdout.write(`${chalk.red("No rules triggered.")}（已评估 ${report.evaluated}）
+`);
 	} else {
 		process.stdout.write(`${chalk.green.bold(`Triggered (${report.triggered.length})`)}\n`);
 		for (const detail of report.triggered) renderRuleDetail(detail, true);
 	}
 
 	if (verbose && report.notTriggered.length > 0) {
-		process.stdout.write(`\n${chalk.dim(`Not triggered (${report.notTriggered.length})`)}\n`);
+		process.stdout.write(`\n${chalk.dim(`未触发（${report.notTriggered.length}）`)}\n`);
 		for (const detail of report.notTriggered) renderRuleDetail(detail, false);
 	}
 
@@ -490,12 +492,12 @@ function renderRuleDetail(detail: RuleMatchDetail, hit: boolean): void {
 		condParts.push(`agents: ${detail.agents!.join(", ")}`);
 	}
 	if (detail.skippedAst) {
-		condParts.push(chalk.dim(`astCondition: ${detail.skippedAst}`));
+		condParts.push(chalk.dim(`语法树条件：${detail.skippedAst}`));
 	}
 	if (detail.question) {
-		condParts.push(chalk.dim(`question (judged at runtime, not tested): ${detail.question}`));
+		condParts.push(chalk.dim(`问题（在运行时判断，未经测试）：${detail.question}`));
 	}
-	const condLabel = condParts.length > 0 ? condParts.join("  ") : chalk.dim("no active conditions");
+	const condLabel = condParts.length > 0 ? condParts.join("  ") : chalk.dim("无活动条件");
 	const provider = detail.sourceProvider ? chalk.dim(` [${detail.sourceProvider}]`) : "";
 	process.stdout.write(`  ${mark} ${chalk.bold(detail.name)}  ${condLabel}${provider}\n`);
 }
@@ -528,7 +530,7 @@ async function runList(json: boolean, cwd: string): Promise<void> {
 		return;
 	}
 
-	process.stdout.write(`${chalk.bold(`TTSR rules (${rules.length})`)}\n`);
+	process.stdout.write(`${chalk.bold(`TTSR 规则（${rules.length}）`)}\n`);
 	for (const rule of rules) {
 		const condParts: string[] = [];
 		if ((rule.condition ?? []).length > 0) condParts.push(`condition: ${rule.condition!.join(", ")}`);
@@ -539,7 +541,7 @@ async function runList(json: boolean, cwd: string): Promise<void> {
 		if ((rule.agents ?? []).length > 0) condParts.push(`agents: ${rule.agents!.join(", ")}`);
 		const provider = rule._source?.provider ? chalk.dim(` [${rule._source.provider}]`) : "";
 		process.stdout.write(
-			`  ${chalk.bold(rule.name)}${provider} ${chalk.dim(condParts.join("  ") || "no conditions")}\n`,
+			`  ${chalk.bold(rule.name)}${provider} ${chalk.dim(condParts.join("  ") || "无任何条件")}\n`,
 		);
 		if (rule.description) process.stdout.write(`${chalk.dim(`    ${rule.description}`)}\n`);
 	}
@@ -1013,24 +1015,27 @@ async function runScan(args: TtsrScanArgs, json: boolean, cwd: string): Promise<
 		);
 	} else {
 		process.stdout.write(
-			`${chalk.bold("TTSR scan")} — directory=${chalk.cyan(scanDir)} files=${chalk.dim(files.length)} scanned=${chalk.dim(scannedFiles)} rules=${chalk.dim(scanRulePlans.length)} gitignore=${chalk.dim(gitignore ? "on" : "off")} max-bytes=${chalk.dim(maxBytes === 0 ? "off" : String(maxBytes))}\n`,
+			`${chalk.bold("TTSR 扫描")} — 目录=${chalk.cyan(scanDir)} 文件=${chalk.dim(files.length)} 已扫描=${chalk.dim(scannedFiles)} 规则=${chalk.dim(scanRulePlans.length)} gitignore=${chalk.dim(gitignore ? "开启" : "关闭")} 最大字节数=${chalk.dim(maxBytes === 0 ? "关闭" : String(maxBytes))}
+`,
 		);
 		if (countSkipped(skipped) > 0) {
 			process.stdout.write(
-				`${chalk.dim(`  skipped: binary=${skipped.binary} large=${skipped.large} unreadable=${skipped.unreadable} no-relevant-rules=${skipped.noRelevantRules}`)}\n`,
+				`${chalk.dim(`  跳过：二进制=${skipped.binary} 过大=${skipped.large} 不可读=${skipped.unreadable} 无相关规则=${skipped.noRelevantRules}`)}\n`,
 			);
 		}
 
 		if (matchedFiles === 0) {
 			process.stdout.write(
-				`${chalk.green.bold("No rule matches found.")} (evaluated ${rules.length} rules on ${scannedFiles}/${files.length} files)\n`,
+				`${chalk.green.bold("No rule matches found.")}（评估了 ${rules.length} 条规则，覆盖 ${scannedFiles}/${files.length} 个文件）
+`,
 			);
 		} else {
 			process.stdout.write(
-				`${chalk.red.bold("Found violations/matches:")} (${totalMatches} matches across ${matchedFiles} files)\n`,
+				`${chalk.red.bold("Found violations/matches:")}（${totalMatches} 处匹配，跨 ${matchedFiles} 个文件）
+`,
 			);
 			if (!includeDetails) {
-				process.stdout.write(`${chalk.dim("  rerun with --verbose to list matched files and conditions")}\n`);
+				process.stdout.write(`${chalk.dim("  使用 --verbose 重新运行可列出匹配的文件和条件")}\n`);
 				return;
 			}
 

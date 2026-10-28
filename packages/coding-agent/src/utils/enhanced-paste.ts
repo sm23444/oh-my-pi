@@ -123,7 +123,7 @@ export class EnhancedPasteController {
 		}
 		if (status) {
 			this.#state = undefined;
-			this.#handlers.showStatus(`Enhanced paste failed: ${status}`);
+			this.#handlers.showStatus(`增强粘贴失败：${status}`);
 		}
 	}
 
@@ -185,7 +185,7 @@ export class EnhancedPasteController {
 		this.#state = undefined;
 		const bytes = Buffer.concat(state.chunks.map(chunk => Buffer.from(chunk, "base64")));
 		if (bytes.byteLength === 0) {
-			this.#handlers.showStatus("Clipboard paste was empty");
+			this.#handlers.showStatus("剪贴板粘贴内容为空");
 			return;
 		}
 		if (state.kind === "text") {
@@ -203,7 +203,7 @@ export class EnhancedPasteController {
 		const selected = choosePasteMime(state.mimes);
 		if (!selected) {
 			this.#state = undefined;
-			this.#handlers.showStatus("Clipboard paste has no supported text or image data");
+			this.#handlers.showStatus("剪贴板粘贴中没有受支持的文本或图像数据");
 			return;
 		}
 

@@ -18,11 +18,11 @@ export class RecapNotice extends Container {
 		super();
 		this.#recap = recap;
 		this.addChild(new Spacer(1));
-		this.addChild(new Text(`※ recap: ${recap}`, 1, 0).setStyleFn(line => theme.fg("dim", theme.italic(line))));
+		this.addChild(new Text(`※ 回顾：${recap}`, 1, 0).setStyleFn(line => theme.fg("dim", theme.italic(line))));
 	}
 
 	override describe(): NativeNode {
-		return node("row", { gap: "sm", align: "start", role: "omp.recap", title: "Recap while you were away" }, [
+		return node("row", { gap: "sm", align: "start", role: "omp.recap", title: "离开期间的回顾" }, [
 			node("icon", { name: "history" }, undefined, "icon"),
 			text(this.#recap, { wrap: "word" }),
 		]);

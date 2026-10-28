@@ -13,7 +13,7 @@ export const cfgTtsrEnabled = register({
 		tab: "context",
 		group: "Rules (TTSR)",
 		label: "TTSR",
-		description: "Interrupt the agent mid-stream when output matches rule patterns (Time-Traveling Stream Rules)",
+		description: "当输出匹配规则模式时在流中中断代理(Time-Traveling Stream Rules)",
 	},
 });
 
@@ -25,17 +25,17 @@ export const cfgTtsrJudge = register({
 	ui: {
 		tab: "context",
 		group: "Rules (TTSR)",
-		label: "Judged Rules",
+		label: "判定规则",
 		description:
-			"Ask the judge model role each `question` rule about completed replies, reasoning, and tool calls; a yes injects the rule as a warning",
+			"让评判模型角色针对每条 `question` 规则询问已完成的回复、推理和工具调用；回答为“是”则将该规则作为警告注入。",
 		options: [
 			{
 				value: "auto",
-				label: "Auto",
-				description: "Judge only when the judge role resolves to a native TypeSafe jev model",
+				label: "自动",
+				description: "仅在 judge 角色解析为原生 TypeSafe jev 模型时进行评判",
 			},
-			{ value: "on", label: "On", description: "Always judge, whichever model the judge role resolves to" },
-			{ value: "off", label: "Off", description: "Never judge; question rules stay inactive" },
+			{ value: "on", label: "开启", description: "始终评判，无论 judge 角色解析为哪种模型" },
+			{ value: "off", label: "关闭", description: "永不评判；问题规则保持不活跃" },
 		],
 	},
 });
@@ -48,8 +48,8 @@ export const cfgTtsrContextMode = register({
 	ui: {
 		tab: "context",
 		group: "Rules (TTSR)",
-		label: "TTSR Context Mode",
-		description: "What to do with partial output when TTSR triggers",
+		label: "TTSR 上下文模式",
+		description: "TTSR 触发时如何处理部分输出",
 	},
 });
 
@@ -61,13 +61,13 @@ export const cfgTtsrInterruptMode = register({
 	ui: {
 		tab: "context",
 		group: "Rules (TTSR)",
-		label: "TTSR Interrupt Mode",
-		description: "When to interrupt mid-stream vs inject warning after completion",
+		label: "TTSR 中断模式",
+		description: "何时在流中中断,与完成后注入警告",
 		options: [
-			{ value: "always", label: "always", description: "Interrupt on prose and tool streams" },
-			{ value: "prose-only", label: "prose-only", description: "Interrupt only on reply/thinking matches" },
-			{ value: "tool-only", label: "tool-only", description: "Interrupt only on tool-call argument matches" },
-			{ value: "never", label: "never", description: "Never interrupt; inject warning after completion" },
+			{ value: "always", label: "总是", description: "在正文和工具流上中断" },
+			{ value: "prose-only", label: "仅正文", description: "仅在 reply/thinking 匹配时中断" },
+			{ value: "tool-only", label: "仅工具", description: "仅在工具调用参数匹配时中断" },
+			{ value: "never", label: "从不", description: "从不中断;完成后注入警告" },
 		],
 	},
 });
@@ -80,8 +80,8 @@ export const cfgTtsrRepeatMode = register({
 	ui: {
 		tab: "context",
 		group: "Rules (TTSR)",
-		label: "TTSR Repeat Mode",
-		description: "How rules can repeat: once per session or after a message gap",
+		label: "TTSR 重复模式",
+		description: "规则如何重复:每个会话一次,或在消息间隔后",
 	},
 });
 
@@ -92,14 +92,14 @@ export const cfgTtsrRepeatGap = register({
 	ui: {
 		tab: "context",
 		group: "Rules (TTSR)",
-		label: "TTSR Repeat Gap",
-		description: "Messages before a rule can trigger again",
+		label: "TTSR 重复间隔",
+		description: "规则再次触发前需要经过的消息数",
 		options: [
-			{ value: "5", label: "5 messages" },
-			{ value: "10", label: "10 messages" },
-			{ value: "15", label: "15 messages" },
-			{ value: "20", label: "20 messages" },
-			{ value: "30", label: "30 messages" },
+			{ value: "5", label: "5 条消息" },
+			{ value: "10", label: "10 条消息" },
+			{ value: "15", label: "15 条消息" },
+			{ value: "20", label: "20 条消息" },
+			{ value: "30", label: "30 条消息" },
 		],
 	},
 });
@@ -111,8 +111,8 @@ export const cfgTtsrBuiltinRules = register({
 	ui: {
 		tab: "context",
 		group: "Rules (TTSR)",
-		label: "Built-in Rules",
-		description: "Load the default rules shipped with the agent (override individually with ttsr.disabledRules)",
+		label: "内置规则",
+		description: "加载代理自带默认规则(可通过 ttsr.disabledRules 单独覆盖)",
 	},
 });
 
@@ -123,8 +123,8 @@ export const cfgTtsrDisabledRules = register({
 	ui: {
 		tab: "context",
 		group: "Rules (TTSR)",
-		label: "Disabled Rules",
-		description: "Rule names to ignore entirely (applies to bundled defaults and your own rules)",
+		label: "禁用的规则",
+		description: "完全忽略的规则名(适用于内置默认规则和你自己的规则)",
 	},
 });
 

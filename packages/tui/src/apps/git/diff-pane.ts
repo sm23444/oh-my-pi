@@ -1107,7 +1107,7 @@ export class DiffPane {
 		if (this.state === "streaming" && this.#streaming) return this.#renderStreaming(width, height);
 		if (this.state === "asset" && this.#asset) return this.#renderAsset(width, height);
 		if (!doc || this.state !== "ready") {
-			const message = this.state === "loading" ? "Loading diff…" : this.emptyMessage;
+			const message = this.state === "loading" ? "正在加载差异…" : this.emptyMessage;
 			const lines: string[] = [];
 			for (let i = 0; i < height; i++) {
 				lines.push(

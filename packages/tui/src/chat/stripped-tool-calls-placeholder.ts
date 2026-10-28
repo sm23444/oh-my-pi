@@ -14,7 +14,7 @@ export class StrippedToolCallsPlaceholder extends Text {
 	#native: NativeNode | undefined;
 
 	constructor(strippedToolCalls: number, toolActivityVisible: boolean) {
-		const label = `${strippedToolCalls} tool call${strippedToolCalls === 1 ? "" : "s"} elided — no result on this branch`;
+		const label = `${strippedToolCalls} 次工具调用${strippedToolCalls === 1 ? "" : ""}已省略 — 此分支无结果`;
 		super(theme.fg("dim", theme.italic(label)), 1, 0);
 		this.#label = label;
 		this.#toolActivityVisible = toolActivityVisible;

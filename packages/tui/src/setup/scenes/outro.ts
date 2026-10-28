@@ -24,7 +24,7 @@ export function describeSetupOutro(): NativeNode {
 				node("spacer", { grow: 1 }),
 				logoNode(PI_LOGO, true),
 				text([span(saved, "success strong")], { wrap: "none" }),
-				text([span("Handing off to the normal CLI…", "muted")], { wrap: "none" }),
+				text([span("正在移交到常规 CLI…", "muted")], { wrap: "none" }),
 				node("progress", { value: null, max: { w: "48ch" } }),
 				node("spacer", { grow: 1 }),
 			],

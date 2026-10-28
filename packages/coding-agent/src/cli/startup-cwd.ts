@@ -56,7 +56,7 @@ export async function applyStartupCwd(parsed: Args): Promise<void> {
 			const code = (error as NodeJS.ErrnoException | null)?.code;
 			const hint =
 				code === "EACCES" || code === "EPERM"
-					? " On macOS, grant omp Files & Folders or Full Disk Access permission for the target directory."
+					? " 在 macOS 上，为目标目录授予 omp“文件与文件夹”或“完全磁盘访问”权限。"
 					: "";
 			throw new Error(`Cannot change working directory to ${parsed.cwd}: ${reason}.${hint}`);
 		}

@@ -143,7 +143,7 @@ class HistoryResultsList implements Component {
 		const items = this.#menu.visibleItems;
 
 		if (items.length === 0) {
-			const message = this.#tokens.length > 0 ? "No matching history" : "No history yet";
+			const message = this.#tokens.length > 0 ? "没有匹配的历史记录" : "暂无历史记录";
 			lines.push(theme.fg("muted", `  ${theme.status.info} ${message}`));
 			return lines;
 		}
@@ -400,7 +400,7 @@ export class HistorySearchComponent extends OverlayPanel {
 		return picker({
 			title: this.title,
 			icon: "history",
-			noun: "prompts",
+			noun: "提示",
 			size: "md",
 			layout: "rows",
 			preview: "none",

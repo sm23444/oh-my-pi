@@ -264,7 +264,7 @@ export class ExtensionUiController {
 				await this.ctx.session.reload();
 				await this.ctx.renderInitialMessages({ clearTerminalHistory: true });
 				await this.ctx.reloadTodos();
-				this.ctx.showStatus("Reloaded session");
+				this.ctx.showStatus("会话已重新加载");
 			},
 			newSession: async options => {
 				await this.ctx.prepareSessionSwitch();
@@ -310,7 +310,7 @@ export class ExtensionUiController {
 				await this.ctx.renderInitialMessages({ clearTerminalHistory: true });
 				await this.ctx.reloadTodos();
 				this.ctx.editor.setDraft(result.selectedText, result.selectedImages);
-				this.ctx.showStatus("Branched to new session");
+				this.ctx.showStatus("已分支到新会话");
 
 				return { cancelled: false };
 			},
@@ -326,7 +326,7 @@ export class ExtensionUiController {
 				if (result.editorText && !this.ctx.editor.getText().trim()) {
 					this.ctx.editor.setDraft(result.editorText, result.editorImages);
 				}
-				this.ctx.showStatus("Navigated to selected point");
+				this.ctx.showStatus("已导航到选定点");
 
 				return { cancelled: false };
 			},
@@ -496,7 +496,7 @@ export class ExtensionUiController {
 				await this.ctx.session.reload();
 				await this.ctx.renderInitialMessages({ clearTerminalHistory: true });
 				await this.ctx.reloadTodos();
-				this.ctx.showStatus("Reloaded session");
+				this.ctx.showStatus("会话已重新加载");
 			},
 			newSession: async options => {
 				await this.ctx.prepareSessionSwitch();
@@ -539,7 +539,7 @@ export class ExtensionUiController {
 				await this.ctx.renderInitialMessages({ clearTerminalHistory: true });
 				await this.ctx.reloadTodos();
 				this.ctx.editor.setDraft(result.selectedText, result.selectedImages);
-				this.ctx.showStatus("Branched to new session");
+				this.ctx.showStatus("已分支到新会话");
 
 				return { cancelled: false };
 			},
@@ -555,7 +555,7 @@ export class ExtensionUiController {
 				if (result.editorText && !this.ctx.editor.getText().trim()) {
 					this.ctx.editor.setDraft(result.editorText, result.editorImages);
 				}
-				this.ctx.showStatus("Navigated to selected point");
+				this.ctx.showStatus("已导航到选定点");
 
 				return { cancelled: false };
 			},
@@ -1429,7 +1429,7 @@ export class ExtensionUiController {
 	 */
 	#rejectGuestExtensionTurn(): boolean {
 		if (!this.ctx.collabGuest) return false;
-		this.ctx.showStatus("Extension-initiated turns are host-only during a collab session");
+		this.ctx.showStatus("协作会话期间，扩展发起的轮次仅限主机");
 		return true;
 	}
 

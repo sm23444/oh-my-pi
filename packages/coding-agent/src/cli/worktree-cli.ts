@@ -159,7 +159,7 @@ export async function addWorktree(options: AddWorktreeOptions): Promise<void> {
 		}
 	}
 	if (result.cloneError) {
-		console.error(chalk.dim(`warning: worktree clone fell back to plain checkout: ${result.cloneError}`));
+		console.error(chalk.dim(`警告：工作树克隆已回退到普通检出：${result.cloneError}`));
 	}
 	const hook = await vcs.runPostCheckoutHook(worktreePath, commit.sha);
 	process.stderr.write(hook.stdout);
@@ -174,7 +174,7 @@ export async function listWorktrees(options: ListWorktreesOptions): Promise<void
 		return;
 	}
 	if (entries.length === 0) {
-		console.log(chalk.dim(`No agent-managed worktrees found under ${getWorktreesDir()}.`));
+		console.log(chalk.dim(`在 ${getWorktreesDir()} 下未找到由代理管理的工作树。`));
 		return;
 	}
 	let live = 0;
@@ -187,7 +187,8 @@ export async function listWorktrees(options: ListWorktreesOptions): Promise<void
 		if (entry.orphanReason) orphaned += 1;
 		else live += 1;
 	}
-	console.log(chalk.dim(`\n${live} live · ${orphaned} orphaned · ${entries.length} total`));
+	console.log(chalk.dim(`
+${live} 活跃 · ${orphaned} 孤立 · ${entries.length} 总计`));
 }
 
 export async function clearWorktrees(options: ClearWorktreesOptions): Promise<{ removed: number; failed: number }> {
@@ -198,7 +199,7 @@ export async function clearWorktrees(options: ClearWorktreesOptions): Promise<{ 
 		if (options.json) {
 			console.log(JSON.stringify({ removed: 0, kept: entries.length }));
 		} else {
-			console.log(chalk.dim(options.all ? "No worktrees to remove." : "No orphaned worktrees to remove."));
+			console.log(chalk.dim(options.all ? "没有要移除的工作树。" : "没有需要移除的孤立工作树。"));
 		}
 		return { removed: 0, failed: 0 };
 	}
@@ -210,7 +211,8 @@ export async function clearWorktrees(options: ClearWorktreesOptions): Promise<{ 
 			for (const target of targets) {
 				console.log(`${chalk.yellow("would remove")}  ${target.path}`);
 			}
-			console.log(chalk.dim(`\n${targets.length} dir${targets.length === 1 ? "" : "s"} would be removed.`));
+			console.log(chalk.dim(`
+${targets.length} 个目录${targets.length === 1 ? "" : ""}将被移除。`));
 		}
 		return { removed: 0, failed: 0 };
 	}
@@ -264,7 +266,8 @@ export async function clearWorktrees(options: ClearWorktreesOptions): Promise<{ 
 			if (result.error) console.log(`          ${chalk.dim(result.error)}`);
 		}
 	}
-	console.log(chalk.dim(`\n${succeeded} removed${failed > 0 ? ` · ${chalk.red(`${failed} failed`)}` : ""}`));
+	console.log(chalk.dim(`
+已移除 ${succeeded} 个${failed > 0 ? ` · ${chalk.red(`${failed} failed`)}` : ""}`));
 	return { removed: succeeded, failed };
 }
 

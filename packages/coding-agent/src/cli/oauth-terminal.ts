@@ -161,7 +161,7 @@ export async function runTerminalOAuthLogin(
 	const usesManualInput = PASTE_CODE_LOGIN_PROVIDERS.has(provider);
 	return storage.oauth.login(provider, {
 		onAuth({ url, launchUrl, instructions }) {
-			process.stdout.write("\nOpen this URL in your browser:\n");
+			process.stdout.write("\n请在浏览器中打开此 URL：\n");
 			// Full URL first so the CLI works from any machine, including SSH
 			// sessions where a `launchUrl` (loopback `/launch` on the OMP
 			// host) would resolve against the caller's browser and fail.
@@ -171,7 +171,8 @@ export async function runTerminalOAuthLogin(
 				// Local shortcut for the machine running OMP. Terminals or
 				// screen-scrapers narrower than the full URL still get an
 				// unbroken copy target here.
-				process.stdout.write(`Local shortcut (this machine only): ${launchUrl}\n`);
+				process.stdout.write(`本地快捷方式（仅此计算机）：${launchUrl}
+`);
 			}
 			if (instructions) process.stdout.write(`${instructions}\n`);
 			process.stdout.write("\n");

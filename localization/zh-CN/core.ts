@@ -1,5 +1,6 @@
 import { parse, parseExpression } from "@babel/parser";
 import type { Node, StringLiteral, TemplateLiteral } from "@babel/types";
+import { additionalDisplayRole, hasSettingsUi, isUiModule, nestedDisplayRole } from "./display-context";
 
 export type PackageId = "agent" | "tui" | "utils";
 export const packagePaths: Record<PackageId, string> = {
@@ -26,6 +27,7 @@ export interface Candidate {
 	quote: string;
 	raw: string;
 	context: string;
+	expressionRanges?: { start: number; end: number }[];
 	expressions: string[];
 }
 export interface CatalogEntry {
@@ -42,7 +44,7 @@ export interface SeedEntry { en: string; zh: string; }
 
 const displayFields = new Set([
 	"label", "description", "title", "hint", "message", "detail", "summary",
-	"caption", "subtitle", "emptyMessage", "loadingText", "helpText", "header", "footer", "group",
+	"caption", "subtitle", "emptyMessage", "loadingText", "helpText", "header", "footer",
 ]);
 const keepEnglish = new Set([
 	"API", "LSP", "MCP", "JSON", "JSONL", "XML", "Git", "GitHub", "HTTP", "HTTPS", "OAuth",
@@ -54,10 +56,11 @@ const keepEnglish = new Set([
 export function inScope(pkg: PackageId, file: string): boolean {
 	if (pkg === "tui" && file === "src/prompt/tips.txt") return true;
 	if (!/\.tsx?$/.test(file) || /(?:\.d\.ts|\.test\.tsx?)$/.test(file)) return false;
-	if (/(?:^|\/)(?:test|fixtures|prompts|export|protocol|rpc|acp)(?:\/|$)/.test(file)) return false;
+	if (file.startsWith("src/") && /(?:^|\/)[^/]*settings\.ts$/.test(file)) return true;
+	if (/(?:^|\/)(?:test|(?:[\w-]+-)?fixtures|prompts|export|protocol|rpc|acp)(?:\/|$)/.test(file)) return false;
 	if (pkg === "utils") return file.startsWith("src/cli/") || file === "src/cli.ts";
-	if (pkg === "tui") return /^(?:src\/(?:overlays|setup|prompt|apps|components)\/|src\/(?:autocomplete|hotkeys-markdown|settings|editor|loader|tui)\.)/.test(file);
-	return /^(?:src\/(?:cli|commands|modes|slash-commands)\/|src\/config\/settings(?:\/|-|\.))/.test(file);
+	if (pkg === "tui") return isUiModule(pkg, file);
+	return file.startsWith("src/");
 }
 
 function propertyName(node: Node | null | undefined): string | undefined {
@@ -95,7 +98,7 @@ function roleOf(node: Node, ancestors: Node[], pkg: PackageId, file: string): st
 		if (pkg === "tui" && file === "src/prompt/welcome.ts" && parent.type === "VariableDeclarator" && parent.init === child && ["label", "NEW_TAG_TEXT"].includes(propertyName(parent.id) ?? "")) return "welcome:label";
 		if (parent.type === "ObjectProperty" && !parent.computed && parent.value === child) {
 			const field = propertyName(parent.key);
-			if (field && displayFields.has(field)) return `field:${field}`;
+			if (field && displayFields.has(field) && (isUiModule(pkg, file) || hasSettingsUi(ancestors))) return `field:${field}`;
 			if (pkg === "tui" && file === "src/prompt/welcome.ts" && field === "text") return "welcome:label";
 		}
 		if (parent.type === "CallExpression" && parent.arguments.includes(child as StringLiteral)) {
@@ -115,19 +118,27 @@ function roleOf(node: Node, ancestors: Node[], pkg: PackageId, file: string): st
 	return undefined;
 }
 
-const tokenPattern = /\[(?:NO-TERN|NEW)\]|\{(?:key|keys|tap|action):[^{}]+\}|`[^`\n]+`|https?:\/\/[^\s<>"')]+|\b(?:Ctrl|Alt|Shift|Cmd|Meta)(?:\+[A-Za-z0-9]+)+\b|[A-Za-z]:\\[^\s<>"']+|(?<![\w/])(?:~|\.{1,2})?\/[A-Za-z0-9_@.][A-Za-z0-9_@./*-]*|\b[\w.-]+\/[\w./@*-]+|\b[A-Z][A-Z0-9_]{2,}\b|--[a-z][a-z0-9-]*(?:=[^\s,;)]+)?|\b[a-z][\w-]*(?:\.[a-z][\w-]*)+\b|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[sdifjoOc%]|\{\{[^{}]+\}\}|\r\n|[\n\r\t]/g;
+const tokenPattern = /\[(?:NO-TERN|NEW)\]|\{(?:key|keys|tap|action):[^{}]+\}|`[^`\n]+`|https?:\/\/[^\s<>"')]+|\b(?:Ctrl|Alt|Shift|Cmd|Meta)(?:\+[A-Za-z0-9]+)+\b|[A-Za-z]:\\[^\s<>"']+|(?<![\w/])(?:~|\.{1,2})?\/[A-Za-z0-9_@.][A-Za-z0-9_@./*-]*|\b[\w.-]+\/[\w./@*-]+|\b[A-Z][A-Z0-9_]{2,}\b|--[a-z][a-z0-9-]*(?:=[^\s,;)]+)?|\b[a-z][\w-]*(?:\.[a-z][\w-]*)+\b|\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[sdifjoOc%]|\{\{[^{}]+\}\}|\r\n|[\n\r\t]/g;
 
 function protectText(text: string, tokens: string[]): string {
 	return text.replace(tokenPattern, value => {
+		if (["Hide/show", "Start/stop", "issue/PR"].includes(value)) return value;
 		const index = tokens.push(value) - 1;
 		return `__OMP_TOKEN_${index}__`;
 	});
 }
 
-export function literalParts(node: StringLiteral | TemplateLiteral, code: string): { source: string; text: string; tokens: string[]; expressions: string[] } {
+function translationId(pkg: PackageId, file: string, role: string, source: string, tokens: string[]): string {
+	const changedProtection = tokens.some(token => /^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/.test(token));
+	const protectionVersion = /(?:Hide\/show|Start\/stop|issue\/PR)/.test(source) ? "display-slashes-v1" : changedProtection ? "protected-identifiers-v1" : undefined;
+	return new Bun.CryptoHasher("sha256").update(JSON.stringify([pkg, file, role, source, ...(protectionVersion ? [protectionVersion] : [])])).digest("hex");
+}
+
+export function literalParts(node: StringLiteral | TemplateLiteral, code: string): { source: string; text: string; tokens: string[]; expressions: string[]; expressionRanges: { start: number; end: number }[] } {
 	const tokens: string[] = [];
 	const expressions: string[] = [];
-	if (node.type === "StringLiteral") return { source: node.value, text: protectText(node.value, tokens), tokens, expressions };
+	const expressionRanges: { start: number; end: number }[] = [];
+	if (node.type === "StringLiteral") return { source: node.value, text: protectText(node.value, tokens), tokens, expressions, expressionRanges };
 	let source = "";
 	let text = "";
 	for (let i = 0; i < node.quasis.length; i++) {
@@ -141,15 +152,18 @@ export function literalParts(node: StringLiteral | TemplateLiteral, code: string
 			const expression = code.slice((quasi.end ?? 0) + 2, (node.quasis[i + 1].start ?? 0) - 1);
 			const original = `\u0024{${expression}}`;
 			expressions.push(original);
+			expressionRanges.push({ start: quasi.end ?? 0, end: node.quasis[i + 1].start ?? 0 });
 			source += original;
 			text += `__OMP_TOKEN_${tokens.push(original) - 1}__`;
 		}
 	}
-	return { source, text, tokens, expressions };
+	return { source, text, tokens, expressions, expressionRanges };
 }
 
 export function extractCandidates(code: string, pkg: PackageId, file: string): Candidate[] {
 	if (!inScope(pkg, file)) return [];
+	// Generated shell programs are executable source; their descriptions come from the command registry.
+	if (pkg === "agent" && file === "src/cli/completion-gen.ts") return [];
 	if (pkg === "tui" && file === "src/prompt/tips.txt") {
 		return [...code.matchAll(/[^\r\n]+/g)].flatMap(match => {
 			const source = match[0];
@@ -158,27 +172,33 @@ export function extractCandidates(code: string, pkg: PackageId, file: string): C
 			const tokens: string[] = [];
 			const start = match.index;
 			const role = "welcome:tip";
-			return [{ id: new Bun.CryptoHasher("sha256").update(JSON.stringify([pkg, file, role, source])).digest("hex"), pkg, file, role, source, text: protectText(source, tokens), tokens, expressions: [], start, end: start + source.length, raw: source, quote: "", line: code.slice(0, start).split("\n").length, context: source }];
+			const text = protectText(source, tokens);
+			return [{ id: translationId(pkg, file, role, source, tokens), pkg, file, role, source, text, tokens, expressions: [], start, end: start + source.length, raw: source, quote: "", line: code.slice(0, start).split("\n").length, context: source }];
 		});
 	}
 	const tree = parse(code, { sourceType: "module", plugins: ["typescript", ...(file.endsWith(".tsx") ? ["jsx" as const] : [])] });
 	const candidates: Candidate[] = [];
+	const displayTemplates = new Set<Node>();
 	const visit = (node: Node, ancestors: Node[]) => {
 		if (node.type === "StringLiteral" || node.type === "TemplateLiteral") {
-			const role = roleOf(node, ancestors, pkg, file);
+			const role = roleOf(node, ancestors, pkg, file) ?? additionalDisplayRole(node, ancestors, pkg, file) ?? nestedDisplayRole(node, ancestors, displayTemplates);
 			if (role) {
+				if (node.type === "TemplateLiteral") displayTemplates.add(node);
 				const parts = literalParts(node, code);
 				const visible = parts.text.replace(/__OMP_TOKEN_\d+__/g, "").trim();
-				if (/[a-zA-Z]{2}/.test(visible) && !/[\u3400-\u9fff]/.test(visible) && !keepEnglish.has(parts.source.trim())) {
+				const technicalVariable = role === "display:variable" && /^[a-z0-9_.:/-]+$/.test(parts.source);
+				const technicalPayload = /^[?&][a-z][\w.-]*=[^\s]*$/i.test(parts.source)
+					|| (visible.includes("```") && !/[a-zA-Z]{2}/.test(visible.replace(/```[\s\S]*?```/g, "")))
+					|| (/^\|.*\|$/.test(visible) && !/[a-zA-Z]{2}/.test(visible.replace(/`[^`]*`/g, "")));
+				if ((/[a-zA-Z]{2}/.test(visible) || role === "display:plural") && !/[\u3400-\u9fff]/.test(visible) && !keepEnglish.has(parts.source.trim()) && !technicalVariable && !technicalPayload && !/^[~ *-]*[a-z][\w+.-]*:\/\//.test(parts.source)) {
 					if (/__OMP_TOKEN_\d+__/.test(parts.source)) throw new Error(`Reserved placeholder found in ${pkg}:${file}`);
 					const start = node.start ?? 0;
 					const end = node.end ?? 0;
 					const raw = code.slice(start + 1, end - 1);
-					const id = new Bun.CryptoHasher("sha256").update(JSON.stringify([pkg, file, role, parts.source])).digest("hex");
+					const id = translationId(pkg, file, role, parts.source, parts.tokens);
 					const lineStart = code.lastIndexOf("\n", start) + 1;
 					const lineEnd = code.indexOf("\n", end);
 					candidates.push({ id, pkg, file, role, ...parts, start, end, raw, quote: code[start], line: node.loc?.start.line ?? 0, context: code.slice(lineStart, lineEnd === -1 ? code.length : lineEnd).slice(0, 1000) });
-					return; // An outer template owns its embedded expressions.
 				}
 			}
 		}
@@ -196,7 +216,8 @@ function isNode(value: unknown): value is Node {
 	return typeof value === "object" && value !== null && "type" in value && typeof value.type === "string";
 }
 
-export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"> & { expressions?: string[] }, translation: string): void {
+export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"> & { expressions?: string[]; role?: string }, translation: string): void {
+	if (candidate.role === "display:plural" && candidate.text === "s" && candidate.tokens.length === 0 && translation === "") return;
 	if (!translation.trim() || translation.includes("\u0000")) throw new Error("Empty or invalid translation");
 	const expected = candidate.text.match(/__OMP_TOKEN_\d+__/g) ?? [];
 	const actual = translation.match(/__OMP_TOKEN_\d+__/g) ?? [];
@@ -211,12 +232,16 @@ export function validateTranslation(candidate: Pick<Candidate, "text" | "tokens"
 	const translatedOrder = [...translation.matchAll(/__OMP_TOKEN_(\d+)__/g)].map(match => Number(match[1])).filter(index => expressions.has(candidate.tokens[index]));
 	if (JSON.stringify(originalOrder) !== JSON.stringify(translatedOrder)) throw new Error("Translation changed template expression evaluation order");
 	if (!/[\u3400-\u9fff]/.test(translation)) throw new Error("Translation contains no Chinese text");
-	// Every unmasked program-shaped token introduced by a model is suspicious.
-	const introduced = translation.replace(/__OMP_TOKEN_\d+__/g, "").match(tokenPattern) ?? [];
-	if (introduced.length) throw new Error("Translation introduced an unprotected command, key, or line break");
+	// Inline code can cross interpolations; unchanged source fragments remain permitted.
+	const permitted = candidate.text.replace(/__OMP_TOKEN_\d+__/g, "").match(tokenPattern) ?? [];
+	for (const token of translation.replace(/__OMP_TOKEN_\d+__/g, "").match(tokenPattern) ?? []) {
+		const index = permitted.indexOf(token);
+		if (index === -1) throw new Error("Translation introduced an unprotected command, key, or line break");
+		permitted.splice(index, 1);
+	}
 }
 
-export function renderLiteral(candidate: Candidate, translation: string): string {
+export function renderLiteral(candidate: Candidate, translation: string, expressionOverrides = new Map<string, string>()): string {
 	validateTranslation(candidate, translation);
 	if (candidate.quote === "") return translation.replace(/__OMP_TOKEN_(\d+)__/g, (_all, index: string) => candidate.tokens[Number(index)]);
 	if (candidate.quote !== "`") {
@@ -230,7 +255,7 @@ export function renderLiteral(candidate: Candidate, translation: string): string
 	for (const match of translation.matchAll(/__OMP_TOKEN_(\d+)__/g)) {
 		raw += escape(translation.slice(offset, match.index));
 		const token = candidate.tokens[Number(match[1])];
-		raw += expressions.has(token) ? token : escape(token);
+		raw += expressions.has(token) ? (expressionOverrides.get(token) ?? token) : escape(token);
 		offset = (match.index ?? 0) + match[0].length;
 	}
 	raw += escape(translation.slice(offset));
@@ -238,19 +263,28 @@ export function renderLiteral(candidate: Candidate, translation: string): string
 }
 
 export function applyCatalog(code: string, candidates: Candidate[], catalog: Catalog, allowMissing = false): { code: string; applied: number } {
-	let result = code;
 	let applied = 0;
-	for (const candidate of [...candidates].sort((a, b) => b.start - a.start)) {
-		const entry = catalog[candidate.id];
-		if (!entry) {
-			if (allowMissing) continue;
-			throw new Error(`Missing translation: ${candidate.id} (${candidate.pkg}:${candidate.file}:${candidate.line})`);
+	const transform = (start: number, end: number, scope: Candidate[]): string => {
+		let result = code.slice(start, end);
+		const roots = scope.filter(candidate => !scope.some(parent => parent !== candidate && parent.start <= candidate.start && parent.end >= candidate.end));
+		for (const candidate of roots.sort((a, b) => b.start - a.start)) {
+			const entry = catalog[candidate.id];
+			const descendants = scope.filter(child => child !== candidate && child.start >= candidate.start && child.end <= candidate.end);
+			let replacement: string;
+			if (!entry) {
+				if (!allowMissing) throw new Error(`Missing translation: ${candidate.id} (${candidate.pkg}:${candidate.file}:${candidate.line})`);
+				replacement = transform(candidate.start, candidate.end, descendants);
+			} else {
+				if (entry.source !== candidate.source || entry.text !== candidate.text) throw new Error(`Stale translation: ${candidate.id}`);
+				const overrides = new Map((candidate.expressionRanges ?? []).map(range => [code.slice(range.start, range.end), transform(range.start, range.end, descendants.filter(child => child.start >= range.start && child.end <= range.end))]));
+				replacement = renderLiteral(candidate, entry.translation, overrides);
+				applied++;
+			}
+			result = result.slice(0, candidate.start - start) + replacement + result.slice(candidate.end - start);
 		}
-		if (entry.source !== candidate.source || entry.text !== candidate.text) throw new Error(`Stale translation: ${candidate.id}`);
-		result = result.slice(0, candidate.start) + renderLiteral(candidate, entry.translation) + result.slice(candidate.end);
-		applied++;
-	}
-	// Reject parse errors before writing any transformed file.
+		return result;
+	};
+	const result = transform(0, code.length, candidates);
 	if (candidates.length && candidates[0].quote !== "") parse(result, { sourceType: "module", plugins: ["typescript", ...(candidates[0]?.file.endsWith(".tsx") ? ["jsx" as const] : [])] });
 	return { code: result, applied };
 }

@@ -192,7 +192,7 @@ function renderNoteLines(uiTheme: Theme, note: string, width: number): string[] 
 	return replaceTabs(note)
 		.split("\n")
 		.map((line, index) => {
-			const linePrefix = index === 0 ? `${uiTheme.fg("dim", " Note:")} ` : continuationPrefix;
+			const linePrefix = index === 0 ? `${uiTheme.fg("dim", " 注意：")} ` : continuationPrefix;
 			const maxWidth = index === 0 ? firstLineWidth : continuationWidth;
 			return `${linePrefix}${uiTheme.fg("toolOutput", truncateToWidth(line, maxWidth))}`;
 		});
@@ -282,7 +282,7 @@ function renderAnswerOptionLines(
 
 	// Nothing was chosen (and no custom answer) → a lone cancelled marker.
 	if (selected.size === 0 && customInput === undefined && note === undefined) {
-		return [` ${uiTheme.styledSymbol("status.warning", "warning")} ${uiTheme.fg("warning", "Cancelled")}`];
+		return [` ${uiTheme.styledSymbol("status.warning", "warning")} ${uiTheme.fg("warning", "已取消")}`];
 	}
 
 	const out: string[] = [];
@@ -302,7 +302,7 @@ function renderAnswerOptionLines(
 
 function askHead(question: string | undefined, meta?: string): NativeToolHead {
 	const first = question ? plainText(sanitizeCarriageReturns(question)).trim().split("\n")[0] : "";
-	return { title: "Ask", target: first || undefined, targetKind: "text", meta: meta ? [meta] : undefined };
+	return { title: "询问", target: first || undefined, targetKind: "text", meta: meta ? [meta] : undefined };
 }
 
 /** One question of a multi-question result: the question as markdown over its answers. */
@@ -331,7 +331,7 @@ function describeAnswers(
 ): NativeChild[] {
 	const selected = new Set(selectedOptions ?? []);
 	if (selected.size === 0 && customInput === undefined && note === undefined) {
-		return [text([span("Cancelled", "warning")], { tone: "warning" })];
+		return [text([span("已取消", "warning")], { tone: "warning" })];
 	}
 	const labels = options && options.length > 0 ? options : (selectedOptions ?? []);
 	const rows = labels.map((label, index) => {
@@ -357,7 +357,7 @@ function describeAskCall(args: AskRenderArgs): NativeToolView {
 	return {
 		tool: askHead(first, more),
 		inline: true,
-		body: [text([span("Waiting for your answer…", "muted")])],
+		body: [text([span("正在等待您的回答…", "muted")])],
 	};
 }
 
@@ -428,7 +428,7 @@ function describeAskResult(result: ToolRenderResult<AskToolDetails>, args: AskRe
 				selectedIndicesFor(rawDetails.options, rawDetails.selectedOptions),
 			),
 			details.timedOut
-				? text([span("auto-selected after timeout — not a user choice", "muted")], {
+				? text([span("超时后自动选择 — 非用户选择", "muted")], {
 						wrap: "word",
 						role: "omp.tool.notice",
 					})
@@ -465,12 +465,12 @@ export const askToolRenderer = {
 		// throw here takes down the whole TUI render loop — normalize first.
 		const questions = normalizeRenderQuestions(args.questions);
 		if (questions && questions.length > 0) {
-			const header = `${label} ${uiTheme.fg("muted", `${questions.length} questions`)}`;
+			const header = `${label} ${uiTheme.fg("muted", `${questions.length} 个问题`)}`;
 			return framedToolCard(uiTheme, ({ width, contentWidth }) => {
 				const sections = questions.map(q => {
 					const meta: string[] = [];
-					if (q.multi) meta.push("multi");
-					if (q.options?.length) meta.push(`options:${q.options.length}`);
+					if (q.multi) meta.push("多选");
+					if (q.options?.length) meta.push(`选项:${q.options.length}`);
 					const metaStr = meta.length > 0 ? uiTheme.fg("dim", ` · ${meta.join(" · ")}`) : "";
 					// md() returns a shared cached array (module-level Markdown LRU) — copy before appending.
 					const mdLines = md(q.question, width);
@@ -485,7 +485,7 @@ export const askToolRenderer = {
 
 		// Single question
 		if (typeof args.question !== "string" || !args.question) {
-			const errorLine = formatErrorMessage("No question provided", uiTheme);
+			const errorLine = formatErrorMessage("未提供问题", uiTheme);
 			return framedToolCard(uiTheme, () => ({
 				header: errorLine,
 				sections: [],
@@ -496,9 +496,9 @@ export const askToolRenderer = {
 
 		const question = sanitizeCarriageReturns(args.question);
 		const meta: string[] = [];
-		if (args.multi) meta.push("multi");
+		if (args.multi) meta.push("多选");
 		const questionOptions = normalizeRenderOptions(args.options);
-		if (questionOptions?.length) meta.push(`options:${questionOptions.length}`);
+		if (questionOptions?.length) meta.push(`选项:${questionOptions.length}`);
 		const header = `${label}${formatMeta(meta, uiTheme)}`;
 		const multi = args.multi;
 		return framedToolCard(uiTheme, ({ width, contentWidth }) => {
@@ -530,7 +530,7 @@ export const askToolRenderer = {
 		if (!rawDetails) {
 			const txt = result.content[0];
 			const fallback = txt?.type === "text" && txt.text ? sanitizeCarriageReturns(txt.text) : "";
-			const header = renderStatusLine({ icon: "warning", title: "Ask" }, uiTheme);
+			const header = renderStatusLine({ icon: "warning", title: "询问" }, uiTheme);
 			const body = fallback ? `\n${uiTheme.fg("dim", fallback)}` : "";
 			return new Text(`${header}${body}`, 0, 0);
 		}
@@ -538,7 +538,7 @@ export const askToolRenderer = {
 
 		// Chat redirect: user chose "Chat about this" instead of answering.
 		if (details.chatRedirect) {
-			const header = renderStatusLine({ icon: "info", title: "Ask", meta: ["chat redirect"] }, uiTheme);
+			const header = renderStatusLine({ icon: "info", title: "询问", meta: ["chat redirect"] }, uiTheme);
 			const questions = details.questions ?? [];
 			return framedToolCard(uiTheme, ({ width }) => ({
 				header,
@@ -560,7 +560,7 @@ export const askToolRenderer = {
 			const header = renderStatusLine(
 				{
 					icon: hasAnySelection ? "success" : "warning",
-					title: "Ask",
+					title: "询问",
 					meta: [`${results.length} questions`],
 				},
 				uiTheme,
@@ -611,8 +611,8 @@ export const askToolRenderer = {
 			(details.selectedOptions && details.selectedOptions.length > 0);
 		const header = renderStatusLine(
 			hasSelection
-				? { iconOverride: uiTheme.styledSymbol("tool.ask", "accent"), title: "Ask" }
-				: { icon: "warning", title: "Ask" },
+				? { iconOverride: uiTheme.styledSymbol("tool.ask", "accent"), title: "询问" }
+				: { icon: "warning", title: "询问" },
 			uiTheme,
 		);
 		const dOptions = details.options;
@@ -640,7 +640,7 @@ export const askToolRenderer = {
 			];
 			if (dTimedOut) {
 				// Distinguish auto-selection from a real user choice in the transcript.
-				bodyLines.push(uiTheme.fg("dim", "auto-selected after timeout — not a user choice"));
+				bodyLines.push(uiTheme.fg("dim", "超时后自动选择 — 非用户选择"));
 			}
 			return {
 				header,

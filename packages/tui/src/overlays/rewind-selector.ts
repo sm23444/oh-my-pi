@@ -148,7 +148,7 @@ interface MarkTagged {
 const EARLIER_TURNS = node(
 	"row",
 	{ role: "omp.rewind.earlier", gap: "xs", align: "center" },
-	[kbd("a"), text([span("load earlier turns", "muted")])],
+	[kbd("a"), text([span("加载更早的轮次", "muted")])],
 	"earlier",
 );
 
@@ -714,7 +714,7 @@ export class RewindSelectorComponent implements Component {
 					page.push(this.#marked(blocks[i]!, picked ? "pick" : undefined));
 			}
 			if (matches.length === 0) {
-				page.push(text([span(`No turns match "${filter}"`, "muted")], { role: "omp.rewind.empty" }));
+				page.push(text([span(`没有轮次匹配“${filter}”`, "muted")], { role: "omp.rewind.empty" }));
 			}
 			return page;
 		}
@@ -779,14 +779,14 @@ export class RewindSelectorComponent implements Component {
 		const below = targets.length - picked - 1;
 		const spans = [
 			span(`${theme.icon.rewind} `, "accent"),
-			span(target.isUserTurn ? "Rewind to here" : "Continue from here", "accent strong"),
+			span(target.isUserTurn ? "回退到此处" : "从此处继续", "accent strong"),
 		];
-		if (target.isUserTurn) spans.push(span(`${theme.sep.dot}the prompt returns to the editor`, "dim"));
+		if (target.isUserTurn) spans.push(span(`${theme.sep.dot}提示返回到编辑器`, "dim"));
 		spans.push(
 			span(
 				below > 0
-					? `${theme.sep.dot}${below} turn${below === 1 ? "" : "s"} below dropped`
-					: `${theme.sep.dot}nothing below to drop`,
+					? `${theme.sep.dot}下方丢弃了 ${below} 个回合${below === 1 ? "" : ""}`
+					: `${theme.sep.dot}下方没有可丢弃的回合`,
 				"dim",
 			),
 		);
@@ -832,9 +832,9 @@ export class RewindSelectorComponent implements Component {
 		const memo = `${this.#selected}|${this.#activeVariant}|${this.#siblingSelected}|${this.#truncated}|${columns.length}|${filter ?? "\0"}`;
 		if (this.#bar?.memo === memo && this.#bar.targets === this.#targets) return this.#bar.node;
 
-		const title = text([span(`${theme.icon.rewind} `, "accent"), span("Rewind", "strong")], { wrap: "none" });
+		const title = text([span(`${theme.icon.rewind} `, "accent"), span("回退", "strong")], { wrap: "none" });
 		const upDown = actionHint(["tui.select.up", "tui.select.down"], "step");
-		const rewind = actionButton("Rewind here", "rewind", { keys: "enter", tone: "accent" });
+		const rewind = actionButton("回退到这里", "rewind", { keys: "enter", tone: "accent" });
 		let children: NativeChild[];
 		if (filter === undefined) {
 			const column = columns[this.#activeVariant - 1];
@@ -849,7 +849,7 @@ export class RewindSelectorComponent implements Component {
 					{ keys: ["f"], label: "筛选" },
 					this.#truncated ? { keys: ["a"], label: "更早轮次" } : undefined,
 				]),
-				actionBar([null, actionButton("Cancel", "cancel", { keys: "escape" }), rewind]),
+				actionBar([null, actionButton("取消", "cancel", { keys: "escape" }), rewind]),
 			];
 		} else {
 			const matches = this.#filterMatches();
@@ -860,13 +860,13 @@ export class RewindSelectorComponent implements Component {
 				text(
 					[
 						matches.length === 0
-							? span("no matches", "error")
+							? span("无匹配", "error")
 							: span(`${at >= 0 ? at + 1 : "-"}/${matches.length}`, "dim"),
 					],
 					{ wrap: "none" },
 				),
 				hintsRow([upDown, { keys: ["left", "right"], label: "用户轮次" }]),
-				actionBar([null, actionButton("Show all", "cancel", { keys: "escape" }), rewind]),
+				actionBar([null, actionButton("显示全部", "cancel", { keys: "escape" }), rewind]),
 			];
 		}
 		const root = node("row", { role: "omp.rewind.bar", gap: "md", align: "center", wrap: true }, children);

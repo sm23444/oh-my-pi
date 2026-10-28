@@ -86,15 +86,15 @@ function formatSessionStatus(status: SessionSelectorStatus | undefined): string 
 function sessionStatusSpan(status: SessionSelectorStatus | undefined): TspSpan | undefined {
 	switch (status) {
 		case "complete":
-			return span("done", "success");
+			return span("完成", "success");
 		case "interrupted":
-			return span("interrupted", "warning");
+			return span("已中断", "warning");
 		case "aborted":
-			return span("aborted", "muted");
+			return span("已中止", "muted");
 		case "error":
-			return span("error", "error");
+			return span("出错", "error");
 		case "pending":
-			return span("pending", "accent");
+			return span("待处理", "accent");
 		default:
 			return undefined;
 	}
@@ -177,7 +177,7 @@ function sessionPreview(session: SessionSelectorEntry, forkedFrom: string | unde
 			["Status", status && [status]],
 			["Forked from", forkedFrom],
 		]),
-		conversation.length > 0 && node("section", { head: "Conversation" }, conversation),
+		conversation.length > 0 && node("section", { head: "会话" }, conversation),
 	]);
 }
 
@@ -1004,9 +1004,9 @@ class SessionList<T extends SessionSelectorEntry> implements Component {
 		const title = session.title ? plainText(session.title).trim() : "";
 		const badges: { text: string; tone?: TspTone; title?: string }[] = [];
 		if (session.parentSessionPath) {
-			badges.push({ text: "fork", title: `派生自“${this.parentLabel(session.parentSessionPath)}”` });
+			badges.push({ text: "派生", title: `派生自“${this.parentLabel(session.parentSessionPath)}”` });
 		}
-		if (session.path === currentPath) badges.push({ text: "current", tone: "accent" });
+		if (session.path === currentPath) badges.push({ text: "当前", tone: "accent" });
 		const when = pickerDate(session.modified);
 		const detail = this.#showCwd ? (session.cwd ? cwdSpans(session.cwd) : undefined) : title ? message : undefined;
 		const dot = sessionStatusTone(session.status);
@@ -1051,7 +1051,7 @@ class SessionList<T extends SessionSelectorEntry> implements Component {
 			if (!base) continue;
 			add.push(
 				now.has(key)
-					? { ...base, badges: [...(base.badges ?? []), { text: "history", title: "在提示历史中匹配" }] }
+					? { ...base, badges: [...(base.badges ?? []), { text: "历史记录", title: "在提示历史中匹配" }] }
 					: base,
 			);
 		}
@@ -1089,8 +1089,8 @@ class SessionList<T extends SessionSelectorEntry> implements Component {
 		const memo = this.#listNative;
 		if (memo?.items === items.items && memo.selected === selected && memo.query === query) return memo.node;
 		const empty: TspText = this.#showCwd
-			? [span("No sessions found", "muted")]
-			: [span("No sessions in current folder. Press ", "muted"), span("tab", "key"), span(" to view all.", "muted")];
+			? [span("未找到会话", "muted")]
+			: [span("当前文件夹中没有会话。按 ", "muted"), span("Tab 键", "key"), span(" 查看全部。", "muted")];
 		const list = node(
 			"list",
 			{ selected: selected ?? null, filter: query.trim() || undefined, empty, virtual: true },
@@ -1122,10 +1122,10 @@ class SessionList<T extends SessionSelectorEntry> implements Component {
 			detail.push(part);
 		};
 		if (session.title && message) push(span(message, "dim"));
-		if (current) push(span("current", "accent"));
+		if (current) push(span("当前", "accent"));
 		const status = sessionStatusSpan(session.status);
 		if (status) push(status);
-		if (session.parentSessionPath) push(span("fork", "dim"));
+		if (session.parentSessionPath) push(span("派生", "dim"));
 		if (this.#showCwd && session.cwd) push(span(shortenPath(session.cwd), "path"));
 		const item = node(
 			"item",
@@ -1584,7 +1584,7 @@ export class SessionSelectorComponent<T extends SessionSelectorEntry = SessionSe
 				this.#toggling = true;
 				this.#messageContainer.clear();
 				this.#messageContainer.addChild(new Text(theme.fg("muted", "正在加载所有项目…"), 0, 0));
-				this.#message = { kind: "loading", text: "Loading all projects…" };
+				this.#message = { kind: "loading", text: "正在加载所有项目…" };
 				this.#onRequestRender?.();
 				try {
 					global = await this.#loadAllSessions();
@@ -1639,7 +1639,7 @@ export class SessionSelectorComponent<T extends SessionSelectorEntry = SessionSe
 
 	#showError(message: string): void {
 		this.#messageContainer.clear();
-		this.#message = { kind: "error", text: `Error: ${plainText(message)}` };
+		this.#message = { kind: "error", text: `错误：${plainText(message)}` };
 		this.#pickerErrorOpen = true;
 		this.#messageContainer.addChild(new Text(theme.fg("error", `错误：${replaceTabs(message)}`), 0, 0));
 		this.#messageContainer.addChild(new Spacer(1));
@@ -1763,7 +1763,7 @@ export class SessionSelectorComponent<T extends SessionSelectorEntry = SessionSe
 					this.#syncScopeTitles(session.path, stored);
 					if (this.#preview?.session === session) this.#preview = undefined;
 				} else {
-					this.#showError("Failed to rename session.");
+					this.#showError("重命名会话失败。");
 				}
 			} catch (err) {
 				this.#showError(err instanceof Error ? err.message : String(err));
@@ -1832,7 +1832,7 @@ export class SessionSelectorComponent<T extends SessionSelectorEntry = SessionSe
 		const cancel = interruptKey();
 		const hint = theme.fg(
 			"muted",
-			`[${this.#onDelete ? `${formatKeyHints(["delete", "backspace"])} delete · ` : ""}${this.#onRename ? `${formatKeyHint("f2")} rename · ` : ""}${formatKeyHint("enter")} 选择 · ${formatKeyHint("tab")} ${scopeHint} · ${cancel} 取消]`,
+			`[${this.#onDelete ? `${formatKeyHints(["delete", "backspace"])} 删除 · ` : ""}${this.#onRename ? `${formatKeyHint("f2")} 重命名 · ` : ""}${formatKeyHint("enter")} 选择 · ${formatKeyHint("tab")} ${scopeHint} · ${cancel} 取消]`,
 		);
 		return [row("", width), row(hint, width), row("", width), bottomBorder(width)];
 	}
@@ -1961,7 +1961,7 @@ export class SessionSelectorComponent<T extends SessionSelectorEntry = SessionSe
 			{
 				...(title ? { title, ...(folder ? { subtitle: folder } : {}) } : {}),
 				icon: "history",
-				noun: "sessions",
+				noun: "会话",
 				size: this.#standalone ? "screen" : "lg",
 				layout: "cards",
 				preview: "side",
@@ -1985,7 +1985,7 @@ export class SessionSelectorComponent<T extends SessionSelectorEntry = SessionSe
 				empty: this.#scope === "all" || !toggle ? "No sessions yet" : "No sessions in this folder yet",
 				confirm: choice
 					? {
-							text: `Delete “${sessionLabel(choice.session)}”? This removes the session file.`,
+							text: `删除“${sessionLabel(choice.session)}”？这将移除会话文件。`,
 							act: "delete-confirm",
 							label: "删除",
 						}

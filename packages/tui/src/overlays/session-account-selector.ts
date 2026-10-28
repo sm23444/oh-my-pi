@@ -71,7 +71,7 @@ export class SessionAccountSelectorComponent extends OverlayPanel {
 			title: `${providerName} 账户`,
 			subtitle: "固定本会话用于发送请求的账户",
 			icon: "key-round",
-			noun: "accounts",
+			noun: "账户",
 			current: accounts.filter(account => account.active).map(account => String(account.credentialId)),
 			confirm: "Pin",
 			decorate: item => {

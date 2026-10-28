@@ -249,7 +249,7 @@ const TILES_SHOWN = 9;
 
 /** Pending wait frame. */
 function waitRenderCall(_args: object, _options: RenderResultOptions, uiTheme: Theme): Component {
-	return new Text(renderStatusLine({ icon: "pending", title: "Wait" }, uiTheme), 0, 0);
+	return new Text(renderStatusLine({ icon: "pending", title: "等待" }, uiTheme), 0, 0);
 }
 
 /** Result frame for wait snapshots and the agents roster. */
@@ -267,7 +267,7 @@ function jobsRenderResult(
 
 	if (jobs.length === 0 && agents.length === 0) {
 		const fallback = result.content?.find(c => c.type === "text")?.text || "No jobs to process";
-		const header = renderStatusLine({ icon: "warning", title: "Wait" }, uiTheme);
+		const header = renderStatusLine({ icon: "warning", title: "等待" }, uiTheme);
 		return new Text([header, formatEmptyMessage(fallback, uiTheme)].join("\n"), 0, 0);
 	}
 
@@ -279,11 +279,11 @@ function jobsRenderResult(
 	// The title already carries the running count, so meta lists only the
 	// settled categories — "waiting on 19 of 19 · 19 running" read awkward.
 	const meta: string[] = [];
-	if (counts.completed > 0) meta.push(uiTheme.fg("success", `${counts.completed} done`));
-	if (counts.failed > 0) meta.push(uiTheme.fg("error", `${counts.failed} failed`));
-	if (counts.cancelled > 0) meta.push(uiTheme.fg("warning", `${counts.cancelled} cancelled`));
+	if (counts.completed > 0) meta.push(uiTheme.fg("success", `${counts.completed} 已完成`));
+	if (counts.failed > 0) meta.push(uiTheme.fg("error", `${counts.failed} 失败`));
+	if (counts.cancelled > 0) meta.push(uiTheme.fg("warning", `${counts.cancelled} 已取消`));
 	if (agents.length > 0 && jobs.length > 0) {
-		meta.push(uiTheme.fg("accent", `${agents.length} agent${agents.length === 1 ? "" : "s"}`));
+		meta.push(uiTheme.fg("accent", `${agents.length} 个代理${agents.length === 1 ? "" : ""}`));
 	}
 
 	const headerIcon: ToolUIStatus =
@@ -291,12 +291,12 @@ function jobsRenderResult(
 	const jobsNoun = jobs.length === 1 ? "job" : "jobs";
 	const description =
 		jobs.length === 0
-			? `${agents.length} running agent${agents.length === 1 ? "" : "s"} — no jobs`
+			? `${agents.length} 个正在运行的代理${agents.length === 1 ? "" : ""} — 无任务`
 			: counts.running > 0
 				? counts.running === jobs.length
-					? `waiting on ${jobs.length} ${jobsNoun}`
-					: `waiting on ${counts.running} of ${jobs.length} ${jobsNoun}`
-				: `${jobs.length} ${jobsNoun} settled`;
+					? `正在等待 ${jobs.length} 个${jobsNoun}`
+					: `正在等待 ${counts.running} / ${jobs.length} 个${jobsNoun}`
+				: `${jobs.length} 个${jobsNoun} 已完成`;
 
 	const header = renderStatusLine(
 		{
@@ -382,7 +382,7 @@ function jobsRenderResult(
 			const word = job.status === "completed" ? "done" : job.status;
 			const exit =
 				job.exitCode !== undefined && job.exitCode !== 0
-					? `${uiTheme.sep.dot}${uiTheme.fg("error", `exit ${job.exitCode}`)}`
+					? `${uiTheme.sep.dot}${uiTheme.fg("error", `退出码 ${job.exitCode}`)}`
 					: "";
 			// The outcome (status, exit, duration) is reserved first; a long id
 			// gives way so a failure is never cut off the row.
@@ -421,7 +421,7 @@ function jobsRenderResult(
 			}
 		}
 		const hiddenSettled = settledJobs.length - PREVIEW_LIMITS.COLLAPSED_ITEMS;
-		if (hiddenSettled > 0) lines.push(`${indent}${uiTheme.fg("dim", `… ${hiddenSettled} more settled`)}`);
+		if (hiddenSettled > 0) lines.push(`${indent}${uiTheme.fg("dim", `… 还有 ${hiddenSettled} 个已结束`)}`);
 		const shownWidgetJobs = widgetJobs.slice(0, PREVIEW_LIMITS.COLLAPSED_ITEMS);
 		for (const job of shownWidgetJobs) {
 			const typeBadge = formatBadge(job.type, statusToColor(job.status), uiTheme);
@@ -442,7 +442,7 @@ function jobsRenderResult(
 		// into one count; the header already carries it while nothing settled.
 		const quietRunning = counts.running - shownWidgetJobs.length;
 		if (quietRunning > 0 && (settledJobs.length > 0 || shownWidgetJobs.length < widgetJobs.length)) {
-			lines.push(`${indent}${uiTheme.fg("dim", `${quietRunning} still running`)}`);
+			lines.push(`${indent}${uiTheme.fg("dim", `${quietRunning} 仍在运行`)}`);
 		}
 		return lines;
 	};
@@ -484,7 +484,7 @@ function jobsRenderResult(
 									statusToIcon(job.status),
 									uiTheme,
 									job.status === "running" ? options.spinnerFrame : undefined,
-								)}${job.exitCode === undefined ? "" : `${uiTheme.sep.dot}${uiTheme.fg(job.exitCode === 0 ? "muted" : "error", `exit ${job.exitCode}`)}`}`;
+								)}${job.exitCode === undefined ? "" : `${uiTheme.sep.dot}${uiTheme.fg(job.exitCode === 0 ? "muted" : "error", `退出码 ${job.exitCode}`)}`}`;
 								const typeBadge = formatBadge(job.type, statusToColor(job.status), uiTheme);
 								const completion =
 									job.status === "running" && job.completionPercent !== undefined
@@ -685,7 +685,7 @@ function bodyLines(
 	);
 	const hidden = preview.hidden;
 	if (hidden > 0) {
-		lines.push(`${indent}${quote} ${theme.fg("dim", `… +${hidden} more ${hidden === 1 ? "line" : "lines"}`)}`);
+		lines.push(`${indent}${quote} ${theme.fg("dim", `… +${hidden} 更多${hidden === 1 ? "行" : "行"}`)}`);
 	}
 	return lines;
 }
@@ -718,13 +718,13 @@ export function createIrcMessageCard(
 			: card.kind === "autoreply"
 				? `IRC ${uiTheme.nav.selected} ${card.to?.trim() || "?"}`
 				: card.kind === "workpool"
-					? `Pool ${card.pool?.trim() || "?"} ${uiTheme.nav.selected} ${card.to?.trim() || "?"}`
+					? `池 ${card.pool?.trim() || "?"} ${uiTheme.nav.selected} ${card.to?.trim() || "?"}`
 					: `IRC ${from} ${uiTheme.nav.selected} ${card.to?.trim() || "?"}`;
 	const body = card.body ?? "";
 	const meta: string[] = [];
-	if (card.kind === "autoreply") meta.push("auto");
+	if (card.kind === "autoreply") meta.push("自动");
 	if (card.kind === "workpool" && card.mode) meta.push(card.mode);
-	if (card.replyTo) meta.push("reply");
+	if (card.replyTo) meta.push("回复");
 	const age = messageAge(card.timestamp);
 	if (age) meta.push(age);
 	const component = createCachedComponent(getExpanded, (width, expanded) => {
@@ -753,7 +753,7 @@ export function createIrcMessageCard(
 		},
 		compact([
 			card.timestamp
-				? row([elapsed(Date.now() - card.timestamp), text([span("ago", "dim")])], { gap: "xs" })
+				? row([elapsed(Date.now() - card.timestamp), text([span("前", "dim")])], { gap: "xs" })
 				: undefined,
 			body.trim() ? md(body) : undefined,
 		]),
@@ -769,9 +769,9 @@ function describeJobsResult(
 	const agents = result.details?.agents ?? [];
 	if (jobs.length === 0 && agents.length === 0) {
 		return {
-			head: toolHead("Wait"),
+			head: toolHead("等待"),
 			tone: "warning",
-			body: [text([span(plainText(resultText(result) || "No jobs to process"), "dim")])],
+			body: [text([span(plainText(resultText(result) || "没有可处理的任务"), "dim")])],
 		};
 	}
 	const counts = { completed: 0, failed: 0, cancelled: 0, running: 0 };
@@ -779,16 +779,16 @@ function describeJobsResult(
 	const noun = jobs.length === 1 ? "job" : "jobs";
 	const title =
 		jobs.length === 0
-			? `${agents.length} running agent${agents.length === 1 ? "" : "s"} — no jobs`
+			? `${agents.length} 个正在运行的代理${agents.length === 1 ? "" : ""} — 无任务`
 			: counts.running > 0
 				? counts.running === jobs.length
-					? `waiting on ${jobs.length} ${noun}`
-					: `waiting on ${counts.running} of ${jobs.length} ${noun}`
-				: `${jobs.length} ${noun} settled`;
+					? `等待 ${jobs.length} 个${noun}`
+					: `等待 ${counts.running}/${jobs.length} 个${noun}`
+				: `${jobs.length} 个 ${noun} 已结束`;
 	const head: TspSpan[] = [span(title, "toolTitle strong")];
-	if (counts.completed > 0) head.push(span(` ${counts.completed} done`, "success"));
-	if (counts.failed > 0) head.push(span(` ${counts.failed} failed`, "error"));
-	if (counts.cancelled > 0) head.push(span(` ${counts.cancelled} cancelled`, "warning"));
+	if (counts.completed > 0) head.push(span(` ${counts.completed} 个已完成`, "success"));
+	if (counts.failed > 0) head.push(span(` ${counts.failed} 个失败`, "error"));
+	if (counts.cancelled > 0) head.push(span(` ${counts.cancelled} 个已取消`, "warning"));
 	const order: Record<JobSnapshot["status"], number> = {
 		running: 0,
 		failed: 1,
@@ -804,7 +804,7 @@ function describeJobsResult(
 	}
 	if (sorted.length > TILES_SHOWN) {
 		const rest = sorted.length - TILES_SHOWN;
-		body.push(text([span(`+${rest} more ${rest === 1 ? "job" : "jobs"} · /jobs`, "dim")], { role: "omp.wait.more" }));
+		body.push(text([span(`+${rest} 个更多 ${rest === 1 ? "任务" : "任务"} · /jobs`, "dim")], { role: "omp.wait.more" }));
 	}
 	for (const agent of agents) {
 		const spans: TspSpan[] = [span(plainText(agent.id), "muted")];
@@ -816,7 +816,7 @@ function describeJobsResult(
 				{ gap: "sm", role: "omp.wait.agent" },
 				[
 					node("badge", {
-						text: agent.live ? "agent" : "agent · no turn",
+						text: agent.live ? "代理" : "智能体 · 无轮次",
 						tone: agent.live ? "accent" : "warning",
 					}),
 					text(spans, { truncate: "end", grow: 1 }),
@@ -850,7 +850,7 @@ function describeMessage(
 		preview: { lines: BODY_LINES_COLLAPSED + 1 },
 		body: compact([
 			ts
-				? row([text([span("received", "dim")]), elapsed(Date.now() - ts), text([span("ago", "dim")])], {
+				? row([text([span("已接收", "dim")]), elapsed(Date.now() - ts), text([span("前", "dim")])], {
 						gap: "xs",
 					})
 				: undefined,
@@ -866,11 +866,11 @@ export const waitToolRenderer = {
 	inline: true,
 	mergeCallAndResult: true,
 	activitySummary(): ToolActivitySummary {
-		return { label: "Wait", detail: "Background work or peer message" };
+		return { label: "等待", detail: "后台工作或对等消息" };
 	},
 	renderCall: waitRenderCall,
 	describeCall(): NativeToolView {
-		return { head: toolHead("Wait"), inline: true };
+		return { head: toolHead("等待"), inline: true };
 	},
 	describeResult(
 		result: ToolRenderResult<CoordinationDetails>,
@@ -881,7 +881,7 @@ export const waitToolRenderer = {
 			const details = result.details;
 			if (details?.interrupted) {
 				return {
-					head: toolHead("Wait", "interrupted by message"),
+					head: toolHead("等待", "interrupted by message"),
 					tone: "info",
 					inline: true,
 				};
@@ -902,7 +902,7 @@ export const waitToolRenderer = {
 	): Component {
 		if (result.details?.interrupted && !result.isError) {
 			return new Text(
-				renderStatusLine({ icon: "info", title: "Wait", meta: ["interrupted by message"] }, uiTheme),
+				renderStatusLine({ icon: "info", title: "等待", meta: ["interrupted by message"] }, uiTheme),
 				0,
 				0,
 			);

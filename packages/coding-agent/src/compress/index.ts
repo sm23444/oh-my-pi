@@ -98,7 +98,7 @@ export async function runCompressCommand(options: CompressCommandOptions): Promi
 	const emitToStdout = targets.length === 1 && !options.inPlace && options.output === undefined;
 
 	try {
-		console.error(`Compressing ${targets.length} file(s)${options.model ? ` with ${options.model}` : ""}`);
+		console.error(`正在压缩 ${targets.length} 个文件${options.model ? ` 使用 ${options.model}` : ""}`);
 		progress.start(targets.length);
 		const settled = await mapWithConcurrencyLimitAllSettled(
 			targets,
@@ -281,7 +281,7 @@ function reportFile(file: CompressFileResult, emitToStdout: boolean): void {
 		? `${metrics.sourceTokens} → ${metrics.draftTokens} tok (${(metrics.ratio * 100).toFixed(1)}%)`
 		: "no draft";
 	console.error(
-		`  ${label}: ${file.status}, ${size}, ${file.rounds} draft(s), ${file.draft?.losses.length ?? 0} loss(es)`,
+		`  ${label}：${file.status}，${size}，${file.rounds} 份草稿，${file.draft?.losses.length ?? 0} 个损失项`,
 	);
 	for (const loss of file.draft?.losses ?? []) {
 		const content = loss.content.length > LOSS_PREVIEW ? `${loss.content.slice(0, LOSS_PREVIEW)}…` : loss.content;
@@ -289,10 +289,10 @@ function reportFile(file: CompressFileResult, emitToStdout: boolean): void {
 		console.error(`      ${sanitizeText(loss.reason)}`);
 	}
 	if (file.status !== "approved") {
-		console.error("      nothing written");
+		console.error("      未写入任何内容");
 		return;
 	}
-	if (file.outputPath) console.error(`      wrote ${shortenPath(file.outputPath)}`);
+	if (file.outputPath) console.error(`      已写入 ${shortenPath(file.outputPath)}`);
 	if (emitToStdout && file.draft) console.log(file.draft.text);
 }
 
@@ -310,9 +310,9 @@ function summarize(files: CompressFileResult[], emitToStdout: boolean): Compress
 	if (files.length > 1) {
 		const percent = sourceTokens === 0 ? "0.0" : (((sourceTokens - draftTokens) / sourceTokens) * 100).toFixed(1);
 		console.error(
-			`Approved ${approved}/${files.length}: ${sourceTokens} → ${draftTokens} tokens (${percent}% smaller)`,
+			`已批准 ${approved}/${files.length}：${sourceTokens} → ${draftTokens} tokens（缩小 ${percent}% smaller）`,
 		);
 	}
-	if (!emitToStdout && approved === 0) console.error("Nothing written");
+	if (!emitToStdout && approved === 0) console.error("未写入任何内容");
 	return { exitCode: approved === files.length ? 0 : 1, files, sourceTokens, draftTokens };
 }

@@ -90,12 +90,12 @@ export function buildStatusFooter(opts: {
 	const parts: string[] = [];
 
 	if (opts.hiddenLineCount > 0 && !opts.suppressHiddenCount) {
-		parts.push(theme.fg("dim", `… ${opts.hiddenLineCount} more lines (${expandKeyHint()} to expand)`));
+		parts.push(theme.fg("dim", `… 还有 ${opts.hiddenLineCount} 行（${expandKeyHint()} 展开）`));
 	}
 	if (opts.status === "cancelled") {
-		parts.push(theme.fg("warning", "(cancelled)"));
+		parts.push(theme.fg("warning", "（已取消）"));
 	} else if (opts.status === "error") {
-		parts.push(theme.fg("error", `(exit ${opts.exitCode})`));
+		parts.push(theme.fg("error", `（退出码 ${opts.exitCode}）`));
 	}
 	if (opts.truncation) {
 		parts.push(theme.fg("warning", formatTruncationMetaNotice(opts.truncation)));
@@ -159,7 +159,7 @@ export function describeExecutionCard(input: ExecutionCardInput): NativeNode {
 	if (input.images) children.push(...input.images);
 	if (running) {
 		children.push(
-			node("spinner", { label: [span(`Running… (${interruptKey()} to cancel)`, "muted")] }, undefined, "running"),
+			node("spinner", { label: [span(`正在运行…（按 ${interruptKey()} 取消）`, "muted")] }, undefined, "running"),
 		);
 	}
 	const notes: TspSpan[] = [];
@@ -249,8 +249,8 @@ export function describeExecutionTool(input: ExecutionToolInput): NativeNode {
 		],
 		{ key: "run", tone: state === "failed" ? "error" : undefined },
 	);
-	const badges: { text: string; tone?: TspTone; title?: string }[] = [{ text: "you", tone: "user" }];
-	if (input.excluded) badges.push({ text: "not sent", title: "Not sent to the model", tone: "muted" });
+	const badges: { text: string; tone?: TspTone; title?: string }[] = [{ text: "你", tone: "user" }];
+	if (input.excluded) badges.push({ text: "未发送", title: "未发送到模型", tone: "muted" });
 	return node(
 		"tool",
 		{
@@ -263,7 +263,7 @@ export function describeExecutionTool(input: ExecutionToolInput): NativeNode {
 			age: running ? ms : undefined,
 			took: running ? undefined : ms,
 			exit: input.status === "error" ? input.exitCode : undefined,
-			note: input.status === "cancelled" ? "cancelled" : undefined,
+			note: input.status === "cancelled" ? "已取消" : undefined,
 			frame: "card",
 			collapsible: true,
 			collapsed: !input.expanded,

@@ -147,7 +147,7 @@ export class ComposerShapePreview implements Component {
 		if (option?.description) caption.push(span(` · ${option.description}`, "muted"));
 		const described = col(
 			[
-				text([span("Preview:", "muted")]),
+				text([span("预览：", "muted")]),
 				node("editor", { placeholder: "Ask anything, edit files, run tools", readonly: true, maxLines: 1 }),
 				text(caption, { wrap: "word" }),
 			],

@@ -426,7 +426,7 @@ function renderInlineEditRow(
 					? undefined
 					: uiTheme.styledSymbol(isDelete ? "tool.delete" : "tool.move", "accent"),
 				op: opts.op,
-				title: isDelete ? "Delete" : "Move",
+				title: isDelete ? "删除" : "移动",
 				rawPath: opts.rawPath,
 				rename: opts.rename,
 				linkPath: opts.linkPath,
@@ -485,7 +485,7 @@ function renderPlainTextPreview(text: string, uiTheme: Theme, _filePath?: string
 		preview += `${uiTheme.fg("toolOutput", truncateToWidth(replaceTabs(line), CALL_TEXT_PREVIEW_WIDTH))}\n`;
 	}
 	if (previewLines.hidden > 0) {
-		preview += uiTheme.fg("dim", `… ${previewLines.hidden} more lines`);
+		preview += uiTheme.fg("dim", `… 还有 ${previewLines.hidden} 行`);
 	}
 	return preview.trimEnd();
 }
@@ -575,7 +575,7 @@ function formatStreamingDiff(
 		if (tail.hidden) {
 			// Exact hidden line/hunk counts require scanning the discarded prefix,
 			// which would make every streaming update scale with the complete diff.
-			rendered += `${uiTheme.fg("dim", "… (content above)")}\n`;
+			rendered += `${uiTheme.fg("dim", "…（上方内容）")}\n`;
 		}
 		rendered += renderDiffColored(tail.content, { filePath: rawPath, theme: uiTheme });
 		return rendered;
@@ -1030,8 +1030,8 @@ function renderDiffSection(
 		let text = `\n${visibleDiff}`;
 		if (!expanded && (hiddenHunks > 0 || hiddenLines > 0)) {
 			const remainder: string[] = [];
-			if (hiddenHunks > 0) remainder.push(`${hiddenHunks} more hunks`);
-			if (hiddenLines > 0) remainder.push(`${hiddenLines} more lines`);
+			if (hiddenHunks > 0) remainder.push(`还有 ${hiddenHunks} 个代码块`);
+			if (hiddenLines > 0) remainder.push(`还有 ${hiddenLines} 行`);
 			text += uiTheme.fg("toolOutput", `\n… (${remainder.join(", ")}) ${formatExpandHint(uiTheme)}`);
 		}
 		return text;
@@ -1152,7 +1152,7 @@ export const editToolRenderer = {
 					op,
 					rawPath,
 					rename,
-					extraSuffix: fileCount > 1 ? uiTheme.fg("dim", ` (+${fileCount - 1} more)`) : undefined,
+					extraSuffix: fileCount > 1 ? uiTheme.fg("dim", ` (+${fileCount - 1} 个)`) : undefined,
 				});
 				let body = getCallPreview(
 					editArgs,
@@ -1284,7 +1284,7 @@ export const editToolRenderer = {
 			if (remaining > 0) {
 				body.push(
 					node("spinner", {
-						label: [span(`${remaining} more file${remaining > 1 ? "s" : ""} pending…`, "muted")],
+						label: [span(`还有 ${remaining} 个文件${remaining > 1 ? "" : ""}待处理…`, "muted")],
 					}),
 				);
 			}
@@ -1355,7 +1355,7 @@ function editToolHead(facts: EditHeadFacts): NativeToolHead {
 			? `${displayPath(sanitizeText(facts.path))}${facts.line ? `:${facts.line}` : ""}`
 			: undefined;
 	return {
-		title: multi ? "Edit" : getOperationTitle(facts.op),
+		title: multi ? "编辑" : getOperationTitle(facts.op),
 		target,
 		targetKind: multi ? "text" : "path",
 		href: multi ? undefined : facts.href,
@@ -1439,7 +1439,7 @@ function editFileParts(
 	} else if (editDiffPreview && "error" in editDiffPreview) {
 		body.push(errorText(editDiffPreview.error));
 	} else if (details && op !== "delete" && op !== "create" && !rename) {
-		body.push(noteText(`No changes were made${shownPath ? ` to ${shownPath}` : ""}.`));
+		body.push(noteText(`未做任何更改${shownPath ? ` 到 ${shownPath}` : ""}。`));
 	}
 	const diagnostics = diagnosticsSection(details?.diagnostics);
 	if (diagnostics) body.push(diagnostics);
@@ -1596,7 +1596,7 @@ function renderSingleFileResult(
 						: rawPath
 							? shortenPath(sanitizeText(rawPath))
 							: "";
-					body = uiTheme.fg("dim", `No changes were made${noChangePath ? ` to ${noChangePath}` : ""}.`);
+					body = uiTheme.fg("dim", `未做任何更改${noChangePath ? ` 到 ${noChangePath}` : ""}。`);
 				}
 			} else if (editDiffPreview) {
 				if ("error" in editDiffPreview) body = uiTheme.fg("error", replaceTabs(editDiffPreview.error));
@@ -1689,8 +1689,8 @@ function renderMultiFileResult(
 					renderStatusLine(
 						{
 							iconOverride: spinner,
-							title: "Edit",
-							description: uiTheme.fg("dim", `${remaining} more file${remaining > 1 ? "s" : ""} pending…`),
+							title: "编辑",
+							description: uiTheme.fg("dim", `还有 ${remaining} 个文件${remaining > 1 ? "" : ""}待处理…`),
 						},
 						uiTheme,
 					),

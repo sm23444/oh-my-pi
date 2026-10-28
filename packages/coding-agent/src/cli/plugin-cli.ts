@@ -274,17 +274,18 @@ async function handleMarketplace(args: string[], flags: PluginCommandArgs["flags
 		default: {
 			if (subcommand !== "list") {
 				console.error(chalk.red(`Unknown marketplace subcommand: ${subcommand}`));
-				console.error(chalk.dim("Valid subcommands: add, remove, update, list"));
+				console.error(chalk.dim("有效子命令：add、remove、update、list"));
 				process.exit(1);
 			}
 			try {
 				const marketplaces = await manager.listMarketplaces();
 				if (marketplaces.length === 0) {
-					console.log(chalk.dim("No marketplaces configured"));
-					console.log(chalk.dim(`\nAdd one with: ${APP_NAME} plugin marketplace add <source>`));
+					console.log(chalk.dim("未配置任何市场"));
+					console.log(chalk.dim(`
+添加方式：${APP_NAME} plugin marketplace add <source>`));
 					return;
 				}
-				console.log(chalk.bold("Configured Marketplaces:\n"));
+				console.log(chalk.bold("已配置的市场：\n"));
 				for (const mp of marketplaces) {
 					console.log(`  ${chalk.cyan(mp.name)}  ${chalk.dim(mp.sourceUri)}`);
 				}
@@ -304,11 +305,12 @@ async function handleDiscover(args: string[], _flags: PluginCommandArgs["flags"]
 		const plugins = await manager.listAvailablePlugins(marketplace);
 
 		if (plugins.length === 0) {
-			console.log(chalk.dim(marketplace ? `No plugins found in ${marketplace}` : "No plugins available"));
+			console.log(chalk.dim(marketplace ? `未在 ${marketplace} 中找到任何插件` : "没有可用的插件"));
 			return;
 		}
 
-		console.log(chalk.bold(`Available Plugins${marketplace ? ` (${marketplace})` : ""}:\n`));
+		console.log(chalk.bold(`可用插件${marketplace ? ` (${marketplace})` : ""}:
+`));
 		for (const plugin of plugins) {
 			console.log(`  ${chalk.cyan(plugin.name)}${plugin.version ? `@${plugin.version}` : ""}`);
 			if (plugin.description) {
@@ -401,11 +403,11 @@ async function handleUpgrade(
 async function previewMarketplaceUpgradeAll(manager: MarketplaceManager): Promise<void> {
 	const updates = await manager.previewUpgradeAllPlugins();
 	if (updates.length === 0) {
-		console.log(chalk.dim("[dry-run] All marketplace plugins are up to date"));
+		console.log(chalk.dim("[模拟运行] 所有市场插件均为最新版本"));
 		return;
 	}
 	for (const u of updates) {
-		console.log(chalk.dim(`[dry-run] Would upgrade ${u.pluginId} (${u.scope}): ${u.from} -> ${u.to}`));
+		console.log(chalk.dim(`[模拟运行] 将升级 ${u.pluginId} (${u.scope}): ${u.from} -> ${u.to}`));
 	}
 }
 
@@ -424,7 +426,7 @@ async function previewMarketplaceReinstall(
 		const line = row.to
 			? `Would ${row.change} ${label}: ${row.from ?? "?"} -> ${row.to}`
 			: `Would reinstall ${label} from ${row.from ?? "?"}; the new version is known only after fetching its source`;
-		console.log(chalk.dim(`[dry-run] ${line}`));
+		console.log(chalk.dim(`[模拟运行] ${line}`));
 	}
 }
 
@@ -473,7 +475,7 @@ function printLinkPreview(pluginPath: string, json?: boolean): void {
 	if (json) {
 		console.log(JSON.stringify({ dryRun: true, action: "link", path: pluginPath }, null, 2));
 	} else {
-		console.log(chalk.dim(`[dry-run] Would link ${pluginPath}`));
+		console.log(chalk.dim(`[模拟运行] 将链接 ${pluginPath}`));
 	}
 }
 
@@ -484,12 +486,12 @@ async function handleInstall(
 ): Promise<void> {
 	if (packages.length === 0) {
 		console.error(chalk.red(`Usage: ${APP_NAME} plugin install <source>[features] ...`));
-		console.error(chalk.dim("Examples:"));
-		console.error(chalk.dim(`  ${APP_NAME} plugin install @oh-my-pi/exa`));
-		console.error(chalk.dim(`  ${APP_NAME} plugin install name@marketplace`));
-		console.error(chalk.dim(`  ${APP_NAME} plugin install github:user/repo`));
-		console.error(chalk.dim(`  ${APP_NAME} plugin install https://github.com/user/repo#v1.0`));
-		console.error(chalk.dim(`  ${APP_NAME} plugin install ./path/to/local/plugin`));
+		console.error(chalk.dim("示例:"));
+		console.error(chalk.dim(`  运行 ${APP_NAME} plugin install @oh-my-pi/exa`));
+		console.error(chalk.dim(`  ${APP_NAME} 插件安装命令：plugin install name@marketplace`));
+		console.error(chalk.dim(`  ${APP_NAME} 插件安装命令：plugin install github:user/repo`));
+		console.error(chalk.dim(`  ${APP_NAME} 插件安装命令：plugin install https://github.com/user/repo#v1.0`));
+		console.error(chalk.dim(`  ${APP_NAME} 插件安装命令：plugin install ./path/to/local/plugin`));
 		process.exit(1);
 	}
 
@@ -510,7 +512,7 @@ async function handleInstall(
 						if (flags.json) {
 							console.log(JSON.stringify(preview, null, 2));
 						} else {
-							console.log(chalk.dim(`[dry-run] Would install ${spec}`));
+							console.log(chalk.dim(`[试运行] 将安装 ${spec}`));
 						}
 					},
 				);
@@ -592,11 +594,11 @@ async function handleInstall(
 				console.log(JSON.stringify(result, null, 2));
 			} else {
 				if (flags.dryRun) {
-					console.log(chalk.dim(`[dry-run] Would install ${spec}`));
+					console.log(chalk.dim(`[试运行] 将安装 ${spec}`));
 				} else {
 					console.log(chalk.green(`${theme.status.success} Installed ${result.name}@${result.version}`));
 					if (result.enabledFeatures && result.enabledFeatures.length > 0) {
-						console.log(chalk.dim(`  Features: ${result.enabledFeatures.join(", ")}`));
+						console.log(chalk.dim(`  功能：${result.enabledFeatures.join(", ")}`));
 					}
 					if (result.manifest.description) {
 						console.log(chalk.dim(`  ${result.manifest.description}`));
@@ -672,7 +674,7 @@ async function handleUninstall(
 					}),
 				);
 			} else {
-				console.log(chalk.dim(`[dry-run] Would uninstall ${name}`));
+				console.log(chalk.dim(`[试运行] 将卸载 ${name}`));
 			}
 			continue;
 		}
@@ -722,13 +724,14 @@ async function handleList(manager: PluginManager, flags: { json?: boolean }): Pr
 	}
 
 	if (npmPlugins.length === 0 && mktPlugins.length === 0) {
-		console.log(chalk.dim("No plugins installed"));
-		console.log(chalk.dim(`\nInstall plugins with: ${APP_NAME} plugin install <package>`));
+		console.log(chalk.dim("未安装插件"));
+		console.log(chalk.dim(`
+使用以下命令安装插件：${APP_NAME} plugin install <package>`));
 		return;
 	}
 
 	if (npmPlugins.length > 0) {
-		console.log(chalk.bold("npm Plugins:\n"));
+		console.log(chalk.bold("npm 插件：\n"));
 		for (const plugin of npmPlugins) {
 			const status = plugin.enabled ? chalk.green(theme.status.enabled) : chalk.dim(theme.status.disabled);
 			const nameVersion = `${plugin.name}@${plugin.version}`;
@@ -737,7 +740,7 @@ async function handleList(manager: PluginManager, flags: { json?: boolean }): Pr
 				console.log(chalk.dim(`  ${plugin.manifest.description}`));
 			}
 			if (plugin.enabledFeatures && plugin.enabledFeatures.length > 0) {
-				console.log(chalk.dim(`  Features: ${plugin.enabledFeatures.join(", ")}`));
+				console.log(chalk.dim(`  功能：${plugin.enabledFeatures.join(", ")}`));
 			}
 			if (plugin.manifest.features) {
 				const availableFeatures = Object.keys(plugin.manifest.features);
@@ -746,7 +749,7 @@ async function handleList(manager: PluginManager, flags: { json?: boolean }): Pr
 					const featureDisplay = availableFeatures
 						.map(f => (enabledSet.has(f) ? chalk.green(f) : chalk.dim(f)))
 						.join(", ");
-					console.log(chalk.dim(`  Available: [${featureDisplay}]`));
+					console.log(chalk.dim(`  可用：[${featureDisplay}]`));
 				}
 			}
 		}
@@ -754,11 +757,11 @@ async function handleList(manager: PluginManager, flags: { json?: boolean }): Pr
 
 	if (mktPlugins.length > 0) {
 		if (npmPlugins.length > 0) console.log();
-		console.log(chalk.bold("Marketplace Plugins:\n"));
+		console.log(chalk.bold("Marketplace 插件：\n"));
 		for (const plugin of mktPlugins) {
 			const entry = plugin.entries[0];
 			const version = entry?.version ?? "unknown";
-			const shadowLabel = plugin.shadowedBy ? chalk.dim(" [shadowed]") : "";
+			const shadowLabel = plugin.shadowedBy ? chalk.dim(" [被遮蔽]") : "";
 			const scopeLabel = chalk.dim(` (${plugin.scope})`);
 			console.log(`  ${plugin.id} (${version})${scopeLabel}${shadowLabel}`);
 		}
@@ -806,7 +809,7 @@ async function handleDoctor(
 		return;
 	}
 
-	console.log(chalk.bold("Plugin Health Check\n"));
+	console.log(chalk.bold("插件健康检查\n"));
 
 	for (const check of checks) {
 		const icon =
@@ -817,7 +820,7 @@ async function handleDoctor(
 					: chalk.red(theme.status.error);
 		console.log(`${icon} ${check.name}: ${check.message}`);
 		if (check.fixed) {
-			console.log(chalk.dim(`  ${theme.nav.cursor} Fixed`));
+			console.log(chalk.dim(`  ${theme.nav.cursor} 已修复`));
 		}
 	}
 
@@ -827,11 +830,11 @@ async function handleDoctor(
 	const fixed = checks.filter(c => c.fixed).length;
 
 	console.log("");
-	console.log(`摘要：${ok} 正常，${warnings} 警告，${errors} 错误${fixed > 0 ? `, ${fixed} fixed` : ""}`);
+	console.log(`摘要：${ok} 正常，${warnings} 警告，${errors} 错误${fixed > 0 ? `，${fixed} 已修复` : ""}`);
 
 	if (errors > 0) {
 		if (!flags.fix) {
-			console.log(chalk.dim("\nRun with --fix to attempt automatic repair"));
+			console.log(chalk.dim("\n运行 --fix 以尝试自动修复"));
 		}
 		process.exit(1);
 	}
@@ -911,10 +914,11 @@ async function handleFeatures(
 		return;
 	}
 
-	console.log(chalk.bold(`Features for ${pluginName}:\n`));
+	console.log(chalk.bold(`${pluginName} 的功能：
+`));
 
 	if (!plugin.manifest.features || Object.keys(plugin.manifest.features).length === 0) {
-		console.log(chalk.dim("  No optional features available"));
+		console.log(chalk.dim("  没有可用的可选功能"));
 		return;
 	}
 
@@ -922,7 +926,7 @@ async function handleFeatures(
 	for (const [name, feat] of Object.entries(plugin.manifest.features)) {
 		const enabled = enabledSet.has(name);
 		const icon = enabled ? chalk.green(theme.status.enabled) : chalk.dim(theme.status.disabled);
-		const defaultLabel = feat.default ? chalk.dim(" (default)") : "";
+		const defaultLabel = feat.default ? chalk.dim(" （默认）") : "";
 		console.log(`${icon} ${name}${defaultLabel}`);
 		if (feat.description) {
 			console.log(chalk.dim(`    ${feat.description}`));
@@ -972,22 +976,23 @@ async function handleConfig(
 				return;
 			}
 
-			console.log(chalk.bold(`Settings for ${pluginName}:\n`));
+			console.log(chalk.bold(`${pluginName} 的设置：
+`));
 
 			if (Object.keys(schema).length === 0) {
-				console.log(chalk.dim("  No settings defined"));
+				console.log(chalk.dim("  未定义任何设置"));
 				return;
 			}
 
 			for (const [k, s] of Object.entries(schema)) {
 				const value = settings[k] ?? s.default;
-				const displayValue = s.secret && value ? "********" : String(value ?? chalk.dim("(not set)"));
+				const displayValue = s.secret && value ? "********" : String(value ?? chalk.dim("（未设置）"));
 				console.log(`  ${k}: ${displayValue}`);
 				if (s.description) {
 					console.log(chalk.dim(`    ${s.description}`));
 				}
 				if (s.env) {
-					console.log(chalk.dim(`    env: ${s.env}`));
+					console.log(chalk.dim(`    环境变量：${s.env}`));
 				}
 			}
 			break;
@@ -1054,7 +1059,7 @@ async function handleConfig(
 
 		default:
 			console.error(chalk.red(`Unknown config subcommand: ${subcommand}`));
-			console.error(chalk.dim("Valid subcommands: list, get, set, delete, validate"));
+			console.error(chalk.dim("有效子命令：list、get、set、delete、validate"));
 			process.exit(1);
 	}
 }
@@ -1179,9 +1184,9 @@ async function handleSetEnabled(
 // =============================================================================
 
 export function printPluginHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} plugin`)} - 插件生命周期管理
+	console.log(`${chalk.bold(`${APP_NAME} 插件`)} - 插件生命周期管理
 
-${chalk.bold("Commands:")}
+${chalk.bold("命令:")}
   install <source>[features]     从 npm、GitHub 或 git URL 安装插件
   uninstall <pkg>                移除插件
   list                           显示已安装的插件
@@ -1194,27 +1199,27 @@ ${chalk.bold("Commands:")}
   marketplace <cmd>            管理插件市场源（add、remove、update、list）
   discover [marketplace]        浏览可用的市场插件
 
-${chalk.bold("Feature Syntax:")}
+${chalk.bold("功能语法:")}
   pkg                使用默认特性安装
   pkg[feat1,feat2]   安装指定特性
   pkg[*]             安装所有特性
   pkg[]              不安装任何可选特性
 
-${chalk.bold("Sources:")}
+${chalk.bold("来源:")}
   pkg, pkg@1.2.3                  npm 包（可选锁定版本）
   github:user/repo[#ref]          GitHub 简写（亦支持 gitlab:、bitbucket:、codeberg:、sourcehut:）
   https://github.com/user/repo    完整 git URL（https、ssh 或 git 协议）
   name@marketplace                市场插件（参见 marketplace 命令）
   ./path, ../path, /abs, ~/path   本地插件目录（符号链接，等同于 plugin link）
 
-${chalk.bold("Config Subcommands:")}
+${chalk.bold("Config 子命令:")}
   config list <pkg>              列出所有设置
   config get <pkg> <key>         获取设置的值
   config set <pkg> <key> <val>   修改设置的值
   config delete <pkg> <key>      删除设置
   config validate                验证所有插件设置
 
-${chalk.bold("Options:")}
+${chalk.bold("选项:")}
   --json           以 JSON 格式输出
   --fix            尝试自动修复（doctor）
   --force          不提示直接覆盖（install）
@@ -1222,7 +1227,7 @@ ${chalk.bold("Options:")}
   --dry-run        仅预览变更而不实际应用（市场插件的 install、uninstall、link、upgrade）
   -l, --local      使用项目本地覆盖
 
-${chalk.bold("Examples:")}
+${chalk.bold("示例:")}
   ${APP_NAME} plugin install @oh-my-pi/exa[search]
   ${APP_NAME} plugin list --json
   ${APP_NAME} plugin features my-plugin --enable search,web

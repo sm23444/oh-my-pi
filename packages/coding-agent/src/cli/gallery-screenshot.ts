@@ -84,7 +84,8 @@ export async function captureGalleryScreenshots(
 	const outPaths: string[] = [];
 	for (let i = 0; i < chunks.length; i++) {
 		if (chunks.length > 1) {
-			process.stderr.write(`Rendering gallery screenshot ${i + 1}/${chunks.length}…\n`);
+			process.stderr.write(`正在渲染图库截图 ${i + 1}/${chunks.length}…
+`);
 		}
 		const outPng = resolveScreenshotOutputPath(options.out, baseDir, i, chunks.length);
 		const lines = chunks[i].flatMap(section => section.lines);

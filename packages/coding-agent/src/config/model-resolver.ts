@@ -2441,7 +2441,7 @@ export async function restoreModelFromSession(
 
 	if (restoredModel && hasApiKey) {
 		if (shouldPrintMessages) {
-			console.log(chalk.dim(`Restored model: ${savedProvider}/${savedModelId}`));
+			console.log(chalk.dim(`已恢复模型：${savedProvider}/${savedModelId}`));
 		}
 		return { model: restoredModel, fallbackMessage: undefined };
 	}
@@ -2456,7 +2456,7 @@ export async function restoreModelFromSession(
 	// If we already have a model, use it as fallback
 	if (currentModel) {
 		if (shouldPrintMessages) {
-			console.log(chalk.dim(`Falling back to: ${currentModel.provider}/${currentModel.id}`));
+			console.log(chalk.dim(`回退到：${currentModel.provider}/${currentModel.id}`));
 		}
 		return {
 			model: currentModel,
@@ -2472,7 +2472,7 @@ export async function restoreModelFromSession(
 	);
 	if (fallbackModel) {
 		if (shouldPrintMessages) {
-			console.log(chalk.dim(`Falling back to: ${fallbackModel.provider}/${fallbackModel.id}`));
+			console.log(chalk.dim(`回退到：${fallbackModel.provider}/${fallbackModel.id}`));
 		}
 
 		return {

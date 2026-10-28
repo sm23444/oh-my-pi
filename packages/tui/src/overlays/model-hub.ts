@@ -296,8 +296,8 @@ const ROLES_ACTION_KEYS: Record<string, RolesAction> = {
 
 /** Picker fact columns of the Roles view. */
 const ROLE_PICKER_COLUMNS: readonly TspPickerColumn[] = [
-	{ id: "model", head: "Model", format: "text", priority: 2 },
-	{ id: "thinking", head: "Thinking", format: "dim", priority: 1 },
+	{ id: "model", head: "模型", format: "text", priority: 2 },
+	{ id: "thinking", head: "思考", format: "dim", priority: 1 },
 ];
 
 /** Kind tab labels (sentence case; acronyms stay upper). */
@@ -318,7 +318,7 @@ const MODEL_KIND_LABELS: Record<"all" | ModelKind, string> = {
 const PROVIDER_REFRESH_DEBOUNCE_MS = 120;
 const RECENT_LIMIT = 15;
 /** Accepted compaction limit input, shown beside the field: a scaled base, a fixed trigger, or a percentage. */
-const COMPACTION_INPUT_HINT = "400k base · f400k fixed · 80% · empty resets";
+const COMPACTION_INPUT_HINT = "400k 基础 · f400k 固定 · 80% · 清空重置";
 
 type CompactionStrip = Extract<StripState, { purpose: "compaction" }>;
 
@@ -2614,7 +2614,7 @@ export class ModelHubComponent implements Component {
 			}
 
 			if (rowDef.kind === "newRole" || rowDef.kind === "newFallback") {
-				const label = rowDef.kind === "newRole" ? "+ New role…" : "+ New fallback…";
+				const label = rowDef.kind === "newRole" ? "+ 新建角色…" : "+ 新建回退…";
 				let line = ` ${cursor} ${theme.fg(selected ? "accent" : "dim", label)}`;
 				line = this.#finishRolesRow(line, width, hovered);
 				lines.push(line);
@@ -3033,7 +3033,7 @@ export class ModelHubComponent implements Component {
 					"row",
 					{ gap: "sm", align: "center" },
 					[
-						text([span("Kind:", "dim")]),
+						text([span("类型：", "dim")]),
 						node(
 							"tabs",
 							{ items: MODEL_KIND_TABS.map(kind => ({ id: kind, label: kind })), active: this.#modelKindTab },
@@ -3052,13 +3052,13 @@ export class ModelHubComponent implements Component {
 
 	#describeStatus(): NativeNode {
 		if (this.#assignmentPending) {
-			return node("spinner", { label: [span("Applying model…", "accent")] }, undefined, "status");
+			return node("spinner", { label: [span("正在应用模型…", "accent")] }, undefined, "status");
 		}
 		let spans: TspSpan[];
 		const assigning = this.#assigning;
 		if (assigning !== null) {
 			if (assigning.kind === "fallbackKey") {
-				spans = [span("New fallback chain — pick the model it protects", "accent")];
+				spans = [span("新建回退链 — 选择其保护的模型", "accent")];
 			} else {
 				const info = this.#settings.getRoleInfo(assigning.role);
 				const label = info.tag ?? info.name ?? assigning.role;
@@ -3079,31 +3079,31 @@ export class ModelHubComponent implements Component {
 		const scopedSuffix = this.#scopedModels.length > 0 ? " · --models scope" : "";
 		switch (entry.kind) {
 			case "recent":
-				spans = [span(`Recently used models${scopedSuffix}`, "muted")];
+				spans = [span(`最近使用的模型${scopedSuffix}`, "muted")];
 				break;
 			case "roles":
 				spans = [
-					span("Model roles — ", "muted"),
+					span("模型角色 — ", "muted"),
 					span("f", "key"),
-					span(" adds a retry fallback, cleared roles fall back to auto-selection", "muted"),
+					span(" 添加重试回退，清除的角色回退到自动选择", "muted"),
 				];
 				break;
 			case "provider":
 				if (entry.locked) {
-					spans = [span(`${entry.label} · not configured`, "muted")];
+					spans = [span(`${entry.label} · 未配置`, "muted")];
 				} else if (entry.providerId && this.#refreshingProviders.has(entry.providerId)) {
 					return node(
 						"spinner",
-						{ label: [span(`${entry.label} · refreshing model list…`, "muted")] },
+						{ label: [span(`${entry.label} · 正在刷新模型列表…`, "muted")] },
 						undefined,
 						"status",
 					);
 				} else {
-					spans = [span(`${entry.label} · ${entry.annotation ?? "0"} models${scopedSuffix}`, "muted")];
+					spans = [span(`${entry.label} · ${entry.annotation ?? "0"} 个模型${scopedSuffix}`, "muted")];
 				}
 				break;
 			default:
-				spans = [span(`All available models${scopedSuffix}`, "muted")];
+				spans = [span(`所有可用模型${scopedSuffix}`, "muted")];
 				break;
 		}
 		return node("text", { spans, truncate: "end" }, undefined, "status");
@@ -3114,7 +3114,7 @@ export class ModelHubComponent implements Component {
 			"row",
 			{ gap: "sm", align: "center" },
 			[
-				text([span("Roles:", "dim")]),
+				text([span("角色：", "dim")]),
 				node(
 					"tabs",
 					{
@@ -3151,9 +3151,9 @@ export class ModelHubComponent implements Component {
 			case "separator":
 				return node("rule", undefined, undefined, key);
 			case "newRole":
-				return node("item", { label: [span("+ New role…", "dim")] }, undefined, key);
+				return node("item", { label: [span("+ 新建角色…", "dim")] }, undefined, key);
 			case "newFallback":
-				return node("item", { label: [span("+ New fallback…", "dim")] }, undefined, key);
+				return node("item", { label: [span("+ 新建回退…", "dim")] }, undefined, key);
 			case "chainKey": {
 				const slash = rowDef.role.lastIndexOf("/");
 				return node(
@@ -3193,7 +3193,7 @@ export class ModelHubComponent implements Component {
 		} else {
 			label = [span(`${theme.status.shadowed} `, "dim"), span(tag, "dim")];
 			detail = assignment
-				? [span(`auto → ${assignment.model.provider}/${assignment.model.id}`, "dim")]
+				? [span(`自动 → ${assignment.model.provider}/${assignment.model.id}`, "dim")]
 				: [span("—", "dim")];
 		}
 		// Quick-cycle membership badge (`⟳ 2` = second stop of the ctrl+p cycle).
@@ -3215,7 +3215,7 @@ export class ModelHubComponent implements Component {
 				{ gap: "xs", align: "center", wrap: true },
 				[
 					...keycap,
-					text([span("cycle is empty — press ", "dim"), span("c", "key"), span(" on a role to add it", "dim")]),
+					text([span("循环为空 — 按 ", "dim"), span("c", "key"), span(" 将其添加到角色", "dim")]),
 				],
 				"cycle",
 			);
@@ -3231,14 +3231,14 @@ export class ModelHubComponent implements Component {
 		return node(
 			"row",
 			{ gap: "xs", align: "center", wrap: true },
-			[...keycap, text([span("cycle:", "dim")]), text(track, { wrap: "word" })],
+			[...keycap, text([span("循环：", "dim")]), text(track, { wrap: "word" })],
 			"cycle",
 		);
 	}
 
 	#describeLockedView(entry: SidebarEntry): NativeNode {
 		const children: NativeChild[] = [
-			text([span(`${entry.label} has no credentials configured`, "warning")], { wrap: "word" }),
+			text([span(`${entry.label} 未配置凭据`, "warning")], { wrap: "word" }),
 		];
 		const envVars = entry.providerId ? (providerEntry(entry.providerId)?.envVars ?? []) : [];
 		children.push(
@@ -3246,8 +3246,8 @@ export class ModelHubComponent implements Component {
 				[
 					span(
 						envVars.length > 0
-							? `Set ${envVars.join(" or ")} in your environment, or add a key in config.`
-							: "Add an API key for this provider in config.",
+							? `在您的环境中设置 ${envVars.join(" or ")}，或在配置中添加密钥。`
+							: "在配置中为此提供商添加 API 密钥。",
 						"muted",
 					),
 				],
@@ -3259,7 +3259,7 @@ export class ModelHubComponent implements Component {
 				node(
 					"row",
 					{ gap: "sm", align: "center", actions: { click: "login" } },
-					[text([span("Log in with OAuth", "accent")]), node("kbd", { keys: ["enter"] })],
+					[text([span("使用 OAuth 登录", "accent")]), node("kbd", { keys: ["enter"] })],
 					"login",
 				),
 			);
@@ -3275,7 +3275,7 @@ export class ModelHubComponent implements Component {
 			children.push(
 				node(
 					"section",
-					{ head: [span(`${catalogCount} models in catalog`, "dim")] },
+					{ head: [span(`目录中有 ${catalogCount} 个模型`, "dim")] },
 					[node("list", { selected: null, virtual: true }, items, "catalog")],
 					"catalog",
 				),
@@ -3295,7 +3295,7 @@ export class ModelHubComponent implements Component {
 			title: "模型",
 			subtitle: this.#pickerSubtitle(entry, rolesView),
 			icon: "cpu",
-			noun: rolesView ? "roles" : "models",
+			noun: rolesView ? "角色" : "模型",
 			size: "lg",
 			layout: "rows",
 			preview: "side",
@@ -3410,10 +3410,10 @@ export class ModelHubComponent implements Component {
 		const presets = rolesView ? this.#presets() : undefined;
 		if (presets && presets.names.length > 0) {
 			return [
-				span("Preset ", "muted"),
-				presets.active ? span(presets.active, "strong") : span("custom", "muted"),
+				span("预设 ", "muted"),
+				presets.active ? span(presets.active, "strong") : span("自定义", "muted"),
 				span(
-					this.#scopedModels.length > 0 ? " · --models scope" : " · Cleared roles fall back to auto-selection",
+					this.#scopedModels.length > 0 ? " · --models 范围" : " · 已清除的角色回退到自动选择",
 					"muted",
 				),
 			];
@@ -3460,7 +3460,7 @@ export class ModelHubComponent implements Component {
 							id: entry.id,
 							label: entry.label,
 							mark,
-							group: "未登录",
+							group: "Not signed in",
 							disabled: oauthIds.has(providerId)
 								? "Sign in with /login"
 								: envVars.length > 0
@@ -3475,7 +3475,7 @@ export class ModelHubComponent implements Component {
 						id: entry.id,
 						label: entry.label,
 						mark,
-						group: "提供商",
+						group: "Providers",
 						count: counts ? (counts.get(providerId) ?? 0) : Number(entry.annotation ?? 0),
 						...(dot ? { dot } : {}),
 					});
@@ -3556,10 +3556,10 @@ export class ModelHubComponent implements Component {
 		if (this.#assigning !== null) {
 			const label =
 				this.#assigning.kind === "fallback"
-					? "Pick fallback"
+					? "选择回退"
 					: this.#assigning.kind === "fallbackKey"
-						? "Pick protected model"
-						: "Assign";
+						? "选择受保护模型"
+						: "分配";
 			return compact([pickerAction("assign", label, "enter", { primary: true }), refresh, cancel("Cancel")]);
 		}
 		if (rolesView) {
@@ -3644,7 +3644,7 @@ export class ModelHubComponent implements Component {
 				return {
 					label: [
 						span(strip.model.id, "mono"),
-						span(" limit ", "muted"),
+						span(" 限制 ", "muted"),
 						span(strip.input.getValue(), "mono"),
 						span("▏", "accent"),
 						span(`  ${notice.text}`, notice.style),
@@ -3654,7 +3654,7 @@ export class ModelHubComponent implements Component {
 			}
 			return {
 				label: [
-					span(strip.purpose === "preset" ? "Preset name " : "New role name ", "muted"),
+					span(strip.purpose === "preset" ? "预设名称 " : "新角色名称 ", "muted"),
 					span(strip.input.getValue(), "mono"),
 					span("▏", "accent"),
 				],
@@ -3666,17 +3666,17 @@ export class ModelHubComponent implements Component {
 			// The second step of "New fallback chain…" reuses the role strip with key chips only.
 			const keyStrip = strip.chips.every(chip => chip.label.startsWith("for "));
 			label = keyStrip
-				? [span("New fallback chain", "muted")]
-				: [span("Assign ", "muted"), span(strip.item.id, "mono"), span(" to", "muted")];
+				? [span("新建回退链", "muted")]
+				: [span("将 ", "muted"), span(strip.item.id, "mono"), span(" 分配给", "muted")];
 		} else {
 			const info = this.#settings.getRoleInfo(strip.role ?? "");
 			const roleLabel = (info.tag ?? strip.role ?? "").toLowerCase();
 			label = [
-				span(strip.kind === "thinking" ? "Thinking for " : "Save ", "muted"),
+				span(strip.kind === "thinking" ? "思考时长 " : "保存 ", "muted"),
 				span(roleLabel, "strong"),
 				span(" · ", "muted"),
 				span(strip.item.id, "mono"),
-				...(strip.kind === "scope" ? [span(" to", "muted")] : []),
+				...(strip.kind === "scope" ? [span(" 分配给", "muted")] : []),
 			];
 		}
 		return {
@@ -3752,7 +3752,7 @@ export class ModelHubComponent implements Component {
 					? {
 							badges: [
 								{
-									text: `cycle ${cycleIndex + 1}`,
+									text: `循环 ${cycleIndex + 1}`,
 									tone: "accent" as const,
 									title: `停止快速切换循环中的第 ${cycleIndex + 1} 项`,
 								},
@@ -3805,7 +3805,7 @@ export class ModelHubComponent implements Component {
 		const chainList = (key: string): NativeChild | undefined => {
 			const chain = this.#fallbackChains()[key] ?? [];
 			if (chain.length === 0) return undefined;
-			return node("section", { head: "Fallback chain" }, [
+			return node("section", { head: "回退链" }, [
 				md(chain.map((selector, index) => `${index + 1}. \`${selector}\``).join("\n")),
 			]);
 		};
@@ -3824,19 +3824,19 @@ export class ModelHubComponent implements Component {
 					children.push(
 						node("kv", {
 							items: [
-								{ k: [span("Role", "muted")], v: info.name },
+								{ k: [span("角色", "muted")], v: info.name },
 								{
-									k: [span("Thinking", "muted")],
+									k: [span("思考", "muted")],
 									v: getConfiguredThinkingLevelMetadata(assignment.thinkingLevel).label,
 								},
-								{ k: [span("Source", "muted")], v: assignment.autoSelected ? "auto-selected" : "configured" },
+								{ k: [span("来源", "muted")], v: assignment.autoSelected ? "auto-selected" : "configured" },
 							],
 						}),
 					);
 				} else {
 					children.push(
 						text(info.name, { role: "omp.picker.title" }),
-						text([span("Not assigned; no available model fits this role.", "muted")], { wrap: "word" }),
+						text([span("未分配；没有可用的模型适合此角色。", "muted")], { wrap: "word" }),
 					);
 				}
 				const chain = chainList(row.role);
@@ -3859,14 +3859,14 @@ export class ModelHubComponent implements Component {
 			}
 			case "newRole":
 				children.push(
-					text("New role", { role: "omp.picker.title" }),
-					text([span("Name a custom role, then pick the model it runs on.", "muted")], { wrap: "word" }),
+					text("新建角色", { role: "omp.picker.title" }),
+					text([span("为自定义角色命名，然后选择用于运行该角色的模型。", "muted")], { wrap: "word" }),
 				);
 				break;
 			case "newFallback":
 				children.push(
-					text("New fallback chain", { role: "omp.picker.title" }),
-					text([span("Pick the model (or provider) a new retry fallback chain protects.", "muted")], {
+					text("新建回退链", { role: "omp.picker.title" }),
+					text([span("选择新的重试回退链要保护的模型（或提供商）。", "muted")], {
 						wrap: "word",
 					}),
 				);
@@ -3897,7 +3897,7 @@ export class ModelHubComponent implements Component {
 			for (const model of this.#registry.getAll("all")) {
 				if (model.provider === entry.providerId) ids.push(`- \`${model.id}\``);
 			}
-			children.push(node("section", { head: `${catalogCount} models in catalog` }, [md(ids.join("\n"))]));
+			children.push(node("section", { head: `目录中有 ${catalogCount} 个模型` }, [md(ids.join("\n"))]));
 		}
 		return children;
 	}
@@ -4031,7 +4031,7 @@ export class ModelHubComponent implements Component {
 					"row",
 					{ gap: "sm", align: "center" },
 					[
-						text([span(`${strip.model.id} limit:`, "accent")]),
+						text([span(`${strip.model.id} 限制：`, "accent")]),
 						col([strip.input], { grow: 1 }),
 						text([span(notice.text, notice.style)], { wrap: "word" }),
 					],
@@ -4043,9 +4043,9 @@ export class ModelHubComponent implements Component {
 				"row",
 				{ gap: "sm", align: "center" },
 				[
-					text([span(preset ? "Preset name:" : "New role name:", "accent")]),
+					text([span(preset ? "预设名称：" : "新角色名称：", "accent")]),
 					col([strip.input], { grow: 1 }),
-					text([span("(letters, digits, - and _)", "dim")]),
+					text([span("(字母、数字、- 和 _)", "dim")]),
 				],
 				preset ? "presetName" : "roleName",
 			);

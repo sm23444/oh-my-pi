@@ -211,7 +211,7 @@ function trimRawLines(raw: string[]): TrimResult {
 	}
 	// Kept windows outlive the incoming frame; detach them from its backing storage.
 	lines = lines.map(materializeString);
-	lines.push(`: omp-debug-truncated originalChars=${originalChars}`);
+	lines.push(`: omp-debug-truncated 原始字符数=${originalChars}`);
 	return { raw: lines, truncated: true, originalChars, chars: countChars(lines) + 1 };
 }
 

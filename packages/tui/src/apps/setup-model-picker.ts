@@ -20,6 +20,6 @@ export async function selectSetupModel(
 	return selectStandaloneItem(title, items, {
 		currentValue,
 		maxVisible: 10,
-		picker: { icon: "model", noun: "models" },
+		picker: { icon: "model", noun: "模型" },
 	});
 }

@@ -129,7 +129,7 @@ export class CleanseBoardModel {
 			[
 				span(count === 0 ? "✓ " : "● ", tone),
 				span(`${check.label} `),
-				span(count === 0 ? "clean" : `${count} issue${count === 1 ? "" : "s"}`, tone),
+				span(count === 0 ? "无更改" : `${count} 个 issue${count === 1 ? "" : ""}`, tone),
 				span(` · ${formatDuration(durationMs)}`, "dim"),
 			],
 			{ wrap: "word", role: "omp.cleanse.verdict" },
@@ -377,14 +377,14 @@ function renderWaveHeader(
 	if (tokens > 0) parts.push(`${formatNumber(tokens)} tok`);
 	if (cost > 0) parts.push(formatCost(cost));
 	parts.push(formatDuration(Date.now() - startedAt));
-	return `${fgOrPlain("accent", spinner)} Repairing [${bar}] ${parts.join(fgOrPlain("dim", " · "))}`;
+	return `${fgOrPlain("accent", spinner)} 正在修复 [${bar}] ${parts.join(fgOrPlain("dim", " · "))}`;
 }
 
 function renderAgentRow(spinner: string, agentName: string, agent: RunningAgent): string {
 	const label = agentName.replace(/^Cleanse/, "");
 	const meta: string[] = [];
 	const toolCount = agent.progress?.toolCount ?? 0;
-	if (toolCount > 0) meta.push(`${toolCount} tool${toolCount === 1 ? "" : "s"}`);
+	if (toolCount > 0) meta.push(`${toolCount} 个 tool${toolCount === 1 ? "" : ""}`);
 	meta.push(formatDuration(Date.now() - agent.startedAt));
 	return (
 		`${fgOrPlain("warning", spinner)} ${theme ? theme.bold(label) : label} ${compactFiles(agent.assignment)} ` +
@@ -399,7 +399,7 @@ function describeAgentRow(agentName: string, agent: RunningAgent): NativeNode {
 		text([span(compactFiles(agent.assignment), "path")], { truncate: "middle" }),
 		text(describeActivity(agent.progress), { truncate: "end", grow: 1 }),
 	];
-	if (toolCount > 0) children.push(text([span(`${toolCount} tool${toolCount === 1 ? "" : "s"}`, "dim")]));
+	if (toolCount > 0) children.push(text([span(`${toolCount} 个 tool${toolCount === 1 ? "" : ""}`, "dim")]));
 	children.push(elapsed(Date.now() - agent.startedAt));
 	return keyed(row(children, { gap: "sm" }), `agent-${stableKey(agentName)}`);
 }
@@ -448,10 +448,10 @@ function describeAgentLane(agentName: string, agent: RunningAgent, now: number):
 
 /** Spans for a repair agent's latest activity, mirroring {@link agentActivity}. */
 function describeActivity(progress: AgentProgress | undefined): TspSpan[] {
-	if (!progress) return [span("starting", "dim")];
+	if (!progress) return [span("正在启动", "dim")];
 	if (progress.retryState) {
 		return [
-			span(`rate-limited · retry ${progress.retryState.attempt}/${progress.retryState.maxAttempts}`, "warning"),
+			span(`已限速 · 重试 ${progress.retryState.attempt}/${progress.retryState.maxAttempts}`, "warning"),
 		];
 	}
 	const intent = sanitizeDisplaySingleLine(progress.lastIntent ?? "")
@@ -464,7 +464,7 @@ function describeActivity(progress: AgentProgress | undefined): TspSpan[] {
 		const tool = span(args ? `${progress.currentTool} ${args}` : progress.currentTool, "dim");
 		return intent ? [span(`${intent} `), tool] : [tool];
 	}
-	return intent ? [span(intent)] : [span("thinking", "dim")];
+	return intent ? [span(intent)] : [span("思考", "dim")];
 }
 
 /** Semantic twin of {@link renderOutcomeLine}. */
@@ -487,8 +487,8 @@ function describeOutcome(
 	}
 	const meta: string[] = [];
 	const toolCount = agent?.progress?.toolCount ?? 0;
-	if (toolCount > 0) meta.push(`${toolCount} tool${toolCount === 1 ? "" : "s"}`);
-	if (total && total.tokens > 0) meta.push(`${formatNumber(total.tokens)} tok`);
+	if (toolCount > 0) meta.push(`${toolCount} 个 tool${toolCount === 1 ? "" : ""}`);
+	if (total && total.tokens > 0) meta.push(`${formatNumber(total.tokens)} 个 token`);
 	if (agent) meta.push(formatDuration(Date.now() - agent.startedAt));
 	const spans = [span("✓ ", "success"), span(`${outcome.name} `), span(files, "path")];
 	if (meta.length > 0) spans.push(span(` · ${meta.join(" · ")}`, "dim"));
@@ -513,8 +513,8 @@ function renderOutcomeLine(
 	}
 	const meta: string[] = [];
 	const toolCount = agent?.progress?.toolCount ?? 0;
-	if (toolCount > 0) meta.push(`${toolCount} tool${toolCount === 1 ? "" : "s"}`);
-	if (total && total.tokens > 0) meta.push(`${formatNumber(total.tokens)} tok`);
+	if (toolCount > 0) meta.push(`${toolCount} 个 tool${toolCount === 1 ? "" : ""}`);
+	if (total && total.tokens > 0) meta.push(`${formatNumber(total.tokens)} 个 token`);
 	if (agent) meta.push(formatDuration(Date.now() - agent.startedAt));
 	const suffix = meta.length > 0 ? ` ${fgOrPlain("dim", `· ${meta.join(" · ")}`)}` : "";
 	return `${fgOrPlain("success", "✓")} ${outcome.name} ${files}${suffix}`;

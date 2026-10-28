@@ -833,22 +833,22 @@ class TreeList implements Component {
 	/** The empty-state explanation from {@link render}, as spans. */
 	#emptyText(): TspText {
 		const total = this.#tree.allRows.length;
-		if (total === 0) return [span("No entries found", "muted")];
+		if (total === 0) return [span("未找到条目", "muted")];
 		const query = this.getSearchQuery();
 		if (query.length > 0) {
 			return [
-				span(`No entries match search "${query}". Press `, "muted"),
-				span("backspace", "key"),
-				span(" to clear the search", "muted"),
+				span(`没有条目匹配搜索“${query}”。按 `, "muted"),
+				span("退格键", "key"),
+				span(" 清除搜索", "muted"),
 			];
 		}
 		const filterLabel = this.#getFilterLabel().trim() || "[default]";
 		return [
-			span(`${total} entries hidden by the current filter ${filterLabel}. Press `, "muted"),
-			span("alt+a", "key"),
-			span(" to show all, ", "muted"),
-			span("alt+d", "key"),
-			span(" for default", "muted"),
+			span(`${total} 个条目被当前过滤器 ${filterLabel} 隐藏。按 `, "muted"),
+			span("alt+a 键", "key"),
+			span(" 以显示全部， ", "muted"),
+			span("alt+d 键", "key"),
+			span(" 用于默认", "muted"),
 		];
 	}
 
@@ -1109,7 +1109,7 @@ class TreeList implements Component {
 			case "custom_message": {
 				if (entry.customType === "advisor") {
 					const { qualifier, text } = advisorTreeDisplay(entry.details);
-					const label = qualifier ? `advisor (${qualifier}): ` : "advisor: ";
+					const label = qualifier ? `顾问 (${qualifier})： ` : "顾问： ";
 					return [{ t: label, s: "customMessageLabel" }, { t: normalize(text) }];
 				}
 				const content = stripSystemWrapperTags(this.#joinTextContent(entry.content));
@@ -1406,7 +1406,7 @@ class LabelInput implements Component {
 	/** Prompt, the label `Input`, and save/cancel hints; the Input describes its own edits. */
 	describe(_cx: DescribeContext): NativeNode {
 		this.#native ??= node("col", { gap: "xs" }, [
-			text([span("Label (empty to remove):", "muted")]),
+			text([span("标签（留空以移除）：", "muted")]),
 			this.#input,
 			hintsRow([
 				{ keys: ["enter"], label: "保存" },
@@ -1419,8 +1419,8 @@ class LabelInput implements Component {
 	/** The picker preview while editing: the prompt and the label `Input` (save/cancel sit in the action bar). */
 	get preview(): readonly NativeChild[] {
 		this.#preview ??= [
-			text("Label", { role: "omp.picker.title" }),
-			text([span("Empty to remove", "muted")]),
+			text("标签", { role: "omp.picker.title" }),
+			text([span("留空以移除", "muted")]),
 			this.#input,
 		];
 		return this.#preview;
@@ -1518,16 +1518,16 @@ export class TreeSelectorComponent extends OverlayPanel {
 				theme.fg(
 					"muted",
 					[
-						`${formatKeyHint("enter")}: switch.`,
-						`${formatKeyHints(["alt+up", "alt+down"])}: previous/next turn.`,
+						`${formatKeyHint("enter")}：切换。`,
+						`${formatKeyHints(["alt+up", "alt+down"])}：previous/next 轮次。`,
 						...(branchKeys ? [`${branchKeys}: previous/next branch.`] : []),
-						`${editorKeys("tui.select.pageUp", "tui.select.pageDown")} (${formatKeyHints(["left", "right"])}): page.`,
-						`${formatKeyHints(["home", "end"])}: first/last item.`,
-						`${formatKeyHint("shift+enter")}: summarize & switch.`,
-						`${formatKeyHint("shift+l")}: label.`,
-						`${formatKeyHint("ctrl+o")}: filter.`,
-						`${formatKeyHints(["alt+d", "alt+t", "alt+u", "alt+l", "alt+a"])}: filter.`,
-						"Type to search",
+						`${editorKeys("tui.select.pageUp", "tui.select.pageDown")} (${formatKeyHints(["left", "right"])})：翻页。`,
+						`${formatKeyHints(["home", "end"])}：first/last 项目。`,
+						`${formatKeyHint("shift+enter")}：总结并切换。`,
+						`${formatKeyHint("shift+l")}：标记。`,
+						`${formatKeyHint("ctrl+o")}：筛选。`,
+						`${formatKeyHints(["alt+d", "alt+t", "alt+u", "alt+l", "alt+a"])}：筛选。`,
+						"输入搜索",
 					].join(" "),
 				),
 				0,
@@ -1576,7 +1576,7 @@ export class TreeSelectorComponent extends OverlayPanel {
 			title: "会话树",
 			...(this.sessionName ? { subtitle: this.sessionName } : {}),
 			icon: "git-branch",
-			noun: "entries",
+			noun: "条目",
 			size: "lg",
 			layout: "tree",
 			preview: "side",

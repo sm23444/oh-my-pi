@@ -20,31 +20,31 @@ export interface ThinkingLevelMetadata {
 const THINKING_LEVEL_METADATA: Record<ThinkingLevel, ThinkingLevelMetadata> = {
 	[ThinkingLevel.Inherit]: {
 		value: ThinkingLevel.Inherit,
-		label: "inherit",
-		description: "Inherit session default",
+		label: "继承",
+		description: "继承会话默认设置",
 	},
-	[ThinkingLevel.Off]: { value: ThinkingLevel.Off, label: "off", description: "No reasoning" },
+	[ThinkingLevel.Off]: { value: ThinkingLevel.Off, label: "关闭", description: "不启用推理" },
 	[ThinkingLevel.Minimal]: {
 		value: ThinkingLevel.Minimal,
-		label: "min",
-		description: "Very brief reasoning (~1k tokens)",
+		label: "最低",
+		description: "极简推理（约 1k tokens）",
 	},
-	[ThinkingLevel.Low]: { value: ThinkingLevel.Low, label: "low", description: "Light reasoning (~2k tokens)" },
+	[ThinkingLevel.Low]: { value: ThinkingLevel.Low, label: "低", description: "轻量推理（约 2k tokens）" },
 	[ThinkingLevel.Medium]: {
 		value: ThinkingLevel.Medium,
-		label: "medium",
-		description: "Moderate reasoning (~8k tokens)",
+		label: "中",
+		description: "适中推理（约 8k tokens）",
 	},
-	[ThinkingLevel.High]: { value: ThinkingLevel.High, label: "high", description: "Deep reasoning (~16k tokens)" },
+	[ThinkingLevel.High]: { value: ThinkingLevel.High, label: "高", description: "深度推理（约 16k tokens）" },
 	[ThinkingLevel.XHigh]: {
 		value: ThinkingLevel.XHigh,
-		label: "xhigh",
-		description: "Extended reasoning (~32k tokens)",
+		label: "极高",
+		description: "扩展推理（约 32k tokens）",
 	},
 	[ThinkingLevel.Max]: {
 		value: ThinkingLevel.Max,
-		label: "max",
-		description: "Maximum reasoning the model supports",
+		label: "最高",
+		description: "使用模型支持的最高推理强度",
 	},
 };
 
@@ -203,8 +203,8 @@ export interface ConfiguredThinkingLevelMetadata {
 
 const AUTO_THINKING_METADATA: ConfiguredThinkingLevelMetadata = {
 	value: AUTO_THINKING,
-	label: "auto",
-	description: "Auto-detect per prompt",
+	label: "自动",
+	description: "根据每次提示自动选择",
 };
 
 /**

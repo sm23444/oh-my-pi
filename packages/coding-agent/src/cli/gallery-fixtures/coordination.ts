@@ -13,12 +13,12 @@ const service = {
 	persist: true,
 	detached: false,
 };
-const job = { id: "build-42", type: "bash", status: "cancelled", label: "构建资源", durationMs: 2000 };
+const job = { id: "build-42", type: "bash", status: "cancelled", label: "Build assets", durationMs: 2000 };
 const failure = (text: string) => ({ content: [{ type: "text", text }], isError: true });
 
 export const coordinationFixtures: Record<string, GalleryFixture> = {
 	write_agent: {
-		label: "对等方消息",
+		label: "Peer message",
 		renderer: "write",
 		streamingArgs: { path: "agent://Reviewer", content: "Please review" },
 		args: { path: "agent://Reviewer", content: "Please review the parser.\nCheck the error boundary." },
@@ -29,7 +29,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("Peer messaging is unavailable in this session."),
 	},
 	write_agent_broadcast: {
-		label: "对等方广播",
+		label: "Peer broadcast",
 		renderer: "write",
 		streamingArgs: { path: "agent://all", content: "Heads up" },
 		args: { path: "agent://all", content: "Heads up: tests are ready." },
@@ -50,7 +50,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("No recipient accepted this broadcast."),
 	},
 	write_agent_failed_receipt: {
-		label: "未送达的消息",
+		label: "Undelivered message",
 		renderer: "write",
 		streamingArgs: { path: "agent://Missing", content: "Can you help?" },
 		args: { path: "agent://Missing", content: "Can you help?" },
@@ -67,7 +67,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("Peer messaging is unavailable in this session."),
 	},
 	write_proc_cancel: {
-		label: "取消任务",
+		label: "Cancel job",
 		renderer: "write",
 		streamingArgs: { path: "proc://build-42/kill" },
 		args: { path: "proc://build-42/kill" },
@@ -78,7 +78,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("Background job or service not found: build-42"),
 	},
 	write_proc_stdin: {
-		label: "服务输入",
+		label: "Service input",
 		renderer: "write",
 		streamingArgs: { path: "proc://web", content: "reload" },
 		args: { path: "proc://web", content: "reload\n" },
@@ -89,7 +89,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("Cannot send input to exited service web"),
 	},
 	write_proc_stop: {
-		label: "停止服务",
+		label: "Stop service",
 		renderer: "write",
 		streamingArgs: { path: "proc://web/kill" },
 		args: { path: "proc://web/kill" },
@@ -100,7 +100,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("Service not found: web"),
 	},
 	write_proc_mode: {
-		label: "服务模式",
+		label: "Service mode",
 		renderer: "write",
 		streamingArgs: { path: "proc://web/mode", content: "persist" },
 		args: { path: "proc://web/mode", content: "persist" },
@@ -111,7 +111,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("Service mode must be persist, session, or detached"),
 	},
 	read_proc_list: {
-		label: "后台活动",
+		label: "Background activity",
 		renderer: "read",
 		streamingArgs: { path: "proc://" },
 		args: { path: "proc://" },
@@ -122,7 +122,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("proc:// requires a tool session"),
 	},
 	read_proc_job: {
-		label: "任务状态",
+		label: "Job status",
 		renderer: "read",
 		streamingArgs: { path: "proc://build-42" },
 		args: { path: "proc://build-42" },
@@ -133,7 +133,7 @@ export const coordinationFixtures: Record<string, GalleryFixture> = {
 		errorResult: failure("Background job or service not found: build-42"),
 	},
 	read_proc_service: {
-		label: "服务日志",
+		label: "Service logs",
 		renderer: "read",
 		streamingArgs: { path: "proc://web" },
 		args: { path: "proc://web" },

@@ -16,11 +16,11 @@ import { errorMessage, parseSubcommand } from "./helpers/parse";
 import type { SlashCommandSpec } from "./types";
 
 const USAGE = [
-	"Skill registry (skills.omp.sh) commands:",
-	"  /skills search <query>                        Search the registry",
-	"  /skills install <@scope/name[@range]>… [-g]   Install into this project (-g: user-global)",
-	"  /skills installed                             List installed registry skills",
-	"  /skills update [@scope/name…] [-g]            Update within the ranges in skills.json",
+	"技能注册表（skills.omp.sh）命令：",
+	"  /skills search <query>                        搜索注册表",
+	"  /skills install <@scope/name[@range]>… [-g]   安装到当前项目（-g：用户全局）",
+	"  /skills installed                             列出已安装的注册表技能",
+	"  /skills update [@scope/name…] [-g]            按 skills.json 中的范围更新",
 ].join("\n");
 
 /** Split `<name…> [--global|-g]`; unknown flags are errors. */
@@ -54,7 +54,7 @@ function tuiHooks(ctx: InteractiveModeContext): SkillInstallHooks {
 
 async function reportChanges(ctx: InteractiveModeContext, changes: SkillChange[]): Promise<void> {
 	if (changes.length === 0) {
-		ctx.showStatus("Registry skills are already up to date.");
+		ctx.showStatus("注册表技能已是最新。");
 		return;
 	}
 	await ctx.refreshSkillState();
@@ -103,7 +103,7 @@ export const BUILTIN_SKILLS_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 							ctx.showError("用法：/skills install <@scope/name[@range]>… [--global]");
 							return;
 						}
-						ctx.showStatus(`Installing ${targets.names.join(", ")}…`, { dim: true });
+						ctx.showStatus(`正在安装 ${targets.names.join(", ")}…`, { dim: true });
 						const changes = await withClient(client =>
 							installSkillPackages(
 								client,
@@ -124,7 +124,7 @@ export const BUILTIN_SKILLS_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 							ctx.showError(targets.error);
 							return;
 						}
-						ctx.showStatus("Checking the registry for updates…", { dim: true });
+						ctx.showStatus("正在检查注册表更新…", { dim: true });
 						const changes = await withClient(client =>
 							updateSkillPackages(client, { names: targets.names, global: targets.global, cwd }, tuiHooks(ctx)),
 						);

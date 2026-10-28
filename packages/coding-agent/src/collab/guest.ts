@@ -314,7 +314,7 @@ export class CollabGuestLink {
 	/** Shows the read-only status hint when applicable; true when the action must be dropped. */
 	#rejectReadOnly(): boolean {
 		if (!this.#readOnly) return false;
-		this.#ctx.showStatus("This collab link is read-only");
+		this.#ctx.showStatus("此 Collab 链接为只读");
 		return true;
 	}
 
@@ -397,7 +397,7 @@ export class CollabGuestLink {
 						// Fail the join with the host's message instead of hanging
 						// until the welcome timeout.
 						this.#clearWelcomeTimer();
-						if (joined) this.#ctx.showError(`Collab host: ${frame.message}`);
+						if (joined) this.#ctx.showError(`Collab 主机：${frame.message}`);
 						else firstWelcome.reject(new Error(frame.message));
 						return;
 					}
@@ -422,10 +422,10 @@ export class CollabGuestLink {
 				return;
 			}
 			if (willReconnect) {
-				this.#ctx.showStatus(`Collab connection lost (${reason}), reconnecting…`, { dim: true });
+				this.#ctx.showStatus(`Collab 连接丢失（${reason}），正在重连…`, { dim: true });
 				return;
 			}
-			this.#ctx.showStatus(`Collab session ended (${reason})`);
+			this.#ctx.showStatus(`协作会话已结束（${reason}）`);
 			this.#restoreAfterDisconnect();
 		};
 		try {
@@ -599,7 +599,7 @@ export class CollabGuestLink {
 		this.#welcomed = true;
 		const suffix = this.#readOnly ? " (read-only)" : "";
 		this.#ctx.showStatus(
-			pending.isResync ? `Reconnected to collab session${suffix}` : `Joined collab session${suffix}`,
+			pending.isResync ? `已重新连接到协作会话${suffix}` : `已加入协作会话${suffix}`,
 		);
 	}
 
@@ -694,12 +694,12 @@ export class CollabGuestLink {
 				break;
 			}
 			case "bye": {
-				this.#ctx.showStatus(`Collab session ended (${frame.reason})`);
+				this.#ctx.showStatus(`协作会话已结束（${frame.reason}）`);
 				this.#restoreAfterDisconnect();
 				break;
 			}
 			case "error":
-				this.#ctx.showError(`Collab host: ${frame.message}`);
+				this.#ctx.showError(`Collab 主机：${frame.message}`);
 				break;
 			default:
 				logger.debug("collab guest ignoring unexpected frame", { type: frame.t });
@@ -945,7 +945,7 @@ export class CollabGuestLink {
 	#restoreAfterDisconnect(): void {
 		void this.#restoreLocalSession().catch(err => {
 			logger.warn("Collab local restoration failed", { error: String(err) });
-			this.#ctx.showError(`Failed to restore local session: ${err instanceof Error ? err.message : String(err)}`);
+			this.#ctx.showError(`无法恢复本地会话：${err instanceof Error ? err.message : String(err)}`);
 		});
 	}
 

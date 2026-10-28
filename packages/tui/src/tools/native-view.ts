@@ -298,13 +298,13 @@ const SEVERITY_ICON: Record<ParsedDiagnostic["severity"], string> = {
 	error: "x-circle",
 	warning: "warn",
 	info: "info",
-	hint: "lightbulb",
+	hint: "灯泡",
 };
 const SEVERITY_TONE: Record<ParsedDiagnostic["severity"], TspTone> = {
 	error: "error",
 	warning: "warning",
 	info: "info",
-	hint: "muted",
+	hint: "静音",
 };
 
 /** A diagnostic's severity glyph: `x-circle` error, `warn` warning, `info`, `lightbulb` hint, in the severity tone. */
@@ -363,12 +363,12 @@ export function diagnosticsSection(
 	const shown = rows.slice(0, DIAGNOSTIC_ROWS);
 	const hidden = rows.length - shown.length;
 	if (hidden > 0) {
-		shown.push(text([span(`+${hidden} more`, "muted")], { role: "omp.tool.stats", key: "more" }));
+		shown.push(text([span(`另有 ${hidden} 项`, "muted")], { role: "omp.tool.stats", key: "more" }));
 	}
 	return node(
 		"section",
 		{
-			head: [span("Diagnostics")],
+			head: [span("诊断")],
 			tone: diagnostics.errored ? "error" : "warning",
 			role: "omp.tool.diagnostics",
 		},
@@ -389,5 +389,5 @@ export function diagnosticsBadge(
 		errored ||= file.errored;
 	}
 	if (count === 0) return undefined;
-	return { text: count === 1 ? "1 diagnostic" : `${count} diagnostics`, tone: errored ? "error" : "warning" };
+	return { text: count === 1 ? "1 个诊断" : `${count} 个诊断`, tone: errored ? "error" : "warning" };
 }

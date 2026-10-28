@@ -509,7 +509,7 @@ const STILL_CLOSING_DELAY_MS = 3_000;
 const JUDGMENT_BATCH_PROGRESS_RETAIN_MS = 1_000;
 /** Startup emits several status-bar changes within a second; persist only the settled one. */
 const COMPOSER_STATUS_PERSIST_DELAY_MS = 1_000;
-const DEFAULT_WORKING_MESSAGE = "Working…";
+const DEFAULT_WORKING_MESSAGE = "正在处理…";
 /** Native working-message shimmer under a session accent: the hue itself is the terminal's `accent`. */
 const NATIVE_ACCENT_SHIMMER: ShimmerPalette = { low: "dim", mid: "accent", high: "accent", bold: true };
 
@@ -787,7 +787,7 @@ function agentsSegment(
 
 /** The idle agents segment: a muted icon, no count; the hover label says how many agents the hub holds. */
 function describeIdleAgentsSegment(spec: RunningSegmentSpec, inSession: number): NativeNode {
-	const label = `No ${spec.noun}s running · ${inSession} in this session`;
+	const label = `没有正在运行的 ${spec.noun} · 本会话中 ${inSession}`;
 	return node(
 		"row",
 		{
@@ -808,7 +808,7 @@ const JOBS_SEGMENT: RunningSegmentSpec = {
 	key: "jobs",
 	icon: "job",
 	tone: "warning",
-	noun: "job",
+	noun: "任务",
 	shortcut: "/jobs",
 	act: "jobs.open",
 };
@@ -843,7 +843,7 @@ function jobsSegment(
  * widgets.
  */
 function describeJobsSegment(running: number, entries: readonly JobWidgetEntry[]): NativeNode {
-	const label = `${running} ${JOBS_SEGMENT.noun}${running === 1 ? "" : "s"} running`;
+	const label = `${running} 个 ${JOBS_SEGMENT.noun}${running === 1 ? "" : ""} 正在运行`;
 	const latest = latestJobWidget(entries)?.view;
 	const glance = latest && jobWidgetGlance(latest);
 	const spark = latest && describeJobWidgetMiniSpark(latest);
@@ -885,7 +885,7 @@ function describeJobsSegment(running: number, entries: readonly JobWidgetEntry[]
 
 /** One counter segment: a tinted icon and the bare count; the words live in the hover label. */
 function describeRunningSegment(spec: RunningSegmentSpec, running: number): NativeNode {
-	const label = `${running} ${spec.noun}${running === 1 ? "" : "s"} running`;
+	const label = `${running} 个 ${spec.noun}${running === 1 ? "" : ""} 正在运行`;
 	return node(
 		"row",
 		{
@@ -1604,7 +1604,7 @@ export class InteractiveMode implements InteractiveModeContext {
 				key: "agents",
 				icon: "users",
 				tone: "accent",
-				noun: "agent",
+				noun: "代理",
 				shortcut: formatDoubleTap("left"),
 				act: "agents.open",
 			},
@@ -2535,7 +2535,7 @@ export class InteractiveMode implements InteractiveModeContext {
 					return;
 				case "copy":
 					copyToClipboard(action.text).then(
-						() => this.showStatus("Copied to clipboard"),
+						() => this.showStatus("已复制到剪贴板"),
 						(error: unknown) =>
 							this.showWarning(`复制失败：${error instanceof Error ? error.message : String(error)}`),
 					);
@@ -3506,7 +3506,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		const conditionSuffix = condition ? ` Continuing ${describeLoopCondition(condition)}.` : "";
 		const tail = hasPrompt ? "Repeating it after each turn." : "Your next prompt will repeat after each turn.";
 		this.showStatus(
-			`Loop mode enabled.${limitSuffix}${remainingSuffix}${conditionSuffix} ${tail} ${appKey(this.keybindings, "app.interrupt")} suspends the ongoing loop; /loop again to disable.`,
+			`循环模式已启用。${limitSuffix}${remainingSuffix}${conditionSuffix} ${tail} ${appKey(this.keybindings, "app.interrupt")} 会暂停正在进行的循环；再次 /loop 即可禁用。`,
 		);
 	}
 
@@ -5676,7 +5676,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		}
 		this.#updatePlanModeStatus();
 		this.sessionManager.appendModeChange("plan", { planFilePath });
-		this.showStatus(`Plan mode enabled. Plan file: ${planFilePath}`);
+		this.showStatus(`计划模式已启用。计划文件：${planFilePath}`);
 	}
 
 	async #restorePlanPreviousModel(prev: { model: Model; thinkingLevel?: ConfiguredThinkingLevel }): Promise<void> {
@@ -5820,7 +5820,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		const paused = options?.paused ?? false;
 		this.sessionManager.appendModeChange(paused ? "plan_paused" : "none");
 		if (!options?.silent) {
-			this.showStatus(paused ? "Plan mode paused." : "Plan mode disabled.");
+			this.showStatus(paused ? "计划模式已暂停。" : "计划模式已禁用。");
 		}
 	}
 
@@ -5888,7 +5888,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			await this.session.sendGoalModeContext({ deliverAs: "steer" });
 		}
 		if (!options.silent) {
-			this.showStatus(options.resume ? "Goal mode resumed." : "Goal mode enabled.");
+			this.showStatus(options.resume ? "目标模式已恢复。" : "目标模式已启用。");
 		}
 	}
 
@@ -5926,13 +5926,13 @@ export class InteractiveMode implements InteractiveModeContext {
 		this.#updateGoalModeStatus();
 		if (!options?.silent) {
 			if (options?.reason === "completed") {
-				this.showStatus("Goal mode completed.");
+				this.showStatus("目标模式已完成。");
 			} else if (options?.reason === "dropped") {
-				this.showStatus("Goal dropped.");
+				this.showStatus("已放弃目标。");
 			} else if (options?.paused) {
-				this.showStatus("Goal mode paused.");
+				this.showStatus("目标模式已暂停。");
 			} else {
-				this.showStatus("Goal mode disabled.");
+				this.showStatus("目标模式已禁用。");
 			}
 		}
 	}
@@ -6115,11 +6115,11 @@ export class InteractiveMode implements InteractiveModeContext {
 
 	#formatKeepContextLabel(contextUsage: ContextUsage | undefined): string {
 		if (!contextUsage) {
-			return "Approve and keep context";
+			return "批准并保留上下文";
 		}
 		const tokens = formatContextTokenCount(contextUsage.tokens);
 		const contextWindow = formatContextTokenCount(contextUsage.contextWindow);
-		return `Approve and keep context (~${tokens} / ${contextWindow})`;
+		return `批准并保留上下文 (~${tokens} / ${contextWindow})`;
 	}
 
 	#isKeepContextDisabled(contextUsage: ContextUsage | undefined): boolean {
@@ -6190,7 +6190,7 @@ export class InteractiveMode implements InteractiveModeContext {
 	async #copyPlanToClipboard(content: string): Promise<void> {
 		try {
 			await copyToClipboard(content);
-			this.showStatus("Copied plan to clipboard");
+			this.showStatus("已将计划复制到剪贴板。");
 		} catch (error) {
 			this.showWarning(
 				`复制计划到剪贴板失败：${error instanceof Error ? error.message : String(error)}`,
@@ -6269,7 +6269,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		this.#planReviewAnnotationState.delete(annotationStateKey);
 		try {
 			await this.handleClearCommand();
-			this.showStatus(`Saved plan to ${shortenPath(destination)}.`);
+			this.showStatus(`已将计划保存到 ${shortenPath(destination)}。`);
 		} catch (error) {
 			this.showError(
 				`已将计划保存到 ${shortenPath(destination)}，但无法启动新会话：${
@@ -6308,7 +6308,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			if (result !== null) {
 				await Bun.write(resolvedPath, result);
 				this.#planReviewOverlay?.setPlanContent(result);
-				this.showStatus("Plan updated in external editor.");
+				this.showStatus("计划已在外部编辑器中更新。");
 			}
 		} catch (error) {
 			this.showWarning(`打开外部编辑器失败：${error instanceof Error ? error.message : String(error)}`);
@@ -6345,7 +6345,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			await this.session.applyRoleModel(entry);
 			this.statusLine.invalidate();
 			this.updateEditorBorderColor();
-			this.showStatus(`Continuing with ${entry.role}: ${entry.model.name || entry.model.id}`);
+			this.showStatus(`继续使用 ${entry.role}: ${entry.model.name || entry.model.id}`);
 		} catch (error) {
 			this.showWarning(
 				`无法切换到 ${entry.role} 模型：${error instanceof Error ? error.message : String(error)}`,
@@ -6462,7 +6462,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			});
 			if (autosaved) {
 				const displayPath = truncateToWidth(replaceTabs(shortenPath(autosaved)), TRUNCATE_LENGTHS.CONTENT);
-				this.showStatus(`Saved plan to ${displayPath}.`);
+				this.showStatus(`已将计划保存到 ${displayPath}。`);
 			}
 		} catch (error) {
 			const detail = truncateToWidth(
@@ -6577,7 +6577,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		this.#planModeHasEntered = false;
 		this.#updatePlanModeStatus();
 		this.sessionManager.appendModeChange("none");
-		this.showStatus("Plan mode disabled.");
+		this.showStatus("计划模式已禁用。");
 	}
 
 	async handlePlanModeCommand(
@@ -6821,7 +6821,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			this.#updateVibeModeStatus();
 			if (options?.persistModeChange !== false) this.sessionManager.appendModeChange("vibe", { previousTools });
 			this.showStatus(
-				"Vibe mode enabled. You direct fast/good worker sessions; toolset is read + optional parent Todo + vibe tools.",
+				"Vibe 模式已启用。您可直接指挥 fast/good worker 会话；工具集为读取 + 可选父级 Todo + Vibe 工具。",
 			);
 		})();
 		this.#vibeModeEntry = entry;
@@ -6855,8 +6855,8 @@ export class InteractiveMode implements InteractiveModeContext {
 		this.#updateVibeModeStatus();
 		this.showStatus(
 			killed > 0
-				? `Vibe mode disabled. Killed ${killed} worker session${killed === 1 ? "" : "s"}.`
-				: "Vibe mode disabled.",
+				? `Vibe 模式已禁用。已终止 ${killed} 个 worker 会话${killed === 1 ? "" : ""}。`
+				: "Vibe 模式已禁用。",
 		);
 	}
 
@@ -6867,7 +6867,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			return;
 		}
 		if (state.goal.status === "complete") {
-			this.showStatus("Goal is already complete.");
+			this.showStatus("目标已经完成。");
 			return;
 		}
 		const trimmed = rawBudget.trim().toLowerCase();
@@ -6883,7 +6883,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		await this.session.goalRuntime.onBudgetMutated(nextBudget);
 		this.#resetGoalContinuationSuppression();
 		this.#scheduleGoalContinuation();
-		this.showStatus(nextBudget === undefined ? "Goal budget cleared." : `Goal budget set to ${nextBudget}.`);
+		this.showStatus(nextBudget === undefined ? "目标预算已清除。" : `目标预算已设置为 ${nextBudget}。`);
 	}
 
 	async handleGoalModeCommand(
@@ -6906,7 +6906,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		if (sub) return await this.#dispatchGoalSubcommand(sub, subRest, input);
 		if (this.goalModeEnabled) {
 			if (subRest) {
-				this.showStatus("Goal mode is already active. Use /goal to manage it, or /goal drop to start over.");
+				this.showStatus("目标模式已处于活动状态。使用 /goal 管理它，或 /goal drop 重新开始。");
 				return false;
 			}
 			await this.#openGoalMenu("active");
@@ -6948,7 +6948,7 @@ export class InteractiveMode implements InteractiveModeContext {
 				return false;
 			}
 			if (this.goalModeEnabled) {
-				this.showStatus("Goal mode is already active. Use /goal to manage it, or /goal drop to start over.");
+				this.showStatus("目标模式已处于活动状态。使用 /goal 管理它，或 /goal drop 重新开始。");
 				return false;
 			}
 			if (this.#getPausedGoalState()) {
@@ -7033,7 +7033,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		const goal = this.session.getGoalModeState()?.goal;
 		if (!goal) return;
 		const summary = goal.objective.length > 48 ? `${goal.objective.slice(0, 47)}…` : goal.objective;
-		const title = state === "active" ? `Goal: ${summary} (${goal.status})` : `Goal paused: ${summary}`;
+		const title = state === "active" ? `目标：${summary}（${goal.status}）` : `目标已暂停：${summary}`;
 		const items =
 			state === "active"
 				? ["Show details", "Adjust budget…", "Pause", "Drop"]
@@ -7063,7 +7063,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		const state = this.session.getGoalModeState();
 		const goal = state?.goal;
 		if (!goal) {
-			this.showStatus("No goal set.");
+			this.showStatus("未设置目标。");
 			return;
 		}
 		const used = goal.tokensUsed.toLocaleString();
@@ -7072,10 +7072,10 @@ export class InteractiveMode implements InteractiveModeContext {
 				? `${used} / ${goal.tokenBudget.toLocaleString()} (${Math.max(0, goal.tokenBudget - goal.tokensUsed).toLocaleString()} left)`
 				: `${used} (no budget)`;
 		const lines = [
-			`Objective: ${goal.objective}`,
-			`Status: ${goal.status}${state?.enabled ? "" : " (paused)"}`,
-			`Tokens: ${budgetLine}`,
-			`Time spent: ${formatCoarseDuration(goal.timeUsedSeconds * 1000)}`,
+			`目标：${goal.objective}`,
+			`状态：${goal.status}${state?.enabled ? "" : "（已暂停）"}`,
+			`令牌：${budgetLine}`,
+			`已用时间：${formatCoarseDuration(goal.timeUsedSeconds * 1000)}`,
 		];
 		this.showStatus(lines.join("\n"));
 	}
@@ -7108,7 +7108,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			return;
 		}
 		await this.#enterGoalMode({ resume: true, silent: true });
-		this.showStatus("Goal mode resumed.");
+		this.showStatus("目标模式已恢复。");
 		this.#scheduleGoalContinuation();
 	}
 
@@ -7557,7 +7557,7 @@ export class InteractiveMode implements InteractiveModeContext {
 						this.#planReviewAnnotationState.delete(annotationStateKey);
 					}
 				} else {
-					this.showStatus("Refine plan: enter a follow-up prompt.");
+					this.showStatus("完善计划:输入后续提示。");
 				}
 			} catch (error) {
 				this.showError(`完善计划失败: ${error instanceof Error ? error.message : String(error)}`);
@@ -7642,7 +7642,8 @@ export class InteractiveMode implements InteractiveModeContext {
 			? `💾 Your agent wants to save \`${request.path}\` to your config.`
 			: `⚙️ Your agent wants to change \`${request.path}\` for this session.`;
 		const warning = request.shadowedBy
-			? `\n⚠️ Overridden by your ${request.shadowedBy}: the saved value won't take effect here.`
+			? `
+⚠️ 已被您的 ${request.shadowedBy} 覆盖：已保存的值在此处不会生效。`
 			: "";
 		let timedOut = false;
 		const timeout = askTimeoutMs(this.session.settings);
@@ -7788,7 +7789,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		const sessionId = this.#resumableSessionId();
 		if (sessionId) {
 			// Command on its own line so triple-click selects just the command (#11001).
-			process.stderr.write(`\n${chalk.dim("Resume this session with")}\n${chalk.dim(resumeCommand(sessionId))}\n`);
+			process.stderr.write(`\n${chalk.dim("使用以下命令恢复此会话")}\n${chalk.dim(resumeCommand(sessionId))}\n`);
 		}
 
 		await this.#quitHostOwned(0);
@@ -7909,7 +7910,7 @@ export class InteractiveMode implements InteractiveModeContext {
 	 */
 	#beginClose(): void {
 		this.#isShuttingDown = true;
-		this.showStatus("Closing session…");
+		this.showStatus("正在关闭会话…");
 	}
 
 	/** Shared `shutdown()`/`restart()` teardown: dispose the session and hand the terminal back. */
@@ -7924,7 +7925,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		// `#beginClose()` already acknowledged the close; escalate only once the
 		// teardown itself lingers, so time spent in exit prompts never counts.
 		const stillClosingTimer = setTimeout(() => {
-			this.showStatus("Still closing… (flushing memory backend / network)");
+			this.showStatus("仍在关闭…（正在刷新内存后端/网络）");
 		}, STILL_CLOSING_DELAY_MS);
 		try {
 			this.#streamPublisher?.dispose();
@@ -8847,7 +8848,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			await active.stop();
 			this.statusLine.setRecording(false);
 			this.showStatus(
-				`Saved ${formatDuration(elapsed)} recording to ${active.path} · replay: omp play · share: omp clip`,
+				`已将 ${formatDuration(elapsed)} 的录制保存到 ${active.path} · 回放：omp play · 分享：omp clip`,
 			);
 			return;
 		}
@@ -8868,7 +8869,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			this.#recorderStarting = false;
 		}
 		this.statusLine.setRecording(true);
-		this.showStatus(`Recording to ${this.#recorder.path} · /record again to stop`);
+		this.showStatus(`正在录制到 ${this.#recorder.path} · 再次执行 /record 以停止`);
 	}
 
 	/** Start or stop the Codex-backed realtime voice surface. */
@@ -9141,7 +9142,7 @@ export class InteractiveMode implements InteractiveModeContext {
 		try {
 			const result = await this.session.branchFromBtw(question, assistantMessage, leafId, sessionId, images);
 			if (result.cancelled) {
-				this.showStatus("/btw branch cancelled", { dim: true });
+				this.showStatus("/btw 分支已取消", { dim: true });
 				return;
 			}
 			await this.#btwController.dispose();
@@ -9150,7 +9151,7 @@ export class InteractiveMode implements InteractiveModeContext {
 			await this.renderInitialMessages({ clearTerminalHistory: true });
 			this.updateEditorBorderColor();
 			this.showStatus(
-				result.sessionFile ? `Branched /btw to ${path.basename(result.sessionFile)}` : "Branched /btw",
+				result.sessionFile ? `已将 /btw 分支到 ${path.basename(result.sessionFile)}` : "已从 /btw 创建分支",
 			);
 		} catch (error) {
 			this.showError(`无法分支 /btw：${error instanceof Error ? error.message : String(error)}`);

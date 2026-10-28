@@ -53,7 +53,7 @@ const EARLIER_TURNS_KEY = "earlier";
 /** Leading item of a truncated transcript list; selecting it loads the older turns. */
 const earlierTurnsItem: NativeNode = node(
 	"item",
-	{ label: [span("Earlier turns…", "muted")], hint: ["a"] },
+	{ label: [span("更早的回合…", "muted")], hint: ["a"] },
 	undefined,
 	EARLIER_TURNS_KEY,
 );
@@ -132,7 +132,7 @@ function turnItem(target: OutlineTarget, detail?: TspText): NativeNode {
 
 /** Preview of a turn's text: prose as markdown, command/tool output as a plain code block. */
 export function turnPreview(target: OutlineTarget, content: string): NativeNode {
-	if (!content.trim()) return text([span("(no text)", "muted")]);
+	if (!content.trim()) return text([span("(无文本)", "muted")]);
 	const message = transcriptEntryMessage(target.entries[0]!);
 	switch (message?.role) {
 		case "assistant":
@@ -175,7 +175,7 @@ function timelineItem(target: OutlineTarget): TspPickerItem {
 	const entry = target.entries[0]!;
 	const id = target.turnId;
 	const summary = turnSummary(entry);
-	const label = summary.label || "(empty)";
+	const label = summary.label || "（空）";
 	if (target.isUserTurn) {
 		const at = entryTime(entry);
 		return { id, label, node: "user", ...(at ? { facts: { at } } : {}) };
@@ -232,7 +232,7 @@ function blockBody(block: CopyBlock): NativeNode {
 	const shown = lines.slice(0, PREVIEW_BLOCK_LINES).join("\n");
 	return node("col", { gap: "xs" }, [
 		code(shown, { lang: block.language, wrap: true }),
-		text([span(`… +${lines.length - PREVIEW_BLOCK_LINES} more lines`, "dim")]),
+		text([span(`… 另有 ${lines.length - PREVIEW_BLOCK_LINES} 行`, "dim")]),
 	]);
 }
 
@@ -709,7 +709,7 @@ export class CopySelectorComponent implements Component {
 			title: this.deps.title ?? "复制",
 			...(this.deps.title ? {} : { subtitle: "选择要放入剪贴板的内容" }),
 			icon: "clipboard",
-			noun: "turns",
+			noun: "轮次",
 			size: "lg",
 			layout: "timeline",
 			preview: "side",
@@ -769,7 +769,7 @@ export class CopySelectorComponent implements Component {
 		if (this.#blocks && target) {
 			const block = this.#blocks[this.#blockSelected];
 			children.push(
-				row([text([span("‹ back", "accent")], { actions: { click: "back" } })], { gap: "md" }),
+				row([text([span("‹ 返回", "accent")], { actions: { click: "back" } })], { gap: "md" }),
 				node(
 					"list",
 					{ selected: String(this.#blockSelected), empty: "No blocks" },
@@ -777,7 +777,7 @@ export class CopySelectorComponent implements Component {
 						const lines = item.content.split("\n").length;
 						return node(
 							"item",
-							{ label: item.label, detail: `${lines} 行${lines === 1 ? "" : "s"}` },
+							{ label: item.label, detail: `${lines} 行${lines === 1 ? "" : ""}` },
 							undefined,
 							String(index),
 						);
@@ -807,7 +807,7 @@ export class CopySelectorComponent implements Component {
 				const body: NativeChild[] = [turnPreview(target, item.content)];
 				if (blocks.length > 0) {
 					body.push(
-						text([span(`${blocks.length} block${blocks.length === 1 ? "" : "s"} ›`, "accent")], {
+						text([span(`${blocks.length} 个区块${blocks.length === 1 ? "" : ""} ›`, "accent")], {
 							actions: { click: "blocks" },
 						}),
 					);
@@ -825,8 +825,8 @@ export class CopySelectorComponent implements Component {
 		children.push(hintsRow(hints));
 		const head: TspText = this.deps.title ?? [
 			span(`${theme.cmd.copy} `),
-			span("Copy", "strong"),
-			span(`${theme.sep.dot}pick what to put on the clipboard`, "dim"),
+			span("复制", "strong"),
+			span(`${theme.sep.dot}选择要放到剪贴板的内容`, "dim"),
 		];
 		const root = overlayCard("omp.overlay.copy", head, children);
 		this.#native = { memo, targets: this.#targets, blocks: this.#blocks, node: root };
@@ -852,7 +852,7 @@ export class CopySelectorComponent implements Component {
 			text([span(`${theme.cmd.copy} ${action}`, "accent")], { actions: { click: "copy" } }),
 		];
 		if (block.href && this.deps.onOpen) {
-			controls.push(text([span(`${theme.cmd.share} open`, "accent")], { actions: { click: "open" } }));
+			controls.push(text([span(`${theme.cmd.share} 打开`, "accent")], { actions: { click: "open" } }));
 		}
 		return node("section", { head: [span(block.label, "strong")] }, [body, row(controls, { gap: "md" })], "preview");
 	}
@@ -909,7 +909,7 @@ export class CopySelectorComponent implements Component {
 					color: OUTLINE_COLOR,
 					caption:
 						blocks.length > 0
-							? `${blocks.length} 个代码块${blocks.length === 1 ? "" : "s"} ${formatKeyHint("right")}`
+							? `${blocks.length} 个代码块${blocks.length === 1 ? "" : ""} ${formatKeyHint("right")}`
 							: undefined,
 				},
 			}).column;
@@ -922,8 +922,8 @@ export class CopySelectorComponent implements Component {
 		const enter = formatKeyHint("enter");
 		const cancel = editorKey("tui.select.cancel");
 		const hint = this.#blocks
-			? `${this.#blockSelected + 1}/${this.#blocks.length}  ${upDown} block  ${formatKeyHint("left")}/${cancel} back  ${enter} ${action}${openHint}  click ${theme.cmd.copy}/${theme.cmd.share}`
-			: `${this.#targets.length > 0 ? `${this.#selected + 1}/${this.#targets.length}  ` : ""}${upDown} step  ${blocks.length > 0 ? `${formatKeyHint("right")} blocks  ` : ""}${enter} ${action}  ${this.#truncated ? `${formatKeyHint("a")} earlier turns  ` : ""}${expandKeyHint()} expand  ${cancel} close`;
+			? `${this.#blockSelected + 1}/${this.#blocks.length}  ${upDown} 块  ${formatKeyHint("left")}/${cancel} 返回  ${enter} ${action}${openHint}  点击 ${theme.cmd.copy}/${theme.cmd.share}`
+			: `${this.#targets.length > 0 ? `${this.#selected + 1}/${this.#targets.length}  ` : ""}${upDown} 步  ${blocks.length > 0 ? `${formatKeyHint("right")} 块  ` : ""}${enter} ${action}  ${this.#truncated ? `${formatKeyHint("a")} 更早的轮次  ` : ""}${expandKeyHint()} 展开  ${cancel} 关闭`;
 		const anchorId = target
 			? this.#blocks
 				? `copy:${target.turnId}:block:${this.#blockSelected}`
@@ -964,9 +964,9 @@ export class CopySelectorComponent implements Component {
 			const selected = index === this.#blockSelected;
 			const captionColor: ThemeColor = selected ? OUTLINE_COLOR : "dim";
 			const controls: Array<{ action: ControlRegion["action"]; text: string }> = [
-				{ action: "copy", text: `${theme.cmd.copy} ${this.deps.actionLabel ?? "copy"}` },
+				{ action: "copy", text: `${theme.cmd.copy} ${this.deps.actionLabel ?? "复制"}` },
 			];
-			if (block.href && this.deps.onOpen) controls.push({ action: "open", text: `${theme.cmd.share} open` });
+			if (block.href && this.deps.onOpen) controls.push({ action: "open", text: `${theme.cmd.share} 打开` });
 			const controlsWidth = controls.reduce((sum, control) => sum + visibleWidth(control.text) + 2, 0);
 			const summary = truncateToWidth(
 				`${index + 1}/${blocks.length}${theme.sep.dot}${block.label}${theme.sep.dot}${lineCount} line${lineCount === 1 ? "" : "s"}`,

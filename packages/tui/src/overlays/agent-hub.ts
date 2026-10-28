@@ -149,26 +149,26 @@ const PICKER_TABS = [
 ] as const satisfies ReadonlyArray<{ id: AgentHubSection; label: string }>;
 /** Roster fact columns; lower priorities hide first on narrow sheets. */
 const AGENT_COLUMNS: readonly TspPickerColumn[] = [
-	{ id: "cost", head: "Cost", format: "price", priority: 6 },
-	{ id: "time", head: "Time", format: "elapsed", priority: 5 },
-	{ id: "req", head: "Req", format: "num", priority: 2 },
-	{ id: "tools", head: "Tools", format: "num", priority: 1 },
-	{ id: "tok", head: "Tok", format: "num", priority: 3 },
-	{ id: "ctx", head: "Ctx", format: "bar", priority: 4 },
+	{ id: "cost", head: "成本", format: "price", priority: 6 },
+	{ id: "time", head: "时间", format: "elapsed", priority: 5 },
+	{ id: "req", head: "请求", format: "num", priority: 2 },
+	{ id: "tools", head: "工具", format: "num", priority: 1 },
+	{ id: "tok", head: "令牌", format: "num", priority: 3 },
+	{ id: "ctx", head: "上下文", format: "bar", priority: 4 },
 ];
 const ACTIVITY_COLUMNS: readonly TspPickerColumn[] = [
-	{ id: "agent", head: "Agent", format: "text", priority: 2 },
-	{ id: "at", head: "Time", format: "dim", priority: 1 },
+	{ id: "agent", head: "代理", format: "text", priority: 2 },
+	{ id: "at", head: "时间", format: "dim", priority: 1 },
 ];
 /** What the roster/activity projections contribute to the picker (the shared head is added once). */
 type PickerBody = Omit<Partial<TspPickerProps>, "title">;
 const ACTIVITY_FILTERS: readonly ActivityFilter[] = ["all", "errors", "responses", "tools"];
 /** Activity filters as the picker's scope column (`f` cycles them). */
 const ACTIVITY_FILTER_SCOPES: readonly TspPickerScope[] = [
-	{ id: "all", label: "全部", icon: "list", group: "显示" },
-	{ id: "errors", label: "错误", icon: "x-circle", group: "显示" },
-	{ id: "responses", label: "响应", icon: "message", group: "显示" },
-	{ id: "tools", label: "工具", icon: "wrench", group: "显示" },
+	{ id: "all", label: "全部", icon: "list", group: "Show" },
+	{ id: "errors", label: "错误", icon: "x-circle", group: "Show" },
+	{ id: "responses", label: "响应", icon: "message", group: "Show" },
+	{ id: "tools", label: "工具", icon: "wrench", group: "Show" },
 ];
 const ACTIVITY_KIND_ICON: Readonly<Record<AgentActivityKind, string>> = {
 	response: "message",
@@ -920,7 +920,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			CLOSE_ACTION,
 		];
 		return {
-			noun: "agents",
+			noun: "智能体",
 			layout: this.#viewMode === "tree" ? "tree" : "rows",
 			preview: "side",
 			...pickerQuery(this.#agentFilterEditing || this.#agentFilter.getValue() ? this.#agentFilter : null),
@@ -946,9 +946,9 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			const info = this.#getRoleInfo(modelRole);
 			badges.push({ text: sanitizeDisplaySingleLine(info.tag ?? info.name ?? modelRole), title: "模型角色" });
 		}
-		if (ref.kind === "advisor") badges.push({ text: "read-only", tone: "warning" });
+		if (ref.kind === "advisor") badges.push({ text: "只读", tone: "warning" });
 		const unread = this.#irc.unreadCount(ref.id);
-		if (unread > 0) badges.push({ text: `${unread} unread`, tone: "warning" });
+		if (unread > 0) badges.push({ text: `${unread} 未读`, tone: "warning" });
 		if (this.#viewMode === "roster" && ref.parentId && ref.parentId !== MAIN_AGENT_ID) {
 			badges.push({ text: `↳ ${sanitizeDisplaySingleLine(ref.parentId)}`, tone: "muted", title: "生成者" });
 		}
@@ -960,7 +960,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			dot: statusDot(ref.status),
 			detail: task ? taskSummary(task) : undefined,
 			chips: model
-				? [{ text: model.fallback ? `fallback → ${model.text}` : model.text, dot: model.dot }]
+				? [{ text: model.fallback ? `回退 → ${model.text}` : model.text, dot: model.dot }]
 				: undefined,
 			badges: badges.length > 0 ? badges.slice(0, 3) : undefined,
 		};
@@ -1019,7 +1019,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 		const chip = modelChip(ref, observed);
 		if (chip) {
 			const model: TspSpan[] = [];
-			if (chip.fallback) model.push(span("fallback → ", "warning"));
+			if (chip.fallback) model.push(span("回退 → ", "warning"));
 			model.push(span(chip.text, "mono"));
 			if (chip.level && chip.dot) model.push(span(theme.sep.dot, "dim"), span(chip.level, chip.dot));
 			const modelRole = observed?.progress?.modelRole ?? ref.history?.modelRole;
@@ -1072,8 +1072,8 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 				key,
 			);
 		});
-		if (rows.length === 0) rows.push(text([span("No response or tool activity yet", "dim")]));
-		out.push(node("section", { head: "Recent activity", role: "omp.hub.activity" }, rows, "recentActivity"));
+		if (rows.length === 0) rows.push(text([span("尚无响应或工具活动", "dim")]));
+		out.push(node("section", { head: "最近活动", role: "omp.hub.activity" }, rows, "recentActivity"));
 		return out;
 	}
 
@@ -1087,7 +1087,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 					: `${agent ?? "Selected"} subtree`;
 		const selected = this.#activityRows[this.#selectedActivityRow];
 		return {
-			noun: "events",
+			noun: "事件",
 			layout: "rows",
 			preview: "none",
 			...pickerQuery(this.#activitySearchEditing || this.#activitySearch.getValue() ? this.#activitySearch : null),
@@ -1136,7 +1136,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 
 	#describeAgents(nativeTree: boolean): NativeChild[] {
 		const head: NativeChild[] = [
-			text([span("Roster", "strong")]),
+			text([span("名单", "strong")]),
 			node("tabs", { items: VIEW_TABS, active: this.#viewMode }, undefined, "view"),
 		];
 		const counts: TspSpan[] = [];
@@ -1190,19 +1190,19 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 	#usageSpans(): TspSpan[] {
 		const metrics = this.#aggregate;
 		const dot = theme.sep.dot;
-		if (metrics.reportedAgents === 0) return [span(`Usage —${dot}0/${this.#rows.length} measured`, "dim")];
+		if (metrics.reportedAgents === 0) return [span(`使用情况 —${dot}0/${this.#rows.length} 已测量`, "dim")];
 		const activeTime = formatMetricDuration(metrics);
 		return [
 			span(formatCost(metrics.cost), "statusLineCost"),
 			span(
 				[
 					"",
-					activeTime ? `${activeTime} agent time` : "agent time —",
-					`${formatNumber(metrics.requests)} req`,
-					`${formatNumber(metrics.tools)} tools`,
-					`${formatNumber(metrics.tokens)} tok`,
-					`${metrics.activeDurationAgents}/${metrics.reportedAgents} timed`,
-					`${metrics.reportedAgents}/${this.#rows.length} measured`,
+					activeTime ? `${activeTime} 智能体时间` : "智能体时间 —",
+					`${formatNumber(metrics.requests)} 请求`,
+					`${formatNumber(metrics.tools)} 工具`,
+					`${formatNumber(metrics.tokens)} 令牌`,
+					`${metrics.activeDurationAgents}/${metrics.reportedAgents} 已计时`,
+					`${metrics.reportedAgents}/${this.#rows.length} 已测量`,
 				].join(dot),
 				"dim",
 			),
@@ -1215,7 +1215,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			if (this.#loadingPersistedSubagents) {
 				return node(
 					"spinner",
-					{ ...layout, label: [span("Loading saved agents…", "accent")] },
+					{ ...layout, label: [span("正在加载已保存的智能体…", "accent")] },
 					undefined,
 					"loading",
 				);
@@ -1224,12 +1224,12 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 				"col",
 				layout,
 				[
-					text([span(`${theme.status.shadowed} `, "muted"), span("No agents in this session", "strong")]),
+					text([span(`${theme.status.shadowed} `, "muted"), span("此会话中没有智能体", "strong")]),
 					text(
-						[span("Finished, parked, and killed subagents remain with the session that created them.", "dim")],
+						[span("已完成、已挂起和已终止的子智能体会保留在创建它们的会话中。", "dim")],
 						{ wrap: "word" },
 					),
-					text([span("Resume that session with omp-dev --continue, or spawn a task here.", "dim")], {
+					text([span("使用 omp-dev --continue 恢复该会话，或在此处新建任务。", "dim")], {
 						wrap: "word",
 					}),
 				],
@@ -1258,7 +1258,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 		if (showParent && ref.parentId && ref.parentId !== MAIN_AGENT_ID) {
 			label.push(span(`  ↳ ${sanitizeDisplaySingleLine(ref.parentId)}`, "dim"));
 		}
-		if (ref.kind === "advisor") label.push(span("  read-only", "warning"));
+		if (ref.kind === "advisor") label.push(span("  只读", "warning"));
 		const unread = this.#irc.unreadCount(ref.id);
 		if (unread > 0) label.push(span(`  ⧉ ${unread}`, "warning"));
 		return label;
@@ -1281,7 +1281,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 		const metrics = this.#metricsFor(ref, observed);
 		const age = formatAge(Math.max(1, Math.round((Date.now() - ref.lastActivity) / 1000)));
 		const detail = [
-			span(metrics ? `${metricsText(metrics)}${theme.sep.dot}${age}` : `usage${theme.sep.dot}${age}`, "dim"),
+			span(metrics ? `${metricsText(metrics)}${theme.sep.dot}${age}` : `使用情况${theme.sep.dot}${age}`, "dim"),
 		];
 		const task = observed?.description ?? observed?.progress?.task ?? ref.activity;
 		if (task) detail.push(span(theme.sep.dot, "dim"), span(sanitizeDisplaySingleLine(task), "muted"));
@@ -1323,7 +1323,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			gap: "sm",
 			role: "omp.overlay.agentHub.detail",
 		} as const;
-		if (!ref) return node("col", layout, [text([span("Select an agent to inspect", "dim")])], "detail");
+		if (!ref) return node("col", layout, [text([span("选择要检查的智能体", "dim")])], "detail");
 		const observed = this.#observableFor(ref.id);
 		const metrics = this.#metricsFor(ref, observed);
 
@@ -1338,15 +1338,15 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			out.push(text([span(sanitizeDisplaySingleLine(ref.id), "dim")]));
 		const state: NativeChild[] = [
 			ref.status === "running"
-				? node("spinner", { label: [span("running", "accent")] })
+				? node("spinner", { label: [span("运行中", "accent")] })
 				: text([span(ref.status, statusTone(ref.status))]),
 		];
 		const duration = metrics ? formatMetricDuration(metrics) : undefined;
 		if (duration) state.push(text([span(duration, "dim")]));
 		state.push(
-			text([span("last active", "dim")]),
+			text([span("最近活跃", "dim")]),
 			node("elapsed", { age: Math.max(0, Date.now() - ref.lastActivity), format: "short" }),
-			text([span("ago", "dim")]),
+			text([span("前", "dim")]),
 		);
 		out.push(node("row", { gap: "sm", wrap: true, align: "baseline" }, state, "state"));
 		const model = this.#modelSpans(ref, observed);
@@ -1370,11 +1370,11 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 		out.push(
 			node(
 				"section",
-				{ head: [span("Recent activity", "accent strong")] },
+				{ head: [span("最近活动", "accent strong")] },
 				[
 					node(
 						"list",
-						{ empty: [span("No response or tool activity yet", "muted")] },
+						{ empty: [span("尚无响应或工具活动", "muted")] },
 						recent.map(activity => this.#describeActivityItem(activity)),
 						"recent",
 					),
@@ -1404,12 +1404,12 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			const value = [span(sanitizeDisplaySingleLine(current))];
 			if (progress?.retryState) {
 				value.push(
-					span(`${dot}retry ${progress.retryState.attempt}/${progress.retryState.maxAttempts}`, "warning"),
+					span(`${dot}重试 ${progress.retryState.attempt}/${progress.retryState.maxAttempts}`, "warning"),
 				);
 			}
 			facts.push({ k: "Current", v: value });
 		}
-		facts.push({ k: "Usage", v: metrics ? metricsText(metrics) : [span("usage —", "dim")] });
+		facts.push({ k: "Usage", v: metrics ? metricsText(metrics) : [span("用量 —", "dim")] });
 		facts.push({
 			k: "Lineage",
 			v: `Spawned by ${sanitizeDisplaySingleLine(ref.parentId ?? MAIN_AGENT_ID)}${children.length > 0 ? `${dot}${children.length} ${children.length === 1 ? "child" : "children"}` : ""}`,
@@ -1425,8 +1425,8 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 			v: [
 				span(
 					ref.kind === "advisor" || ref.history?.readOnly
-						? "Read-only · 0 LoC"
-						: "Shared workspace · per-agent LoC not attributable",
+						? "只读 · 0 行代码"
+						: "共享工作区 · 无法按智能体归因代码行数",
 					"dim",
 				),
 			],
@@ -1482,7 +1482,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 		const status: NativeChild[] = [
 			text([
 				span(
-					`${sanitizeDisplaySingleLine(scope)}${dot}${this.#activityFilter}${dot}${this.#activityFollow ? "following" : "paused"}`,
+					`${sanitizeDisplaySingleLine(scope)}${dot}${this.#activityFilter}${dot}${this.#activityFollow ? "跟随中" : "已暂停"}`,
 					"dim",
 				),
 			]),
@@ -1492,14 +1492,14 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 						{
 							text: this.#activitySearch.getValue(),
 							cursor: this.#activitySearch.getCursor(),
-							prompt: [span("search: ", "muted")],
+							prompt: [span("搜索： ", "muted")],
 						},
 						undefined,
 						"search",
 					)
 				: text([
 						span(
-							this.#activitySearch.getValue() ? `search: ${this.#activitySearch.getValue()}` : "search: —",
+							this.#activitySearch.getValue() ? `搜索： ${this.#activitySearch.getValue()}` : "搜索：—",
 							"dim",
 						),
 					]),
@@ -1516,7 +1516,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 					grow: 1,
 					empty: [
 						span(
-							this.#activitySearch.getValue() ? "No matching activity" : "No agent activity recorded yet",
+							this.#activitySearch.getValue() ? "无匹配活动" : "尚无智能体活动记录",
 							"muted",
 						),
 					],
@@ -1729,7 +1729,7 @@ export class AgentHubOverlayComponent<TRecord extends AgentRecordLike = AgentRec
 		body.push(
 			theme.fg(
 				"dim",
-				`${scope}${theme.sep.dot}${this.#activityFilter}${theme.sep.dot}${this.#activityFollow ? "following" : "paused"}${theme.sep.dot}${search}`,
+				`${scope}${theme.sep.dot}${this.#activityFilter}${theme.sep.dot}${this.#activityFollow ? "跟随中" : "已暂停"}${theme.sep.dot}${search}`,
 			),
 		);
 		if (contentRows >= 8) body.push("");

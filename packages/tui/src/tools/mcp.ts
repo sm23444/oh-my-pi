@@ -35,7 +35,7 @@ import { plainToolCard, type ToolCardPhase } from "../render/tool-card";
 
 /** Expanded Args tree shared by the MCP result cards. */
 function buildMcpArgsSection(args: Record<string, unknown>, theme: Theme): readonly string[] {
-	const lines: string[] = [theme.fg("dim", "Args")];
+	const lines: string[] = [theme.fg("dim", "参数")];
 	const tree = renderJsonTreeLines(
 		args,
 		theme,
@@ -237,7 +237,7 @@ export function renderMCPResult(
 		// component selection so the opt-in Markdown path can use its own renderer.
 
 		if (!trimmedOutput) {
-			body.push(theme.fg("dim", "(no output)"));
+			body.push(theme.fg("dim", "(无输出)"));
 			return body;
 		}
 
@@ -307,7 +307,7 @@ function mcpArgsSection(entries: readonly [string, unknown][]): NativeNode | und
 	if (entries.length === 0) return undefined;
 	return node(
 		"section",
-		{ head: [span("Args", "muted")], collapsible: true, collapsed: true },
+		{ head: [span("参数", "muted")], collapsible: true, collapsed: true },
 		[describeJsonTree(Object.fromEntries(entries))],
 		"args",
 	);
@@ -353,7 +353,7 @@ export function describeMCPResult(
 				// Bracketed non-JSON text falls through to Markdown/raw output.
 			}
 		}
-		if (!output) body.push(noteText("(no output)"));
+		if (!output) body.push(noteText("(无输出)"));
 		else if (isError) body.push(errorText(output));
 		else if (isJson) body.push(describeJsonTree(parsed));
 		else if (renderMarkdownResults) body.push(md(output));

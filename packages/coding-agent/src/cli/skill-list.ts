@@ -120,9 +120,10 @@ export async function handleSkillList(args: string[], cwd: string, json: boolean
 	for (const skill of result.skills) {
 		process.stdout.write(`${toTerminalSafe(skill.name)}\t${toTerminalSafe(skill.description)}\n`);
 	}
-	if (result.skills.length === 0) process.stderr.write("No skills discovered.\n");
+	if (result.skills.length === 0) process.stderr.write("未发现技能。\n");
 	for (const warning of result.warnings) {
-		process.stderr.write(`warning: ${toTerminalSafe(warning.message)}\n`);
+		process.stderr.write(`警告：${toTerminalSafe(warning.message)}
+`);
 	}
 	return 0;
 }

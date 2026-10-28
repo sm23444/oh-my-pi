@@ -48,7 +48,7 @@ interface ParsedMcpSearchArgs {
 type McpAddOptionParser = (parsed: ParsedMcpAddArgs, value: string | undefined) => string | undefined;
 
 const MCP_ADD_USAGE =
-	"Usage: /mcp add <name> [--scope project|user] [--url <url> --transport http|sse] [--token <token>] [-- <command...>]";
+	"用法：/mcp add <name> [--scope project|user] [--url <url> --transport http|sse] [--token <token>] [-- <command...>]";
 
 const MCP_ADD_OPTION_PARSERS = new Map<string, McpAddOptionParser>([
 	[
@@ -263,10 +263,10 @@ async function handleResourcesCommand(runtime: SlashCommandRuntime): Promise<Sla
 		return resources.map(resource => `${name}/${resource.uri}`);
 	});
 	if (!lines) {
-		await runtime.output("No MCP servers configured.");
+		await runtime.output("未配置任何 MCP 服务器。");
 		return commandConsumed();
 	}
-	await runtime.output(lines.length > 0 ? lines.join("\n") : "No resources available on connected servers.");
+	await runtime.output(lines.length > 0 ? lines.join("\n") : "连接的服务器上没有可用资源。");
 	return commandConsumed();
 }
 
@@ -276,30 +276,30 @@ async function handlePromptsCommand(runtime: SlashCommandRuntime): Promise<Slash
 		return prompts.map(prompt => `${name}/${prompt.name}${prompt.description ? ` — ${prompt.description}` : ""}`);
 	});
 	if (!lines) {
-		await runtime.output("No MCP servers configured.");
+		await runtime.output("未配置任何 MCP 服务器。");
 		return commandConsumed();
 	}
-	await runtime.output(lines.length > 0 ? lines.join("\n") : "No prompts available on connected servers.");
+	await runtime.output(lines.length > 0 ? lines.join("\n") : "连接的服务器上没有可用提示。");
 	return commandConsumed();
 }
 
 async function handleTestCommand(rest: string, runtime: SlashCommandRuntime): Promise<SlashCommandResult> {
 	const name = rest.split(/\s+/)[0]?.trim() ?? "";
-	if (!name) return usage("Usage: /mcp test <name>", runtime);
+	if (!name) return usage("用法：/mcp test <name>", runtime);
 	const servers = await getMcpConfiguredServers(runtime.cwd);
 	const server = servers.find(item => item.name === name);
-	if (!server) return usage(`Server "${name}" not found. Run /mcp list to see configured servers.`, runtime);
+	if (!server) return usage(`未找到服务器“${name}”。运行 /mcp list 查看已配置的服务器。`, runtime);
 
 	try {
 		return await withPreparedMcpConnection(runtime, name, server.config, async connection => {
 			const tools = await listTools(connection);
-			const lines = [`Server "${name}" connected (${tools.length} tools).`];
+			const lines = [`服务器“${name}”已连接（${tools.length} 个工具）。`];
 			for (const tool of tools) lines.push(`  - ${tool.name}`);
 			await runtime.output(lines.join("\n"));
 			return commandConsumed();
 		});
 	} catch (err) {
-		return usage(`Connection to "${name}" failed: ${errorMessage(err)}`, runtime);
+		return usage(`连接“${name}”失败：${errorMessage(err)}`, runtime);
 	}
 }
 
@@ -327,10 +327,10 @@ async function handleAddCommand(rest: string, runtime: SlashCommandRuntime): Pro
 	try {
 		const filePath = getMCPConfigPath(parsed.scope, runtime.cwd);
 		await addMCPServer(filePath, parsed.name, config);
-		await runtime.output(`Added MCP server "${parsed.name}" (${parsed.scope}).`);
+		await runtime.output(`已添加 MCP 服务器“${parsed.name}”（${parsed.scope}）。`);
 		return commandConsumed();
 	} catch (err) {
-		return usage(`Failed to add server: ${errorMessage(err)}`, runtime);
+		return usage(`添加服务器失败：${errorMessage(err)}`, runtime);
 	}
 }
 
@@ -345,7 +345,7 @@ async function handleSmitherySearchCommand(rest: string, runtime: SlashCommandRu
 			includeSemantic: parsed.semantic,
 		});
 		if (results.length === 0) {
-			await runtime.output(`No Smithery results found for "${parsed.keyword}".`);
+			await runtime.output(`未找到“${parsed.keyword}”的 Smithery 结果。`);
 			return commandConsumed();
 		}
 		await runtime.output(
@@ -361,11 +361,11 @@ async function handleSmitherySearchCommand(rest: string, runtime: SlashCommandRu
 		const message = errorMessage(err);
 		if (AIError.is(AIError.classify(err), AIError.Flag.AuthFailed)) {
 			return usage(
-				"Smithery authentication required. Run /mcp smithery-login in the TUI client or add an API key to ~/.omp/agent/smithery.json.",
+				"需要 Smithery 认证。运行 /mcp smithery-login（在 TUI 客户端中），或将 API 密钥添加到 ~/.omp/agent/smithery.json.",
 				runtime,
 			);
 		}
-		return usage(`Smithery search failed: ${message}`, runtime);
+		return usage(`Smithery 搜索失败：${message}`, runtime);
 	}
 }
 
@@ -386,7 +386,7 @@ async function handleListCommand(runtime: SlashCommandRuntime): Promise<SlashCom
 			if (!entries.some(entry => entry.name === name)) entries.push({ name, config, scope: "project" });
 		}
 		if (entries.length === 0) {
-			await runtime.output("No MCP servers configured.");
+			await runtime.output("未配置任何 MCP 服务器。");
 			return commandConsumed();
 		}
 		await runtime.output(
@@ -420,7 +420,7 @@ async function handleListCommand(runtime: SlashCommandRuntime): Promise<SlashCom
 		);
 		return commandConsumed();
 	} catch (err) {
-		return usage(`Failed to list MCP servers: ${errorMessage(err)}`, runtime);
+		return usage(`列出 MCP 服务器失败：${errorMessage(err)}`, runtime);
 	}
 }
 
@@ -430,7 +430,7 @@ async function handleEnableDisableCommand(
 	runtime: SlashCommandRuntime,
 ): Promise<SlashCommandResult> {
 	const name = rest.split(/\s+/)[0] ?? "";
-	if (!name) return usage(`Usage: /mcp ${verb} <name>`, runtime);
+	if (!name) return usage(`用法：/mcp ${verb} <name>`, runtime);
 	const enabled = verb === "enable";
 	try {
 		const userPath = getMCPConfigPath("user", runtime.cwd);
@@ -441,37 +441,37 @@ async function handleEnableDisableCommand(
 		]);
 		if (projectConfig.mcpServers?.[name] !== undefined) {
 			await updateMCPServer(projectPath, name, { ...projectConfig.mcpServers[name], enabled } as MCPServerConfig);
-			await runtime.output(`Server "${name}" ${enabled ? "enabled" : "disabled"} (project config).`);
+			await runtime.output(`服务器“${name}”${enabled ? "已启用" : "已禁用"}（项目配置）。`);
 			return commandConsumed();
 		}
 		if (userConfig.mcpServers?.[name] !== undefined) {
 			await updateMCPServer(userPath, name, { ...userConfig.mcpServers[name], enabled } as MCPServerConfig);
-			await runtime.output(`Server "${name}" ${enabled ? "enabled" : "disabled"} (user config).`);
+			await runtime.output(`服务器“${name}”${enabled ? "已启用" : "已禁用"}（用户配置）。`);
 			return commandConsumed();
 		}
 		const disabledList = await readDisabledServers(userPath);
 		if (!enabled || disabledList.includes(name)) {
 			await setServerDisabled(userPath, name, !enabled);
-			await runtime.output(`Server "${name}" ${enabled ? "enabled" : "disabled"}.`);
+			await runtime.output(`服务器“${name}”${enabled ? "已启用" : "已禁用"}。`);
 			return commandConsumed();
 		}
-		return usage(`Server "${name}" not found in user or project config.`, runtime);
+		return usage(`在用户或项目配置中未找到服务器“${name}”。`, runtime);
 	} catch (err) {
-		return usage(`Failed to ${verb} MCP server: ${errorMessage(err)}`, runtime);
+		return usage(`无法${verb} MCP 服务器：${errorMessage(err)}`, runtime);
 	}
 }
 
 async function handleRemoveCommand(rest: string, runtime: SlashCommandRuntime): Promise<SlashCommandResult> {
 	const parsed = parseNamedScopeArgs(rest, "Invalid --scope value. Use project or user.");
 	if (parsed.error) return usage(parsed.error, runtime);
-	if (!parsed.name) return usage("Usage: /mcp remove <name> [--scope project|user]", runtime);
+	if (!parsed.name) return usage("用法：/mcp remove <name> [--scope project|user]", runtime);
 	try {
 		const filePath = getMCPConfigPath(parsed.scope, runtime.cwd);
 		await removeMCPServer(filePath, parsed.name);
-		await runtime.output(`Removed server "${parsed.name}" from ${parsed.scope} config.`);
+		await runtime.output(`已将服务器“${parsed.name}”从 ${parsed.scope} 配置中移除。`);
 		return commandConsumed();
 	} catch (err) {
-		return usage(`Failed to remove MCP server: ${errorMessage(err)}`, runtime);
+		return usage(`移除 MCP 服务器失败：${errorMessage(err)}`, runtime);
 	}
 }
 
@@ -493,7 +493,7 @@ async function handleReauthCommand(rest: string, runtime: SlashCommandRuntime): 
 	// `validateServerName` permits spaces, and splitting on whitespace (or
 	// un-quoting) would truncate "MaaS Slack" to "MaaS".
 	const name = rest.trim();
-	if (!name) return usage("Usage: /mcp reauth <name>", runtime);
+	if (!name) return usage("用法：/mcp reauth <name>", runtime);
 	const found = await findMcpServerForAuth(name, runtime.cwd, runtime.mcpManager, {
 		preferManager: true,
 		// `mcp.enableProjectConfig: false` opts the project out of project-scoped
@@ -501,7 +501,7 @@ async function handleReauthCommand(rest: string, runtime: SlashCommandRuntime): 
 		// opted-out entry.
 		enableProjectConfig: cfgMcpEnableProjectConfig.get(runtime.settings),
 	});
-	if (!found) return usage(`Server "${name}" not found. Run /mcp list to see configured servers.`, runtime);
+	if (!found) return usage(`未找到服务器“${name}”。运行 /mcp list 查看已配置的服务器。`, runtime);
 
 	const emit = (text: string): void => {
 		void Promise.resolve(runtime.output(text)).catch(() => {});
@@ -548,7 +548,7 @@ async function handleReauthCommand(rest: string, runtime: SlashCommandRuntime): 
 				emit(`Reauthorization cancelled for "${name}".`);
 				return commandConsumed();
 			}
-			return usage(`Failed to reauthorize server "${name}": ${errorMessage(error)}`, runtime);
+			return usage(`重新授权服务器“${name}”失败：${errorMessage(error)}`, runtime);
 		}
 	};
 
@@ -598,12 +598,12 @@ export async function handleMcpAcp(
 	}
 	if (verb === "notifications") {
 		return usage(
-			"MCP notifications require the TUI client (live MCPManager). Use /mcp list to see server status.",
+			"MCP 通知需要 TUI 客户端（live MCPManager）。使用 /mcp list 查看服务器状态。",
 			runtime,
 		);
 	}
 	if (TUI_ONLY_MCP_VERBS.has(verb)) {
-		return usage(`/mcp ${verb} requires OAuth or browser flows only available in the TUI client.`, runtime);
+		return usage(`/mcp ${verb} 需要 OAuth 或浏览器流程，仅 TUI 客户端可用。`, runtime);
 	}
 	switch (verb) {
 		case "resources":
@@ -620,7 +620,7 @@ export async function handleMcpAcp(
 			return await handleSmitherySearchCommand(rest, runtime);
 		case "reload":
 			await runtime.refreshCommands();
-			await runtime.output("MCP runtime reload requested.");
+			await runtime.output("已请求 MCP 运行时重新加载。");
 			return commandConsumed();
 		case "list":
 			return await handleListCommand(runtime);
@@ -631,6 +631,6 @@ export async function handleMcpAcp(
 		case "rm":
 			return await handleRemoveCommand(rest, runtime);
 		default:
-			return usage(`Unknown /mcp subcommand: ${verb}. Use /mcp help for available subcommands.`, runtime);
+			return usage(`未知的 /mcp 子命令：${verb}。使用 /mcp help 获取可用子命令。`, runtime);
 	}
 }

@@ -116,8 +116,8 @@ export async function runAgentsCommand(cmd: AgentsCommandArgs): Promise<void> {
 				return;
 			}
 
-			writeStdout(chalk.bold(`Bundled agents: ${result.total}`));
-			writeStdout(chalk.dim(`Target directory: ${result.targetDir}`));
+			writeStdout(chalk.bold(`内置代理：${result.total}`));
+			writeStdout(chalk.dim(`目标目录：${result.targetDir}`));
 			writeStdout(chalk.green(`${theme.status.success} Written: ${result.written.length}`));
 			if (result.skipped.length > 0) {
 				writeStdout(

@@ -34,15 +34,15 @@ export interface GoalToolDetails {
 function describeOp(op: string | undefined): string {
 	switch (op) {
 		case "create":
-			return "set";
+			return "设置";
 		case "complete":
-			return "complete";
+			return "完成";
 		case "get":
-			return "check";
+			return "检查";
 		case "resume":
-			return "resume";
+			return "恢复";
 		case "drop":
-			return "drop";
+			return "放弃";
 		default:
 			return op ?? "?";
 	}
@@ -73,10 +73,10 @@ function describeGoalResult(result: ToolRenderResult<GoalToolDetails>, args?: Go
 	const description = describeOp(details?.op ?? args?.op);
 	if (result.isError) return errorView("Goal", resultText(result) || "Goal tool failed", description);
 	const goal = details?.goal ?? null;
-	if (!goal) return { head: toolHead("Goal", description, "no active goal"), tone: "warning" };
+	if (!goal) return { head: toolHead("目标", description, "no active goal"), tone: "warning" };
 
 	const head = [
-		...toolHead("Goal", description),
+		...toolHead("目标", description),
 		span(" "),
 		span(goal.status, `${goalBadgeColor(goal.status)} strong`),
 	];
@@ -87,14 +87,14 @@ function describeGoalResult(result: ToolRenderResult<GoalToolDetails>, args?: Go
 			? `${used} / ${formatNumber(goal.tokenBudget)} tokens (${formatNumber(left)} left)`
 			: `${used} tokens`;
 	const meta = [tokens];
-	if (goal.timeUsedSeconds > 0) meta.push(`${formatDuration(goal.timeUsedSeconds * 1000)} elapsed`);
+	if (goal.timeUsedSeconds > 0) meta.push(`${formatDuration(goal.timeUsedSeconds * 1000)} 已用`);
 	const report = details?.completionBudgetReport;
 	return {
 		head,
 		body: compact([
 			text([span(`"${goal.objective.trim()}"`, "muted")], { wrap: "word" }),
 			text([span(meta.join(" · "), "dim")], { wrap: "word" }),
-			report ? node("section", { head: [span("Report", "toolTitle")] }, [noteText(report)], "report") : undefined,
+			report ? node("section", { head: [span("报告", "toolTitle")] }, [noteText(report)], "report") : undefined,
 		]),
 	};
 }
@@ -112,9 +112,9 @@ export const goalToolRenderer = {
 			meta.push(uiTheme.italic(uiTheme.fg("muted", `"${objective}"`)));
 		}
 		if (args.op === "create" && args.token_budget !== undefined) {
-			meta.push(`budget ${formatNumber(args.token_budget)}`);
+			meta.push(`预算 ${formatNumber(args.token_budget)}`);
 		}
-		return new Text(renderStatusLine({ icon: "pending", title: "Goal", description, meta }, uiTheme), 0, 0);
+		return new Text(renderStatusLine({ icon: "pending", title: "目标", description, meta }, uiTheme), 0, 0);
 	},
 
 	renderResult(
@@ -129,7 +129,7 @@ export const goalToolRenderer = {
 		const description = describeOp(op);
 
 		if (result.isError) {
-			const header = renderStatusLine({ icon: "error", title: "Goal", description }, uiTheme);
+			const header = renderStatusLine({ icon: "error", title: "目标", description }, uiTheme);
 			return framedToolCard(uiTheme, () => ({
 				header,
 				sections: [{ content: formatErrorDetail(fallbackText || "Goal tool failed", uiTheme).split("\n") }],
@@ -141,7 +141,7 @@ export const goalToolRenderer = {
 		const goal = details?.goal ?? null;
 		if (!goal) {
 			return new Text(
-				renderStatusLine({ icon: "warning", title: "Goal", description, meta: ["no active goal"] }, uiTheme),
+				renderStatusLine({ icon: "warning", title: "目标", description, meta: ["no active goal"] }, uiTheme),
 				0,
 				0,
 			);
@@ -150,7 +150,7 @@ export const goalToolRenderer = {
 		const header = renderStatusLine(
 			{
 				iconOverride: uiTheme.styledSymbol("tool.goal", "accent"),
-				title: "Goal",
+				title: "目标",
 				description,
 				badge: { label: goal.status, color: goalBadgeColor(goal.status) },
 			},
@@ -175,7 +175,7 @@ export const goalToolRenderer = {
 		const report = details?.completionBudgetReport;
 		const sections: Array<{ label?: string; content: string[] }> = [{ content: lines }];
 		if (report) {
-			sections.push({ label: "Report", content: report.split("\n").map(line => uiTheme.fg("muted", line)) });
+			sections.push({ label: "报告", content: report.split("\n").map(line => uiTheme.fg("muted", line)) });
 		}
 
 		return framedToolCard(uiTheme, () => ({
@@ -187,11 +187,11 @@ export const goalToolRenderer = {
 	},
 
 	describeCall(args: GoalRenderArgs): NativeToolView {
-		const head: TspSpan[] = toolHead("Goal", describeOp(args.op));
+		const head: TspSpan[] = toolHead("目标", describeOp(args.op));
 		const objective = args.objective?.trim();
 		if (args.op === "create" && objective) head.push(span(" "), span(`"${objective}"`, "muted"));
 		if (args.op === "create" && args.token_budget !== undefined) {
-			head.push(span(" "), span(`budget ${formatNumber(args.token_budget)}`, "muted"));
+			head.push(span(" "), span(`预算 ${formatNumber(args.token_budget)}`, "muted"));
 		}
 		return { head };
 	},

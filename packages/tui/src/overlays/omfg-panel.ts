@@ -152,7 +152,7 @@ export class OmfgPanelComponent extends OverlayPanel {
 		}
 		const preview = replaceTabs(this.#preview).trim();
 		if (preview) return md(preview, { stream: this.#state === "generating" });
-		return text([span(`${theme.status.pending} Waiting for candidate rule…`, "dim")]);
+		return text([span(`${theme.status.pending} 等待候选规则…`, "dim")]);
 	}
 
 	#describeFooter(): NativeNode {
@@ -166,18 +166,18 @@ export class OmfgPanelComponent extends OverlayPanel {
 			case "saved":
 				return statusHintsRow(
 					[
-						span(`${theme.status.success} Registered live`, "success"),
+						span(`${theme.status.success} 已实时注册`, "success"),
 						span(" · ", "muted"),
 						span(replaceTabs(this.#savedPath ?? "saved"), "path"),
 					],
 					[esc],
 				);
 			case "rejected":
-				return statusHintsRow([span(`${theme.status.warning} Not saved`, "warning")], [esc]);
+				return statusHintsRow([span(`${theme.status.warning} 未保存`, "warning")], [esc]);
 			case "aborted":
-				return statusHintsRow([span(`${theme.status.warning} Cancelled`, "warning")], [esc]);
+				return statusHintsRow([span(`${theme.status.warning} 已取消`, "warning")], [esc]);
 			case "error":
-				return statusHintsRow([span(`${theme.status.error} Error`, "error")], [esc]);
+				return statusHintsRow([span(`${theme.status.error} 错误`, "error")], [esc]);
 		}
 	}
 
