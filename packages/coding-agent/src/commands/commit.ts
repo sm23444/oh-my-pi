@@ -12,12 +12,12 @@ import { initTheme } from "@oh-my-pi/pi-tui/theme";
 export default class Commit extends Command {
 	static description = commandHelp.description;
 	static flags = {
-		push: Flags.boolean({ description: "Push after committing" }),
-		"dry-run": Flags.boolean({ description: "Preview without committing" }),
-		"no-changelog": Flags.boolean({ description: "Skip changelog updates" }),
-		legacy: Flags.boolean({ description: "Use legacy deterministic pipeline" }),
-		context: Flags.string({ char: "c", description: "Additional context for the model" }),
-		model: Flags.string({ char: "m", description: "Override model selection" }),
+		push: Flags.boolean({ description: "提交后推送" }),
+		"dry-run": Flags.boolean({ description: "预览而不提交" }),
+		"no-changelog": Flags.boolean({ description: "跳过 changelog 更新" }),
+		legacy: Flags.boolean({ description: "使用旧版确定性流水线" }),
+		context: Flags.string({ char: "c", description: "提供给模型的额外上下文" }),
+		model: Flags.string({ char: "m", description: "覆盖模型选择" }),
 	};
 
 	async run(): Promise<void> {

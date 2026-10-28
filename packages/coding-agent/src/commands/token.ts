@@ -50,27 +50,27 @@ export default class Token extends Command {
 	static description = commandHelp.description;
 	static args = {
 		provider: Args.string({
-			description: "Provider ID (e.g. anthropic, openai)",
+			description: "提供商 ID（e.g. anthropic, openai）",
 			required: true,
 		}),
 	};
 
 	static flags = {
 		raw: Flags.boolean({
-			description: "Output the raw credential value without parsing nested JSON structures",
+			description: "输出原始凭据值,不解析嵌套 JSON 结构",
 			default: false,
 		}),
 		"force-refresh": Flags.boolean({
-			description: "Force refresh the OAuth token even if it has not expired",
+			description: "即使 OAuth token 未过期也强制刷新",
 			default: false,
 		}),
 		account: Flags.integer({
 			char: "a",
-			description: "Select the Nth OAuth account (1-based) in stored order instead of the round-robin default",
+			description: "按存储顺序选择第 N 个 OAuth 账户(从 1 开始),而不是默认的轮询方式",
 		}),
 		list: Flags.boolean({
 			char: "l",
-			description: "List the provider's OAuth accounts (index + identity) and exit",
+			description: "列出提供商的 OAuth 账户(索引 + 身份)并退出",
 			default: false,
 		}),
 	};

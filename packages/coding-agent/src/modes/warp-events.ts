@@ -200,7 +200,7 @@ export function createWarpEventBridgeExtension(): ExtensionFactory {
 			emitter?.emit({
 				event: "permission_request",
 				tool_name: event.toolName,
-				summary: `omp wants to run ${event.toolName}`,
+				summary: `omp 想要运行 ${event.toolName}`,
 			});
 		});
 
@@ -210,7 +210,7 @@ export function createWarpEventBridgeExtension(): ExtensionFactory {
 
 		api.on("tool_execution_start", event => {
 			if (event.toolName === "ask") {
-				emitter?.emit({ event: "question_asked", summary: "Waiting for your answer" });
+				emitter?.emit({ event: "question_asked", summary: "正在等待你的回答" });
 			}
 		});
 

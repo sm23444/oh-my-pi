@@ -17,13 +17,13 @@ export default class Git extends Command {
 
 	static args = {
 		revision: Args.string({
-			description: "Pin the view to one commit (any revision, e.g. HEAD~2 or a sha)",
+			description: "将视图固定到一个提交 (任意修订版本, e.g. HEAD~2 或 sha)",
 			required: false,
 		}),
 	};
 
 	static flags = {
-		dir: Flags.string({ char: "C", description: "Run in another directory instead of the current one" }),
+		dir: Flags.string({ char: "C", description: "在另一个目录而非当前目录中运行" }),
 	};
 
 	static examples = ["omp git", "omp git HEAD~2", "omp git -C ~/projects/app"];
@@ -31,7 +31,7 @@ export default class Git extends Command {
 	async run(): Promise<void> {
 		const { args, flags } = await this.parse(Git);
 		if (process.stdout.isTTY !== true || process.stdin.isTTY !== true) {
-			console.error("omp git is interactive and requires a TTY");
+			console.error("omp git 是交互式的，并且需要一个 TTY");
 			process.exit(1);
 		}
 		// Load settings first so the user's configured theme/symbol preset apply

@@ -82,7 +82,7 @@ export const codeintelFixtures: Record<string, GalleryFixture> = {
 	},
 
 	debug: {
-		label: "Debug",
+		label: "调试",
 		streamingArgs: {
 			action: "stack_trace",
 		},

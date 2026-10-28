@@ -277,11 +277,11 @@ export function renderProviderModels(
 		]);
 		for (const line of boxTable(
 			[
-				{ header: "model" },
-				{ header: "context", align: "right" },
-				{ header: "max-out", align: "right" },
-				{ header: "thinking" },
-				{ header: "images" },
+				{ header: "模型" },
+				{ header: "上下文", align: "right" },
+				{ header: "最大输出", align: "right" },
+				{ header: "思考" },
+				{ header: "图像" },
 			],
 			rows,
 		)) {

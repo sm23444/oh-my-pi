@@ -6,19 +6,19 @@ export default class IfBench extends Command {
 	static description = commandHelp.description;
 	static args = {
 		models: Args.string({
-			description: "Model selectors (provider/model or fuzzy id, e.g. opus)",
+			description: "模型选择器（provider/model 或模糊 ID，例如 e.g opus）",
 			required: true,
 			multiple: true,
 		}),
 	};
 
 	static flags = {
-		turns: Flags.integer({ description: "Maximum turns per model; turn N issues N actions (default: 24)" }),
-		length: Flags.integer({ description: "Character-array length, even, 8-26 (default: 24)" }),
-		"max-tokens": Flags.integer({ description: "Max output tokens per turn (default: 32768)" }),
-		"nya-max": Flags.integer({ description: "Longest accepted cat sound in nya{1,N} (default: 8)" }),
-		par: Flags.integer({ description: "Models benchmarked concurrently (default: 4)" }),
-		json: Flags.boolean({ description: "Output JSON" }),
+		turns: Flags.integer({ description: "每个模型的最大轮数；第 N 轮执行 N 个操作（默认：24）" }),
+		length: Flags.integer({ description: "字符数组长度，必须为偶数，范围为 8-26（默认值：24）" }),
+		"max-tokens": Flags.integer({ description: "每轮最大输出 token 数（默认值：32768）" }),
+		"nya-max": Flags.integer({ description: "nya{1,N} 中接受的最长猫叫声（默认值：8）" }),
+		par: Flags.integer({ description: "并发进行基准测试的模型数（默认值：4）" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
 	};
 
 	static examples = [

@@ -115,7 +115,7 @@ export async function invokeSkillCommandFromText(
 		if (options?.propagateErrors) {
 			throw err;
 		}
-		ctx.showError(`Failed to load skill: ${err instanceof Error ? err.message : String(err)}`);
+		ctx.showError(`加载技能失败：${err instanceof Error ? err.message : String(err)}`);
 		return true;
 	} finally {
 		if (optimistic && ctx.optimisticSkillMessagePending) {

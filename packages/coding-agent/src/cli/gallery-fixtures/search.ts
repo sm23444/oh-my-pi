@@ -3,7 +3,7 @@ import type { GalleryFixture } from "./types";
 
 export const searchFixtures: Record<string, GalleryFixture> = {
 	grep: {
-		label: "Grep",
+		label: "搜索",
 		streamingArgs: {
 			pattern: "useState",
 		},
@@ -76,7 +76,7 @@ export const searchFixtures: Record<string, GalleryFixture> = {
 	},
 
 	ast_grep: {
-		label: "AST Grep",
+		label: "AST 搜索",
 		streamingArgs: {
 			pat: "useState(",
 		},

@@ -417,7 +417,7 @@ export class ModelPickerComponent implements Component {
 		const cycleKey = editorKey("app.model.cycleForward") || formatKeyHint("ctrl+p");
 		const node = picker(
 			{
-				title: mode === "task" ? "Switch task model" : mode === "selection" ? "Select model" : "Switch model",
+				title: mode === "task" ? "切换任务模型" : mode === "selection" ? "选择模型" : "切换模型",
 				subtitle,
 				icon: "cpu",
 				noun: mode === "role" ? "roles" : "models",
@@ -452,7 +452,7 @@ export class ModelPickerComponent implements Component {
 					this.#taskModeKey !== undefined && mode !== "role" && mode !== "selection"
 						? pickerAction("task", "Task model", this.#taskModeKey, { on: mode === "task" })
 						: undefined,
-					query.length > 0 ? { ...CLOSE_ACTION, label: "Clear search" } : CLOSE_ACTION,
+					query.length > 0 ? { ...CLOSE_ACTION, label: "清除搜索" } : CLOSE_ACTION,
 				]),
 			},
 			preview,
@@ -485,19 +485,19 @@ export class ModelPickerComponent implements Component {
 				keys: ["enter"],
 				label:
 					mode === "role"
-						? "apply role model"
+						? "应用角色模型"
 						: mode === "task"
-							? "use for Task subagents"
+							? "用于 Task 子代理"
 							: mode === "selection"
-								? "select model"
-								: "use for this session",
+								? "选择模型"
+								: "在此会话中使用",
 			},
-			{ keys: [], label: "type to search" },
+			{ keys: [], label: "输入以搜索" },
 		];
-		if (mode === "session") hints.push({ keys: ["@"], label: "quick roles" });
+		if (mode === "session") hints.push({ keys: ["@"], label: "快速角色" });
 		hints.push(actionHint("tui.select.cancel", "close"));
 		if (this.#taskModeKey !== undefined && !this.#roleMode && mode !== "selection") {
-			hints.push({ keys: [this.#taskModeKey], label: this.#taskMode ? "session model" : "task model" });
+			hints.push({ keys: [this.#taskModeKey], label: this.#taskMode ? "会话模型" : "任务模型" });
 		}
 		// `card` directly: the task-mode tone is a common prop `overlayCard` doesn't take.
 		const node = card(

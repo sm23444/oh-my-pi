@@ -121,10 +121,10 @@ const NARROW_COLS = 100;
 
 /** The views of the native segmented control, in omp's `1`–`4` order. */
 const VIEW_TABS: readonly { id: ViewMode; label: string }[] = [
-	{ id: "file", label: "File" },
-	{ id: "split", label: "Split" },
-	{ id: "inline", label: "Inline" },
-	{ id: "hunk", label: "Hunks" },
+	{ id: "file", label: "文件" },
+	{ id: "split", label: "拆分" },
+	{ id: "inline", label: "内联" },
+	{ id: "hunk", label: "差异块" },
 ];
 
 interface UiHit {
@@ -801,7 +801,7 @@ class GitTuiComponent implements Component {
 			const doc = this.#pane.doc;
 			if (doc) row.add(`  ${theme.fg("success", `+${doc.additions}`)} ${theme.fg("error", `−${doc.deletions}`)}`);
 		} else {
-			row.add(theme.fg("dim", "no file selected"));
+			row.add(theme.fg("dim", "未选择文件"));
 		}
 
 		const right = new HitRow();

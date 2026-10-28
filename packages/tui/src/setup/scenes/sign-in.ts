@@ -24,7 +24,7 @@ function loginUrlLink(url: string): string {
 }
 
 function loginCopyHint(): string {
-	return theme.fg("dim", `(clipboard copy attempted; ${formatKeyHint("alt+c")} retries)`);
+	return theme.fg("dim", `（已尝试复制到剪贴板；按 ${formatKeyHint("alt+c")} 重试）`);
 }
 
 class CopyablePromptInput implements Component, Focusable {
@@ -161,7 +161,7 @@ export class SignInScene implements SetupSceneController {
 		if (this.#loggingInProvider === undefined && (maxLines === undefined || maxLines >= 17 + 2)) {
 			intro = new Container();
 			intro.addChild(
-				new Text(theme.fg("muted", "Pick a provider to sign in — you can connect more than one."), 0, 0),
+				new Text(theme.fg("muted", "选择一个提供商登录——可以连接多个。"), 0, 0),
 			);
 			intro.addChild(new Spacer(1));
 		}
@@ -169,14 +169,14 @@ export class SignInScene implements SetupSceneController {
 		const urlLines = this.#authUrl ? wrapTextWithAnsi(theme.fg("dim", this.#authUrl), width) : [];
 		if (this.#authUrl) {
 			tail.addChild(
-				new Text(theme.fg("accent", `Browser login: ${loginUrlLink(this.#authUrl)} ${loginCopyHint()}`), 0, 0),
+				new Text(theme.fg("accent", `浏览器登录：${loginUrlLink(this.#authUrl)} ${loginCopyHint()}`), 0, 0),
 			);
 			// Keep one URL row above the prompt; repeat the complete wrapped URL
 			// below so the input remains visible in the wizard's short viewport.
 			if (urlLines[0]) tail.addChild(new Text(urlLines[0], 0, 0));
 			if (this.#authLaunchUrl) {
 				tail.addChild(
-					new Text(theme.fg("dim", `Local shortcut (this machine only): ${this.#authLaunchUrl}`), 0, 0),
+					new Text(theme.fg("dim", `本地快捷方式（仅限此计算机）：${this.#authLaunchUrl}`), 0, 0),
 				);
 			}
 		}
@@ -209,7 +209,7 @@ export class SignInScene implements SetupSceneController {
 		}
 		if (this.#loggingInProvider) {
 			this.#step.setKind("async");
-			this.#step.setHeading(new Text(theme.bold(`Signing in to ${this.#loggingInProvider}`), 0, 0));
+			this.#step.setHeading(new Text(theme.bold(`正在登录到 ${this.#loggingInProvider}`), 0, 0));
 			this.#step.setIntro(undefined);
 			this.#step.setContent(tail);
 			this.#step.setStatus(undefined);
@@ -373,7 +373,7 @@ export class SignInScene implements SetupSceneController {
 					this.#host.requestRender();
 				},
 				onManualCodeInput: signal =>
-					this.#showPrompt({ message: "Paste the authorization code (or full redirect URL):" }, signal),
+					this.#showPrompt({ message: "粘贴授权码(或完整重定向 URL):" }, signal),
 			});
 			// Provider-scoped online refresh so the just-persisted credential re-runs
 			// discovery instead of reusing a fresh authoritative cache row (#5780).
@@ -489,7 +489,7 @@ export class SignInScene implements SetupSceneController {
 /** Onboarding scene for provider sign-in. */
 export const providersSetupScene: SetupScene = {
 	id: "providers",
-	title: "Sign in to your providers",
+	title: "登录你的提供商",
 	minVersion: 1,
 	mount: host => new SignInScene(host),
 };

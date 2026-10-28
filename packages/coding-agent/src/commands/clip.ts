@@ -14,13 +14,13 @@ export default class Clip extends Command {
 	static description = commandHelp.description;
 
 	static args = {
-		file: Args.string({ description: "Recording to upload (default: the newest /record capture)" }),
+		file: Args.string({ description: "要上传的录音（默认：最新的 /record 录音）" }),
 	};
 
 	static flags = {
-		title: Flags.string({ char: "t", description: "Clip title (defaults to the recording's title)" }),
-		description: Flags.string({ char: "d", description: "Clip description shown under the player" }),
-		server: Flags.string({ description: "Stream server base URL (overrides stream.serverUrl)" }),
+		title: Flags.string({ char: "t", description: "片段标题（默认为录音标题）" }),
+		description: Flags.string({ char: "d", description: "显示在播放器下方的片段描述" }),
+		server: Flags.string({ description: "直播服务器基础 URL（覆盖 stream.serverUrl）" }),
 	};
 
 	static examples = [

@@ -81,13 +81,13 @@ class ComposerSceneController implements SetupSceneController {
 		const intro = new Text(
 			theme.fg(
 				"muted",
-				`Select a layout; live preview updates below. Press ${editorKey("tui.select.confirm")} to confirm.`,
+				`选择布局；下方实时更新预览。按 ${editorKey("tui.select.confirm")} 确认。`,
 			),
 			0,
 			0,
 		);
 		const preview = new Container();
-		preview.addChild(new Text(theme.fg("muted", "Preview:"), 0, 0));
+		preview.addChild(new Text(theme.fg("muted", "预览："), 0, 0));
 		for (const line of renderComposerShapePreview(this.#currentShape, width, this.#host.ctx.statusLine)) {
 			preview.addChild(new Text(line, 0, 0));
 		}
@@ -154,7 +154,7 @@ class ComposerSceneController implements SetupSceneController {
 /** Select and persist the prompt composer layout. */
 export const composerSetupScene: SetupScene = {
 	id: "composer-shape",
-	title: "Choose composer shape",
+	title: "选择输入区形态",
 	minVersion: 2,
 	mount: host => new ComposerSceneController(host),
 };

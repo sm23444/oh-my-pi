@@ -34,7 +34,7 @@ export default class Completions extends Command {
 	static description = commandHelp.description;
 	static args = {
 		shell: Args.string({
-			description: "Target shell",
+			description: "目标 shell",
 			required: true,
 			options: SHELLS,
 		}),

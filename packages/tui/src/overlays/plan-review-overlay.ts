@@ -256,6 +256,8 @@ export interface PlanReviewOverlayOptions {
 	slider?: HookSelectorSlider;
 	/** Display label for the external-editor key, surfaced in the footer help. */
 	externalEditorLabel?: string;
+	/** The external editor's name ("Notepad", "nvim") for the native Edit button; `$EDITOR` when unset. */
+	externalEditorName?: string;
 	/** Serializable annotations restored into this overlay instance. */
 	annotationState?: PlanReviewAnnotationState;
 }
@@ -286,6 +288,7 @@ export class PlanReviewOverlay implements Component {
 	#disabled: Set<number>;
 	#helpSuffix: string | undefined;
 	#externalEditorLabel: string | undefined;
+	#externalEditorName: string | undefined;
 	#promptTitle: string | undefined;
 	#selectedIndex: number;
 	#slider: HookSelectorSlider | undefined;
@@ -354,6 +357,7 @@ export class PlanReviewOverlay implements Component {
 		);
 		this.#helpSuffix = options.helpText;
 		this.#externalEditorLabel = options.externalEditorLabel;
+		this.#externalEditorName = options.externalEditorName;
 		this.#promptTitle = options.promptTitle;
 		this.#selectedIndex = this.#coerceIndex(options.initialIndex ?? 0);
 		if (options.slider && options.slider.segments.length > 0) {
@@ -1382,7 +1386,7 @@ export class PlanReviewOverlay implements Component {
 		for (let i = 0; i < noteLines.length; i++) {
 			const prefix =
 				i === 0
-					? `${theme.fg("warning", "▎ ")}${theme.fg("dim", "note: ")}`
+					? `${theme.fg("warning", "▎ ")}${theme.fg("dim", "备注：")}`
 					: `${theme.fg("warning", "▎ ")}${theme.fg("dim", "      ")}`;
 			const available = Math.max(0, bodyContentWidth - visibleWidth(prefix));
 			const displayLine = truncateToWidth(
@@ -1462,7 +1466,7 @@ export class PlanReviewOverlay implements Component {
 						0,
 						Math.min(chooser.selected - Math.floor(optionLimit / 2), chooser.entries.length - optionLimit),
 					);
-		const lines = [theme.bold(theme.fg("accent", "Edit annotation"))];
+		const lines = [theme.bold(theme.fg("accent", "编辑标注"))];
 		for (let windowIndex = 0; windowIndex < optionLimit; windowIndex++) {
 			const optionIndex = start + windowIndex;
 			const selection = chooser.entries[optionIndex];
@@ -1481,7 +1485,7 @@ export class PlanReviewOverlay implements Component {
 			lines.push(
 				theme.fg(
 					"dim",
-					`${upDown} choose · ${formatKeyHint("enter")} edit · ${editorKey("tui.select.cancel")} cancel`,
+					`${upDown} 选择 · ${formatKeyHint("enter")} 编辑 · ${editorKey("tui.select.cancel")} 取消`,
 				),
 			);
 		}
@@ -1499,7 +1503,7 @@ export class PlanReviewOverlay implements Component {
 					? `‹${title}›`
 					: `‹${title}› · ${truncateToWidth(target?.context ?? "", Math.max(1, innerWidth - 16), Ellipsis.Unicode)}`;
 			const caption = truncateToWidth(
-				`${theme.fg("dim", "Annotate")} ${theme.fg("accent", location)}`,
+				`${theme.fg("dim", "标注")} ${theme.fg("accent", location)}`,
 				innerWidth,
 				Ellipsis.Unicode,
 			);
@@ -1628,11 +1632,17 @@ export class PlanReviewOverlay implements Component {
 		if (this.#committed) return undefined;
 		const buttons: NativeNode[] = [];
 		if (this.callbacks.onCopyPlan)
-			buttons.push(actionButton("Copy", "copyPlan", { keys: "c", title: "Copy plan  c" }));
+			buttons.push(actionButton("Copy", "copyPlan", { keys: "c", title: "复制计划  c" }));
 		// Unbound: the button still mirrors the callback, without a keycap.
 		const editorKeyId = getKeybindings().getKeys("app.editor.external")[0];
 		if (this.callbacks.onExternalEditor) {
-			buttons.push(actionButton("Edit in $EDITOR", "externalEditor", editorKeyId ? { keys: editorKeyId } : {}));
+			buttons.push(
+				actionButton(
+					`Edit in ${this.#externalEditorName ?? "$EDITOR"}`,
+					"externalEditor",
+					editorKeyId ? { keys: editorKeyId } : {},
+				),
+			);
 		}
 		// Cancel the review the way the cancel key does; while annotating that key
 		// only leaves the draft/chooser, so the button is hidden there.
@@ -1730,7 +1740,7 @@ export class PlanReviewOverlay implements Component {
 			const section = this.#sections[sectionIndex]!;
 			const count = section.annotations.length;
 			return item(`h${sectionIndex}`, {
-				label: section.title || "(untitled)",
+				label: section.title || "（无标题）",
 				value: count > 0 ? [span(`✎${count}`, "warning")] : undefined,
 				role: `omp.plan.toc.depth${section.level - this.#tocBaseLevel}`,
 			});
@@ -1754,7 +1764,8 @@ export class PlanReviewOverlay implements Component {
 			"tabs",
 		);
 		const track: NativeChild[] = slider.caption ? [text([span(slider.caption, "dim")]), tabs] : [tabs];
-		const out = [keyed(rowNode(track, { gap: "sm", align: "center" }), "slider")];
+		// A role of its own: Tern's sheet lets only the role-less split row (Contents + body) shrink and scroll.
+		const out = [keyed(rowNode(track, { role: "omp.plan.slider", gap: "sm", align: "center" }), "slider")];
 		const detail = slider.segments[this.#sliderIndex]?.detail;
 		if (detail) out.push(keyed(text([span("↳ ", "dim"), span(detail, "muted")], { wrap: "word" }), "sliderDetail"));
 		return out;
@@ -1778,7 +1789,7 @@ export class PlanReviewOverlay implements Component {
 				hintsRow(
 					[
 						actionHint(["tui.select.up", "tui.select.down"], "choose"),
-						{ keys: ["enter"], label: "edit" },
+						{ keys: ["enter"], label: "编辑" },
 						actionHint("tui.select.cancel", "cancel"),
 					],
 					"chooserHints",
@@ -1794,8 +1805,8 @@ export class PlanReviewOverlay implements Component {
 				actionHint("tui.input.newLine", "newline"),
 				actionHint("tui.select.cancel", "cancel"),
 			];
-			if (this.#editingAnnotation) hints.push({ keys: [], label: "empty deletes" });
-			if (this.#externalEditorLabel) hints.push({ keys: [], label: `${this.#externalEditorLabel} editor` });
+			if (this.#editingAnnotation) hints.push({ keys: [], label: "留空即删除" });
+			if (this.#externalEditorLabel) hints.push({ keys: [], label: `${this.#externalEditorLabel} 编辑器` });
 			// The feedback field, inline under the plan: its caption names the anchor, omp's editor holds the text.
 			return [
 				node(
@@ -1875,7 +1886,7 @@ export class PlanReviewOverlay implements Component {
 			? Math.max(0, termHeight - baseChrome - MIN_BODY_ROWS)
 			: Number.POSITIVE_INFINITY;
 		const footerLines = committed
-			? [theme.fg("dim", "Applying your selection — this can take a moment while context is prepared.")]
+			? [theme.fg("dim", "正在应用您的选择——准备上下文可能需要一点时间。")]
 			: this.#renderFooterLines(innerWidth, chooserFooterRows);
 
 		// Chrome rows: top border, two dividers, bottom border, plus the

@@ -40,7 +40,7 @@ export class QueuedMessagesBand extends Container {
 			}
 		}
 		this.addChild(
-			new TruncatedText(theme.fg("dim", `  ${theme.tree.hook} ${formatKeyHint(dequeueKey)} to edit`), 1, 0),
+			new TruncatedText(theme.fg("dim", `  ${theme.tree.hook} ${formatKeyHint(dequeueKey)} 编辑`), 1, 0),
 		);
 		const editTitle = `Edit  ${formatTooltipKey(dequeueKey)}`;
 
@@ -66,7 +66,7 @@ export class QueuedMessagesBand extends Container {
 					children.push(
 						node(
 							"badge",
-							{ text: `${count} queued`, title: `${count} messages queued`, role: "omp.queue.count" },
+							{ text: `${count} queued`, title: `${count} 条消息已排队`, role: "omp.queue.count" },
 							undefined,
 							"count",
 						),

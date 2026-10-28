@@ -225,9 +225,9 @@ const TRANSPORTS: readonly TransportType[] = ["stdio", "http", "sse"];
 
 /** How each transport reads as a choice and in the review. */
 const TRANSPORT_CHOICES: Readonly<Record<TransportType, { icon: string; label: string; description: string }>> = {
-	stdio: { icon: "terminal", label: "Local command", description: "omp starts it on this machine" },
-	http: { icon: "globe", label: "Remote server", description: "Streamable HTTP endpoint" },
-	sse: { icon: "broadcast", label: "Server-sent events", description: "Older HTTP servers" },
+	stdio: { icon: "terminal", label: "本地命令", description: "omp 会在本机启动它" },
+	http: { icon: "globe", label: "远程服务器", description: "可流式传输的 HTTP 端点" },
+	sse: { icon: "broadcast", label: "服务器发送事件", description: "较旧的 HTTP 服务器" },
 };
 
 const SCOPE_LABELS: Readonly<Record<Scope, string>> = { user: "Every project", project: "This project" };
@@ -658,7 +658,7 @@ export class MCPAddWizard extends OverlayPanel {
 			const tone = index === phase ? "accent" : index > phase ? "muted" : skipped ? "neutral" : "success";
 			return node(
 				"col",
-				{ role: "omp.mcpAdd.phase", tone, ...(skipped ? { title: "Auth · not needed" } : {}) },
+				{ role: "omp.mcpAdd.phase", tone, ...(skipped ? { title: "认证 · 无需" } : {}) },
 				[text(label)],
 				label,
 			);
@@ -792,7 +792,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderNameStep(): void {
 		this.#inputStep({
-			title: "Name the server",
+			title: "命名服务器",
 			lead: "A unique name: it labels the server in /mcp and prefixes its tools.",
 			initial: this.#state.name,
 			placeholder: "github",
@@ -805,7 +805,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderTransportStep(): void {
 		this.#choiceStep({
-			title: "How does omp reach it?",
+			title: "omp 如何访问它？",
 			lead: `Pick how ${this.#state.name} talks to omp.`,
 			choices: TRANSPORTS.map(transport => ({ ...TRANSPORT_CHOICES[transport], tag: transport })),
 			escape: "go back",
@@ -814,7 +814,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderCommandStep(): void {
 		this.#inputStep({
-			title: "Command",
+			title: "命令",
 			lead: "The program omp starts for this server.",
 			initial: this.#state.command,
 			placeholder: "npx",
@@ -825,7 +825,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderArgsStep(): void {
 		this.#inputStep({
-			title: "Arguments",
+			title: "参数",
 			lead: `Passed to ${this.#state.command}, separated by spaces. omp tries the connection next.`,
 			initial: this.#state.args,
 			placeholder: "-y @modelcontextprotocol/server-github",
@@ -835,7 +835,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderUrlStep(): void {
 		this.#inputStep({
-			title: "Server URL",
+			title: "服务器 URL",
 			lead: `Where ${this.#state.name} listens. omp tries the connection next.`,
 			initial: this.#state.url,
 			placeholder: "https://mcp.example.com/mcp",
@@ -848,11 +848,11 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderAuthLocationStep(): void {
 		this.#choiceStep({
-			title: "Where does the key go?",
+			title: "密钥放在哪里？",
 			lead: "How the server expects to receive it.",
 			choices: [
-				{ icon: "terminal", label: "Environment variable", description: "Set when the server starts" },
-				{ icon: "globe", label: "HTTP header", description: "Sent with every request" },
+				{ icon: "terminal", label: "环境变量", description: "服务器启动时设置" },
+				{ icon: "globe", label: "HTTP 标头", description: "随每个请求发送" },
 			],
 			escape: "go back",
 		});
@@ -860,7 +860,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderEnvVarNameStep(): void {
 		this.#inputStep({
-			title: "Environment variable",
+			title: "环境变量",
 			lead: "The variable the server reads its key from.",
 			initial: this.#state.envVarName,
 			placeholder: "API_KEY",
@@ -871,7 +871,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderHeaderNameStep(): void {
 		this.#inputStep({
-			title: "Header name",
+			title: "标头名称",
 			lead: "The HTTP header that carries the key.",
 			initial: this.#state.headerName,
 			placeholder: "Authorization",
@@ -892,7 +892,7 @@ export class MCPAddWizard extends OverlayPanel {
 		const userPath = this.#configPathLabel("user");
 		const projectPath = this.#configPathLabel("project");
 		this.#choiceStep({
-			title: "Where should it live?",
+			title: "它应放在哪里？",
 			lead: "Saved for you everywhere, or only in this project's config.",
 			choices: [
 				{ icon: "home", label: SCOPE_LABELS.user, description: userPath, detail: [span(userPath, "mono")] },
@@ -948,7 +948,7 @@ export class MCPAddWizard extends OverlayPanel {
 		const summary = new Container();
 		for (const entry of entries) summary.addChild(new Text(`${entry.k}: ${entry.ansi}`, 0, 0));
 		summary.addChild(new Spacer(1));
-		summary.addChild(new Text("Save this configuration?", 0, 0));
+		summary.addChild(new Text("保存此配置?", 0, 0));
 		this.#stepKind = "confirm";
 		this.#show(
 			new WizardStep({
@@ -956,14 +956,14 @@ export class MCPAddWizard extends OverlayPanel {
 				heading: ansiHeading("Review", "accent", PHASE_REVIEW),
 				content: summary,
 				footer: new Text(
-					theme.fg("muted", `[${formatKeyHint("enter")} to save, ${interruptKey()} to go back]`),
+					theme.fg("muted", `[${formatKeyHint("enter")} 保存，${interruptKey()} 返回]`),
 					0,
 					0,
 				),
 			}),
 			{
 				phase: PHASE_REVIEW,
-				title: "Review and save",
+				title: "查看并保存",
 				lead: "omp connects to the server as soon as it is saved.",
 				body: [
 					node(
@@ -1326,11 +1326,11 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderAuthMethodStep(): void {
 		this.#choiceStep({
-			title: "How does it authenticate?",
+			title: "它如何进行身份验证？",
 			lead: `${this.#state.name} needs credentials before omp can use it.`,
 			choices: [
-				{ icon: "log-in", label: "Sign in with OAuth", description: "Opens your browser" },
-				{ icon: "key", label: "API key or token", description: "Paste it, or run a command that prints it" },
+				{ icon: "log-in", label: "使用 OAuth 登录", description: "打开浏览器" },
+				{ icon: "key", label: "API 密钥或令牌", description: "粘贴，或运行可输出它的命令" },
 			],
 			escape: "go back",
 		});
@@ -1338,7 +1338,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderOAuthAuthUrlStep(): void {
 		this.#inputStep({
-			title: "Authorization URL",
+			title: "授权 URL",
 			lead: "The provider's OAuth authorize endpoint.",
 			initial: this.#state.oauthAuthUrl,
 			placeholder: "https://auth.example.com/oauth/authorize",
@@ -1349,7 +1349,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderOAuthTokenUrlStep(): void {
 		this.#inputStep({
-			title: "Token URL",
+			title: "令牌 URL",
 			lead: "The endpoint that exchanges the authorization code for a token.",
 			initial: this.#state.oauthTokenUrl,
 			placeholder: "https://auth.example.com/oauth/token",
@@ -1360,7 +1360,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderOAuthClientIdStep(): void {
 		this.#inputStep({
-			title: "Client ID",
+			title: "客户端 ID",
 			lead: "The ID of the OAuth app registered with the provider.",
 			initial: this.#state.oauthClientId,
 			escape: "go back",
@@ -1370,7 +1370,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderOAuthClientSecretStep(): void {
 		this.#inputStep({
-			title: "Client secret",
+			title: "客户端密钥",
 			lead: "Leave it empty for PKCE-only flows.",
 			initial: this.#state.oauthClientSecret,
 			escape: "go back",
@@ -1381,7 +1381,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderOAuthScopesStep(): void {
 		this.#inputStep({
-			title: "Scopes",
+			title: "权限范围",
 			lead: "What omp may access, separated by spaces. Sign-in starts next.",
 			initial: this.#state.oauthScopes,
 			placeholder: "read write",
@@ -1398,17 +1398,17 @@ export class MCPAddWizard extends OverlayPanel {
 			intro.addChild(new Text(failure.ansiMessage, 0, 0));
 			intro.addChild(new Spacer(1));
 			if (failure.tip) {
-				intro.addChild(new Text(theme.fg("muted", `Tip: ${failure.tip}`), 0, 0));
+				intro.addChild(new Text(theme.fg("muted", `提示：${failure.tip}`), 0, 0));
 				intro.addChild(new Spacer(1));
 			}
 		}
-		intro.addChild(new Text("Choose next action:", 0, 0));
+		intro.addChild(new Text("选择下一步操作:", 0, 0));
 		const body = compact([
 			failure && !cancelled ? errorBlock(failure.message) : undefined,
 			failure?.tip ? { ...text(failure.tip, { role: "omp.mcpAdd.note", wrap: "word" }), key: "tip" } : undefined,
 		]);
 		this.#choiceStep({
-			title: cancelled ? "Sign-in cancelled" : "Sign-in failed",
+			title: cancelled ? "登录已取消" : "登录失败",
 			headingTone: cancelled ? "muted" : "error",
 			lead: cancelled
 				? "The browser sign-in stopped before it finished."
@@ -1416,8 +1416,8 @@ export class MCPAddWizard extends OverlayPanel {
 			intro,
 			body,
 			choices: [
-				{ icon: "repeat", label: "Try again", description: "Opens the browser again" },
-				{ icon: "sliders", label: "Edit OAuth settings", description: "Endpoints, client and scopes" },
+				{ icon: "repeat", label: "重试", description: "再次打开浏览器" },
+				{ icon: "sliders", label: "编辑 OAuth 设置", description: "端点、客户端和权限范围" },
 			],
 			escape: "go back",
 		});
@@ -1425,7 +1425,7 @@ export class MCPAddWizard extends OverlayPanel {
 
 	#renderApiKeyStep(): void {
 		this.#inputStep({
-			title: "API key",
+			title: "API 密钥",
 			lead: "Paste the key or token. Start with ! to run a command that prints it, e.g. a password manager.",
 			initial: this.#state.apiKey,
 			placeholder: "!op read op://dev/github/token",
@@ -1453,10 +1453,10 @@ export class MCPAddWizard extends OverlayPanel {
 			testConfig.type === "stdio" ? [testConfig.command, ...(testConfig.args ?? [])].join(" ") : testConfig.url;
 		this.#asyncStep({
 			phase: PHASE_CONNECTION,
-			title: "Trying the connection",
+			title: "正在尝试连接",
 			tone: "accent",
 			lead: "omp connects once to see whether the server needs credentials.",
-			ansi: new Text(theme.fg("muted", `Connecting to ${sanitize(target)}…`), 0, 0),
+			ansi: new Text(theme.fg("muted", `正在连接到 ${sanitize(target)}…`), 0, 0),
 			native: [statusRow("busy", [span("Connecting to "), span(replaceTabs(target), "mono")])],
 		});
 		this.#requestRender();
@@ -1479,10 +1479,10 @@ export class MCPAddWizard extends OverlayPanel {
 			// Success! No auth required
 			this.#asyncStep({
 				phase: PHASE_CONNECTION,
-				title: "Connected",
+				title: "已连接",
 				tone: "success",
 				lead: "Next, choose where to save it.",
-				ansi: new Text(theme.fg("success", "✓ No authentication required"), 0, 0),
+				ansi: new Text(theme.fg("success", "✓ 无需身份验证"), 0, 0),
 				native: [statusRow("ok", "No sign-in needed")],
 			});
 			this.#requestRender();
@@ -1541,10 +1541,10 @@ export class MCPAddWizard extends OverlayPanel {
 				const failureBody = new Container();
 				failureBody.addChild(new Text(sanitize(error instanceof Error ? error.message : String(error)), 0, 0));
 				failureBody.addChild(new Spacer(1));
-				failureBody.addChild(new Text(theme.fg("muted", "Adding server anyway..."), 0, 0));
+				failureBody.addChild(new Text(theme.fg("muted", "仍然添加服务器..."), 0, 0));
 				this.#asyncStep({
 					phase: PHASE_CONNECTION,
-					title: "Couldn't connect",
+					title: "无法连接",
 					tone: "warning",
 					lead: "omp saves the server anyway; fix it later with /mcp.",
 					ansi: failureBody,
@@ -1639,9 +1639,9 @@ export class MCPAddWizard extends OverlayPanel {
 		if (!this.#onOAuthCallback) {
 			this.#asyncStep({
 				phase: PHASE_AUTH,
-				title: "Sign-in isn't available",
+				title: "登录不可用",
 				tone: "error",
-				ansi: new Text("OAuth login cannot start without a host OAuth handler.", 0, 0),
+				ansi: new Text("没有宿主 OAuth 处理程序，无法启动 OAuth 登录。", 0, 0),
 				native: [statusRow("error", "OAuth login cannot start without a host OAuth handler.")],
 			});
 			this.#requestRender();
@@ -1652,11 +1652,11 @@ export class MCPAddWizard extends OverlayPanel {
 		if (!this.#state.oauthAuthUrl || !this.#state.oauthTokenUrl) {
 			this.#asyncStep({
 				phase: PHASE_AUTH,
-				title: "OAuth settings incomplete",
+				title: "OAuth 设置不完整",
 				tone: "error",
-				ansi: new Text("Authorization and Token URLs are required.", 0, 0),
+				ansi: new Text("必须填写授权地址和令牌地址。", 0, 0),
 				native: [statusRow("error", "Authorization and token URLs are required.")],
-				footer: new Text(theme.fg("muted", `[Press ${interruptKey()} to go back]`), 0, 0),
+				footer: new Text(theme.fg("muted", `[按 ${interruptKey()} 返回]`), 0, 0),
 			});
 			this.#requestRender();
 			return;
@@ -1664,14 +1664,14 @@ export class MCPAddWizard extends OverlayPanel {
 
 		// Show "Authenticating..." message
 		const authBody = new Container();
-		authBody.addChild(new Text("Launching OAuth flow...", 0, 0));
-		authBody.addChild(new Text(theme.fg("muted", "Browser will open automatically."), 0, 0));
+		authBody.addChild(new Text("正在启动 OAuth 流程...", 0, 0));
+		authBody.addChild(new Text(theme.fg("muted", "浏览器将自动打开。"), 0, 0));
 		authBody.addChild(new Spacer(1));
-		authBody.addChild(new Text(theme.fg("warning", "If browser doesn't open, copy the URL from chat."), 0, 0));
+		authBody.addChild(new Text(theme.fg("warning", "如果浏览器未打开，请从聊天中复制 URL。"), 0, 0));
 		const authHost = URL.parse(this.#state.oauthAuthUrl)?.host;
 		this.#asyncStep({
 			phase: PHASE_AUTH,
-			title: "Sign in to continue",
+			title: "登录以继续",
 			tone: "accent",
 			lead: "Approve access in your browser. If it didn't open, copy the link from the chat.",
 			ansi: authBody,
@@ -1681,7 +1681,7 @@ export class MCPAddWizard extends OverlayPanel {
 					authHost ? [span("Waiting for "), span(authHost, "mono"), span("…")] : "Waiting for the browser…",
 				),
 			],
-			footer: new Text(theme.fg("muted", `(Press ${interruptKey()} to cancel)`), 0, 0),
+			footer: new Text(theme.fg("muted", `（按 ${interruptKey()} 取消）`), 0, 0),
 			back: "Stop waiting",
 		});
 		this.#requestRender();
@@ -1717,17 +1717,17 @@ export class MCPAddWizard extends OverlayPanel {
 
 			// Show success message
 			const healthBody = new Container();
-			healthBody.addChild(new Text(theme.fg("muted", "Running connection health check..."), 0, 0));
+			healthBody.addChild(new Text(theme.fg("muted", "正在运行连接健康检查..."), 0, 0));
 			const spinnerFrames = theme.spinnerFrames;
 			const initialFrame = spinnerFrames[0] ?? "|";
-			const healthText = new Text(theme.fg("muted", `${initialFrame} Checking server connection...`), 0, 0);
+			const healthText = new Text(theme.fg("muted", `${initialFrame} 正在检查服务器连接...`), 0, 0);
 			healthBody.addChild(healthText);
 			const signedIn = statusRow("ok", "Signed in", "signed-in");
 			const checks = (health: NativeNode) =>
 				node("col", { role: "omp.mcpAdd.checks", gap: "sm" }, [signedIn, health], "checks");
 			this.#asyncStep({
 				phase: PHASE_AUTH,
-				title: "Checking the server",
+				title: "正在检查服务器",
 				tone: "success",
 				lead: "omp tries the new credentials before saving.",
 				ansi: healthBody,
@@ -1742,7 +1742,7 @@ export class MCPAddWizard extends OverlayPanel {
 						healthText.setText(
 							theme.fg(
 								"muted",
-								`${spinnerFrames[spinnerIndex % spinnerFrames.length]} Checking server connection...`,
+								`${spinnerFrames[spinnerIndex % spinnerFrames.length]} 正在检查服务器连接...`,
 							),
 						);
 						spinnerIndex++;
@@ -1776,10 +1776,10 @@ export class MCPAddWizard extends OverlayPanel {
 
 			clearInterval(spinner);
 			if (healthPassed) {
-				healthText.setText(theme.fg("success", "✓ Health check passed"));
+				healthText.setText(theme.fg("success", "✓ 健康检查通过"));
 				this.#setNativeBody([checks(statusRow("ok", "The server answers", "health"))]);
 			} else {
-				healthText.setText(theme.fg("warning", "⚠ Health check failed (will still save config)"));
+				healthText.setText(theme.fg("warning", "⚠ 健康检查失败（仍会保存配置）"));
 				healthBody.addChild(new Spacer(1));
 				healthBody.addChild(new Text(theme.fg("muted", healthError), 0, 0));
 				this.#setNativeBody([

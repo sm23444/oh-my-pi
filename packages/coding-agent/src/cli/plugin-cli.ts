@@ -90,7 +90,7 @@ export function parsePluginArgs(args: string[]): PluginCommandArgs | undefined {
 	const action = args[1];
 	if (!VALID_ACTIONS.includes(action as PluginAction)) {
 		console.error(chalk.red(`Unknown plugin command: ${action}`));
-		console.error(`Valid commands: ${VALID_ACTIONS.join(", ")}`);
+		console.error(`有效命令：${VALID_ACTIONS.join(", ")}`);
 		process.exit(1);
 	}
 
@@ -342,7 +342,7 @@ async function handleUpgrade(
 			}
 			const results = await manager.upgradeAllPlugins();
 			if (results.length === 0) {
-				console.log("All marketplace plugins are up to date.");
+				console.log("所有市场插件均为最新版本。");
 			} else {
 				for (const r of results) {
 					console.log(chalk.green(`  ${r.pluginId} (${r.scope}): ${r.from} -> ${r.to}`));
@@ -827,7 +827,7 @@ async function handleDoctor(
 	const fixed = checks.filter(c => c.fixed).length;
 
 	console.log("");
-	console.log(`Summary: ${ok} ok, ${warnings} warnings, ${errors} errors${fixed > 0 ? `, ${fixed} fixed` : ""}`);
+	console.log(`摘要：${ok} 正常，${warnings} 警告，${errors} 错误${fixed > 0 ? `, ${fixed} fixed` : ""}`);
 
 	if (errors > 0) {
 		if (!flags.fix) {
@@ -1179,48 +1179,48 @@ async function handleSetEnabled(
 // =============================================================================
 
 export function printPluginHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} plugin`)} - Plugin lifecycle management
+	console.log(`${chalk.bold(`${APP_NAME} plugin`)} - 插件生命周期管理
 
 ${chalk.bold("Commands:")}
-  install <source>[features]     Install plugins from npm, GitHub, or git URL
-  uninstall <pkg>                Remove plugins
-  list                           Show installed plugins
-  link <path>                    Link local plugin for development
-  doctor                         Check plugin health
-  features <pkg>                 View/modify enabled features
-  config <cmd> <pkg> [key] [val] Manage plugin settings
-  enable <pkg>                   Enable a disabled plugin
-  disable <pkg>                  Disable plugin without uninstalling
-  marketplace <cmd>            Manage marketplace sources (add, remove, update, list)
-  discover [marketplace]        Browse available marketplace plugins
+  install <source>[features]     从 npm、GitHub 或 git URL 安装插件
+  uninstall <pkg>                移除插件
+  list                           显示已安装的插件
+  link <path>                    链接本地插件用于开发
+  doctor                         检查插件健康状况
+  features <pkg>                 View/modify已启用的特性
+  config <cmd> <pkg> [key] [val] 管理插件设置
+  enable <pkg>                   启用已禁用的插件
+  disable <pkg>                  禁用插件但不卸载
+  marketplace <cmd>            管理插件市场源（add、remove、update、list）
+  discover [marketplace]        浏览可用的市场插件
 
 ${chalk.bold("Feature Syntax:")}
-  pkg                Install with default features
-  pkg[feat1,feat2]   Install with specific features
-  pkg[*]             Install with all features
-  pkg[]              Install with no optional features
+  pkg                使用默认特性安装
+  pkg[feat1,feat2]   安装指定特性
+  pkg[*]             安装所有特性
+  pkg[]              不安装任何可选特性
 
 ${chalk.bold("Sources:")}
-  pkg, pkg@1.2.3                  npm package (optionally pinned)
-  github:user/repo[#ref]          GitHub shorthand (also gitlab:, bitbucket:, codeberg:, sourcehut:)
-  https://github.com/user/repo    Full git URL (https, ssh, or git protocol)
-  name@marketplace                Marketplace plugin (see marketplace command)
-  ./path, ../path, /abs, ~/path   Local plugin directory (symlinked, same as plugin link)
+  pkg, pkg@1.2.3                  npm 包（可选锁定版本）
+  github:user/repo[#ref]          GitHub 简写（亦支持 gitlab:、bitbucket:、codeberg:、sourcehut:）
+  https://github.com/user/repo    完整 git URL（https、ssh 或 git 协议）
+  name@marketplace                市场插件（参见 marketplace 命令）
+  ./path, ../path, /abs, ~/path   本地插件目录（符号链接，等同于 plugin link）
 
 ${chalk.bold("Config Subcommands:")}
-  config list <pkg>              List all settings
-  config get <pkg> <key>         Get a setting value
-  config set <pkg> <key> <val>   Set a setting value
-  config delete <pkg> <key>      Delete a setting
-  config validate                Validate all plugin settings
+  config list <pkg>              列出所有设置
+  config get <pkg> <key>         获取设置的值
+  config set <pkg> <key> <val>   修改设置的值
+  config delete <pkg> <key>      删除设置
+  config validate                验证所有插件设置
 
 ${chalk.bold("Options:")}
-  --json           Output as JSON
-  --fix            Attempt automatic fixes (doctor)
-  --force          Overwrite without prompting (install)
-  --scope <scope>  Install scope: user (default) or project (install name@marketplace)
-  --dry-run        Preview changes without applying (install, uninstall, link, upgrade of marketplace plugins)
-  -l, --local      Use project-local overrides
+  --json           以 JSON 格式输出
+  --fix            尝试自动修复（doctor）
+  --force          不提示直接覆盖（install）
+  --scope <scope>  安装范围：user（默认）或 project（install name@marketplace）
+  --dry-run        仅预览变更而不实际应用（市场插件的 install、uninstall、link、upgrade）
+  -l, --local      使用项目本地覆盖
 
 ${chalk.bold("Examples:")}
   ${APP_NAME} plugin install @oh-my-pi/exa[search]

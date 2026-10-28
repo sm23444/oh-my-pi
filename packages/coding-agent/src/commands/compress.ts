@@ -7,14 +7,14 @@ import { runCompressCommand } from "../compress";
 export default class Compress extends Command {
 	static description = commandHelp.description;
 	static args = {
-		files: Args.string({ description: "Files or glob patterns to compress", required: true, multiple: true }),
+		files: Args.string({ description: "要压缩的文件或 glob 模式", required: true, multiple: true }),
 	};
 	static flags = {
-		out: Flags.string({ char: "o", description: "Write the approved text here instead of stdout (single file)" }),
-		inPlace: Flags.boolean({ char: "i", description: "Overwrite each source file with its approved text" }),
-		rounds: Flags.integer({ char: "r", description: "Maximum drafts per file before giving up", default: 3 }),
-		agents: Flags.integer({ char: "n", description: "Files compressed concurrently", default: 4 }),
-		model: Flags.string({ char: "m", description: "Model selector" }),
+		out: Flags.string({ char: "o", description: "将审批通过的文本写入此处，而不是标准输出（单个文件）" }),
+		inPlace: Flags.boolean({ char: "i", description: "用审批通过的文本覆盖每个源文件" }),
+		rounds: Flags.integer({ char: "r", description: "放弃前每个文件允许的最大草稿数", default: 3 }),
+		agents: Flags.integer({ char: "n", description: "并发压缩的文件数", default: 4 }),
+		model: Flags.string({ char: "m", description: "模型选择器" }),
 	};
 
 	static examples = [

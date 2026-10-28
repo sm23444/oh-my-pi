@@ -44,23 +44,23 @@ export default class Session extends Command {
 
 	static args = {
 		action: Args.string({
-			description: "pack, unpack, or moved",
+			description: "pack、unpack 或 moved",
 			required: true,
 			options: ACTIONS,
 		}),
 		source: Args.string({
-			description: "Session .jsonl path or id (pack, moved); archive path (unpack)",
+			description: "会话 .jsonl 路径或 ID（pack、moved）；归档路径（unpack）",
 			required: false,
 		}),
 		output: Args.string({
-			description: "Archive file to write (pack)",
+			description: "要写入的归档文件（pack）",
 			required: false,
 		}),
 	};
 
 	static flags = {
-		cwd: Flags.string({ description: "Directory the session continues in on this machine (unpack)" }),
-		to: Flags.string({ description: "Where the session went, e.g. a machine name (moved)" }),
+		cwd: Flags.string({ description: "此计算机上会话继续所在的目录（unpack）" }),
+		to: Flags.string({ description: "会话去了哪里，e.g。机器名称（已移动）" }),
 	};
 
 	static examples = [

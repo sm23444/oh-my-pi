@@ -85,7 +85,7 @@ class GlyphSceneController implements SetupSceneController {
 		if (!this.#step) {
 			this.#step = new WizardStep({
 				kind: "choice",
-				intro: new Text(theme.fg("muted", "If a row shows boxes, tofu, or misaligned icons, pick another."), 0, 0),
+				intro: new Text(theme.fg("muted", "如果某一行显示为方框、豆腐块或图标错位,请换一行。"), 0, 0),
 				content: this.#selectList,
 				minContentLines: GLYPH_ITEMS.length,
 				fitContent: () => {
@@ -135,7 +135,7 @@ class GlyphSceneController implements SetupSceneController {
  */
 export const glyphSetupScene: SetupScene = {
 	id: "glyph-mode",
-	title: "Choose glyph mode",
+	title: "选择字形模式",
 	minVersion: 1,
 	shouldRun: () => !TERMINAL.glyphProtocol,
 	mount: host => new GlyphSceneController(host),

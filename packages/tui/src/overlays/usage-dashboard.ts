@@ -435,22 +435,15 @@ function clockTime(date: Date): string {
 }
 
 /**
- * When a window resets, relative to `nowMs`: `resets 18:00` today, `resets
- * Tue 18:00` within the week, `resets 3 Oct` beyond; the title carries the
- * absolute date and the countdown.
+ * When a window resets, `resetMs` from `nowMs`: the countdown (`resets in
+ * 2h30m`), which reads the same in every time zone; the title carries the
+ * local date and time.
  */
 function resetLabel(nowMs: number, resetMs: number): { text: string; title: string } {
 	const at = new Date(nowMs + resetMs);
-	const now = new Date(nowMs);
-	const sameDay = at.toDateString() === now.toDateString();
-	const text = sameDay
-		? `resets ${clockTime(at)}`
-		: resetMs < 6 * 86_400_000
-			? `resets ${WEEKDAY_NAMES[at.getDay()]} ${clockTime(at)}`
-			: `resets ${at.getDate()} ${MONTH_NAMES[at.getMonth()]}`;
 	return {
-		text,
-		title: `Resets ${shortDate(at)} ${at.getFullYear()}, ${clockTime(at)} (in ${formatDuration(resetMs)})`,
+		text: `resets in ${formatDuration(resetMs)}`,
+		title: `重置于 ${shortDate(at)} ${at.getFullYear()}，${clockTime(at)}`,
 	};
 }
 
@@ -786,7 +779,7 @@ export class UsageDashboardComponent implements Component {
 				: card.unlimited
 					? "ok"
 					: aggregateStatus(card.windows);
-		const accountsText = card.accounts > 1 ? theme.fg("dim", `${card.accounts} accts`) : "";
+		const accountsText = card.accounts > 1 ? theme.fg("dim", `${card.accounts} 个账户`) : "";
 		const titleBudget = width - 2 - visibleWidth(accountsText) - (accountsText ? 1 : 0);
 		const title = theme.bold(truncateToWidth(card.name, Math.max(4, titleBudget)));
 		const titlePad = Math.max(0, width - 2 - visibleWidth(title) - visibleWidth(accountsText));
@@ -824,7 +817,7 @@ export class UsageDashboardComponent implements Component {
 		}
 
 		if (card.unlimited) {
-			lines.push(`  ${theme.fg("dim", "no limits")}`);
+			lines.push(`  ${theme.fg("dim", "无限制")}`);
 			return lines;
 		}
 
@@ -842,7 +835,7 @@ export class UsageDashboardComponent implements Component {
 				}
 			}
 			if (window.fraction === undefined) {
-				const text = theme.fg("dim", window.usedText ?? "no data");
+				const text = theme.fg("dim", window.usedText ?? "无数据");
 				for (const line of wrapTextWithAnsi(`${prefix}${text}`, contentWidth)) lines.push(`  ${line}`);
 				continue;
 			}
@@ -857,12 +850,12 @@ export class UsageDashboardComponent implements Component {
 				lines.push(`  ${line}`);
 			}
 		}
-		if (hidden > 0) lines.push(`  ${theme.fg("dim", `+${hidden} more`)}`);
+		if (hidden > 0) lines.push(`  ${theme.fg("dim", `另有 ${hidden} 项`)}`);
 		return lines;
 	}
 
 	#renderCardsGrid(innerWidth: number): string[] {
-		if (this.#cards.length === 0) return [theme.fg("dim", "No usage data available.")];
+		if (this.#cards.length === 0) return [theme.fg("dim", "没有可用的用量数据。")];
 		const active = this.#cards.filter(card => !card.idle);
 		const idle = this.#cards.filter(card => card.idle);
 		const columns = Math.max(1, Math.floor((innerWidth + CARD_GUTTER) / (CARD_MIN_WIDTH + CARD_GUTTER)));
@@ -941,7 +934,7 @@ export class UsageDashboardComponent implements Component {
 			if (active.length > 0) lines.push("");
 			const names = idle.map(card => card.name).join(" · ");
 			const prefix = `${theme.fg("success", theme.status.success)} `;
-			lines.push(truncateToWidth(`${prefix}${theme.fg("dim", `untouched: ${names}`)}`, innerWidth));
+			lines.push(truncateToWidth(`${prefix}${theme.fg("dim", `未使用：${names}`)}`, innerWidth));
 		}
 		return lines;
 	}
@@ -975,10 +968,10 @@ export class UsageDashboardComponent implements Component {
 		const summary: string[] = [];
 		if (this.#activityError) {
 			const detail = formatActivityErrorDetail(this.#activityError);
-			return [theme.fg("dim", detail ? `Usage history unavailable (${detail}).` : "Usage history unavailable.")];
+			return [theme.fg("dim", detail ? `用量历史不可用（${detail}）。` : "用量历史不可用。")];
 		}
 		const points = this.#activity;
-		if (!points) return [theme.fg("dim", "Loading usage history…")];
+		if (!points) return [theme.fg("dim", "正在加载用量历史…")];
 
 		const labelWidth = 2;
 		const weeks = Math.max(4, Math.min(53, Math.floor((innerWidth - labelWidth) / 2)));
@@ -987,7 +980,7 @@ export class UsageDashboardComponent implements Component {
 		const reset = "\x1b[39m";
 
 		summary.push(
-			`${theme.bold(theme.fg("accent", "Activity"))} ${theme.fg("dim", `${formatActivityTotals(layout)} · last ${weeks} weeks`)}${this.#syncing ? theme.fg("dim", " · syncing…") : ""}`,
+			`${theme.bold(theme.fg("accent", "活动"))} ${theme.fg("dim", `${formatActivityTotals(layout)} · 最近 ${weeks} 周`)}${this.#syncing ? theme.fg("dim", " · 同步中…") : ""}`,
 		);
 		summary.push("");
 
@@ -1146,8 +1139,8 @@ export class UsageDashboardComponent implements Component {
 				"tabs",
 				{
 					items: [
-						{ id: "overview", label: "Overview" },
-						{ id: "detail", label: "Details" },
+						{ id: "overview", label: "概览" },
+						{ id: "detail", label: "详情" },
 					],
 					active: this.#view,
 				},
@@ -1253,7 +1246,7 @@ export class UsageDashboardComponent implements Component {
 		return [
 			text([span(parts.join(" · "), "dim")], {
 				role: "omp.usage.section.meta",
-				title: "Each quota shows the mean across a provider's accounts; it resets with the fullest one",
+				title: "每个配额显示提供商各账户的平均值；它会随额度最满的那个账户一起重置",
 			}),
 		];
 	}
@@ -1417,7 +1410,7 @@ export class UsageDashboardComponent implements Component {
 				text([span(`Daybreak · ${name}`, "success")], {
 					role: "omp.usage.provider.meta",
 					truncate: "middle",
-					title: `Daybreak access · ${name}`,
+					title: `Daybreak 访问 · ${name}`,
 				}),
 			);
 		}
@@ -1427,7 +1420,7 @@ export class UsageDashboardComponent implements Component {
 				text([span(`${name}: no usage data`, "warning")], {
 					role: "omp.usage.provider.meta",
 					truncate: "middle",
-					title: `${name}: no usage data`,
+					title: `${name}：无使用数据`,
 				}),
 			);
 		}
@@ -1463,7 +1456,7 @@ export class UsageDashboardComponent implements Component {
 				rows.push(
 					text([span(`${hidden} more in Details`, "dim")], {
 						role: "omp.usage.more",
-						title: "Details lists every quota per account  ⏎",
+						title: "详情列出每个账户的所有配额  ⏎",
 					}),
 				);
 			}

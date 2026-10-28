@@ -32,16 +32,16 @@ export const SETTING_TABS: SettingTab[] = [
 
 /** Tab display metadata - icon is a symbol key from theme.ts (tab.*) */
 export const TAB_METADATA: Record<SettingTab, TabMetadata> = {
-	appearance: { label: "Appearance", icon: "tab.appearance" },
-	model: { label: "Model", icon: "tab.model" },
-	interaction: { label: "Interaction", icon: "tab.interaction" },
-	context: { label: "Context", icon: "tab.context" },
-	memory: { label: "Memory", icon: "tab.memory" },
-	files: { label: "Files", icon: "tab.files" },
-	shell: { label: "Shell", icon: "tab.shell" },
-	tools: { label: "Tools", icon: "tab.tools" },
-	tasks: { label: "Tasks", icon: "tab.tasks" },
-	providers: { label: "Providers", icon: "tab.providers" },
+	appearance: { label: "外观", icon: "tab.appearance" },
+	model: { label: "模型", icon: "tab.model" },
+	interaction: { label: "交互", icon: "tab.interaction" },
+	context: { label: "上下文", icon: "tab.context" },
+	memory: { label: "记忆", icon: "tab.memory" },
+	files: { label: "文件", icon: "tab.files" },
+	shell: { label: "Shell 终端", icon: "tab.shell" },
+	tools: { label: "工具", icon: "tab.tools" },
+	tasks: { label: "任务", icon: "tab.tasks" },
+	providers: { label: "提供商", icon: "tab.providers" },
 };
 
 /** One-sentence lead per tab, under the page title of the native settings page. */

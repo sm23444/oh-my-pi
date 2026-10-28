@@ -45,18 +45,18 @@ export default class Install extends Command {
 	static description = commandHelp.description;
 	static args = {
 		targets: Args.string({
-			description: "Local path, npm spec, or marketplace ref (e.g. ./my-ext, my-pkg@1.2.3, name@marketplace)",
+			description: "本地路径、npm 规格或市场引用 (e.g. ./my-ext, my-pkg@1.2.3, name@marketplace)",
 			required: false,
 			multiple: true,
 		}),
 	};
 
 	static flags = {
-		json: Flags.boolean({ description: "Output JSON" }),
-		force: Flags.boolean({ description: "Force install" }),
-		"dry-run": Flags.boolean({ description: "Show actions without applying changes" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
+		force: Flags.boolean({ description: "强制安装" }),
+		"dry-run": Flags.boolean({ description: "显示操作而不应用更改" }),
 		scope: Flags.string({
-			description: 'Install scope: "user" (default) or "project" (marketplace installs only)',
+			description: "安装范围:\"user\"(默认)或 \"project\"(仅 marketplace 安装)",
 			options: ["user", "project"],
 		}),
 	};

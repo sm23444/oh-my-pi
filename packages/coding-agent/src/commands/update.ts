@@ -12,11 +12,11 @@ import { initTheme } from "@oh-my-pi/pi-tui/theme";
 export default class Update extends Command {
 	static description = commandHelp.description;
 	static flags = {
-		force: Flags.boolean({ char: "f", description: "Force update", default: false }),
-		check: Flags.boolean({ char: "c", description: "Check for updates without installing", default: false }),
-		plugins: Flags.boolean({ char: "l", description: "Update installed plugins", default: false }),
-		canary: Flags.boolean({ description: "Switch to the canary channel and update", default: false }),
-		stable: Flags.boolean({ description: "Switch back to the stable channel", default: false }),
+		force: Flags.boolean({ char: "f", description: "强制更新", default: false }),
+		check: Flags.boolean({ char: "c", description: "检查更新而不安装", default: false }),
+		plugins: Flags.boolean({ char: "l", description: "更新已安装的插件", default: false }),
+		canary: Flags.boolean({ description: "切换到 canary 通道并更新", default: false }),
+		stable: Flags.boolean({ description: "切换回稳定通道", default: false }),
 	};
 
 	static examples = ["omp update", "omp update --check", "omp update --canary"];

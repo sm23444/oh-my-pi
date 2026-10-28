@@ -110,11 +110,12 @@ export async function runStatsCommand(cmd: StatsCommandArgs): Promise<void> {
 	// Open browser
 	openPath(url);
 
-	console.log(`Press ${formatKeyHint("ctrl+c")} to stop\n`);
+	console.log(`按 ${formatKeyHint("ctrl+c")} 停止
+`);
 
 	// Keep process running
 	process.on("SIGINT", () => {
-		console.log("\nShutting down...");
+		console.log("\n正在关闭...");
 		closeDb();
 		process.exit(0);
 	});

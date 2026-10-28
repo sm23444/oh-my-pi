@@ -157,7 +157,7 @@ export class HookInputComponent extends OverlayPanel {
 			titleRow.push(
 				node(
 					"row",
-					{ role: `${PART}.timer`, title: "Cancels when the time runs out; typing restarts it" },
+					{ role: `${PART}.timer`, title: "时间耗尽时取消；输入会重新计时" },
 					[countdown],
 					"timer",
 				),

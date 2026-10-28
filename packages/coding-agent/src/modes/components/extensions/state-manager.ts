@@ -275,7 +275,7 @@ export async function loadAllExtensions(cwd?: string, disabledIds?: string[]): P
 				kind: "context-file",
 				name,
 				displayName: name,
-				description: file.level === "user" ? "User-level context" : "Project-level context",
+				description: file.level === "user" ? "用户级上下文" : "项目级上下文",
 				path: file.path,
 				source: sourceFromMeta(file._source),
 				state,

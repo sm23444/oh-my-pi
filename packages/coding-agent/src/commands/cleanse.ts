@@ -8,29 +8,29 @@ export default class Cleanse extends Command {
 	static description = commandHelp.description;
 	static args = {
 		request: Args.string({
-			description: 'What to detect and fix (e.g. "ts errors"); a discovery agent works out the command',
+			description: "要检测并修复的内容（e.g \"ts errors\"）；发现代理会确定命令",
 			required: false,
 		}),
 	};
 	static flags = {
 		agents: Flags.integer({
 			char: "n",
-			description: "Maximum number of file-disjoint subagents",
+			description: "文件互不重叠的子代理的最大数量",
 			default: 32,
 		}),
 		model: Flags.string({
 			char: "m",
-			description: "Subagent model selector",
+			description: "子代理模型选择器",
 			default: "@smol",
 		}),
 		tests: Flags.boolean({
 			char: "t",
-			description: "Also run configured project test suites",
+			description: "同时运行已配置的项目测试套件",
 			default: false,
 		}),
 		all: Flags.boolean({
 			char: "a",
-			description: "Run every discovered checker without the interactive picker",
+			description: "运行所有已发现的检查器，无需交互式选择器",
 			default: false,
 		}),
 	};

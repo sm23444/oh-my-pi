@@ -194,7 +194,8 @@ export class TodoCommandController {
 				this.#remove(rest);
 				return;
 			default:
-				this.ctx.showError(`Unknown /todo verb "${verb}".\n${USAGE}`);
+				this.ctx.showError(`未知的 /todo 子命令 "${verb}"。
+${USAGE}`);
 		}
 	}
 
@@ -210,7 +211,7 @@ export class TodoCommandController {
 	#copyMarkdown(): void {
 		const phases = this.#currentPhases();
 		if (phases.length === 0) {
-			this.ctx.showWarning("No todos to copy.");
+			this.ctx.showWarning("没有可复制的待办事项。");
 			return;
 		}
 		try {
@@ -228,7 +229,7 @@ export class TodoCommandController {
 	async #exportToFile(rest: string): Promise<void> {
 		const phases = this.#currentPhases();
 		if (phases.length === 0) {
-			this.ctx.showWarning("No todos to export.");
+			this.ctx.showWarning("没有要导出的待办事项。");
 			return;
 		}
 		try {
@@ -236,7 +237,7 @@ export class TodoCommandController {
 			await fs.writeFile(target, phasesToMarkdown(phases), "utf8");
 			this.ctx.showStatus(`Wrote todos to ${target}`);
 		} catch (error) {
-			this.ctx.showError(`Failed to write todos: ${error instanceof Error ? error.message : String(error)}`);
+			this.ctx.showError(`写入待办事项失败：${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -247,12 +248,13 @@ export class TodoCommandController {
 			source = this.#resolveTodoPath(rest);
 			content = await fs.readFile(source, "utf8");
 		} catch (error) {
-			this.ctx.showError(`Failed to read todos: ${error instanceof Error ? error.message : String(error)}`);
+			this.ctx.showError(`读取待办事项失败：${error instanceof Error ? error.message : String(error)}`);
 			return;
 		}
 		const { phases, errors } = markdownToPhases(content);
 		if (errors.length > 0) {
-			this.ctx.showError(`Could not parse ${source}:\n  ${errors.join("\n  ")}`);
+			this.ctx.showError(`无法解析 ${source}:
+  ${errors.join("\n  ")}`);
 			return;
 		}
 		this.#commit(phases, `/todo import ${source}`);
@@ -265,7 +267,7 @@ export class TodoCommandController {
 	#append(rest: string): void {
 		const tokens = tokenize(rest);
 		if (tokens.length === 0) {
-			this.ctx.showError("Usage: /todo append [<phase>] <task...>");
+			this.ctx.showError("用法：/todo append [<阶段>] <任务...>");
 			return;
 		}
 
@@ -310,13 +312,13 @@ export class TodoCommandController {
 
 	#start(rest: string): void {
 		if (!rest) {
-			this.ctx.showError("Usage: /todo start <task>");
+			this.ctx.showError("用法：/todo start <任务>");
 			return;
 		}
 		const current = this.#currentPhases();
 		const hit = findTaskFuzzy(current, rest);
 		if (!hit) {
-			this.ctx.showError(`No task matched "${rest}". Use /todo to list current tasks.`);
+			this.ctx.showError(`没有匹配“${rest}”的任务。使用 /todo 列出当前任务。`);
 			return;
 		}
 		const { phases, errors } = applyOpsToPhases(current, [{ op: "start", task: hit.task.content }]);
@@ -368,7 +370,7 @@ export class TodoCommandController {
 			return;
 		}
 
-		this.ctx.showError(`No task or phase matched "${trimmed}".`);
+		this.ctx.showError(`没有匹配“${trimmed}”的任务或阶段。`);
 	}
 
 	#remove(rest: string): void {
@@ -401,7 +403,7 @@ export class TodoCommandController {
 			this.ctx.showStatus(`Removed phase: ${phaseHit.name}`);
 			return;
 		}
-		this.ctx.showError(`No task or phase matched "${trimmed}".`);
+		this.ctx.showError(`没有匹配“${trimmed}”的任务或阶段。`);
 	}
 
 	// ------------------------------------------------------------- editor
@@ -409,7 +411,7 @@ export class TodoCommandController {
 	async #editInExternalEditor(): Promise<void> {
 		const editorCmd = getEditorCommand();
 		if (!editorCmd) {
-			this.ctx.showWarning("No editor configured. Set $VISUAL or $EDITOR environment variable.");
+			this.ctx.showWarning("未配置编辑器。请设置 $VISUAL 或 $EDITOR 环境变量。");
 			return;
 		}
 
@@ -421,12 +423,13 @@ export class TodoCommandController {
 		try {
 			const result = await openInEditor(editorCmd, initialMarkdown, { extension: ".todo.md" });
 			if (result === null) {
-				this.ctx.showWarning("Editor exited without saving; todos unchanged.");
+				this.ctx.showWarning("编辑器退出时未保存；待办事项未更改。");
 				return;
 			}
 			const { phases: parsed, errors } = markdownToPhases(result);
 			if (errors.length > 0) {
-				this.ctx.showError(`Could not parse Markdown:\n  ${errors.join("\n  ")}`);
+				this.ctx.showError(`无法解析 Markdown：
+  ${errors.join("\n  ")}`);
 				return;
 			}
 			this.#commit(parsed, "/todo edit");
@@ -434,7 +437,7 @@ export class TodoCommandController {
 			this.ctx.showStatus(`Todos updated from editor: ${parsed.length} phase(s), ${taskCount} task(s).`);
 		} catch (error) {
 			this.ctx.showWarning(
-				`Failed to open external editor: ${error instanceof Error ? error.message : String(error)}`,
+				`无法打开外部编辑器：${error instanceof Error ? error.message : String(error)}`,
 			);
 		} finally {
 			this.ctx.ui.start();

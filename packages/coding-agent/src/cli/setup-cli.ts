@@ -46,14 +46,14 @@ export function parseSetupArgs(args: string[]): SetupCommandArgs | undefined {
 
 	if (args.length < 2) {
 		console.error(chalk.red(`Usage: ${APP_NAME} setup <component>`));
-		console.error(`Valid components: ${VALID_COMPONENTS.join(", ")}`);
+		console.error(`有效组件：${VALID_COMPONENTS.join(", ")}`);
 		process.exit(1);
 	}
 
 	const component = args[1];
 	if (!VALID_COMPONENTS.includes(component as SetupComponent)) {
 		console.error(chalk.red(`Unknown component: ${component}`));
-		console.error(`Valid components: ${VALID_COMPONENTS.join(", ")}`);
+		console.error(`有效组件：${VALID_COMPONENTS.join(", ")}`);
 		process.exit(1);
 	}
 
@@ -310,25 +310,25 @@ async function handleSpeechSetup(flags: { json?: boolean; check?: boolean }): Pr
  * Print setup command help.
  */
 export function printSetupHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} setup`)} - Run onboarding or install dependencies for optional features
+	console.log(`${chalk.bold(`${APP_NAME} setup`)} - 运行入门引导或为可选功能安装依赖项
 
 ${chalk.bold("Usage:")}
-  ${APP_NAME} setup                     Run the onboarding wizard
+  ${APP_NAME} setup                     运行入门引导向导
   ${APP_NAME} setup <component> [options]
 
 ${chalk.bold("Components:")}
-  python    Verify a Python 3 interpreter is reachable for code execution
-  speech    Pick and download speech-to-text and text-to-speech models
+  python    验证 Python 3 解释器是否可访问以执行代码
+  speech    选择并下载语音转文本和文本转语音模型
 
 ${chalk.bold("Options:")}
-  -c, --check   Check if dependencies are installed without installing
-  --json        Output status as JSON
+  -c, --check   检查是否已安装依赖项但不执行安装
+  --json        以 JSON 格式输出状态
 
 ${chalk.bold("Examples:")}
-  ${APP_NAME} setup                  Run the onboarding wizard
-  ${APP_NAME} setup python           Check Python execution dependencies
-  ${APP_NAME} setup speech           Pick and download the STT and TTS models
-  ${APP_NAME} setup speech --check   Check if speech dependencies are available
-  ${APP_NAME} setup python --check   Check if Python execution is available
+  ${APP_NAME} setup                  运行入门引导向导
+  ${APP_NAME} setup python           检查 Python 执行依赖项
+  ${APP_NAME} setup speech           选择并下载 STT 和 TTS 模型
+  ${APP_NAME} setup speech --check   检查语音依赖项是否可用
+  ${APP_NAME} setup python --check   检查 Python 执行是否可用
 `);
 }

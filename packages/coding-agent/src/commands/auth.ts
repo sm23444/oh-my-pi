@@ -169,12 +169,12 @@ export default class Auth extends Command {
 
 	static args = {
 		action: Args.string({
-			description: "export or import",
+			description: "导出或导入",
 			required: true,
 			options: ["export", "import"],
 		}),
 		file: Args.string({
-			description: "File written by `omp auth export`, or - for stdin (import)",
+			description: "由 `omp auth export` 写入的文件，或 - 表示标准输入（导入）",
 			required: false,
 		}),
 	};

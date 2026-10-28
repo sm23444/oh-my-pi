@@ -343,7 +343,7 @@ export class AgentsHubComponent implements Component {
 		const counts: Record<AgentSource, number> = { project: 0, user: 0, bundled: 0 };
 		for (const agent of this.#allAgents) counts[agent.source]++;
 		const entries: SidebarEntry[] = [
-			{ id: "all", kind: "all", label: "All agents", annotation: String(this.#allAgents.length) },
+			{ id: "all", kind: "all", label: "全部代理", annotation: String(this.#allAgents.length) },
 		];
 		const sources = (["project", "user", "bundled"] as const).filter(source => counts[source] > 0);
 		if (sources.length > 0) {
@@ -359,7 +359,7 @@ export class AgentsHubComponent implements Component {
 			}
 		}
 		entries.push({ id: "sep:actions", kind: "separator", label: "" });
-		entries.push({ id: "new", kind: "new", label: "New agent" });
+		entries.push({ id: "new", kind: "new", label: "新建代理" });
 		this.#entries = entries;
 		if (!entries.some(entry => entry.id === this.#activeEntryId)) this.#activeEntryId = "all";
 	}
@@ -475,10 +475,10 @@ export class AgentsHubComponent implements Component {
 	/** Level-1 strip: pick which knob of `agent` to change. */
 	#openAgentStrip(agent: HubAgent): void {
 		const enabledChip: StripChip = {
-			label: agent.disabled ? "enable" : "disable",
+			label: agent.disabled ? "启用" : "禁用",
 			styled: agent.disabled
-				? theme.fg("success", `${theme.status.enabled} enable`)
-				: theme.fg("dim", `${theme.status.disabled} disable`),
+				? theme.fg("success", `${theme.status.enabled} 启用`)
+				: theme.fg("dim", `${theme.status.disabled} 禁用`),
 			action: { kind: "toggle" },
 		};
 		const propertyChip = (property: PropertyKind): StripChip => {
@@ -505,46 +505,46 @@ export class AgentsHubComponent implements Component {
 			active ? theme.fg("accent", `${theme.status.enabled} ${label}`) : theme.fg(color, label);
 		if (property === "model") {
 			chips.push({
-				label: "pick model…",
-				styled: theme.fg("accent", "pick model…"),
+				label: "选择模型…",
+				styled: theme.fg("accent", "选择模型…"),
 				action: { kind: "pick", property },
 			});
 			chips.push({
-				label: "pattern…",
-				styled: theme.fg("muted", "pattern…"),
+				label: "模式…",
+				styled: theme.fg("muted", "模式…"),
 				action: { kind: "pattern", property },
 			});
 			if (agent.overrideModel) {
 				chips.push({
-					label: "clear override",
-					styled: theme.fg("warning", "clear override"),
+					label: "清除覆盖",
+					styled: theme.fg("warning", "清除覆盖"),
 					action: { kind: "set", property, value: undefined },
 				});
 			}
 		} else {
 			chips.push({
-				label: "agent default",
+				label: "代理默认",
 				styled: mark("agent default", current === undefined),
 				action: { kind: "set", property, value: undefined },
 			});
 			chips.push({
-				label: "on",
+				label: "开",
 				styled: mark("on", current === "on"),
 				action: { kind: "set", property, value: "on" },
 			});
 			chips.push({
-				label: "off",
+				label: "关闭",
 				styled: mark("off", current === "off"),
 				action: { kind: "set", property, value: "off" },
 			});
 			chips.push({
-				label: "pick model…",
-				styled: theme.fg("accent", "pick model…"),
+				label: "选择模型…",
+				styled: theme.fg("accent", "选择模型…"),
 				action: { kind: "pick", property },
 			});
 			chips.push({
-				label: "pattern…",
-				styled: theme.fg("muted", "pattern…"),
+				label: "模式…",
+				styled: theme.fg("muted", "模式…"),
 				action: { kind: "pattern", property },
 			});
 		}
@@ -1033,13 +1033,13 @@ export class AgentsHubComponent implements Component {
 			return truncateToWidth(
 				theme.fg(
 					"accent",
-					` Picking ${what} for ${theme.bold(agent.name)} — ${formatKeyHint("enter")} assigns, ${editorKey("tui.select.cancel")} cancels`,
+					` 正在选择 ${what} 用于 ${theme.bold(agent.name)} — ${formatKeyHint("enter")} 分配，${editorKey("tui.select.cancel")} 取消`,
 				),
 				width,
 			);
 		}
 		if (this.#createActive) {
-			return truncateToWidth(theme.fg("accent", " New agent — describe it and let the architect draft it"), width);
+			return truncateToWidth(theme.fg("accent", " 新建代理 — 描述它，让架构师起草"), width);
 		}
 		if (this.#notice) return truncateToWidth(theme.fg("success", ` ${this.#notice}`), width);
 		const entry = this.#activeEntry();
@@ -1053,8 +1053,8 @@ export class AgentsHubComponent implements Component {
 		const query = this.#search.getValue();
 		const searchText = query
 			? theme.fg("accent", this.#search.render(visibleWidth(query) + 1)[0] ?? "")
-			: theme.fg("dim", "type to filter");
-		lines.push(truncateToWidth(` ${theme.fg("muted", "search:")} ${searchText}`, width));
+			: theme.fg("dim", "输入以筛选");
+		lines.push(truncateToWidth(` ${theme.fg("muted", "搜索：")} ${searchText}`, width));
 		lines.push("");
 		this.#listRowStart = lines.length;
 
@@ -1077,7 +1077,7 @@ export class AgentsHubComponent implements Component {
 			const hovered = i === this.#rowHover;
 			const cursor = selected && listFocused ? theme.fg("accent", theme.nav.cursor) : " ";
 			if (rowDef.kind === "new") {
-				let line = ` ${cursor} ${theme.fg(selected ? "accent" : "dim", "+ New agent…")}`;
+				let line = ` ${cursor} ${theme.fg(selected ? "accent" : "dim", "+ 新建智能体…")}`;
 				if (hovered) line = theme.bg("selectedBg", line);
 				lines.push(truncateToWidth(line, width));
 				continue;
@@ -1095,9 +1095,9 @@ export class AgentsHubComponent implements Component {
 			const badges: string[] = [];
 			if (agent.overrideModel) badges.push(theme.fg("warning", agent.overrideModel));
 			const prewalk = this.#deps.effectivePrewalkPattern(agent);
-			if (prewalk) badges.push(theme.fg("dim", `pre:${prewalk}`));
+			if (prewalk) badges.push(theme.fg("dim", `预走查：${prewalk}`));
 			const advisor = this.#deps.effectiveAdvisorPattern(agent);
-			if (advisor) badges.push(theme.fg("dim", `adv:${advisor}`));
+			if (advisor) badges.push(theme.fg("dim", `顾问：${advisor}`));
 			const sourceTag = theme.fg("dim", SOURCE_LABEL[agent.source].toLowerCase());
 			let line = ` ${cursor} ${dot} ${nameStyled}  ${sourceTag}`;
 			const right = badges.join("  ");
@@ -1123,20 +1123,20 @@ export class AgentsHubComponent implements Component {
 			lines.push(truncateToWidth(` ${theme.fg("dim", replaceTabs(agent.description))}`, width));
 			const patterns = this.#deps.effectiveModelPatterns(agent);
 			const resolved = this.#deps.resolvePatterns(patterns);
-			const modelLine = `${theme.fg("muted", "model:")} ${patterns.length > 0 ? replaceTabs(patterns.join(",")) : theme.fg("dim", "(session model)")}${resolved ? ` ${theme.fg("dim", "→")} ${theme.fg("success", resolved)}` : ""}`;
+			const modelLine = `${theme.fg("muted", "模型：")} ${patterns.length > 0 ? replaceTabs(patterns.join(",")) : theme.fg("dim", "(会话模型)")}${resolved ? ` ${theme.fg("dim", "→")} ${theme.fg("success", resolved)}` : ""}`;
 			lines.push(truncateToWidth(` ${modelLine}`, width));
 			const prewalk = this.#deps.effectivePrewalkPattern(agent);
 			const advisor = this.#deps.effectiveAdvisorPattern(agent);
 			const flagLine = [
-				`${theme.fg("muted", "prewalk:")} ${prewalk ? theme.fg("success", prewalk) : theme.fg("dim", "off")}`,
-				`${theme.fg("muted", "advisor:")} ${advisor ? theme.fg("success", advisor) : theme.fg("dim", "off")}`,
+				`${theme.fg("muted", "预走查：")} ${prewalk ? theme.fg("success", prewalk) : theme.fg("dim", "关闭")}`,
+				`${theme.fg("muted", "顾问：")} ${advisor ? theme.fg("success", advisor) : theme.fg("dim", "关闭")}`,
 				agent.filePath ? theme.fg("dim", shortenPath(agent.filePath)) : "",
 			]
 				.filter(Boolean)
 				.join("   ");
 			lines.push(truncateToWidth(` ${flagLine}`, width));
 		} else {
-			lines.push(theme.fg("dim", " Select an agent to inspect"));
+			lines.push(theme.fg("dim", " 选择要检查的智能体"));
 			lines.push("");
 			lines.push("");
 		}
@@ -1148,17 +1148,17 @@ export class AgentsHubComponent implements Component {
 		lines.push("");
 		if (this.#createSpec) {
 			const spec = this.#createSpec;
-			lines.push(truncateToWidth(theme.bold(theme.fg("accent", " Review generated agent")), width));
+			lines.push(truncateToWidth(theme.bold(theme.fg("accent", " 查看生成的智能体")), width));
 			lines.push("");
-			lines.push(truncateToWidth(theme.fg("muted", ` Identifier: ${spec.identifier}`), width));
-			lines.push(truncateToWidth(theme.fg("muted", ` Scope: ${this.#createScope}`), width));
+			lines.push(truncateToWidth(theme.fg("muted", ` 标识符：${spec.identifier}`), width));
+			lines.push(truncateToWidth(theme.fg("muted", ` 范围：${this.#createScope}`), width));
 			lines.push("");
-			lines.push(theme.fg("muted", " whenToUse:"));
+			lines.push(theme.fg("muted", " 使用时机："));
 			for (const line of wrapTextWithAnsi(replaceTabs(spec.whenToUse), Math.max(20, width - 2)).slice(0, 6)) {
 				lines.push(truncateToWidth(` ${line}`, width));
 			}
 			lines.push("");
-			lines.push(theme.fg("muted", " systemPrompt preview:"));
+			lines.push(theme.fg("muted", " 系统提示词预览："));
 			const promptWidth = Math.max(20, width - 4);
 			const wrapped: string[] = [];
 			for (const raw of spec.systemPrompt.split("\n")) {
@@ -1169,14 +1169,14 @@ export class AgentsHubComponent implements Component {
 				lines.push(truncateToWidth(`   ${theme.fg("dim", line)}`, width));
 			}
 			if (wrapped.length > budget) {
-				lines.push(theme.fg("dim", `   … ${wrapped.length - budget} more lines`));
+				lines.push(theme.fg("dim", `   … 还有 ${wrapped.length - budget} 行`));
 			}
 		} else {
-			lines.push(truncateToWidth(theme.bold(theme.fg("accent", " Create new agent")), width));
+			lines.push(truncateToWidth(theme.bold(theme.fg("accent", " 创建新智能体")), width));
 			lines.push("");
 			lines.push(
 				truncateToWidth(
-					theme.fg("muted", " Describe what the agent should do; scope: ") + theme.fg("accent", this.#createScope),
+					theme.fg("muted", " 描述智能体应做什么；范围：") + theme.fg("accent", this.#createScope),
 					width,
 				),
 			);
@@ -1187,7 +1187,7 @@ export class AgentsHubComponent implements Component {
 				}
 			}
 			if (this.#createGenerating) {
-				lines.push(theme.fg("muted", " Generating…"));
+				lines.push(theme.fg("muted", " 正在生成…"));
 				lines.push("");
 				const contentWidth = Math.max(20, width - 4);
 				const wrapped: string[] = [];
@@ -1251,7 +1251,7 @@ export class AgentsHubComponent implements Component {
 
 	#renderStrip(width: number, strip: StripState): string {
 		if (strip.kind === "pattern") {
-			const label = theme.fg("accent", `${strip.agent.name} ${strip.property} pattern:`);
+			const label = theme.fg("accent", `${strip.agent.name} ${strip.property} 模式：`);
 			const labelWidth = visibleWidth(`${strip.agent.name} ${strip.property} pattern:`);
 			const inputWidth = Math.max(8, Math.min(40, width - labelWidth - 4));
 			const inputLine = strip.input.render(inputWidth)[0] ?? "";
@@ -1412,13 +1412,13 @@ export class AgentsHubComponent implements Component {
 		const counts: Record<AgentSource, number> = { project: 0, user: 0, bundled: 0 };
 		for (const agent of this.#allAgents) counts[agent.source]++;
 		const scopes: TspPickerScope[] = [
-			{ id: "all", label: "All agents", icon: "users", count: this.#allAgents.length },
+			{ id: "all", label: "全部代理", icon: "users", count: this.#allAgents.length },
 			...SOURCES.map((source): TspPickerScope => ({
 				id: `source:${source}`,
 				label: SOURCE_LABEL[source],
 				icon: source === "project" ? "folder" : source === "user" ? "user" : "box",
 				count: counts[source],
-				group: "Source",
+				group: "来源",
 				disabled: counts[source] === 0 ? `No ${source} agents` : undefined,
 			})),
 		];
@@ -1428,30 +1428,30 @@ export class AgentsHubComponent implements Component {
 		let actions: TspPickerAction[];
 		if (strip) {
 			actions = [
-				{ id: "apply", label: strip.property ? "Apply" : "Open", keys: ["enter"], primary: true },
-				{ id: "back", label: strip.property ? "Back" : "Cancel", keys: ["esc"], end: true },
+				{ id: "apply", label: strip.property ? "应用" : "打开", keys: ["enter"], primary: true },
+				{ id: "back", label: strip.property ? "返回" : "取消", keys: ["esc"], end: true },
 			];
 		} else {
 			const noAgent = agent ? undefined : "Select an agent";
 			actions = [
-				{ id: "configure", label: agent ? "Configure" : "Create", keys: ["enter"], primary: true },
+				{ id: "configure", label: agent ? "配置" : "创建", keys: ["enter"], primary: true },
 				{
 					id: "toggle",
-					label: "Toggle",
+					label: "切换",
 					keys: ["space"],
 					on: agent ? !agent.disabled : undefined,
 					disabled: noAgent,
 				},
-				{ id: "model", label: "Model", disabled: noAgent },
-				{ id: "new", label: "New agent" },
-				{ id: "reload", label: "Reload", keys: ["ctrl", "r"] },
+				{ id: "model", label: "模型", disabled: noAgent },
+				{ id: "new", label: "新建代理" },
+				{ id: "reload", label: "重新加载", keys: ["ctrl", "r"] },
 				CLOSE_ACTION,
 			];
 		}
 		const selectedRow = this.#rows[this.#rowIndex];
 		return picker(
 			{
-				title: "Agents",
+				title: "智能体",
 				subtitle: this.#notice ?? undefined,
 				icon: "users",
 				noun: "agents",
@@ -1488,7 +1488,7 @@ export class AgentsHubComponent implements Component {
 
 	#pickerItem(rowDef: ListRow): TspPickerItem {
 		if (rowDef.kind === "new") {
-			return { id: listRowId(rowDef), label: "New agent…", icon: "plus", tone: "muted" };
+			return { id: listRowId(rowDef), label: "新建智能体…", icon: "plus", tone: "muted" };
 		}
 		const agent = rowDef.agent;
 		const prewalk = this.#deps.effectivePrewalkPattern(agent);
@@ -1727,7 +1727,7 @@ export class AgentsHubComponent implements Component {
 				nodes.push(this.#createInput);
 			}
 			if (this.#createGenerating) {
-				nodes.push(node("spinner", { label: "Generating…" }, undefined, "generating"));
+				nodes.push(node("spinner", { label: "正在生成…" }, undefined, "generating"));
 				if (this.#createStreamingText) {
 					nodes.push(
 						node("code", { text: this.#createStreamingText, lang: "json", wrap: true }, undefined, "stream"),
@@ -1808,50 +1808,50 @@ export class AgentsHubComponent implements Component {
 			if (strip.kind === "pattern") {
 				const values = strip.property === "model" ? "a model pattern" : '"on", "off", or a model pattern';
 				return [
-					{ keys: ["enter"], label: `${values} (role aliases like @smol and :level suffixes work; empty clears)` },
+					{ keys: ["enter"], label: `${values}（角色别名如 @smol 和 :level 后缀可用；留空清除）` },
 					cancel("back"),
 				];
 			}
 			return [
-				{ keys: ["left", "right"], label: "choose" },
-				{ keys: ["enter"], label: strip.property ? "apply" : "open" },
+				{ keys: ["left", "right"], label: "选择" },
+				{ keys: ["enter"], label: strip.property ? "应用" : "打开" },
 				cancel(strip.property ? "back" : "cancel"),
 			];
 		}
 		if (this.#assigning) {
 			return [
-				{ keys: ["enter"], label: "pick" },
+				{ keys: ["enter"], label: "选取" },
 				upDown("models"),
-				{ keys: [], label: "type to search" },
+				{ keys: [], label: "输入以搜索" },
 				cancel("cancel"),
 			];
 		}
 		if (this.#createActive) {
 			if (this.#createSpec) {
 				return [
-					{ keys: ["enter"], label: "save" },
-					{ keys: ["tab"], label: "scope" },
-					{ keys: ["r"], label: "regenerate" },
+					{ keys: ["enter"], label: "保存" },
+					{ keys: ["tab"], label: "作用域" },
+					{ keys: ["r"], label: "重新生成" },
 					cancel("cancel"),
 				];
 			}
 			if (this.#createGenerating) return [];
 			return [
-				{ keys: boundKeys("app.message.followUp", ["ctrl+q", "ctrl+enter"]), label: "generate" },
-				{ keys: ["enter"], label: "newline" },
-				{ keys: ["tab"], label: "scope" },
+				{ keys: boundKeys("app.message.followUp", ["ctrl+q", "ctrl+enter"]), label: "生成" },
+				{ keys: ["enter"], label: "换行" },
+				{ keys: ["tab"], label: "作用域" },
 				cancel("cancel"),
 			];
 		}
 		if (this.#focus === "scope") {
-			return [upDown("scopes"), { keys: ["right", "enter"], label: "agents" }, cancel("close")];
+			return [upDown("scopes"), { keys: ["right", "enter"], label: "智能体" }, cancel("close")];
 		}
 		return [
-			{ keys: ["enter"], label: "configure" },
+			{ keys: ["enter"], label: "配置" },
 			{ keys: ["space"], label: "enable/disable" },
 			upDown("rows"),
-			{ keys: [], label: "type to search" },
-			{ keys: ["ctrl+r"], label: "reload" },
+			{ keys: [], label: "输入以搜索" },
+			{ keys: ["ctrl+r"], label: "重新加载" },
 			cancel("close"),
 		];
 	}

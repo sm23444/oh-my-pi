@@ -1102,8 +1102,8 @@ export class Sidebar {
 			"tabs",
 			{
 				items: [
-					{ id: "path", label: "Path" },
-					{ id: "tree", label: "Tree" },
+					{ id: "path", label: "路径" },
+					{ id: "tree", label: "树" },
 				],
 				active: this.viewStyle,
 				role: "omp.app.seg",
@@ -1132,7 +1132,7 @@ export class Sidebar {
 							{
 								name: "wand",
 								role: "omp.app.ibtn",
-								title: "Stage by description…",
+								title: "按描述暂存…",
 								aria: "Stage by description",
 								actions: { click: "stage-ai" },
 							},
@@ -1149,7 +1149,7 @@ export class Sidebar {
 						text(area === "unstaged" ? "Unstaged" : "Staged"),
 						text([span(String(files.length), "num")], { role: "omp.app.git.count" }),
 					],
-					{ gap: "xs", align: "center", actions: { click: `fold-${area}` }, title: folded ? "Show" : "Hide" },
+					{ gap: "xs", align: "center", actions: { click: `fold-${area}` }, title: folded ? "显示" : "隐藏" },
 				),
 				row(files.length > 0 ? actions : [], { gap: "xs", align: "center", role: "omp.app.git.acts" }),
 			],
@@ -1286,7 +1286,7 @@ export class Sidebar {
 								align: "center",
 								role: `omp.app.git.toggle${this.amend ? ".set" : ""}${on({ kind: "amend" }) ? ".on" : ""}`,
 								actions: { click: "amend" },
-								title: "Amend the previous commit",
+								title: "修改上一次提交",
 							}),
 							row(compact([this.generating && node("spinner", { style: "dots" }), text(label)]), {
 								gap: "xs",
@@ -1296,8 +1296,8 @@ export class Sidebar {
 								actions: canCommit ? { click: "commit" } : undefined,
 								title:
 									this.#model.staged.length > 0
-										? "Commit the staged changes"
-										: "Stage everything, then commit",
+										? "提交已暂存的更改"
+										: "暂存全部更改，然后提交",
 							}),
 						],
 						{ justify: "between", align: "center", role: "omp.app.git.foot" },
@@ -1521,7 +1521,7 @@ export class Sidebar {
 	#changesHeaderRows(width: number): Row[] {
 		const total = this.#model.unstaged.length + this.#model.staged.length;
 		const branch = this.#model.branch ? tintChip(` ${this.#model.branch} `, theme.getColorHex("accent")) : "";
-		const label = theme.bold(`${total} file change${total === 1 ? "" : "s"} on `);
+		const label = theme.bold(`${total} 个文件更改${total === 1 ? "" : "s"} 于 `);
 		return [
 			{ text: ` ${label}${branch}` },
 			this.#viewToggleRow(width),
@@ -1550,7 +1550,7 @@ export class Sidebar {
 		if (this.#aiPromptOpen) rows.push(this.#aiPromptRow(width, isSelected));
 		if (!unstagedFolded) {
 			rows.push(...this.#entryRows(this.#model.unstaged, "unstaged"));
-			if (this.#model.unstaged.length === 0) rows.push({ text: theme.fg("dim", "   no unstaged files") });
+			if (this.#model.unstaged.length === 0) rows.push({ text: theme.fg("dim", "   无未暂存的文件") });
 		}
 		rows.push({ text: "" });
 		const staged: SectionTarget = { kind: "section", area: "staged" };
@@ -1567,7 +1567,7 @@ export class Sidebar {
 		);
 		if (!stagedFolded) {
 			rows.push(...this.#entryRows(this.#model.staged, "staged"));
-			if (this.#model.staged.length === 0) rows.push({ text: theme.fg("dim", "   no staged files") });
+			if (this.#model.staged.length === 0) rows.push({ text: theme.fg("dim", "   无已暂存的文件") });
 		}
 		return rows;
 	}
@@ -1577,7 +1577,7 @@ export class Sidebar {
 		const bar = isSelected(target) ? theme.fg("accent", "▎") : theme.fg("borderMuted", "▏");
 		const line =
 			this.aiInput.getValue().length === 0 && !this.aiInput.focused
-				? theme.fg("dim", "What should we stage?")
+				? theme.fg("dim", "要暂存哪些内容？")
 				: (this.aiInput.render(width - 4)[0] ?? "");
 		return { text: ` ${bar}${line}`, target };
 	}
@@ -1597,7 +1597,7 @@ export class Sidebar {
 		const summaryTarget: Target = { kind: "summary" };
 		const summaryLen = this.summary.getValue().length;
 		const counter = theme.fg(summaryLen > SUMMARY_LIMIT ? "warning" : "dim", String(SUMMARY_LIMIT - summaryLen));
-		const summaryLabel = theme.fg("muted", "Commit summary");
+		const summaryLabel = theme.fg("muted", "提交摘要");
 		rows.push({
 			text: ` ${summaryLabel}${" ".repeat(Math.max(1, width - 2 - visibleWidth(summaryLabel) - visibleWidth(counter)))}${counter}`,
 		});
@@ -1609,7 +1609,7 @@ export class Sidebar {
 		const descriptionLines = this.#descriptionField.render(width - 4);
 		const descriptionBar = isSelected(descriptionTarget) ? theme.fg("accent", "▎") : theme.fg("borderMuted", "▏");
 		if (this.description.getText().length === 0 && !this.#descriptionField.focused) {
-			rows.push({ text: ` ${descriptionBar}${theme.fg("dim", "Description")}`, target: descriptionTarget });
+			rows.push({ text: ` ${descriptionBar}${theme.fg("dim", "描述")}`, target: descriptionTarget });
 		} else {
 			for (const line of descriptionLines.length > 0 ? descriptionLines : [""]) {
 				rows.push({ text: ` ${descriptionBar}${line}`, target: descriptionTarget });
@@ -1641,7 +1641,7 @@ export class Sidebar {
 		const rows: Row[] = [];
 		const head = this.#model.headCommit;
 		if (!head) {
-			rows.push({ text: "" }, { text: theme.fg("dim", " No commits yet") });
+			rows.push({ text: "" }, { text: theme.fg("dim", " 暂无提交") });
 			return rows;
 		}
 		for (const line of Bun.wrapAnsi(theme.bold(head.subject), width - 2).split("\n")) {
@@ -1660,19 +1660,19 @@ export class Sidebar {
 		rows.push({ text: ` ${theme.bold(head.authorName)} ${theme.fg("dim", `<${head.authorEmail}>`)}` });
 		const when = head.authorDate ? new Date(head.authorDate) : null;
 		if (when && !Number.isNaN(when.getTime())) {
-			rows.push({ text: theme.fg("dim", ` authored ${when.toLocaleString()}`) });
+			rows.push({ text: theme.fg("dim", ` 创作于 ${when.toLocaleString()}`) });
 		}
 		if (head.parents.length > 0) {
 			rows.push({
-				text: ` ${theme.fg("dim", "parent:")} ${theme.fg("accent", head.parents.map(sha => sha.slice(0, 8)).join(" "))}`,
+				text: ` ${theme.fg("dim", "父提交：")} ${theme.fg("accent", head.parents.map(sha => sha.slice(0, 8)).join(" "))}`,
 			});
 		}
 		// This view only appears when there is nothing to stage or discard, so say so
 		// rather than letting the file list read as pending work.
-		rows.push({ text: theme.fg("success", ` Working tree clean — showing committed ${head.shortSha}`) });
+		rows.push({ text: theme.fg("success", ` 工作区干净 — 显示已提交 ${head.shortSha}`) });
 		rows.push({ text: theme.fg("borderMuted", "─".repeat(Math.max(0, width))) });
 		if (!head.filesLoaded) {
-			rows.push({ text: theme.fg("dim", " Loading changed files…") });
+			rows.push({ text: theme.fg("dim", " 正在加载已更改文件…") });
 			return rows;
 		}
 
@@ -1680,7 +1680,7 @@ export class Sidebar {
 		const deletions = head.files.reduce((sum, file) => sum + (file.deletions ?? 0), 0);
 		const count = `${head.files.length} file${head.files.length === 1 ? "" : "s"}`;
 		rows.push({
-			text: ` ${theme.bold(count)} ${theme.fg("dim", `in ${head.shortSha}`)}  ${theme.fg("success", `+${additions}`)} ${theme.fg("error", `−${deletions}`)}`,
+			text: ` ${theme.bold(count)} ${theme.fg("dim", ` 在 ${head.shortSha} 中`)}  ${theme.fg("success", `+${additions}`)} ${theme.fg("error", `−${deletions}`)}`,
 		});
 		rows.push(this.#viewToggleRow(width));
 		rows.push(...this.#entryRows(head.files, "commit"));

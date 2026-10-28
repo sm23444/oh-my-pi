@@ -408,10 +408,10 @@ function configChecks(config: ImagesResolvedConfig, deps: ImagesCliDependencies)
 	checks.push({
 		name: "enabled",
 		severity: config.enabled ? "ok" : "error",
-		detail: config.enabled ? "Image publication is enabled" : "images.urls.enabled is false",
+		detail: config.enabled ? "图像发布已启用" : "images.urls.enabled 为 false",
 	});
 	if (config.orderedBackends.length === 0) {
-		checks.push({ name: "backends", severity: "error", detail: "No image publication backends are configured" });
+		checks.push({ name: "backends", severity: "error", detail: "未配置图像发布后端" });
 	}
 	const configByKind = new Map(config.configs.map(item => [item.kind, item]));
 	for (const backend of config.orderedBackends) {
@@ -454,8 +454,8 @@ function configChecks(config: ImagesResolvedConfig, deps: ImagesCliDependencies)
 				severity: missing.length === 0 && runtimeError === undefined ? "ok" : "error",
 				detail:
 					missing.length > 0
-						? `Missing required fields: ${missing.join(", ")}`
-						: (runtimeError ?? "Required configuration is present"),
+						? `缺少必填字段：${missing.join(", ")}`
+						: (runtimeError ?? "所需配置已存在"),
 			});
 		}
 		const binary = BINARY_BY_DESTINATION[backend];
@@ -464,7 +464,7 @@ function configChecks(config: ImagesResolvedConfig, deps: ImagesCliDependencies)
 			checks.push({
 				name: `binary:${backend}`,
 				severity: found ? "ok" : "error",
-				detail: found ? `${binary} is available` : `${binary} is not on PATH`,
+				detail: found ? `${binary} 可用` : `${binary} 不在 PATH 中`,
 			});
 		}
 	}
@@ -486,13 +486,13 @@ async function diskChecks(config: ImagesResolvedConfig): Promise<ImagesDoctorChe
 			checks.push({
 				name: "disk",
 				severity: "ok",
-				detail: `Cache directory is readable and writable: ${directory}`,
+				detail: `缓存目录可读写：${directory}`,
 			});
 		} catch {
 			checks.push({
 				name: "disk",
 				severity: "warn",
-				detail: `Cache directory is absent or not writable: ${directory}`,
+				detail: `缓存目录不存在或不可写：${directory}`,
 			});
 		}
 	}
@@ -517,14 +517,14 @@ async function collectDoctor(
 				severity: authenticated.length > 0 ? "ok" : "error",
 				detail:
 					authenticated.length > 0
-						? `Authentication is available for: ${authenticated.join(", ")}`
-						: "No OpenAI, Anthropic, or Google authentication is available",
+						? `身份验证可用于：${authenticated.join(", ")}`
+						: "没有可用的 OpenAI、Google 或 Google 身份验证",
 			});
 		} catch {
 			checks.push({
 				name: "config:provider-files",
 				severity: "warn",
-				detail: "Provider authentication storage could not be inspected",
+				detail: "无法检查提供商身份验证存储",
 			});
 		} finally {
 			storage?.close();
@@ -532,7 +532,7 @@ async function collectDoctor(
 	}
 	const daemon = await deps.queryDoctor(projectDir, { probe: true });
 	if (!daemon) {
-		checks.push({ name: "daemon", severity: "warn", detail: "Image daemon is stopped or unreachable" });
+		checks.push({ name: "daemon", severity: "warn", detail: "图像守护程序已停止或无法访问" });
 	} else {
 		for (const check of daemon.checks) {
 			checks.push({
@@ -560,7 +560,7 @@ async function collectProbe(
 			projectDir,
 			daemonState: "stopped",
 			ok: false,
-			detail: config.enabled ? "No URL backend is configured" : "Image publication is disabled",
+			detail: config.enabled ? "未配置 URL 后端" : "图像发布已禁用",
 		};
 	}
 	const response = await deps.queryProbe(projectDir, first, { timeoutMs });
@@ -572,7 +572,7 @@ async function collectProbe(
 			backend: first.kind,
 			daemonState: "stopped",
 			ok: false,
-			detail: "Image daemon could not be started or reached",
+			detail: "无法启动或连接到 Image daemon",
 		};
 	}
 	return {

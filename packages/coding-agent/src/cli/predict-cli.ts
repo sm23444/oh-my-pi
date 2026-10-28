@@ -270,7 +270,7 @@ class PredictCompareComponent implements Component, Focusable {
 							node("icon", {
 								name: "x",
 								role: "omp.app.ibtn",
-								title: "Quit  esc",
+								title: "退出  esc",
 								aria: "Quit",
 								actions: { click: "quit" },
 							}),

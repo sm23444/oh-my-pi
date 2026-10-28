@@ -188,17 +188,17 @@ export class ProtocolProbeComponent extends Container {
 		super();
 		const hyperlinksOn = TERMINAL.hyperlinks;
 		const sizingOn = TERMINAL.textSizing;
-		const yesNo = (on: boolean) => (on ? theme.fg("success", "supported") : theme.fg("muted", "unsupported"));
+		const yesNo = (on: boolean) => (on ? theme.fg("success", "支持") : theme.fg("muted", "不支持"));
 
 		this.addChild(new DynamicBorder());
-		this.addChild(new Text(theme.bold(theme.fg("accent", "Terminal Protocol Test")), 1, 0));
+		this.addChild(new Text(theme.bold(theme.fg("accent", "终端协议测试")), 1, 0));
 
 		// Styling: SGR attributes, themed foregrounds, and a truecolor sweep.
 		const styling = [
-			theme.fg("muted", "Styling (SGR)"),
-			`  ${theme.bold("bold")}  ${theme.italic("italic")}  ${theme.underline("underline")}  ${theme.strikethrough("strike")}  ${theme.inverse(" inverse ")}  ${theme.fg("dim", "dim")}`,
-			`  ${theme.fg("accent", "accent")}  ${theme.fg("success", "success")}  ${theme.fg("warning", "warning")}  ${theme.fg("error", "error")}`,
-			`  truecolor: ${truecolorBar(32)} (${theme.fg("muted", `24-bit ${TERMINAL.trueColor ? "on" : "off"}`)})`,
+			theme.fg("muted", "样式 (SGR)"),
+			`  ${theme.bold("粗体")}  ${theme.italic("斜体")}  ${theme.underline("underline")}  ${theme.strikethrough("删除线")}  ${theme.inverse(" inverse ")}  ${theme.fg("dim", "暗淡")}`,
+			`  ${theme.fg("accent", "强调色")}  ${theme.fg("success", "成功")}  ${theme.fg("warning", "警告")}  ${theme.fg("error", "出错")}`,
+			`  truecolor: ${truecolorBar(32)} (${theme.fg("muted", `24 位 ${TERMINAL.trueColor ? "on" : "off"}`)})`,
 		].join("\n");
 		this.addChild(new Text(styling, 1, 0));
 		this.addChild(new Spacer(1));
@@ -207,7 +207,7 @@ export class ProtocolProbeComponent extends Container {
 		this.addChild(
 			new Text(
 				[
-					`${theme.fg("muted", "Hyperlinks (OSC 8)")} — ${yesNo(hyperlinksOn)}`,
+					`${theme.fg("muted", "超链接 (OSC 8)")} — ${yesNo(hyperlinksOn)}`,
 					`  \x1b]8;;https://github.com/can1357/oh-my-pi\x07omp repo\x1b]8;;\x07`,
 				].join("\n"),
 				1,
@@ -217,18 +217,18 @@ export class ProtocolProbeComponent extends Container {
 		this.addChild(new Spacer(1));
 
 		// Text sizing: OSC 66.
-		this.addChild(new Text(`${theme.fg("muted", "Text sizing (OSC 66)")} — ${yesNo(sizingOn)}`, 1, 0));
+		this.addChild(new Text(`${theme.fg("muted", "文本大小 (OSC 66)")} — ${yesNo(sizingOn)}`, 1, 0));
 		if (sizingOn) {
 			this.addChild(new RawLines(buildLargeTextLines()));
 		} else {
 			this.addChild(
-				new Text(theme.fg("dim", "  (enable via the tui.textSizing setting on a Kitty terminal)"), 1, 0),
+				new Text(theme.fg("dim", "  (在 Kitty 终端上通过 tui.textSizing 设置启用)"), 1, 0),
 			);
 		}
 		this.addChild(new Spacer(1));
 
 		// Graphics: Kitty / iTerm2 / Sixel, with a text fallback baked into Image.
-		this.addChild(new Text(`${theme.fg("muted", "Graphics")} — ${theme.fg("dim", imageProtocolLabel())}`, 1, 0));
+		this.addChild(new Text(`${theme.fg("muted", "图形")} — ${theme.fg("dim", imageProtocolLabel())}`, 1, 0));
 		this.addChild(
 			new Image(
 				options.image.base64,
@@ -244,11 +244,11 @@ export class ProtocolProbeComponent extends Container {
 
 		// Notifications: fired by the caller; this line reports the outcome.
 		const notifyStatus = options.notificationSuppressed
-			? theme.fg("warning", "suppressed (PI_NOTIFICATIONS)")
-			: theme.fg("success", "sent — check your desktop / titlebar");
+			? theme.fg("warning", "已抑制 (PI_NOTIFICATIONS)")
+			: theme.fg("success", "已发送 — 请检查你的桌面/标题栏");
 		this.addChild(
 			new Text(
-				`${theme.fg("muted", "Notification")} (${theme.fg("dim", notifyProtocolLabel())}) — ${notifyStatus}`,
+				`${theme.fg("muted", "通知")} (${theme.fg("dim", notifyProtocolLabel())}) — ${notifyStatus}`,
 				1,
 				0,
 			),

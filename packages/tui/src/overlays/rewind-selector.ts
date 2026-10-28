@@ -431,7 +431,7 @@ export class RewindSelectorComponent implements Component {
 		// The filter must search the whole branch, not just the startup tail.
 		this.#loadFullHistory();
 		const input = new Input();
-		input.prompt = `${theme.fg("accent", "filter:")} `;
+		input.prompt = `${theme.fg("accent", "筛选：")} `;
 		input.placeholder = "words…";
 		this.#filterInput = input;
 		this.#activeVariant = 0;
@@ -845,9 +845,9 @@ export class RewindSelectorComponent implements Component {
 				text([span(`${at + 1}/${of}`, "dim")], { wrap: "none" }),
 				hintsRow([
 					upDown,
-					{ keys: ["left", "right"], label: columns.length > 0 ? "branches" : "user turns" },
-					{ keys: ["f"], label: "filter" },
-					this.#truncated ? { keys: ["a"], label: "earlier turns" } : undefined,
+					{ keys: ["left", "right"], label: columns.length > 0 ? "分支" : "用户轮次" },
+					{ keys: ["f"], label: "筛选" },
+					this.#truncated ? { keys: ["a"], label: "更早轮次" } : undefined,
 				]),
 				actionBar([null, actionButton("Cancel", "cancel", { keys: "escape" }), rewind]),
 			];
@@ -865,7 +865,7 @@ export class RewindSelectorComponent implements Component {
 					],
 					{ wrap: "none" },
 				),
-				hintsRow([upDown, { keys: ["left", "right"], label: "user turns" }]),
+				hintsRow([upDown, { keys: ["left", "right"], label: "用户轮次" }]),
 				actionBar([null, actionButton("Show all", "cancel", { keys: "escape" }), rewind]),
 			];
 		}
@@ -939,7 +939,7 @@ export class RewindSelectorComponent implements Component {
 	}
 
 	#header(): string {
-		return `${theme.icon.rewind} ${theme.bold("Rewind")}${theme.sep.dot}${theme.fg("dim", "pick the point to continue from")}`;
+		return `${theme.icon.rewind} ${theme.bold("回退")}${theme.sep.dot}${theme.fg("dim", "选择要继续的位置")}`;
 	}
 
 	/** Only the matching items of the current path, concatenated; no branch strip. */
@@ -959,10 +959,10 @@ export class RewindSelectorComponent implements Component {
 		}
 		const selected = matches.indexOf(this.#selected);
 		const composed = composeOutlineColumn(rows, 0, rows.length, targets, selected, contentWidth, undefined);
-		const lines = matches.length > 0 ? composed.lines : [theme.fg("muted", `  No items match "${query}"`)];
+		const lines = matches.length > 0 ? composed.lines : [theme.fg("muted", `  没有匹配"${query}"的项目`)];
 		const count =
 			matches.length === 0
-				? theme.fg("error", "no matches")
+				? theme.fg("error", "无匹配")
 				: theme.fg("dim", `${selected >= 0 ? selected + 1 : "-"}/${matches.length}`);
 		const upDown = editorKeys("tui.select.up", "tui.select.down");
 		const keys = `${upDown} step  ${formatKeyHints(["left", "right"])} user turns  ${formatKeyHint("enter")} rewind  ${editorKey("tui.select.cancel")} show all`;

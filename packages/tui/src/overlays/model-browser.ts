@@ -774,10 +774,10 @@ function withCreditBadge(model: Model, price: string): string {
 }
 
 const PRICING_STATUS_LABELS: Record<Exclude<ModelPricingStatus, "fixed">, { short: string; detail: string }> = {
-	free: { short: "free", detail: "free" },
-	included: { short: "included", detail: "included" },
-	variable: { short: "varies", detail: "price varies" },
-	unknown: { short: "unknown", detail: "pricing unknown" },
+	free: { short: "free", detail: "免费" },
+	included: { short: "included", detail: "已包含" },
+	variable: { short: "varies", detail: "价格各异" },
+	unknown: { short: "unknown", detail: "价格未知" },
 };
 
 /** `$in/out` per-million cost pair with any credit badge; `free` when nothing is charged; a declared pricing state otherwise. */
@@ -1623,7 +1623,7 @@ export class ModelBrowser implements Component {
 
 		const chips: string[] = [];
 		if (selected.selector === this.#currentSelector) {
-			chips.push(theme.fg("success", `${theme.status.enabled} current`));
+			chips.push(theme.fg("success", `${theme.status.enabled} 当前`));
 		}
 		const seen = new Set<string>();
 		const pushRole = (role: string) => {
@@ -2005,7 +2005,7 @@ export class ModelBrowser implements Component {
 			badges.push({
 				text: `ctx>${formatNumber(model.contextWindow ?? 0).toLowerCase()}`,
 				tone: "warning",
-				title: `Context ${formatNumber(this.#currentContextTokens).toLowerCase()} exceeds this model's limit; picking it compacts first`,
+				title: `上下文 ${formatNumber(this.#currentContextTokens).toLowerCase()} 超过此模型的限制；选择它会先进行压缩`,
 			});
 		}
 		if (model.isNew) badges.push({ text: "new", tone: "accent" });
@@ -2032,7 +2032,7 @@ export class ModelBrowser implements Component {
 			facts,
 			...(badges.length > 0 ? { badges: badges.slice(0, 3) } : {}),
 			...(chips.length > 0 ? { chips } : {}),
-			...(int !== undefined ? { title: `Intelligence ${Math.round(int)}` } : {}),
+			...(int !== undefined ? { title: `智能 ${Math.round(int)}` } : {}),
 		};
 		// Discovery re-mints Model objects for unchanged models; an equal row keeps its identity.
 		const kept = cached && Bun.deepEquals(cached.value, value) ? cached.value : value;
@@ -2086,13 +2086,13 @@ export class ModelBrowser implements Component {
 			pushRows(visible);
 		} else {
 			if (recent.length > 0) {
-				order.push({ group: "recent", label: "Recent", count: recent.length });
+				order.push({ group: "最近", label: "最近", count: recent.length });
 				pushRows(recent);
 			}
 			if (grouping.providers) this.#pushProviderGroups(order, rest, pushRows);
 			else {
 				if (recent.length > 0 && rest.length > 0) {
-					order.push({ group: "rest", label: grouping.rest, count: rest.length });
+					order.push({ group: "其余", label: grouping.rest, count: rest.length });
 				}
 				pushRows(rest);
 			}
@@ -2124,7 +2124,7 @@ export class ModelBrowser implements Component {
 			const provider = rest[start]!.provider;
 			let end = start + 1;
 			while (end < rest.length && rest[end]!.provider === provider) end++;
-			order.push({ group: `provider:${provider}:${start}`, label: provider, count: end - start });
+			order.push({ group: `提供商:${provider}:${start}`, label: provider, count: end - start });
 			pushRows(rest.slice(start, end));
 			start = end;
 		}
@@ -2186,7 +2186,7 @@ export class ModelBrowser implements Component {
 				...(assignment ? { tone: assignment.autoSelected ? "muted" : "accent" } : {}),
 				title: assignment
 					? `${info.name}${assignment.autoSelected ? " (auto-selected)" : ""}${level ? ` · thinking ${level}` : ""}`
-					: `${info.name}: not assigned`,
+					: `${info.name}: 未分配`,
 			});
 		};
 
@@ -2207,7 +2207,7 @@ export class ModelBrowser implements Component {
 
 		const children: NativeChild[] = [
 			text(model.name, { role: "omp.picker.title" }),
-			text([span(selector, "mono")], { actions: { click: "copy" }, title: "Copy model id", truncate: "middle" }),
+			text([span(selector, "mono")], { actions: { click: "copy" }, title: "复制模型 ID", truncate: "middle" }),
 		];
 		const badges: NativeChild[] = [];
 		if (item.selector === current) badges.push(node("badge", { text: "current", tone: "success" }));

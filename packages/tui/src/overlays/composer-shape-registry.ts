@@ -8,43 +8,43 @@ export type ComposerShape = string;
 export const BUILTIN_COMPOSER_SHAPES = [
 	{
 		value: "band",
-		label: "Status Band (Default)",
-		description: "Flush soft-capped status band above a curved prompt, no frame",
+		label: "状态带（默认）",
+		description: "弯曲提示符上方平顶软上限状态带，无边框",
 	},
 	{
 		value: "box",
-		label: "Rounded Box",
-		description: "Status line embedded in top border, compact 2-line prompt",
+		label: "圆角框",
+		description: "状态行嵌入上边框，紧凑两行提示符",
 	},
 	{
 		value: "claude",
-		label: "Claude Code",
-		description: "Full-width horizontal rules above and below, status line at bottom",
+		label: "Claude Code 模式",
+		description: "上下通栏横线，状态行在底部",
 	},
 	{
 		value: "pi",
 		label: "Pi",
-		description: "Framed horizontal rules with status line at bottom",
+		description: "框式横线，状态行在底部",
 	},
 	{
 		value: "borderless",
-		label: "Borderless",
-		description: "Clean prompt glyph with status line at bottom, no box borders",
+		label: "无边框",
+		description: "简洁提示符字形，状态行在底部，无框",
 	},
 	{
 		value: "rule",
-		label: "Top Rule Dock",
-		description: "Single top rule with status docked onto it and below",
+		label: "顶栏停靠",
+		description: "单条顶部横线，状态停靠其上与其下",
 	},
 	{
 		value: "field",
-		label: "Compact Field",
-		description: "Filled one-row field with accent end caps",
+		label: "紧凑输入场",
+		description: "单行填充输入场，两端强调收尾",
 	},
 	{
 		value: "rail",
-		label: "Accent Rail",
-		description: "Filled one-row field anchored by a single accent rail",
+		label: "强调轨道",
+		description: "由单条强调轨道锚定的单行填充输入场",
 	},
 ] as const;
 

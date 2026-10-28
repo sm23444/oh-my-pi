@@ -108,23 +108,23 @@ function settingsTabsNode(tabs: readonly Tab[], active: string | undefined): Nat
 function settingsHintsNode(mode: SettingsHintMode): NativeNode {
 	const confirmKeys: readonly KeyName[] = actionHint("tui.select.confirm", "")?.keys ?? [];
 	const close = actionHint("tui.select.cancel", "close");
-	const switchTabs: NativeHint = { keys: ["left", "right"], label: "switch tabs" };
+	const switchTabs: NativeHint = { keys: ["left", "right"], label: "切换标签页" };
 	let hints: (NativeHint | undefined)[];
 	switch (mode) {
 		case "search":
 			hints = [
 				actionHint("tui.select.confirm", "change"),
-				{ keys: ["tab"], label: "jump tabs" },
+				{ keys: ["tab"], label: "跳转标签页" },
 				actionHint("tui.select.cancel", "exit search"),
 			];
 			break;
 		case "plugins":
-			hints = [{ keys: ["tab"], label: "switch tabs" }, close];
+			hints = [{ keys: ["tab"], label: "切换标签页" }, close];
 			break;
 		case "sections":
 			hints = [
 				actionHint(["tui.select.up", "tui.select.down"], "jump sections"),
-				{ keys: ["tab", ...confirmKeys], label: "to settings" },
+				{ keys: ["tab", ...confirmKeys], label: "前往设置" },
 				switchTabs,
 				close,
 			];
@@ -132,11 +132,11 @@ function settingsHintsNode(mode: SettingsHintMode): NativeNode {
 		case "rows":
 		case "rows-sections":
 			hints = [
-				{ keys: [...confirmKeys, "space"], label: "change" },
+				{ keys: [...confirmKeys, "space"], label: "更改" },
 				...(mode === "rows-sections"
-					? [{ keys: ["tab"], label: "jump sections" } satisfies NativeHint, switchTabs]
-					: [{ keys: ["tab"], label: "switch tabs" } satisfies NativeHint]),
-				{ keys: [], label: "type to search" },
+					? [{ keys: ["tab"], label: "跳转分区" } satisfies NativeHint, switchTabs]
+					: [{ keys: ["tab"], label: "切换标签页" } satisfies NativeHint]),
+				{ keys: [], label: "输入以搜索" },
 				close,
 			];
 			break;
@@ -175,7 +175,7 @@ function createSettingsTextField(
 		secret,
 		initialValue: currentValue || undefined,
 		empty: "submit",
-		hint: `  ${editorKey("tui.input.submit")} to save · ${editorKey("tui.select.cancel")} to cancel · Clear field to unset`,
+		hint: `  ${editorKey("tui.input.submit")} 保存 · ${editorKey("tui.select.cancel")} 取消 · 清空字段以取消设置`,
 		onSubmit,
 		onCancel,
 		requestRender,
@@ -212,7 +212,7 @@ function createSettingsSelectField(
 		onSelectionChange,
 		onSubmit: onSelect,
 		onCancel,
-		hint: `  ${editorKey("tui.select.confirm")} to select · ${editorKey("tui.select.cancel")} to go back`,
+		hint: `  ${editorKey("tui.select.confirm")} 选择 · ${editorKey("tui.select.cancel")} 返回`,
 		footer,
 		requestRender,
 		picker,
@@ -442,23 +442,23 @@ class ProviderLimitsSubmenu extends Container {
 			return {
 				value: provider,
 				label: provider,
-				description: limit === undefined ? "Unlimited" : `Limit: ${limit}`,
+				description: limit === undefined ? "无限制" : `限制：${limit}`,
 			};
 		});
 		const clearItem: SelectItem[] =
 			Object.keys(limits).length === 0
 				? []
-				: [{ value: "__clear_all", label: "Clear all limits", description: "Make every provider unlimited" }];
+				: [{ value: "__clear_all", label: "清除所有限制", description: "将所有提供商设为不限" }];
 		const items = [...providerItems, ...clearItem];
 		this.#listField = new SelectFormField({
 			theme: formTheme,
-			label: "Max In-Flight Requests",
+			label: "最大并发请求数",
 			description:
-				"Select a provider, enter a positive number to cap concurrent LLM requests, or clear it for unlimited.",
+				"选择一个提供商，输入正数可限制并发 LLM 请求数，清除则不受限制。",
 			items,
 			maxVisible: 12,
 			selectTheme: getSelectListTheme(),
-			hint: `  ${editorKey("tui.select.confirm")} to edit provider · ${editorKey("tui.select.cancel")} to go back`,
+			hint: `  ${editorKey("tui.select.confirm")} 编辑提供商 · ${editorKey("tui.select.cancel")} 返回`,
 			onSubmit: value => {
 				if (value === "__clear_all") {
 					this.#settings.set("providers.maxInFlightRequests", {});
@@ -482,12 +482,12 @@ class ProviderLimitsSubmenu extends Container {
 		this.addChild(
 			new TextFormField({
 				theme: formTheme,
-				label: `Max In-Flight Requests: ${provider}`,
+				label: `最大在途请求数：${provider}`,
 				description:
-					"Enter a positive number. Decimals round down. Clear the field to make this provider unlimited.",
+					"输入正数。小数向下取整。清空字段使该提供商无限制。",
 				initialValue: limits[provider]?.toString() ?? undefined,
 				empty: "submit",
-				hint: `  ${editorKey("tui.input.submit")} to save · ${editorKey("tui.select.cancel")} to cancel · Clear field to unset`,
+				hint: `  ${editorKey("tui.input.submit")} 保存 · ${editorKey("tui.select.cancel")} 取消 · 清空字段以取消设置`,
 				validate: value => {
 					if (value.trim() === "") return undefined;
 					const limit = Number(value.trim());
@@ -550,7 +550,7 @@ function getSettingsTabs(): Tab[] {
 			const icon = theme.symbol(meta.icon);
 			return { id, label: `${icon} ${meta.label}`, short: icon };
 		}),
-		{ id: "plugins", label: `${theme.icon.package} Plugins`, short: theme.icon.package },
+		{ id: "plugins", label: `${theme.icon.package} 插件`, short: theme.icon.package },
 	];
 }
 
@@ -742,7 +742,7 @@ export class SettingsSelectorComponent implements Component {
 		const tabLines = this.#tabBar.render(innerWidth);
 		const searching = this.#searchList !== null;
 		const showPreview = !searching && this.#currentTabId === "appearance";
-		const previewLines = showPreview ? ["", theme.fg("muted", "Preview:"), this.#getStatusPreviewString()] : [];
+		const previewLines = showPreview ? ["", theme.fg("muted", "预览："), this.#getStatusPreviewString()] : [];
 
 		// Fixed chrome: top border, tabs, divider, [search row], divider, hint, bottom border.
 		const fixedRows = 1 + tabLines.length + 1 + (searching ? 1 : 0) + 1 + 1 + 1;
@@ -823,7 +823,7 @@ export class SettingsSelectorComponent implements Component {
 			const changed = this.#changedCount(id);
 			return { id, label: TAB_METADATA[id].label, icon: id, changed: changed > 0 ? changed : undefined };
 		});
-		pages.push({ id: PLUGINS_PAGE, label: "Installed", icon: "plugins", group: "Plugins" });
+		pages.push({ id: PLUGINS_PAGE, label: "已安装", icon: "plugins", group: "插件" });
 
 		let sections: TspPrefsProps["sections"] = [];
 		let focus: string | null = null;
@@ -878,7 +878,7 @@ export class SettingsSelectorComponent implements Component {
 		}
 
 		const props: TspPrefsProps = {
-			title: "omp settings",
+			title: "omp 设置",
 			pages,
 			page: searching ? this.#preSearchTabId : this.#currentTabId,
 			lead: searching ? undefined : (pluginPage?.lead ?? (tab ? TAB_LEADS[tab] : undefined)),
@@ -955,7 +955,7 @@ export class SettingsSelectorComponent implements Component {
 					mono: !def.secret && MONO_TEXT_SETTING.test(def.path) ? true : undefined,
 				};
 			case "providerLimits":
-				return { k: "action", label: "Edit…", act: "edit" };
+				return { k: "action", label: "编辑…", act: "edit" };
 			case "multiselect":
 				return {
 					k: "multi",
@@ -1427,7 +1427,7 @@ export class SettingsSelectorComponent implements Component {
 		// Plugins hosts its own UI; it is not part of the schema-backed search.
 		empty.push({
 			id: "plugins",
-			label: `${theme.icon.package} Plugins`,
+			label: `${theme.icon.package} 插件`,
 			short: theme.icon.package,
 			muted: true,
 		});
@@ -1884,7 +1884,7 @@ export class SettingsSelectorComponent implements Component {
 		if (this.#callbacks.getStatusLinePreview) {
 			return this.#callbacks.getStatusLinePreview();
 		}
-		return theme.fg("dim", "(preview not available)");
+		return theme.fg("dim", "（预览不可用）");
 	}
 
 	/**

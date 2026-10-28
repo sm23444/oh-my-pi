@@ -91,74 +91,74 @@ function variantsFor(id: StatusLineSegmentId): readonly SegmentVariantSpec[] {
 	switch (id) {
 		case "pi":
 			return [
-				{ label: "idle", context: { turnElapsedMs: null } },
-				{ label: "active", context: { turnElapsedMs: 92_000 } },
-				{ label: "focused subagent", context: { focusedAgentId: "Scout" } },
+				{ label: "空闲", context: { turnElapsedMs: null } },
+				{ label: "活跃", context: { turnElapsedMs: 92_000 } },
+				{ label: "已聚焦的子代理", context: { focusedAgentId: "Scout" } },
 			];
 		case "status":
 			return [
-				{ label: "multiple extension statuses", context: { hookStatuses: ["Indexer ready", "Tests passing"] } },
+				{ label: "多个扩展状态", context: { hookStatuses: ["Indexer ready", "Tests passing"] } },
 			];
 		case "model":
 			return [
-				{ label: "normal" },
-				{ label: "fast + advisor active", session: { fastMode: true, advisorStatus: "running" } },
-				{ label: "advisor warning", session: { advisorStatus: "quota_exhausted" } },
-				{ label: "advisor error", session: { advisorStatus: "error" } },
-				{ label: "advisor paused", session: { advisorStatus: "paused" } },
-				{ label: "advisor done (yielded)", session: { advisorStatus: "running", advisorYielded: true } },
+				{ label: "正常" },
+				{ label: "快速模式 + 顾问已启用", session: { fastMode: true, advisorStatus: "running" } },
+				{ label: "顾问警告", session: { advisorStatus: "quota_exhausted" } },
+				{ label: "顾问出错", session: { advisorStatus: "error" } },
+				{ label: "顾问已暂停", session: { advisorStatus: "paused" } },
+				{ label: "顾问已完成（已交出控制权）", session: { advisorStatus: "running", advisorYielded: true } },
 			];
 		case "mode":
 			return [
-				{ label: "active", context: { planMode: { enabled: true, paused: false } } },
-				{ label: "warning / paused", context: { planMode: { enabled: true, paused: true } } },
-				{ label: "prewalk active", context: { planMode: null, prewalk: { enabled: true } } },
-				{ label: "vibe active", context: { planMode: null, vibeMode: { enabled: true } } },
+				{ label: "活跃", context: { planMode: { enabled: true, paused: false } } },
+				{ label: "警告 / 已暂停", context: { planMode: { enabled: true, paused: true } } },
+				{ label: "预遍历进行中", context: { planMode: null, prewalk: { enabled: true } } },
+				{ label: "vibe 模式已启用", context: { planMode: null, vibeMode: { enabled: true } } },
 				{
-					label: "loop active",
+					label: "循环进行中",
 					context: {
 						planMode: null,
 						loopMode: { state: "running", limit: { kind: "iterations", initial: 10, remaining: 4 } },
 					},
 				},
 				{
-					label: "loop paused",
+					label: "循环已暂停",
 					context: {
 						planMode: null,
 						loopMode: { state: "paused", limit: { kind: "iterations", initial: 10, remaining: 4 } },
 					},
 				},
 				{
-					label: "goal active",
+					label: "目标进行中",
 					context: { planMode: null, goalMode: { enabled: true, paused: false } },
 					session: { goalStatus: "active" },
 				},
 				{
-					label: "goal paused",
+					label: "目标已暂停",
 					context: { planMode: null, goalMode: { enabled: true, paused: true } },
 					session: { goalStatus: "paused" },
 				},
 				{
-					label: "goal complete",
+					label: "目标已完成",
 					context: { planMode: null, goalMode: { enabled: true, paused: false } },
 					session: { goalStatus: "complete" },
 				},
 				{
-					label: "goal budget warning",
+					label: "目标预算警告",
 					context: { planMode: null, goalMode: { enabled: true, paused: false } },
 					session: { goalStatus: "budget-limited" },
 				},
 				{
-					label: "goal dropped",
+					label: "目标已丢弃",
 					context: { planMode: null, goalMode: { enabled: true, paused: false } },
 					session: { goalStatus: "dropped" },
 				},
 			];
 		case "path":
 			return [
-				{ label: "workspace path" },
+				{ label: "工作区路径" },
 				{
-					label: "linked worktree",
+					label: "关联工作树",
 					context: {
 						options: { path: { stripWorkPrefix: true } },
 						worktree: { projectName: "oh-my-pi", worktreeName: "gallery-reference" },
@@ -169,35 +169,35 @@ function variantsFor(id: StatusLineSegmentId): readonly SegmentVariantSpec[] {
 		case "git":
 			return [
 				{
-					label: "clean",
+					label: "无更改",
 					context: { git: { branch: "main", status: { staged: 0, unstaged: 0, untracked: 0 }, pr: null } },
 				},
-				{ label: "dirty" },
+				{ label: "有未提交更改" },
 			];
 		case "cost":
 			return [
-				{ label: "metered + premium + advisor" },
+				{ label: "按量计费 + 高级版 + 顾问" },
 				{
-					label: "subscription",
+					label: "订阅",
 					session: { usingSubscription: true, cost: 0, premiumRequests: 0, advisorCost: 0 },
 				},
 				{
-					label: "subscription + subagents",
+					label: "订阅 + 子代理",
 					session: { usingSubscription: true, cost: 0.38, premiumRequests: 0, advisorCost: 0 },
 					context: { subagentTreeCost: 1.27 },
 				},
 				{
-					label: "premium requests",
+					label: "高级请求",
 					session: { cost: 0, premiumRequests: 2, advisorCost: 0 },
 				},
 			];
 		case "context_pct":
 			return [
-				{ label: "normal", context: { contextPercent: 22, contextTokens: 44_000 } },
-				{ label: "warning", context: { contextPercent: 72, contextTokens: 144_000 } },
-				{ label: "error", context: { contextPercent: 96, contextTokens: 192_000 } },
+				{ label: "正常", context: { contextPercent: 22, contextTokens: 44_000 } },
+				{ label: "警告", context: { contextPercent: 72, contextTokens: 144_000 } },
+				{ label: "出错", context: { contextPercent: 96, contextTokens: 192_000 } },
 				{
-					label: "active compaction",
+					label: "正在压缩",
 					context: {
 						contextPercent: 72,
 						contextTokens: 144_000,
@@ -206,19 +206,19 @@ function variantsFor(id: StatusLineSegmentId): readonly SegmentVariantSpec[] {
 					},
 				},
 				{
-					label: "armed compaction",
+					label: "已启用压缩",
 					context: { contextPercent: 72, contextTokens: 144_000, compactionSpeculation: "armed" },
 				},
 			];
 		case "time":
 			return [
-				{ label: "24-hour with seconds" },
-				{ label: "12-hour", context: { options: { time: { format: "12h", showSeconds: false } } } },
+				{ label: "24 小时制（含秒）" },
+				{ label: "12 小时制", context: { options: { time: { format: "12h", showSeconds: false } } } },
 			];
 		case "usage":
 			return [
 				{
-					label: "all windows",
+					label: "所有窗口",
 					context: {
 						usage: {
 							tier: "Pro",
@@ -230,44 +230,44 @@ function variantsFor(id: StatusLineSegmentId): readonly SegmentVariantSpec[] {
 					},
 				},
 				{
-					label: "normal",
+					label: "正常",
 					context: { usage: { tier: "Pro", fiveHour: { percent: 24, resetMinutes: 75 } } },
 				},
 				{
-					label: "warning",
+					label: "警告",
 					context: { usage: { tier: "Pro", fiveHour: { percent: 65, resetMinutes: 75 } } },
 				},
 				{
-					label: "error",
+					label: "出错",
 					context: { usage: { tier: "Pro", fiveHour: { percent: 92, resetMinutes: 75 } } },
 				},
 			];
 		case "collab":
 			return [
-				{ label: "host active", context: { collab: { role: "host", participantCount: 3 } } },
-				{ label: "guest active", context: { collab: { role: "guest", participantCount: 3 } } },
+				{ label: "主持人已加入", context: { collab: { role: "host", participantCount: 3 } } },
+				{ label: "访客已加入", context: { collab: { role: "guest", participantCount: 3 } } },
 			];
 		case "vim":
 			return [
 				{
-					label: "normal",
+					label: "正常",
 					context: { vim: { mode: "normal", pending: "", selectedLines: 0, display: "text" } },
 				},
 				{
-					label: "insert",
+					label: "插入",
 					context: { vim: { mode: "insert", pending: "", selectedLines: 0, display: "text" } },
 				},
 				{
-					label: "visual with count",
+					label: "视觉项数量",
 					context: { vim: { mode: "visual-line", pending: "2d", selectedLines: 4, display: "text" } },
 				},
 				{
-					label: "icon mode",
+					label: "图标模式",
 					context: { vim: { mode: "normal", pending: "", selectedLines: 0, display: "icon" } },
 				},
 			];
 		default:
-			return [{ label: "canonical" }];
+			return [{ label: "规范" }];
 	}
 }
 
@@ -283,7 +283,7 @@ function renderIsolatedSegment(id: StatusLineSegmentId, spec: SegmentVariantSpec
 		git: { ...base.git, ...override?.git },
 	};
 	const rendered = renderSegment(id, context);
-	const content = rendered.visible ? rendered.content : theme.fg("dim", "(hidden for this sample)");
+	const content = rendered.visible ? rendered.content : theme.fg("dim", "（此示例中隐藏）");
 	return [truncateToWidth(`  ${content}`, width)];
 }
 

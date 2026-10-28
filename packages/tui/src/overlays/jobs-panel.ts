@@ -422,7 +422,7 @@ function describeDetail(
 					...(settled ? { stopped: age } : {}),
 					format: "short",
 					role: "omp.jobs.age",
-					title: settled ? "Ran for" : "Running for",
+					title: settled ? "已运行时长" : "运行时长",
 				}),
 				text([span(`${job.type} · ${job.id}`, "mono")], { role: "omp.jobs.id", wrap: "none", truncate: "end" }),
 				node("spacer", { grow: 1 }),

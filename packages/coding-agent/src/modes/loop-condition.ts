@@ -105,7 +105,7 @@ export async function evaluateLoopCondition(
 		logger.error("loop condition failed to start", { command: condition.command, error: String(error) });
 		return {
 			kind: "error",
-			message: `Loop condition ${quoteCommand(condition.command)} could not run: ${truncateToWidth(sanitizeStatusText(String(error)), OUTPUT_PREVIEW_WIDTH)}. Loop mode disabled.`,
+			message: `循环条件 ${quoteCommand(condition.command)} 无法执行：${truncateToWidth(sanitizeStatusText(String(error)), OUTPUT_PREVIEW_WIDTH)}。已停用循环模式。`,
 		};
 	}
 
@@ -114,7 +114,7 @@ export async function evaluateLoopCondition(
 	if (result.timedOut) {
 		return {
 			kind: "error",
-			message: `Loop condition ${quoteCommand(condition.command)} timed out after ${formatTimeout(options.timeoutMs)}. Loop mode disabled.`,
+			message: `循环条件 ${quoteCommand(condition.command)} 在 ${formatTimeout(options.timeoutMs)} 后超时。已停用循环模式。`,
 		};
 	}
 	if (result.cancelled) return { kind: "aborted" };
@@ -124,14 +124,14 @@ export async function evaluateLoopCondition(
 		if (!condition.until) return { kind: "continue" };
 		return {
 			kind: "halt",
-			message: `Loop condition ${quoteCommand(condition.command)} is now satisfied. Loop mode disabled.`,
+			message: `循环条件 ${quoteCommand(condition.command)} 现已满足。已停用循环模式。`,
 		};
 	}
 	if (exitCode === 1) {
 		if (condition.until) return { kind: "continue" };
 		return {
 			kind: "halt",
-			message: `Loop condition ${quoteCommand(condition.command)} no longer holds. Loop mode disabled.`,
+			message: `循环条件 ${quoteCommand(condition.command)} 已不再成立。已停用循环模式。`,
 		};
 	}
 
@@ -142,6 +142,6 @@ export async function evaluateLoopCondition(
 	logger.warn("loop condition command failed", { command: condition.command, exitCode });
 	return {
 		kind: "error",
-		message: `Loop condition ${quoteCommand(condition.command)} failed (${status})${detail}. Loop mode disabled.`,
+		message: `循环条件 ${quoteCommand(condition.command)} 执行失败（${status}）${detail}。已停用循环模式。`,
 	};
 }

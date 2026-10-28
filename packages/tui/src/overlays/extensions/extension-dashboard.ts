@@ -133,14 +133,14 @@ function providerInitials(label: string): string {
  */
 export function buildPickerScopes(tabs: ProviderTab[]): TspPickerScope[] {
 	return tabs.map(tab => {
-		if (tab.id === "all") return { id: tab.id, label: "All", icon: "extension", count: tab.count };
+		if (tab.id === "all") return { id: tab.id, label: "全部", icon: "extension", count: tab.count };
 		const emptyEnabled = tab.count === 0 && tab.enabled;
 		return {
 			id: tab.id,
 			label: tab.label,
 			mark: { text: providerInitials(tab.label), seed: tab.id },
 			count: tab.count,
-			group: "Providers",
+			group: "提供商",
 			dot: !tab.enabled ? "muted" : emptyEnabled ? "warning" : "success",
 			disabled: emptyEnabled ? "No extensions" : undefined,
 		};
@@ -714,7 +714,7 @@ export class ExtensionDashboard implements Component {
 				node("icon", {
 					name: "x",
 					role: "omp.app.ibtn",
-					title: `Close  ${formatTooltipKey(boundKeys("app.interrupt", ["escape"])[0] ?? "escape")}`,
+					title: `关闭  ${formatTooltipKey(boundKeys("app.interrupt", ["escape"])[0] ?? "escape")}`,
 					aria: "Close",
 					actions: { click: "close" },
 				}),
@@ -741,7 +741,7 @@ export class ExtensionDashboard implements Component {
 			actionButton(selected?.on === false ? "Enable" : selected ? "Disable" : "Toggle", "toggle", {
 				keys: "space",
 				tone: "accent",
-				title: selected?.blocked ?? (selected ? undefined : "Select an extension"),
+				title: selected?.blocked ?? (selected ? undefined : "选择一个扩展"),
 			}),
 			actionButton(expanded ? "Collapse" : "Expand", "expand", { keys: this.#expandKey() }),
 		];

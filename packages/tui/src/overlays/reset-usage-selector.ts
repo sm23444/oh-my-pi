@@ -154,7 +154,7 @@ export class ResetUsageSelectorComponent extends OverlayPanel {
 				: redeemable
 					? theme.fg("success", countLabel)
 					: theme.fg("dim", countLabel);
-			const activeTag = account.active ? theme.fg("muted", " (active)") : "";
+			const activeTag = account.active ? theme.fg("muted", " (活跃)") : "";
 			const safeLabel = oneLine(account.label);
 			const providerTag = theme.fg(
 				"muted",
@@ -182,7 +182,7 @@ export class ResetUsageSelectorComponent extends OverlayPanel {
 
 		if (total === 0) {
 			this.#listContainer.addChild(
-				new TruncatedText(theme.fg("muted", "No provider accounts with saved resets"), 0, 0),
+				new TruncatedText(theme.fg("muted", "没有已保存重置的提供商账户"), 0, 0),
 			);
 		}
 
@@ -191,7 +191,7 @@ export class ResetUsageSelectorComponent extends OverlayPanel {
 			? theme.fg("warning", oneLine(this.#confirmationMessage(pending)))
 			: theme.fg(
 					"muted",
-					`${editorKeys("tui.select.up", "tui.select.down")} select · ${formatKeyHint("enter")} spend a reset · ${editorKey("tui.select.cancel")} cancel`,
+					`${editorKeys("tui.select.up", "tui.select.down")} 选择 · ${formatKeyHint("enter")} 使用一次重置 · ${editorKey("tui.select.cancel")} 取消`,
 				);
 		this.#listContainer.addChild(new Text(hint, 0, 0));
 
@@ -316,7 +316,7 @@ export class ResetUsageSelectorComponent extends OverlayPanel {
 				? text([span(oneLine(this.#confirmationMessage(pending)), "warning")])
 				: (this.#nativeHints ??= hintsRow([
 						actionHint(["tui.select.up", "tui.select.down"], "select"),
-						{ keys: ["enter"], label: "spend a reset" },
+						{ keys: ["enter"], label: "使用一次重置" },
 						actionHint("tui.select.cancel", "cancel"),
 					])),
 		];
@@ -341,12 +341,12 @@ export class ResetUsageSelectorComponent extends OverlayPanel {
 		let subtitle: TspPickerProps["subtitle"] = "Spend a saved reset to refresh an account's rate limit now";
 		if (pending) {
 			const { subject, notes } = this.#confirmationNotes(pending);
-			confirm = { text: `Spend ${subject} on ${oneLine(pending.label)}?`, act: "confirm", label: "Spend" };
+			confirm = { text: `Spend ${subject} on ${oneLine(pending.label)}?`, act: "confirm", label: "消耗" };
 			if (notes.length > 0) subtitle = oneLine(notes.join(" "));
 		}
 		if (this.#statusMessage) subtitle = [span(oneLine(this.#statusMessage), "warning")];
 		this.#pickerRoot = dockedPicker({
-			title: "Rate-limit resets",
+			title: "速率限制重置",
 			subtitle,
 			icon: "refresh",
 			noun: "accounts",

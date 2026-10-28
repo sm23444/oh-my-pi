@@ -45,7 +45,7 @@ export class ThemeSelectorComponent extends OverlayPanel {
 		const themeItems: SelectItem[] = themes.map(name => ({
 			value: name,
 			label: name,
-			description: name === currentTheme ? "(current)" : undefined,
+			description: name === currentTheme ? "（当前）" : undefined,
 		}));
 
 		// Create selector

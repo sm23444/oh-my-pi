@@ -3,6 +3,8 @@ import { ThinkingLevel } from "@oh-my-pi/pi-agent-core";
 import type { ImageContent } from "@oh-my-pi/pi-ai";
 import {
 	type AutocompleteProvider,
+	BRACKETED_PASTE_END,
+	BRACKETED_PASTE_START,
 	type Component,
 	emergencyTerminalRestore,
 	matchesKey,
@@ -939,14 +941,20 @@ export class InputController {
 		this.#enhancedPaste = new EnhancedPasteController({
 			write: data => this.ctx.ui.terminal.write(data),
 			pasteText: text => {
-				// Route enhanced-paste text to the currently focused component when it
-				// exposes a `pasteText` hook (modal Input prompts: OAuth API-key entry,
-				// Perplexity OTP, GitHub Enterprise URL, manual redirect URL). Falling
-				// back to the main editor would have buried the text in the detached
-				// editor while the modal Input had focus (#2127).
+				// Route enhanced-paste text to the currently focused component: through
+				// its `pasteText` hook (modal Input prompts: OAuth API-key entry,
+				// Perplexity OTP, GitHub Enterprise URL, manual redirect URL), else as
+				// the bracketed paste a terminal without enhanced paste sends it
+				// (dialogs that keep their field inside: the agents hub's New agent,
+				// the /annotate note). Falling back to the main editor would bury the
+				// text in the detached editor while the dialog has focus (#2127). The
+				// main editor takes it as a bracketed paste too, so a pasted or dropped
+				// image path attaches (#3506) instead of landing as text.
 				const focused = this.ctx.ui.getFocused();
-				const target = focused && focused !== this.ctx.editor && hasPasteText(focused) ? focused : this.ctx.editor;
-				target.pasteText(text);
+				if (focused && focused !== this.ctx.editor && hasPasteText(focused)) focused.pasteText(text);
+				else if (focused && focused !== this.ctx.editor && focused.handleInput)
+					focused.handleInput(`${BRACKETED_PASTE_START}${text}${BRACKETED_PASTE_END}`);
+				else this.ctx.editor.handleInput(`${BRACKETED_PASTE_START}${text}${BRACKETED_PASTE_END}`);
 				this.ctx.ui.requestRender();
 			},
 			pasteImage: image =>
@@ -1211,7 +1219,7 @@ export class InputController {
 				if (command) {
 					if (this.ctx.session.isBashRunning) {
 						this.ctx.showWarning(
-							`A bash command is already running. Press ${appKey(this.ctx.keybindings, "app.interrupt")} to cancel it first.`,
+							`已有一个 bash 命令正在运行。请按 ${appKey(this.ctx.keybindings, "app.interrupt")} 先取消该命令。`,
 						);
 						this.ctx.editor.setText(text);
 						return;
@@ -1232,7 +1240,7 @@ export class InputController {
 				if (code) {
 					if (this.ctx.session.isEvalRunning) {
 						this.ctx.showWarning(
-							`A Python execution is already running. Press ${appKey(this.ctx.keybindings, "app.interrupt")} to cancel it first.`,
+							`已有 Python 执行正在运行。请先按 ${appKey(this.ctx.keybindings, "app.interrupt")} 取消。`,
 						);
 						this.ctx.editor.setText(text);
 						return;
@@ -1741,7 +1749,7 @@ export class InputController {
 			this.ctx.ui.start();
 			this.ctx.ui.requestRender(true);
 			const reason = err instanceof Error ? err.message : String(err);
-			this.ctx.showError(`Failed to suspend: ${reason}`);
+			this.ctx.showError(`挂起失败：${reason}`);
 		}
 	}
 
@@ -1885,7 +1893,7 @@ export class InputController {
 		const splitMessages = splitQueuedMessages(text);
 		if (splitMessages.length === 0 && !options.images?.length) {
 			if (options.detachedText === undefined) this.ctx.editor.clearDraft();
-			this.ctx.showWarning("Usage: /queue <message> (or start a prompt with -> / =>)");
+			this.ctx.showWarning("用法：/queue <消息>（或以 -> / => 开始提示）");
 			return;
 		}
 
@@ -2682,11 +2690,11 @@ export class InputController {
 			choice = await this.ctx.showHookSelector(
 				`Pasted ${lineCount} lines`,
 				[
-					{ label: WRAPPED_BLOCK, description: "Wrap the text in <attachment> tags, collapsed to a marker" },
-					{ label: LOCAL_FILE, description: "Save the text to a local://paste file" },
-					{ label: INLINE, description: "Collapse the text to an inline paste marker" },
+					{ label: WRAPPED_BLOCK, description: "将文本包裹进 <attachment> 标签，折叠为一个标记" },
+					{ label: LOCAL_FILE, description: "将文本保存为 local://paste 文件" },
+					{ label: INLINE, description: "将文本折叠为内联粘贴标记" },
 				],
-				{ helpText: `${editorKey("tui.select.cancel")} to paste inline` },
+				{ helpText: `按 ${editorKey("tui.select.cancel")} 以内联方式粘贴` },
 			);
 		} catch (error) {
 			logger.warn("large-paste menu failed", { error: error instanceof Error ? error.message : String(error) });
@@ -2740,7 +2748,7 @@ export class InputController {
 				error: error instanceof Error ? error.message : String(error),
 			});
 			this.ctx.editor.insertTextAttachment(text);
-			this.ctx.showError("Failed to save paste to a file — attached as a text chip instead");
+			this.ctx.showError("无法将粘贴内容保存到文件 — 已改为作为文本片段附加");
 		}
 	}
 
@@ -2809,7 +2817,7 @@ export class InputController {
 			const preview = sanitized.length > 30 ? `${sanitized.slice(0, 30)}...` : sanitized;
 			this.ctx.showStatus(`Copied line: ${preview}`);
 		} catch {
-			this.ctx.showWarning("Failed to copy to clipboard");
+			this.ctx.showWarning("复制到剪贴板失败");
 		}
 	}
 
@@ -2826,7 +2834,7 @@ export class InputController {
 			const preview = sanitized.length > 30 ? `${sanitized.slice(0, 30)}...` : sanitized;
 			this.ctx.showStatus(`Copied: ${preview}`);
 		} catch {
-			this.ctx.showWarning("Failed to copy to clipboard");
+			this.ctx.showWarning("复制到剪贴板失败");
 		}
 	}
 
@@ -2955,7 +2963,7 @@ export class InputController {
 	async openExternalEditor(): Promise<void> {
 		const editorCmd = getEditorCommand();
 		if (!editorCmd) {
-			this.ctx.showWarning("No editor configured. Set $VISUAL or $EDITOR environment variable.");
+			this.ctx.showWarning("未配置编辑器。请设置 $VISUAL 或 $EDITOR 环境变量。");
 			return;
 		}
 
@@ -2969,7 +2977,7 @@ export class InputController {
 			}
 		} catch (error) {
 			this.ctx.showWarning(
-				`Failed to open external editor: ${error instanceof Error ? error.message : String(error)}`,
+				`打开外部编辑器失败：${error instanceof Error ? error.message : String(error)}`,
 			);
 		} finally {
 			this.ctx.ui.start();

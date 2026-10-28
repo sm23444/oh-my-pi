@@ -48,7 +48,7 @@ export class SessionAccountSelectorComponent extends OverlayPanel {
 			return {
 				value,
 				label: account.label,
-				description: account.active ? "active for this session" : undefined,
+				description: account.active ? "本会话活跃" : undefined,
 			};
 		});
 
@@ -68,8 +68,8 @@ export class SessionAccountSelectorComponent extends OverlayPanel {
 		// Natively the active account carries the picker's current check, so the
 		// row's detail is what tells accounts apart instead of "active for this session".
 		this.#sheet = new SelectListSheet(this.#selectList, {
-			title: `${providerName} account`,
-			subtitle: "Pin the account this session sends its requests with",
+			title: `${providerName} 账户`,
+			subtitle: "固定本会话用于发送请求的账户",
 			icon: "key-round",
 			noun: "accounts",
 			current: accounts.filter(account => account.active).map(account => String(account.credentialId)),

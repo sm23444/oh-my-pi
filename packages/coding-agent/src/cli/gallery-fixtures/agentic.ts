@@ -19,7 +19,7 @@ const fixtureUsage = (tokens: { input: number; output: number }, costTotal: numb
 
 /** A subagent's structured result, as `yield` submits it. */
 const YIELD_DATA = {
-	summary: "Two races in the session store's flush path.\nBoth need the store lock held across the read.",
+	summary: "会话存储刷新路径中存在两个竞态问题。\n两者都需要在读取期间持有存储锁。",
 	confidence: 0.85,
 	findings: [
 		{ file: "src/session/store.ts", line: 142, issue: "flush() reads entries without holding the lock" },
@@ -29,7 +29,7 @@ const YIELD_DATA = {
 
 export const agenticFixtures: Record<string, GalleryFixture> = {
 	task: {
-		label: "Task",
+		label: "任务",
 		customRendered: true,
 		// Streaming: agent chosen, assignment still landing. The args follow the
 		// tool schema `renderCall` reads (`agent`, `name`, `task`).
@@ -62,7 +62,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 						agentSource: "bundled",
 						status: "completed",
 						task: "Read packages/server/src/auth/session.ts and middleware.ts",
-						description: "Load auth middleware",
+						description: "加载身份验证中间件",
 						lastIntent: "Documenting session-cookie flow",
 						recentTools: [
 							{ tool: "read", args: "packages/server/src/auth/session.ts", endMs: 1_749_200_040_000 },
@@ -85,7 +85,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 						id: "AuthLoader",
 						agent: "task",
 						agentSource: "bundled",
-						description: "Load auth middleware",
+						description: "加载身份验证中间件",
 						task: "Read packages/server/src/auth/session.ts and middleware.ts",
 						assignment:
 							"Read packages/server/src/auth/session.ts and middleware.ts, then document the session-cookie validation flow and any TODOs.",
@@ -127,7 +127,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 						id: "RateLimiter",
 						agent: "task",
 						agentSource: "bundled",
-						description: "Audit rate limiter",
+						description: "审查速率限制器",
 						task: "Inspect packages/server/src/auth/rate-limit.ts",
 						assignment:
 							"Inspect packages/server/src/auth/rate-limit.ts. Confirm the 429 path sets Retry-After and report gaps.",
@@ -151,7 +151,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 	},
 
 	wait_message: {
-		label: "Wait for message",
+		label: "等待消息",
 		customRendered: true,
 		renderer: "wait",
 		streamingArgs: {},
@@ -178,7 +178,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 	},
 
 	goal: {
-		label: "Goal",
+		label: "目标",
 		// Streaming: op is "create"; objective text still being typed.
 		streamingArgs: { op: "create", objective: "Ship the auth hardening" },
 		args: {
@@ -217,7 +217,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 	},
 
 	think: {
-		label: "Think",
+		label: "思考",
 		// Streaming: scratchpad thoughts still arriving.
 		streamingArgs: {
 			thoughts: "The retry loop re-reads the config after every failure, which explains the doubled latency.",
@@ -233,7 +233,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 	},
 
 	wait: {
-		label: "Wait for jobs",
+		label: "等待任务完成",
 		streamingArgs: {},
 		args: {},
 		result: {
@@ -245,7 +245,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 						id: "job_a1",
 						type: "bash",
 						status: "completed",
-						label: "bun test packages/server/test/auth.test.ts",
+						label: "运行 bun test packages/server/test/auth.test.ts",
 						durationMs: 18_400,
 						resultText: "42 pass, 0 fail (18.4s)",
 					},
@@ -253,7 +253,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 						id: "job_b2",
 						type: "task",
 						status: "completed",
-						label: "Migrate rate limiter to a sliding window",
+						label: "将速率限制器迁移到滑动窗口",
 						durationMs: 96_700,
 						resultText: "Rewrote rate-limit.ts to a token-bucket; added per-account keys.",
 					},
@@ -261,7 +261,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 						id: "job_c3",
 						type: "bash",
 						status: "failed",
-						label: "bunx biome check packages/server/src/auth",
+						label: "运行 bunx biome check packages/server/src/auth",
 						durationMs: 4_100,
 						errorText: "biome: 2 errors in tokens.ts — noUnusedVariables, useConst",
 					},
@@ -278,7 +278,7 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 						id: "job_d4",
 						type: "task",
 						status: "failed",
-						label: "Refactor the session store to Redis",
+						label: "将会话存储重构为 Redis",
 						durationMs: 52_300,
 						errorText: "Subagent exited 1: Redis connection string is missing.",
 					},
@@ -288,9 +288,9 @@ export const agenticFixtures: Record<string, GalleryFixture> = {
 	},
 
 	yield: {
-		label: "Submit Result",
+		label: "提交结果",
 		// Streaming: the payload object is still arriving.
-		streamingArgs: { data: { summary: "Two races in the session store's flush path." } },
+		streamingArgs: { data: { summary: "会话存储的刷新流程中存在两个竞态问题。" } },
 		args: { data: YIELD_DATA },
 		result: {
 			content: [{ type: "text", text: "Result submitted." }],

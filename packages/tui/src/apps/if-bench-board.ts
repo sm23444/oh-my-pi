@@ -168,7 +168,7 @@ function renderLive(
 	if (rows.size === 0) return [];
 	const deepest = Math.max(0, ...[...rows.values()].map(row => row.actions));
 	const header =
-		`${fgOrPlain("accent", spinner)} ${theme ? theme.bold("if-bench") : "if-bench"} ${fgOrPlain("dim", "·")} ` +
+		`${fgOrPlain("accent", spinner)} ${theme ? theme.bold("if-bench 基准") : "if-bench"} ${fgOrPlain("dim", "·")} ` +
 		`${rows.size} live ${fgOrPlain("dim", "·")} ${deepest} actions ${fgOrPlain("dim", "·")} ` +
 		`${fgOrPlain("dim", `L=${meta.arrayLength} nya{1,${meta.nyaMax}}`)} ${fgOrPlain("dim", "·")} ` +
 		`${formatDuration(Date.now() - startedAt)}`;
@@ -283,21 +283,21 @@ export function formatIfBenchScoreboard(summary: IfBenchSummary): string {
 		(a, b) => b.turnsPassed - a.turnsPassed || b.actionsPassed - a.actionsPassed || meanTurnMs(a) - meanTurnMs(b),
 	);
 	const columns: ScoreboardColumn[] = [
-		{ header: "model", value: report => report.label },
-		{ header: "turns", value: report => `${report.turnsPassed}/${summary.maxTurns}`, align: "right" },
-		{ header: "actions", value: report => String(report.actionsPassed), align: "right" },
+		{ header: "模型", value: report => report.label },
+		{ header: "轮次", value: report => `${report.turnsPassed}/${summary.maxTurns}`, align: "right" },
+		{ header: "操作", value: report => String(report.actionsPassed), align: "right" },
 		{
-			header: "broke on",
+			header: "失败于",
 			value: report =>
 				report.failure ? `turn ${report.failure.turn} · ${FAILURE_TEXT[report.failure.kind]}` : "survived",
 		},
-		{ header: "per turn", value: report => formatDuration(Math.round(meanTurnMs(report))), align: "right" },
+		{ header: "每轮", value: report => formatDuration(Math.round(meanTurnMs(report))), align: "right" },
 		{
-			header: "tokens",
+			header: "令牌",
 			value: report => (report.outputTokens > 0 ? formatNumber(report.outputTokens) : "-"),
 			align: "right",
 		},
-		{ header: "cost", value: report => (report.cost > 0 ? formatCost(report.cost) : "-"), align: "right" },
+		{ header: "成本", value: report => (report.cost > 0 ? formatCost(report.cost) : "-"), align: "right" },
 	];
 	const cells = ranked.map(report => columns.map(column => column.value(report)));
 	const widths = columns.map((column, index) =>

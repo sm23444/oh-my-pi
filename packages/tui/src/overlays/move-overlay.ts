@@ -63,7 +63,7 @@ export class MoveOverlay implements Component, Focusable {
 		this.#done = done;
 		this.#field = new TextFormField({
 			theme: formTheme,
-			prompt: theme.fg("dim", "Path: "),
+			prompt: theme.fg("dim", "路径："),
 			empty: "submit",
 			spaceBeforeControl: false,
 			spaceAfterControl: false,
@@ -151,7 +151,7 @@ export class MoveOverlay implements Component, Focusable {
 		lines.push(row("", w));
 
 		if (this.#results.length === 0 && this.#field.getValue().length > 0) {
-			lines.push(row(theme.fg("dim", "No matching directories"), w));
+			lines.push(row(theme.fg("dim", "没有匹配的目录"), w));
 		} else {
 			for (let i = 0; i < Math.min(this.#results.length, MAX_RESULTS); i++) {
 				const item = this.#results[i]!;
@@ -231,7 +231,7 @@ export class MoveOverlay implements Component, Focusable {
 	}
 
 	invalidate(): void {
-		this.#field.input.prompt = theme.fg("dim", "Path: ");
+		this.#field.input.prompt = theme.fg("dim", "路径：");
 		this.#field.invalidate();
 		this.#revision++;
 		this.#renderMemo = undefined;

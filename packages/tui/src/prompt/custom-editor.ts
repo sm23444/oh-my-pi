@@ -1063,7 +1063,12 @@ export class CustomEditor extends Editor {
 	/** Editing is available during bootstrap; atomic sends wait until submission is wired and enabled
 	 *  and no dictation is still writing into the draft. */
 	protected override get nativeSendable(): boolean {
-		return this.onSubmit !== undefined && !this.disableSubmit && !dictationHoldsDraft(this.composerState().dictation);
+		return (
+			!this.nativeKeyPassthrough &&
+			this.onSubmit !== undefined &&
+			!this.disableSubmit &&
+			!dictationHoldsDraft(this.composerState().dictation)
+		);
 	}
 	/** The quoted-title placeholder, kept while the title stands so the editor node stays reused. */
 	#titlePlaceholder: { title: string; text: TspText } | undefined;
@@ -1159,7 +1164,7 @@ export class CustomEditor extends Editor {
 								rate !== undefined &&
 									node(
 										"rate",
-										{ value: rate, unit: "tok/s", role: "omp.composer.rate", title: "Generation rate" },
+										{ value: rate, unit: "tok/s", role: "omp.composer.rate", title: "生成速率" },
 										undefined,
 										"rate",
 									),
@@ -1204,7 +1209,7 @@ export class CustomEditor extends Editor {
 					role: "omp.composer.crumb",
 					text: id,
 					wrap: "none",
-					title: `View ${id}`,
+					title: `查看${id}`,
 					actions: { click: `${FOCUS_ACTION}${id}` },
 				},
 				undefined,
@@ -1224,7 +1229,7 @@ export class CustomEditor extends Editor {
 							role: "omp.composer.exit",
 							gap: "xs",
 							align: "center",
-							title: `Back to the main session  ${back}`,
+							title: `返回主会话  ${back}`,
 							actions: { click: `${FOCUS_ACTION}${MAIN_AGENT_ID}` },
 						},
 						[
@@ -1238,7 +1243,7 @@ export class CustomEditor extends Editor {
 					role: "omp.composer.focus",
 					gap: "xs",
 					align: "center",
-					title: `Viewing subagent ${agent}: what you send goes to it`,
+					title: `正在查看子代理 ${agent}：你发送的内容将发送给它`,
 				},
 			),
 			"focus",
@@ -1266,7 +1271,7 @@ export class CustomEditor extends Editor {
 						{
 							level: thinking,
 							role: "omp.composer.model.effort",
-							title: `Thinking effort: ${thinking}${thinkingHint}`,
+							title: `思考强度：${thinking}${thinkingHint}`,
 							actions: { click: "thinking.cycle" },
 						},
 						undefined,
@@ -1282,7 +1287,7 @@ export class CustomEditor extends Editor {
 					gap: "xs",
 					align: "center",
 					tone: facts.model.tone,
-					title: modelKey ? `Switch model  ${formatTooltipKey(modelKey)}` : "Switch model",
+					title: modelKey ? `切换模型  ${formatTooltipKey(modelKey)}` : "切换模型",
 					actions: { click: "status.model" },
 				},
 				[
@@ -1301,7 +1306,7 @@ export class CustomEditor extends Editor {
 							role: "omp.composer.effort",
 							gap: "xs",
 							align: "center",
-							title: `Thinking effort${thinkingHint}`,
+							title: `思考强度${thinkingHint}`,
 							actions: { click: "thinking.cycle" },
 						},
 						[
@@ -1332,17 +1337,17 @@ export class CustomEditor extends Editor {
 							align: "center",
 							tone: recording ? "error" : starting || transcribing ? "pending" : undefined,
 							title: recording
-								? "Stop recording and transcribe"
+								? "停止录音并转写"
 								: starting
-									? "Cancel dictation"
+									? "取消听写"
 									: transcribing
-										? "Transcribing dictation"
-										: "Start dictation",
+										? "正在转写听写"
+										: "开始听写",
 							// The model can take a while to load on first use, so a start stays cancellable.
 							actions: transcribing ? undefined : { click: "dictation.toggle" },
 						},
 						starting || transcribing
-							? [node("spinner", { label: starting ? "Starting…" : "Transcribing…" }, undefined, "pending")]
+							? [node("spinner", { label: starting ? "正在启动…" : "正在转写…" }, undefined, "pending")]
 							: compact([
 									node("icon", { name: recording ? "stop" : "mic" }, undefined, "icon"),
 									recording && node("text", { text: "Recording · Stop", wrap: "none" }, undefined, "label"),
@@ -1357,7 +1362,7 @@ export class CustomEditor extends Editor {
 						role: "omp.composer.stop",
 						text: "Stop",
 						tone: "error",
-						title: `Stop  ${formatTooltipKey(interruptKey)}`,
+						title: `停止  ${formatTooltipKey(interruptKey)}`,
 						actions: { click: "interrupt" },
 					},
 					undefined,
@@ -1368,7 +1373,7 @@ export class CustomEditor extends Editor {
 					{
 						role: "omp.composer.send",
 						keys: ["enter"],
-						title: dictating ? "Finish dictation before sending" : `Send  ${formatTooltipKey("enter")}`,
+						title: dictating ? "发送前完成听写" : `发送  ${formatTooltipKey("enter")}`,
 						tone: dictating ? "muted" : undefined,
 						actions: dictating ? undefined : { click: "submit" },
 					},
@@ -1381,7 +1386,7 @@ export class CustomEditor extends Editor {
 			row(
 				compact([
 					shell.excluded &&
-						node("icon", { name: "eye-off", title: "Not sent to the model" }, undefined, "excluded"),
+						node("icon", { name: "eye-off", title: "未发送到模型" }, undefined, "excluded"),
 					node(
 						"text",
 						{ spans: [span(shell.kind, shell.kind === "bash" ? "bashMode" : "pythonMode")], wrap: "none" },
@@ -1393,7 +1398,7 @@ export class CustomEditor extends Editor {
 					role: "omp.composer.mode",
 					gap: "xs",
 					align: "center",
-					title: shell.excluded ? `${runs} · not sent to the model` : runs,
+					title: shell.excluded ? `${runs} · 未发送到模型` : runs,
 				},
 			),
 			"mode",

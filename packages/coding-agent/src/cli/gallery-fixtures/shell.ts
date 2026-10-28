@@ -65,7 +65,7 @@ export const shellFixtures: Record<string, GalleryFixture> = {
 	},
 
 	bash_service: {
-		label: "Bash service",
+		label: "Bash 服务",
 		renderer: "bash",
 		streamingArgs: { command: "bun run dev", name: "web" },
 		args: {
@@ -87,15 +87,15 @@ export const shellFixtures: Record<string, GalleryFixture> = {
 	},
 
 	eval: {
-		label: "Eval",
+		label: "求值",
 		streamingArgs: {
 			language: "py",
 			code: 'import json\nfrom pathlib import Path\n\ndata = json.loads(Path("package.js',
-			title: "load config",
+			title: "加载配置",
 		},
 		args: {
 			language: "py",
-			title: "load config",
+			title: "加载配置",
 			code: [
 				"import json",
 				"from pathlib import Path",
@@ -120,7 +120,7 @@ export const shellFixtures: Record<string, GalleryFixture> = {
 				cells: [
 					{
 						index: 0,
-						title: "load config",
+						title: "加载配置",
 						language: "python",
 						code: [
 							"import json",
@@ -162,7 +162,7 @@ export const shellFixtures: Record<string, GalleryFixture> = {
 				cells: [
 					{
 						index: 0,
-						title: "load config",
+						title: "加载配置",
 						language: "python",
 						code: [
 							"import json",

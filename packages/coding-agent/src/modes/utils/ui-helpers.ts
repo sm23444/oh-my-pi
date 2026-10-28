@@ -1216,12 +1216,12 @@ export class UiHelpers {
 	}
 
 	showError(errorMessage: string): void {
-		const text = new Text(`Error: ${errorMessage}`, 1, 0).setStyleFn(t => theme.fg("error", t));
+		const text = new Text(`错误：${errorMessage}`, 1, 0).setStyleFn(t => theme.fg("error", t));
 		this.ctx.present([new Spacer(1), text]);
 	}
 
 	showWarning(warningMessage: string, options?: { hideWithToolActivity?: boolean }): void {
-		const text = new Text(`Warning: ${warningMessage}`, 1, 0).setStyleFn(t => theme.fg("warning", t));
+		const text = new Text(`警告：${warningMessage}`, 1, 0).setStyleFn(t => theme.fg("warning", t));
 		const content = [new Spacer(1), text];
 		this.ctx.present(options?.hideWithToolActivity ? new ToolActivityContainer(content) : content);
 	}
@@ -1256,8 +1256,8 @@ export class UiHelpers {
 		}
 
 		const groups = [
-			{ label: "Steering", messages: steeringMessages },
-			{ label: "After yield", messages: followUpMessages },
+			{ label: "引导消息", messages: steeringMessages },
+			{ label: "yield 之后", messages: followUpMessages },
 		].filter(group => group.messages.length > 0);
 		if (groups.length > 0) {
 			const dequeueKey = this.ctx.keybindings.getKeys("app.message.dequeue")[0] ?? "alt+up";
@@ -1393,7 +1393,7 @@ export class UiHelpers {
 		const reportFailure = (count: number, error: unknown) => {
 			this.ctx.updatePendingMessagesDisplay();
 			this.ctx.showError(
-				`Failed to send queued message${count > 1 ? "s" : ""}: ${
+				`未能发送排队的消息${count > 1 ? "s" : ""}：${
 					error instanceof Error ? error.message : String(error)
 				}`,
 			);

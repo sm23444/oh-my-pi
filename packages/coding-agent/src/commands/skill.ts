@@ -11,27 +11,27 @@ export default class Skill extends Command {
 	static aliases = ["skills"];
 
 	static args = {
-		action: Args.string({ description: "Skill action", required: false, options: SKILL_ACTIONS }),
+		action: Args.string({ description: "技能操作", required: false, options: SKILL_ACTIONS }),
 		targets: Args.string({
-			description: "Specs, names, directories, or action arguments",
+			description: "规范、名称、目录或操作参数",
 			required: false,
 			multiple: true,
 		}),
 	};
 
 	static flags = {
-		global: Flags.boolean({ char: "g", description: "Use the user-global skills.json (install/update/uninstall)" }),
-		yes: Flags.boolean({ char: "y", description: "Install or update skills that ship scripts without asking" }),
-		json: Flags.boolean({ description: "Output JSON (search, info, token, list)" }),
-		sort: Flags.string({ description: "Search order", options: ["relevance", "downloads", "recent"] }),
-		scope: Flags.string({ description: "Publishing scope (default: your Stencil username)" }),
-		tag: Flags.string({ description: "Dist-tag for the published version" }),
-		"dry-run": Flags.boolean({ description: "Pack and validate without publishing" }),
-		"allow-secrets": Flags.boolean({ description: "Publish even when credential-shaped strings are found" }),
-		registry: Flags.string({ description: "Registry base URL (overrides skills.registryUrl)" }),
-		undo: Flags.boolean({ description: "Reverse a yank or deprecation" }),
-		package: Flags.string({ description: "Restrict a new token to a package (repeatable)", multiple: true }),
-		expires: Flags.integer({ description: "Token lifetime in days" }),
+		global: Flags.boolean({ char: "g", description: "使用用户全局 skills.json（install/update/uninstall）" }),
+		yes: Flags.boolean({ char: "y", description: "安装或更新附带脚本的技能，无需询问" }),
+		json: Flags.boolean({ description: "输出 JSON（search、info、token、list）" }),
+		sort: Flags.string({ description: "搜索顺序", options: ["relevance", "downloads", "recent"] }),
+		scope: Flags.string({ description: "发布作用域（默认：你的 Stencil 用户名）" }),
+		tag: Flags.string({ description: "已发布版本的 Dist-tag" }),
+		"dry-run": Flags.boolean({ description: "打包并验证而不发布" }),
+		"allow-secrets": Flags.boolean({ description: "即使发现凭据形状的字符串也继续发布" }),
+		registry: Flags.string({ description: "Registry 基础 URL（覆盖 skills.registryUrl）" }),
+		undo: Flags.boolean({ description: "还原下架或弃用" }),
+		package: Flags.string({ description: "将新令牌限制到某个包（可重复）", multiple: true }),
+		expires: Flags.integer({ description: "令牌有效期（天）" }),
 	};
 
 	static examples = [

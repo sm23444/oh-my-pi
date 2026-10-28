@@ -162,13 +162,13 @@ const STATUS_TONE: Record<AgentStatus, TspTone> = {
 function statusBadge(status: AgentStatus): string {
 	switch (status) {
 		case "running":
-			return theme.fg("success", "running");
+			return theme.fg("success", "运行中");
 		case "idle":
-			return theme.fg("accent", "idle");
+			return theme.fg("accent", "空闲");
 		case "parked":
-			return theme.fg("muted", "parked");
+			return theme.fg("muted", "已挂起");
 		case "aborted":
-			return theme.fg("error", "aborted");
+			return theme.fg("error", "已中止");
 	}
 }
 
@@ -763,7 +763,7 @@ export class AgentTranscriptViewer implements Component {
 		children.push(
 			hintsRow([
 				this.#editor ? actionHint("tui.input.submit", "send") : undefined,
-				{ keys: [this.#deps.expandKeys[0] ?? "ctrl+o"], label: "expand" },
+				{ keys: [this.#deps.expandKeys[0] ?? "ctrl+o"], label: "展开" },
 			]),
 		);
 		const head = [span("Agent Hub", "accent"), span(` ${theme.sep.dot} `, "dim"), span(id, "accent")];
@@ -814,7 +814,7 @@ export class AgentTranscriptViewer implements Component {
 	}
 
 	#headerLines(status: AgentStatus | undefined, kind: string | undefined, parentId: string | undefined): string[] {
-		const lines = [theme.fg("accent", `Agent Hub ${theme.sep.dot} ${this.#deps.agentId}`)];
+		const lines = [theme.fg("accent", `Agent 中心 ${theme.sep.dot} ${this.#deps.agentId}`)];
 		if (status && kind) {
 			const kindTag = theme.fg("dim", ` ${parentId ? `${kind} ${theme.sep.dot} of ${parentId}` : kind}`);
 			const modelLabel = this.#model ? theme.fg("muted", `${theme.sep.dot}${this.#model}`) : "";

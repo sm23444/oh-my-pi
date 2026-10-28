@@ -31,7 +31,7 @@ import { actionHint, hintsRow, overlayCard } from "../native/overlay";
 
 const PLUGIN_SETTINGS_ROLE = "omp.overlay.plugin-settings";
 /** A plugin row's control on the native settings page: open the plugin's settings. */
-const PLUGIN_CONFIGURE: TspPrefsControl = { k: "action", label: "Configure", act: "open" };
+const PLUGIN_CONFIGURE: TspPrefsControl = { k: "action", label: "配置", act: "open" };
 
 /** The plugins tab as a native settings page draws it (the settings selector puts it in its `prefs` node). */
 export interface PluginPrefsPage {
@@ -55,7 +55,7 @@ function prefsDetailPage(title: string, lead: string, list: SettingsList | undef
 		(item): TspPrefsControl =>
 			item.values?.length === 2 && item.values.includes("true") && item.values.includes("false")
 				? { k: "switch", on: item.currentValue === "true" }
-				: { k: "action", label: item.currentValue.trim() || "Edit…", act: "edit" },
+				: { k: "action", label: item.currentValue.trim() || "编辑…", act: "edit" },
 	);
 	const open = list.openSubmenu;
 	return {
@@ -223,7 +223,7 @@ async function buildPluginConfigItems(
 			items.push({
 				id: `config:${key}`,
 				label: `  ${key}`,
-				description: schema.description || `Configure ${key}`,
+				description: schema.description || `配置 ${key}`,
 				currentValue: currentValue ? "true" : "false",
 				values: ["true", "false"],
 			});
@@ -231,7 +231,7 @@ async function buildPluginConfigItems(
 			items.push({
 				id: `config:${key}`,
 				label: `  ${key}`,
-				description: schema.description || `Configure ${key}`,
+				description: schema.description || `配置 ${key}`,
 				currentValue: String(currentValue ?? schema.default ?? ""),
 				submenu: (cv, done) =>
 					createConfigEnumPanel(
@@ -252,7 +252,7 @@ async function buildPluginConfigItems(
 			items.push({
 				id: `config:${key}`,
 				label: `  ${key}`,
-				description: schema.description || `Configure ${key}`,
+				description: schema.description || `配置 ${key}`,
 				currentValue: displayValue,
 				submenu: (cv, done) =>
 					createConfigInputPanel(
@@ -305,11 +305,11 @@ export class PluginListComponent extends OverlayPanel {
 		this.addChild(new Spacer(1));
 
 		if (entries.length === 0) {
-			this.addChild(new Text(theme.fg("muted", "No plugins installed"), 0, 0));
+			this.addChild(new Text(theme.fg("muted", "未安装插件"), 0, 0));
 			this.addChild(new Spacer(1));
-			this.addChild(new Text(theme.fg("dim", "Install npm plugins:        omp plugin install <package>"), 0, 0));
+			this.addChild(new Text(theme.fg("dim", "安装 npm 插件:        omp plugin install <package>"), 0, 0));
 			this.addChild(
-				new Text(theme.fg("dim", "Install marketplace plugins: omp plugin install <name>@<marketplace>"), 0, 0),
+				new Text(theme.fg("dim", "安装市场插件: omp plugin install <name>@<marketplace>"), 0, 0),
 			);
 			this.addChild(new Spacer(1));
 
@@ -344,7 +344,7 @@ export class PluginListComponent extends OverlayPanel {
 			new Text(
 				theme.fg(
 					"dim",
-					`${editorKey("tui.select.confirm")} to configure · ${editorKey("tui.select.cancel")} to go back`,
+					`按 ${editorKey("tui.select.confirm")} 配置 · 按 ${editorKey("tui.select.cancel")} 返回`,
 				),
 				0,
 				0,
@@ -379,7 +379,7 @@ export class PluginListComponent extends OverlayPanel {
 				rows.length > 0
 					? "Plugins installed for you and this project. Configure one to turn it or its features on and off."
 					: "No plugins installed. Install one with omp plugin install <package>, or <name>@<marketplace>.",
-			sections: rows.length > 0 ? [{ id: "installed", title: "Installed", rows }] : [],
+			sections: rows.length > 0 ? [{ id: "installed", title: "已安装", rows }] : [],
 			focus: this.#selectList.getSelectedItem()?.value ?? null,
 			editing: null,
 		};
@@ -421,7 +421,7 @@ export class PluginListComponent extends OverlayPanel {
 	}
 
 	#renderItem(entry: PluginListEntry): SelectItem {
-		const kindBadge = theme.fg("dim", entry.kind === "npm" ? "[npm]" : "[marketplace]");
+		const kindBadge = theme.fg("dim", entry.kind === "npm" ? "[npm 插件]" : "[市场插件]");
 
 		if (entry.kind === "npm") {
 			const p = entry.plugin;
@@ -512,8 +512,8 @@ export class PluginDetailComponent extends OverlayPanel {
 		// Enable/disable toggle
 		items.push({
 			id: "__enabled__",
-			label: "Enabled",
-			description: "Enable or disable this plugin",
+			label: "已启用",
+			description: "启用或禁用此插件",
 			currentValue: plugin.enabled ? "true" : "false",
 			values: ["true", "false"],
 		});
@@ -533,7 +533,7 @@ export class PluginDetailComponent extends OverlayPanel {
 				items.push({
 					id: `feature:${featName}`,
 					label: `  ${featName}`,
-					description: feat.description || `Enable ${featName} feature`,
+					description: feat.description || `启用 ${featName} 功能`,
 					currentValue: isEnabled ? "true" : "false",
 					values: ["true", "false"],
 				});
@@ -555,7 +555,7 @@ export class PluginDetailComponent extends OverlayPanel {
 			items,
 			maxVisible: Math.min(items.length, 10),
 			settingsTheme: getSettingsListTheme(),
-			hint: `${editorKey("tui.select.confirm")} to edit · ${editorKey("tui.select.cancel")} to go back`,
+			hint: `${editorKey("tui.select.confirm")} 编辑 · ${editorKey("tui.select.cancel")} 返回`,
 			onChange: (id, newValue) => {
 				if (id === "__enabled__") {
 					this.callbacks.onEnabledChange(newValue === "true");
@@ -672,26 +672,26 @@ export class MarketplacePluginDetailComponent extends OverlayPanel {
 		const items: SettingItem[] = [
 			{
 				id: "__enabled__",
-				label: "Enabled",
-				description: "Enable or disable this marketplace plugin",
+				label: "已启用",
+				description: "启用或禁用此市场插件",
 				currentValue: marketplaceEnabled(plugin) ? "true" : "false",
 				values: ["true", "false"],
 			},
 			...configItems,
 		];
 		const summary: Component[] = [
-			new Text(theme.fg("dim", `version       ${entry?.version ?? "(unknown)"}`), 0, 0),
-			new Text(theme.fg("dim", `scope         ${plugin.scope}`), 0, 0),
+			new Text(theme.fg("dim", `版本       ${entry?.version ?? "(unknown)"}`), 0, 0),
+			new Text(theme.fg("dim", `作用域         ${plugin.scope}`), 0, 0),
 			new Text(
-				theme.fg("dim", `install path  ${entry?.installPath ? shortenPath(entry.installPath) : "(unknown)"}`),
+				theme.fg("dim", `安装路径  ${entry?.installPath ? shortenPath(entry.installPath) : "(unknown)"}`),
 				0,
 				0,
 			),
-			new Text(theme.fg("dim", `installed at  ${entry?.installedAt ?? "(unknown)"}`), 0, 0),
-			new Text(theme.fg("dim", `last updated  ${entry?.lastUpdated ?? "(unknown)"}`), 0, 0),
+			new Text(theme.fg("dim", `安装于  ${entry?.installedAt ?? "(unknown)"}`), 0, 0),
+			new Text(theme.fg("dim", `上次更新  ${entry?.lastUpdated ?? "(unknown)"}`), 0, 0),
 		];
 		if (entry?.gitCommitSha) {
-			summary.push(new Text(theme.fg("dim", `git sha       ${entry.gitCommitSha}`), 0, 0));
+			summary.push(new Text(theme.fg("dim", `git 提交哈希       ${entry.gitCommitSha}`), 0, 0));
 		}
 		summary.push(new Spacer(1));
 		this.#settingsList = new SettingsFormField({
@@ -701,7 +701,7 @@ export class MarketplacePluginDetailComponent extends OverlayPanel {
 			maxVisible: Math.min(items.length, 10),
 			settingsTheme: getSettingsListTheme(),
 			summary,
-			hint: `${editorKey("tui.select.confirm")} to edit · ${editorKey("tui.select.cancel")} to go back`,
+			hint: `${editorKey("tui.select.confirm")} 编辑 · ${editorKey("tui.select.cancel")} 返回`,
 			onChange: (id, newValue) => {
 				if (id === "__enabled__") {
 					const next = newValue === "true";
@@ -803,7 +803,7 @@ function createConfigEnumPanel(
 		currentValue,
 		maxVisible: 8,
 		selectTheme: getSelectListTheme(),
-		hint: `${editorKey("tui.select.confirm")} to select · ${editorKey("tui.select.cancel")} to cancel`,
+		hint: `${editorKey("tui.select.confirm")} 选择 · ${editorKey("tui.select.cancel")} 取消`,
 		onSubmit: onSelect,
 		onCancel,
 		requestRender,
@@ -832,7 +832,7 @@ function createConfigInputPanel(
 		secret: schema.secret,
 		initialValue: !schema.secret ? currentValue : undefined,
 		empty: "cancel",
-		hint: `${editorKey("tui.input.submit")} to save · ${editorKey("tui.select.cancel")} to cancel`,
+		hint: `${editorKey("tui.input.submit")} 保存 · ${editorKey("tui.select.cancel")} 取消`,
 		onSubmit,
 		onCancel,
 		requestRender,

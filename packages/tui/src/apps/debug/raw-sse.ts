@@ -126,7 +126,7 @@ export class RawSseViewerComponent implements Component {
 			this.#onUpdate?.();
 		});
 		this.#frame = new DebugViewerFrame({
-			title: "Raw Provider Stream",
+			title: "原始提供商流",
 			getHeight: () => process.stdout.rows || this.#terminalRows || 24,
 			headerRows: 1,
 			footerRows: 1,
@@ -366,7 +366,7 @@ export class RawSseViewerComponent implements Component {
 			if (record.sequence <= this.#nativeLast) continue;
 			for (const line of this.#prettyLinesFor(record)) fed += `${sanitizeDisplayText(line)}\n`;
 			if (record.kind === "event" && record.truncated) {
-				fed += `${theme.fg("warning", `: omp-debug-event-truncated originalChars=${record.originalChars}`)}\n`;
+				fed += `${theme.fg("warning", `: omp-debug-event-truncated 原始字符数=${record.originalChars}`)}\n`;
 			}
 			fed += "\n";
 		}
@@ -411,8 +411,8 @@ export class RawSseViewerComponent implements Component {
 	#formatRawLines(snapshot: RawSseDebugSnapshot, innerWidth: number): string[] {
 		if (snapshot.records.length === 0) {
 			return [
-				theme.fg("muted", "No raw SSE frames captured yet."),
-				theme.fg("muted", "HTTP SSE providers populate this view while a model response is streaming."),
+				theme.fg("muted", "尚未捕获到原始 SSE 帧。"),
+				theme.fg("muted", "HTTP SSE 提供商在模型响应流式传输期间填充此视图。"),
 			];
 		}
 		const lines: string[] = [];
@@ -420,7 +420,7 @@ export class RawSseViewerComponent implements Component {
 			lines.push(
 				theme.fg(
 					"warning",
-					`: omp-debug-dropped records=${snapshot.droppedRecords} chars=${snapshot.droppedChars}`,
+					`: omp-debug-dropped 记录=${snapshot.droppedRecords} 字符=${snapshot.droppedChars}`,
 				),
 			);
 			lines.push("");
@@ -431,7 +431,7 @@ export class RawSseViewerComponent implements Component {
 				lines.push(truncateToWidth(sanitizeDisplayText(line), innerWidth));
 			}
 			if (record.kind === "event" && record.truncated) {
-				lines.push(theme.fg("warning", `: omp-debug-event-truncated originalChars=${record.originalChars}`));
+				lines.push(theme.fg("warning", `: omp-debug-event-truncated 原始字符数=${record.originalChars}`));
 			}
 			lines.push("");
 		}
@@ -457,12 +457,12 @@ export class RawSseViewerComponent implements Component {
 	#summaryText(): string {
 		const snapshot = this.#currentSnapshot();
 		const last = snapshot.lastUpdatedAt
-			? `${theme.fg("muted", "last")} ${theme.fg("accent", formatRawSseIsoTime(snapshot.lastUpdatedAt))}`
-			: theme.fg("muted", "waiting for first frame");
+			? `${theme.fg("muted", "最近")} ${theme.fg("accent", formatRawSseIsoTime(snapshot.lastUpdatedAt))}`
+			: theme.fg("muted", "等待第一帧");
 		const follow = this.#frame.isFollowingTail()
-			? theme.fg("success", "follow on")
-			: theme.fg("warning", "follow off");
-		return `${theme.fg("muted", "events")} ${theme.fg("accent", String(snapshot.totalEvents))}  ${theme.fg("muted", "records")} ${theme.fg("accent", String(snapshot.records.length))}  ${last}  ${follow}`;
+			? theme.fg("success", "跟随开启")
+			: theme.fg("warning", "跟随关闭");
+		return `${theme.fg("muted", "事件")} ${theme.fg("accent", String(snapshot.totalEvents))}  ${theme.fg("muted", "记录")} ${theme.fg("accent", String(snapshot.records.length))}  ${last}  ${follow}`;
 	}
 
 	#statusText(): string {

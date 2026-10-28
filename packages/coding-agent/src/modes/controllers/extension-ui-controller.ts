@@ -292,7 +292,7 @@ export class ExtensionUiController {
 
 				this.ctx.present([
 					new Spacer(1),
-					new Text(`${theme.fg("accent", `${theme.status.success} New session started`)}`, 1, 1),
+					new Text(`${theme.fg("accent", `${theme.status.success} 新会话已启动`)}`, 1, 1),
 				]);
 				await this.ctx.reloadTodos();
 				this.ctx.ui.requestRender(true, { clearScrollback: true });
@@ -403,7 +403,7 @@ export class ExtensionUiController {
 				container.addChild(new Text(line, 1, 0));
 			}
 			if (content.length > MAX_WIDGET_LINES) {
-				container.addChild(new Text(theme.fg("muted", "... (widget truncated)"), 1, 0));
+				container.addChild(new Text(theme.fg("muted", "...（小部件已截断）"), 1, 0));
 			}
 			return container;
 		}
@@ -521,7 +521,7 @@ export class ExtensionUiController {
 
 				this.ctx.present([
 					new Spacer(1),
-					new Text(`${theme.fg("accent", `${theme.status.success} New session started`)}`, 1, 1),
+					new Text(`${theme.fg("accent", `${theme.status.success} 新会话已启动`)}`, 1, 1),
 				]);
 				await this.ctx.reloadTodos();
 				this.ctx.ui.requestRender(true, { clearScrollback: true });
@@ -617,7 +617,7 @@ export class ExtensionUiController {
 	 * Show a tool error in the chat.
 	 */
 	showToolError(toolName: string, error: string): void {
-		const errorText = new Text(`Tool "${toolName}" error: ${error}`, 1, 0).setStyleFn(t => theme.fg("error", t));
+		const errorText = new Text(`工具“${toolName}”错误：${error}`, 1, 0).setStyleFn(t => theme.fg("error", t));
 		this.ctx.present(errorText);
 	}
 
@@ -809,7 +809,7 @@ export class ExtensionUiController {
 					? {
 							isBlocked: () => draftEditor.getText().length > 0,
 							handleInput: (keyData: string) => draftEditor.handleDraftEdit(keyData),
-							hint: "typing edits your prompt",
+							hint: "输入会编辑你的提示",
 							// Show the draft's insertion cursor while it owns input; drop it
 							// once the ask controls take over.
 							syncPresentation: (blocked: boolean) => {
@@ -1400,7 +1400,7 @@ export class ExtensionUiController {
 	}
 
 	showExtensionError(extensionPath: string, error: string): void {
-		const errorText = new Text(`Extension "${extensionPath}" error: ${error}`, 1, 0).setStyleFn(t =>
+		const errorText = new Text(`扩展“${extensionPath}”错误：${error}`, 1, 0).setStyleFn(t =>
 			theme.fg("error", t),
 		);
 		this.ctx.present(errorText);
@@ -1453,7 +1453,7 @@ export class ExtensionUiController {
 				this.#applyCustomMessageDisplay(wasStreaming, normalized, silentAppend ? messageCountBefore : undefined);
 			})
 			.catch((err: unknown) => {
-				this.ctx.showError(`Extension sendMessage failed: ${err instanceof Error ? err.message : String(err)}`);
+				this.ctx.showError(`扩展 sendMessage 失败：${err instanceof Error ? err.message : String(err)}`);
 			});
 	};
 
@@ -1461,7 +1461,7 @@ export class ExtensionUiController {
 	#sendExtensionUserMessage: SendUserMessageHandler = (content, options) => {
 		if (this.#rejectGuestExtensionTurn()) return;
 		this.ctx.session.sendUserMessage(content, options).catch((err: unknown) => {
-			this.ctx.showError(`Extension sendUserMessage failed: ${err instanceof Error ? err.message : String(err)}`);
+			this.ctx.showError(`扩展 sendUserMessage 失败：${err instanceof Error ? err.message : String(err)}`);
 		});
 	};
 

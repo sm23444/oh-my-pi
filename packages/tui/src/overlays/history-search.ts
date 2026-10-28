@@ -239,7 +239,7 @@ export class HistorySearchComponent extends OverlayPanel {
 		this.#resultsList = new HistoryResultsList(this.#menu);
 
 		const dot = theme.fg("dim", theme.sep.dot);
-		const navigate = theme.fg("dim", editorKeys("tui.select.up", "tui.select.down")) + theme.fg("muted", " navigate");
+		const navigate = theme.fg("dim", editorKeys("tui.select.up", "tui.select.down")) + theme.fg("muted", " 导航");
 		const hint = [navigate, rawKeyHint("enter", "select"), keyHint("tui.select.cancel", "cancel")].join(dot);
 
 		this.addChild(new Spacer(1));
@@ -378,7 +378,7 @@ export class HistorySearchComponent extends OverlayPanel {
 		);
 		this.#nativeHints ??= hintsRow([
 			actionHint(["tui.select.up", "tui.select.down"], "navigate"),
-			{ keys: ENTER_KEYS, label: "select" },
+			{ keys: ENTER_KEYS, label: "选择" },
 			actionHint("tui.select.cancel", "cancel"),
 		]);
 		const root = overlayCard(this.nativeRole, this.title, [this.#searchInput, list, this.#nativeHints]);

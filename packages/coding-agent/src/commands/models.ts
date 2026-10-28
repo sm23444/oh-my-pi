@@ -14,32 +14,32 @@ export default class Models extends Command {
 	static description = commandHelp.description;
 	static args = {
 		action: Args.string({
-			description: "ls (default) | find | refresh | <provider>",
+			description: "ls(默认)| find | refresh | <provider>",
 			required: false,
 		}),
 		pattern: Args.string({
-			description: "Filter/search substring, or provider name (required for find)",
+			description: "Filter/search 子字符串，或提供商名称（查找时必需）",
 			required: false,
 		}),
 	};
 
 	static flags = {
-		json: Flags.boolean({ description: "Output JSON" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
 		kind: Flags.string({
-			description: "Catalog kind to list",
+			description: "要列出的目录类型",
 			options: MODEL_KIND_OPTIONS,
 			default: "chat",
 		}),
 		extension: Flags.string({
 			char: "e",
-			description: "Load an extension file before listing (repeatable)",
+			description: "列出前加载扩展文件(可重复)",
 			multiple: true,
 		}),
 		"no-extensions": Flags.boolean({
-			description: "Disable extension discovery (explicit -e paths still work)",
+			description: "禁用扩展发现（显式 -e 路径仍然有效）",
 		}),
 		config: Flags.string({
-			description: "Load an extra config.yml-style overlay for this run (repeatable)",
+			description: "为本次运行加载额外的 config.yml-style 覆盖层（可重复）",
 			multiple: true,
 		}),
 	};

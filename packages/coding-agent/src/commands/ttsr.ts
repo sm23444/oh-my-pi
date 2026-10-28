@@ -23,41 +23,41 @@ export default class Ttsr extends Command {
 	static description = commandHelp.description;
 	static args = {
 		action: Args.string({
-			description: "TTSR action",
+			description: "TTSR 操作",
 			required: false,
 			options: TTSR_ACTIONS,
 		}),
 		snippet: Args.string({
-			description: "Inline snippet text to test (ttsr test) or directory to scan (ttsr scan)",
+			description: "要测试的内联片段文本(ttsr test)或要扫描的目录(ttsr scan)",
 			required: false,
 		}),
 	};
 
 	static flags = {
-		file: Flags.string({ description: "Snippet file path, or - for stdin (ttsr test)" }),
+		file: Flags.string({ description: "片段文件路径,或 - 表示 stdin(ttsr test)" }),
 		rule: Flags.string({
 			char: "r",
-			description: "Rule markdown file to test in isolation (skips project rule loading)",
+			description: "单独测试的规则 markdown 文件(跳过项目规则加载)",
 		}),
 		source: Flags.string({
-			description: "Match source: text, thinking, or tool (inferred from --file when omitted)",
+			description: "匹配来源:text、thinking 或 tool(省略时从 --file 推断)",
 			options: TTSR_SOURCES,
 		}),
 		tool: Flags.string({
-			description: "Tool name when source is tool (e.g. edit, write); defaults to edit",
+			description: "来源为工具时的工具名称（例如 e.g、edit、write）；默认为 edit",
 		}),
 		path: Flags.string({
 			char: "p",
-			description: "Candidate file path for scope/glob matching and AST language inference",
+			description: "用于 scope/glob 匹配和 AST 语言推断的候选文件路径",
 		}),
 		agent: Flags.string({
-			description: "Agent name to evaluate rule `agents` scoping as (ttsr test); defaults to main",
+			description: "用于评估规则 `agents` 作用域的代理名称（ttsr 测试）；默认为 main",
 		}),
-		verbose: Flags.boolean({ char: "v", description: "Show every evaluated rule, not just triggered ones" }),
-		json: Flags.boolean({ description: "Output JSON" }),
-		"no-gitignore": Flags.boolean({ description: "Include files excluded by .gitignore (ttsr scan)" }),
+		verbose: Flags.boolean({ char: "v", description: "显示所有评估过的规则,而不只是触发的" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
+		"no-gitignore": Flags.boolean({ description: "包含被 .gitignore 排除的文件(ttsr scan)" }),
 		"max-bytes": Flags.integer({
-			description: "Maximum file size to scan in bytes; 0 disables the limit (ttsr scan)",
+			description: "要扫描的最大文件大小(字节);0 表示不限制(ttsr scan)",
 		}),
 	};
 

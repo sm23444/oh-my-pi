@@ -216,10 +216,10 @@ export class CleansePanelComponent extends OverlayPanel {
 	}
 
 	#describeFooter(): NativeNode {
-		const esc: NativeHint = { keys: boundKeys("app.interrupt", ["escape"]).slice(0, 1), label: "dismiss" };
+		const esc: NativeHint = { keys: boundKeys("app.interrupt", ["escape"]).slice(0, 1), label: "关闭" };
 		switch (this.#outcome) {
 			case undefined:
-				return hintsRow([{ ...esc, label: "cancel /cleanse" }]);
+				return hintsRow([{ ...esc, label: "取消 /cleanse" }]);
 			case "clean":
 				return statusHintsRow([span(`${theme.status.success} Clean`, "success")], [esc]);
 			case "unresolved":
@@ -244,17 +244,17 @@ export class CleansePanelComponent extends OverlayPanel {
 		const esc = interruptKey();
 		switch (this.#outcome) {
 			case undefined:
-				return theme.fg("muted", `${esc} cancel /cleanse`);
+				return theme.fg("muted", `${esc} 取消 /cleanse`);
 			case "clean":
-				return theme.fg("success", `${theme.status.success} Clean · ${esc} dismiss`);
+				return theme.fg("success", `${theme.status.success} 已清理 · ${esc} 关闭`);
 			case "unresolved":
-				return theme.fg("warning", `${theme.status.warning} Diagnostics remain · ${esc} dismiss`);
+				return theme.fg("warning", `${theme.status.warning} 诊断仍存在 · ${esc} 关闭`);
 			case "unsupported":
-				return theme.fg("warning", `${theme.status.warning} No runnable checker · ${esc} dismiss`);
+				return theme.fg("warning", `${theme.status.warning} 没有可运行的检查器 · ${esc} 关闭`);
 			case "cancelled":
-				return theme.fg("warning", `${theme.status.warning} Cancelled · ${esc} dismiss`);
+				return theme.fg("warning", `${theme.status.warning} 已取消 · ${esc} 关闭`);
 			case "error":
-				return theme.fg("error", `${theme.status.error} Error · ${esc} dismiss`);
+				return theme.fg("error", `${theme.status.error} 错误 · ${esc} 关闭`);
 		}
 	}
 }

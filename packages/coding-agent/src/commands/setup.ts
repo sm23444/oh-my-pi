@@ -34,15 +34,15 @@ export default class Setup extends Command {
 	static description = commandHelp.description;
 	static args = {
 		component: Args.string({
-			description: "Optional component to install",
+			description: "要安装的可选组件",
 			required: false,
 			options: COMPONENTS,
 		}),
 	};
 
 	static flags = {
-		check: Flags.boolean({ char: "c", description: "Check if dependencies are installed" }),
-		json: Flags.boolean({ description: "Output status as JSON" }),
+		check: Flags.boolean({ char: "c", description: "检查依赖是否已安装" }),
+		json: Flags.boolean({ description: "以 JSON 输出状态" }),
 	};
 
 	async run(): Promise<void> {

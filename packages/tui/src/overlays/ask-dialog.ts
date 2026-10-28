@@ -369,11 +369,11 @@ function renderAnswerSummary(question: ExtensionAskDialogQuestion, state: Questi
 	if (question.multi) {
 		const answers = [...selected];
 		if (state.customInput !== undefined) answers.push(`Other: “${normalizedInlineInput(state.customInput)}”`);
-		return answers.length > 0 ? answers.join(", ") : theme.fg("warning", "unanswered");
+		return answers.length > 0 ? answers.join(", ") : theme.fg("warning", "未回答");
 	}
 	if (state.customInput !== undefined) return `“${normalizedInlineInput(state.customInput)}”`;
-	if (selected.length === 0) return theme.fg("warning", "unanswered");
-	return selected[0] ?? theme.fg("warning", "unanswered");
+	if (selected.length === 0) return theme.fg("warning", "未回答");
+	return selected[0] ?? theme.fg("warning", "未回答");
 }
 
 /** Inline markdown code (`` `x` ``) as mono `code` spans, the rest plain, as the ANSI rows render it. */
@@ -489,7 +489,7 @@ function renderRowLabel(
 	const marker = `${theme.fg(checked ? "success" : "dim", optionMarker(theme, question.multi, checked))} `;
 	const cursor = selected ? theme.fg("accent", `${theme.nav.cursor} `) : "  ";
 	const label = renderInlineMarkdown(rowItem.label, mdTheme, t => theme.fg(color, t));
-	const noteMarker = state.note && state.noteRowKey === rowItem.key ? theme.fg("success", "  ✎ note") : "";
+	const noteMarker = state.note && state.noteRowKey === rowItem.key ? theme.fg("success", "  ✎ 备注") : "";
 	// `width` is already the inner content width supplied by OverlayPanel; when
 	// a scrollbar is needed, renderRows() calls this again with one less column.
 	// Keep the cursor, option marker, first wrapped label line, and optional
@@ -841,7 +841,7 @@ export class AskDialogComponent implements Component {
 						items,
 						active,
 						role: "omp.ask.questions",
-						title: "Next question  tab · Previous  shift+tab",
+						title: "下一个问题  tab · 上一个问题  shift+tab",
 						actions: { click: "select" },
 					},
 					undefined,
@@ -864,7 +864,7 @@ export class AskDialogComponent implements Component {
 				style: "ring",
 				size: "sm",
 				label: `${Math.ceil(left / 1000)}s`,
-				title: "Answers the recommended option when the time runs out",
+				title: "时间耗尽时回答推荐选项",
 			},
 			undefined,
 			"timer",
@@ -887,7 +887,7 @@ export class AskDialogComponent implements Component {
 		const show = actionButton("Show", "show", {
 			tone: "accent",
 			...(hideKey ? { keys: hideKey } : {}),
-			title: `Show the question${hideKey ? `  ${formatTooltipKey(hideKey)}` : ""}`,
+			title: `显示问题${hideKey ? `  ${formatTooltipKey(hideKey)}` : ""}`,
 		});
 		const cancelKey = getKeybindings().getKeys("tui.select.cancel")[0];
 		const skip = actionButton("Skip", "cancel", cancelKey ? { keys: cancelKey } : {});
@@ -1000,12 +1000,12 @@ export class AskDialogComponent implements Component {
 		const cancelKey = getKeybindings().getKeys("tui.select.cancel")[0];
 		const skip = actionButton("Skip", "cancel", {
 			...(cancelKey ? { keys: cancelKey } : {}),
-			title: `Skip without answering${cancelKey ? `  ${formatTooltipKey(cancelKey)}` : ""}`,
+			title: `跳过而不回答${cancelKey ? `  ${formatTooltipKey(cancelKey)}` : ""}`,
 		});
 		const hideKey = getKeybindings().getKeys("app.ask.hide")[0];
 		const hide = actionButton("Hide", "hide", {
 			...(hideKey ? { keys: hideKey } : {}),
-			title: `Hide until you are ready to answer${hideKey ? `  ${formatTooltipKey(hideKey)}` : ""}`,
+			title: `准备好回答前隐藏${hideKey ? `  ${formatTooltipKey(hideKey)}` : ""}`,
 		});
 		const lead: NativeNode[] = this.#countdown ? [this.#describeTimer(this.#countdown, ring), hide] : [hide];
 		const inputGuard = this.options.inputGuard;
@@ -1020,7 +1020,7 @@ export class AskDialogComponent implements Component {
 			const submit = actionButton("Submit", "submit", {
 				keys: "enter",
 				tone: "accent",
-				title: "Submit answers  enter",
+				title: "提交答案  enter",
 			});
 			return actionBar([...lead, null, skip, submit]);
 		}
@@ -1031,11 +1031,11 @@ export class AskDialogComponent implements Component {
 		const submit = actionButton(enterLabel, "submit", {
 			keys: "enter",
 			tone: "accent",
-			title: question?.multi ? `${enterLabel}  enter · Toggle  space` : `${enterLabel}  enter`,
+			title: question?.multi ? `${enterLabel}  enter · 切换  space` : `${enterLabel} 回车`,
 		});
 		const note = actionButton("Note", "note", {
 			keys: "n",
-			title: "Add a note to the highlighted answer, or to the one just picked  n",
+			title: "为高亮的答案或刚选中的答案添加备注  n",
 		});
 		return actionBar([...lead, null, note, skip, submit]);
 	}
@@ -1265,9 +1265,9 @@ export class AskDialogComponent implements Component {
 		if (show) hints.push(`${show} show`);
 		hints.push(`${editorKey("tui.select.cancel")} cancel`);
 		const hint = theme.fg("dim", ` · ${hints.join(" · ")}`);
-		const label = theme.fg("accent", `${this.#titleText()} hidden:`);
+		const label = theme.fg("accent", `${this.#titleText()} 已隐藏：`);
 		const question = this.#questions[this.#currentQuestionIndex()];
-		const more = this.#questions.length > 1 ? theme.fg("dim", ` (+${this.#questions.length - 1} more)`) : "";
+		const more = this.#questions.length > 1 ? theme.fg("dim", `（还有 ${this.#questions.length - 1} 项）`) : "";
 		const summary = normalizedInlineInput(sanitizeCarriageReturns(question?.question ?? ""));
 		const summaryWidth = Math.max(1, width - visibleWidth(label) - visibleWidth(more) - visibleWidth(hint) - 1);
 		const clipped = truncateToWidth(summary, summaryWidth, Ellipsis.Unicode);
@@ -1306,7 +1306,7 @@ export class AskDialogComponent implements Component {
 					id: String(index),
 					label: questionTabLabel(question, index),
 				})),
-				{ id: "submit", label: "Submit" },
+				{ id: "submit", label: "提交" },
 			];
 			this.#tabBar = new TabBar("", tabs, getTabBarTheme(), this.#activeTabIndex);
 			this.#tabBar.showHint = false;
@@ -1315,7 +1315,7 @@ export class AskDialogComponent implements Component {
 		if (this.#isSubmitTab()) {
 			this.#headerExpandable = false;
 			this.#descExpandable = false;
-			lines.push(theme.bold(theme.fg("accent", "Review answers")));
+			lines.push(theme.bold(theme.fg("accent", "检查答案")));
 			return lines;
 		}
 		const questionIndex = this.#currentQuestionIndex();
@@ -1524,7 +1524,7 @@ export class AskDialogComponent implements Component {
 		try {
 			const prefill =
 				state.customInput === undefined ? undefined : { text: state.customInput, images: state.customInputImages };
-			const result = await this.#openPrompt({ title: "Custom answer", question: question.question }, prefill);
+			const result = await this.#openPrompt({ title: "自定义答案", question: question.question }, prefill);
 			if (result === undefined || this.#closed) return;
 			const input = splitPromptInput(result);
 			if (input.text.trim() === "") {
@@ -1564,7 +1564,7 @@ export class AskDialogComponent implements Component {
 			const prefill =
 				isReedit && state.note !== undefined ? { text: state.note, images: state.noteImages } : undefined;
 			const result = await this.#openPrompt(
-				{ title: `Note for ${rowItem.label}`, question: question.question },
+				{ title: `给 ${rowItem.label} 的备注`, question: question.question },
 				prefill,
 			);
 			if (result === undefined || this.#closed) return;
@@ -1664,7 +1664,7 @@ export class AskDialogComponent implements Component {
 			allLines.push(
 				theme.fg(
 					"warning",
-					`${unanswered} unanswered question${unanswered === 1 ? "" : "s"}; ${formatKeyHint("enter")} still submits.`,
+					`有 ${unanswered} 个未回答问题${unanswered === 1 ? "" : "s"}；${formatKeyHint("enter")} 仍会提交。`,
 				),
 			);
 			allLines.push("");
@@ -1680,7 +1680,7 @@ export class AskDialogComponent implements Component {
 			if (submittedNote?.trim()) {
 				const note = normalizedInlineInput(submittedNote);
 				allLines.push(
-					theme.fg("muted", `   Note: ${truncateToWidth(note, Math.max(1, width - 9), Ellipsis.Unicode)}`),
+					theme.fg("muted", `   备注：${truncateToWidth(note, Math.max(1, width - 9), Ellipsis.Unicode)}`),
 				);
 			}
 		}

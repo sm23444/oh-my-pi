@@ -814,7 +814,7 @@ export class Composer implements TerminalFrameProvider, NativeSurfaceProvider {
 				source: {
 					transcript,
 					transcriptId: transcriptReplay?.id,
-					header: "replay",
+					header: "重放",
 					headerRows,
 				},
 			};
@@ -858,7 +858,7 @@ export class Composer implements TerminalFrameProvider, NativeSurfaceProvider {
 			id: this.#nextHistoryId++,
 			rows: batch.rows,
 			kind: batch.kind ?? "append",
-			source: { transcript, transcriptId: batch.id, header: "none" },
+			source: { transcript, transcriptId: batch.id, header: "无" },
 		};
 		return {
 			id: this.#offeredHistory.id,

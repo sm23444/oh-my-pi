@@ -7,7 +7,7 @@ export default class Bench extends Command {
 	static description = commandHelp.description;
 	static args = {
 		models: Args.string({
-			description: "Model selectors (provider/model or fuzzy id, e.g. opus)",
+			description: "模型选择器（provider/model 或模糊 ID，e.g. opus）",
 			required: true,
 			multiple: true,
 		}),
@@ -16,40 +16,40 @@ export default class Bench extends Command {
 	static flags = {
 		runs: Flags.integer({
 			description:
-				"Requests per model (default: 10 chat, 5 prefill/generation, 9 mix); with --detailed, per phase (default: 4)",
+				"每个模型的请求数（默认：10 次 chat、5 次 prefill/generation、9 次 mix）；使用 --detailed 时，按阶段（默认：4）",
 		}),
 		"max-tokens": Flags.integer({
-			description: "Max output tokens per request (default: chat 512, prefill 64, generation 2048, cache 64)",
+			description: "每次请求最大输出 token 数（默认：chat 512、prefill 64、generation 2048、cache 64）",
 		}),
-		prompt: Flags.string({ description: "Custom prompt text (chat and generation profiles only)" }),
+		prompt: Flags.string({ description: "自定义提示词文本（仅限 chat 和 generation 配置文件）" }),
 		profile: Flags.string({
 			description:
-				"Benchmark workload (default chat): chat (balanced, measures TTFT and tok/s), prefill (large cache-busted input, measures input processing), generation (long forced output, measures sustained decode), mix (rotates all three)",
+				"基准测试工作负载（默认 chat）：chat（均衡，衡量 TTFT 和 tok/s）、prefill（大型绕过缓存的输入，衡量输入处理）、generation（长强制输出，衡量持续解码）、mix（轮换执行全部三种）",
 			options: ["chat", "prefill", "generation", "mix"],
 		}),
 		"prefill-bytes": Flags.integer({
-			description: "Synthetic input size for prefill challenges (default: 32768, capped by the context window)",
+			description: "用于 prefill 挑战的合成输入大小（默认：32768，受上下文窗口上限限制）",
 		}),
 		detailed: Flags.boolean({
 			description:
-				"Run single-user (1 concurrent), parallel (--par concurrent, with aggregate tok/s and scaling), and prefill phases per model",
+				"每个模型运行单用户（1 个并发）、并行（--par 个并发，并统计聚合 tok/s 与扩展性）以及 prefill 阶段。",
 		}),
 		"service-tier": Flags.string({
-			description: "Service tier applied per model family (default: configured `tier.*` settings; `none` omits it)",
+			description: "按模型族应用的服务等级(默认:配置的 `tier.*` 设置;`none` 表示省略)",
 			options: SERVICE_TIER_OPENAI_VALUES,
 		}),
-		json: Flags.boolean({ description: "Output JSON" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
 		par: Flags.integer({
-			description: "Execute runs with N parallel queries/requests (default: 4); --detailed's parallel phase width",
+			description: "执行 N 个并行 queries/requests 的运行（默认值：4）；即 --detailed 的并行阶段宽度。",
 		}),
 		cache: Flags.boolean({
-			description: "Run independent cold/warm prompt-cache pairs (not supported for openai-codex-responses)",
+			description: "运行独立的 cold/warm 提示缓存配对（不支持 openai-codex-responses）",
 		}),
-		"cache-prefix-file": Flags.string({ description: "Stable prompt prefix file for --cache" }),
-		"cache-prefix-bytes": Flags.integer({ description: "Stable prefix byte budget for --cache (default: 8192)" }),
-		"cache-pairs": Flags.integer({ description: "Cold/warm pairs per model for --cache (default: 1)" }),
+		"cache-prefix-file": Flags.string({ description: "--cache 的稳定 prompt 前缀文件" }),
+		"cache-prefix-bytes": Flags.integer({ description: "--cache 的稳定前缀字节预算(默认:8192)" }),
+		"cache-pairs": Flags.integer({ description: "每个模型 Cold/warm 对，用于 --cache（默认值：1）" }),
 		"cache-concurrency": Flags.integer({
-			description: "Concurrent cache pairs for --cache; each pair remains sequential (default: 1)",
+			description: "--cache 的并发 cache 配对数量;每对仍保持顺序执行(默认:1)",
 		}),
 	};
 

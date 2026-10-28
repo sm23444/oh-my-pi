@@ -7,7 +7,7 @@ export async function runProviderSetupWizard(ctx: SetupHost): Promise<void> {
 	const { ALL_SCENES, runSetupWizard } = await import("./wizard");
 	const providersScene = ALL_SCENES.find(scene => scene.id === "providers");
 	if (!providersScene) {
-		ctx.showError("Provider setup is unavailable.");
+		ctx.showError("提供商设置不可用。");
 		return;
 	}
 	await runSetupWizard(ctx, [providersScene], {

@@ -891,8 +891,8 @@ const KIND_HEADLINES: Record<
 	{ header: string; metric: "tokensPerSecond" | "prefillTps"; digits: number }
 > = {
 	chat: { header: "tok/s", metric: "tokensPerSecond", digits: 1 },
-	prefill: { header: "prefill", metric: "prefillTps", digits: 0 },
-	generation: { header: "decode", metric: "tokensPerSecond", digits: 1 },
+	prefill: { header: "预填充", metric: "prefillTps", digits: 0 },
+	generation: { header: "解码", metric: "tokensPerSecond", digits: 1 },
 };
 
 /** Comparison-table layout: columns plus the rate rows are ranked by (undefined = unmeasured). */
@@ -901,7 +901,7 @@ interface BenchTableSpec {
 	rank(report: BenchModelReport): number | undefined;
 }
 
-const MODEL_COLUMN: BenchTableColumn = { header: "model", value: formatBenchModelLabel };
+const MODEL_COLUMN: BenchTableColumn = { header: "模型", value: formatBenchModelLabel };
 
 const COST_COLUMN: BenchTableColumn = {
 	header: "cost/run",
@@ -960,20 +960,20 @@ function detailedTableSpec(par: number): BenchTableSpec {
 			{ header: `TTFT@${par}`, value: r => ttft(parallel(r)) },
 			{ header: `tok/s@${par}`, value: r => parallel(r)?.tokensPerSecond.p50.toFixed(1) },
 			{
-				header: `agg@${par}`,
+				header: `聚合@${par}`,
 				value: r => (r.phases.parallel?.stats ? r.phases.parallel.aggregateTps.toFixed(1) : undefined),
 			},
 			{
 				// Parallel aggregate rate over single-user aggregate rate: ~1× means
 				// concurrent requests queue behind each other, ~N× means they scale.
-				header: "scale",
+				header: "规模",
 				value: r => {
 					const base = r.phases.single?.aggregateTps;
 					const loaded = r.phases.parallel?.aggregateTps;
 					return base && loaded ? `${(loaded / base).toFixed(1)}×` : undefined;
 				},
 			},
-			{ header: "prefill", value: r => r.phases.prefill?.stats?.prefillTps.p50.toFixed(0) },
+			{ header: "预填充", value: r => r.phases.prefill?.stats?.prefillTps.p50.toFixed(0) },
 			COST_COLUMN,
 		],
 		rank: r => single(r)?.tokensPerSecond.p50,

@@ -734,10 +734,10 @@ export class ModelHubComponent implements Component {
 			{
 				id: "roles",
 				kind: "roles",
-				label: "Roles",
+				label: "角色",
 				annotation: `${assignedCount}/${visibleRoles.length}`,
 			},
-			{ id: "all", kind: "all", label: "All models", annotation: String(availableModels.length) },
+			{ id: "all", kind: "all", label: "所有模型", annotation: String(availableModels.length) },
 		];
 
 		this.#fixedEntries = fixed;
@@ -1387,26 +1387,26 @@ export class ModelHubComponent implements Component {
 			}
 		}
 		chips.push({
-			label: `fallbacks:${item.model.id}`,
-			styled: theme.fg("muted", `fallbacks:${item.model.id}`),
+			label: `回退:${item.model.id}`,
+			styled: theme.fg("muted", `回退:${item.model.id}`),
 			action: "fallbackModel",
 		});
 		chips.push({
-			label: `fallbacks:${item.model.provider}/*`,
-			styled: theme.fg("muted", `fallbacks:${item.model.provider}/*`),
+			label: `回退：${item.model.provider}/*`,
+			styled: theme.fg("muted", `回退：${item.model.provider}/*`),
 			action: "fallbackProvider",
 		});
 		// `retry-fallback` appends to the default chain, so only chat-capable models qualify.
 		if (this.#settings.getRoleInfo("default").accepts(item.model)) {
-			chips.push({ label: "fallback", styled: theme.fg("muted", "retry-fallback"), action: "fallback" });
+			chips.push({ label: "回退", styled: theme.fg("muted", "重试回退"), action: "fallback" });
 		}
 		this.#strip = { kind: "role", item, chips, index: 0, returnToRoles: false };
 	}
 
 	#openScopeStrip(item: ModelBrowserItem, role: string, returnToRoles: boolean): void {
 		const chips: StripChip[] = [
-			{ label: "project", styled: theme.fg("accent", "project"), action: "scope", scope: "project" },
-			{ label: "global", styled: theme.fg("muted", "global"), action: "scope", scope: "global" },
+			{ label: "项目", styled: theme.fg("accent", "项目"), action: "scope", scope: "project" },
+			{ label: "全局", styled: theme.fg("muted", "全局"), action: "scope", scope: "global" },
 		];
 		this.#strip = { kind: "scope", item, role, chips, index: 0, returnToRoles };
 	}
@@ -1702,13 +1702,13 @@ export class ModelHubComponent implements Component {
 	#openFallbackKeyStrip(item: ModelBrowserItem): void {
 		const chips: StripChip[] = [
 			{
-				label: `for ${item.selector}`,
-				styled: theme.fg("muted", `for ${item.selector}`),
+				label: `用于${item.selector}`,
+				styled: theme.fg("muted", `用于${item.selector}`),
 				action: "fallbackModel",
 			},
 			{
-				label: `for ${item.model.provider}/*`,
-				styled: theme.fg("muted", `for ${item.model.provider}/*`),
+				label: `用于 ${item.model.provider}/*`,
+				styled: theme.fg("muted", `用于 ${item.model.provider}/*`),
 				action: "fallbackProvider",
 			},
 		];
@@ -2477,7 +2477,7 @@ export class ModelHubComponent implements Component {
 			Math.max(0, active),
 		);
 		return truncateToWidth(
-			` ${theme.fg("dim", "Kind:")} ${track}  ${theme.fg("dim", formatKeyHints(["alt+left", "alt+right"]))}`,
+			` ${theme.fg("dim", "类型：")} ${track}  ${theme.fg("dim", formatKeyHints(["alt+left", "alt+right"]))}`,
 			width,
 		);
 	}
@@ -2485,7 +2485,7 @@ export class ModelHubComponent implements Component {
 	#renderRoleTabs(width: number): string {
 		const active = ROLE_TABS.indexOf(this.#roleTab);
 		const track = renderSegmentTrack(
-			ROLE_TABS.map(tab => ({ label: tab === "kind" ? "kinds" : tab })),
+			ROLE_TABS.map(tab => ({ label: tab === "kind" ? "类型" : tab })),
 			Math.max(0, active),
 		);
 		const { names, active: activePreset } = this.#presets();
@@ -2496,24 +2496,24 @@ export class ModelHubComponent implements Component {
 				: `${formatKeyHints(["ctrl+left", "ctrl+right"])} · ${formatKeyHints(["p", "shift+p"])}`;
 		const preset =
 			names.length > 0
-				? `   ${theme.fg("dim", "Preset:")} ${activePreset ? theme.fg("accent", activePreset) : theme.fg("muted", "custom")}  ${theme.fg("dim", presetKeys)}`
+				? `   ${theme.fg("dim", "预设：")} ${activePreset ? theme.fg("accent", activePreset) : theme.fg("muted", "自定义")}  ${theme.fg("dim", presetKeys)}`
 				: "";
 		return truncateToWidth(
-			` ${theme.fg("dim", "Roles:")} ${track}  ${theme.fg("dim", formatKeyHints(["alt+left", "alt+right"]))}${preset}`,
+			` ${theme.fg("dim", "角色：")} ${track}  ${theme.fg("dim", formatKeyHints(["alt+left", "alt+right"]))}${preset}`,
 			width,
 		);
 	}
 
 	#statusRow(width: number): string {
 		if (this.#assignmentPending) {
-			return truncateToWidth(theme.fg("accent", " Applying model…"), width);
+			return truncateToWidth(theme.fg("accent", " 正在应用模型…"), width);
 		}
 		if (this.#assigning !== null) {
 			const enter = formatKeyHint("enter");
 			const cancel = editorKey("tui.select.cancel");
 			if (this.#assigning.kind === "fallbackKey") {
 				return truncateToWidth(
-					theme.fg("accent", ` New fallback chain — ${enter} picks the model it protects, ${cancel} cancels`),
+					theme.fg("accent", ` 新建回退链 — ${enter} 选择其保护的模型，${cancel} 取消`),
 					width,
 				);
 			}
@@ -2524,13 +2524,13 @@ export class ModelHubComponent implements Component {
 				return truncateToWidth(
 					theme.fg(
 						"accent",
-						` ${verb} ${theme.bold(label)} — ${enter} picks the fallback model, ${cancel} cancels`,
+						` ${verb} ${theme.bold(label)} — ${enter} 选择回退模型，${cancel} 取消`,
 					),
 					width,
 				);
 			}
 			return truncateToWidth(
-				theme.fg("accent", ` Assigning ${theme.bold(label)} — ${enter} assigns, ${cancel} cancels`),
+				theme.fg("accent", ` 正在分配 ${theme.bold(label)} — ${enter} 分配，${cancel} 取消`),
 				width,
 			);
 		}
@@ -2662,7 +2662,7 @@ export class ModelHubComponent implements Component {
 			} else if (assignment) {
 				dot = theme.fg("dim", theme.status.shadowed);
 				tagStyled = theme.fg("dim", tag);
-				value = theme.fg("dim", `auto → ${assignment.model.provider}/${assignment.model.id}`);
+				value = theme.fg("dim", `自动 → ${assignment.model.provider}/${assignment.model.id}`);
 			} else {
 				dot = theme.fg("dim", theme.status.shadowed);
 				tagStyled = theme.fg("dim", tag);
@@ -2707,10 +2707,10 @@ export class ModelHubComponent implements Component {
 					cycleOrder.map(role => ({ label: role })),
 					activeIndex,
 				);
-				lines[rows - 1] = truncateToWidth(`  ${theme.fg("dim", `${cycleKey} cycle:`)} ${track}`, width);
+				lines[rows - 1] = truncateToWidth(`  ${theme.fg("dim", `${cycleKey} 循环:`)} ${track}`, width);
 			} else {
 				lines[rows - 1] = truncateToWidth(
-					theme.fg("dim", `  ${cycleKey} cycle is empty — press ${formatKeyHint("c")} on a role to add it`),
+					theme.fg("dim", `  ${cycleKey} 循环为空 — 在角色上按 ${formatKeyHint("c")} 将其添加`),
 					width,
 				);
 			}
@@ -2722,24 +2722,24 @@ export class ModelHubComponent implements Component {
 		const lines: string[] = [];
 		this.#lockedLoginLine = null;
 		lines.push("");
-		lines.push(truncateToWidth(theme.fg("warning", `  ${entry.label} has no credentials configured`), width));
+		lines.push(truncateToWidth(theme.fg("warning", `  ${entry.label} 未配置凭据`), width));
 		lines.push("");
 		const envVars = entry.providerId ? (providerEntry(entry.providerId)?.envVars ?? []) : [];
 		if (envVars.length > 0) {
 			lines.push(
 				truncateToWidth(
-					theme.fg("muted", `  Set ${envVars.join(" or ")} in your environment, or add a key in config.`),
+					theme.fg("muted", `  在您的环境中设置 ${envVars.join(" or ")}，或在配置中添加密钥。`),
 					width,
 				),
 			);
 		} else {
-			lines.push(truncateToWidth(theme.fg("muted", "  Add an API key for this provider in config."), width));
+			lines.push(truncateToWidth(theme.fg("muted", "  在配置中为此提供商添加一个 API 密钥。"), width));
 		}
 		if (entry.oauth) {
 			this.#lockedLoginLine = lines.length + 1; // +1 for the status row offset handled by caller
 			lines.push(
 				truncateToWidth(
-					theme.fg("accent", `  ${theme.nav.cursor} Log in with OAuth (${formatKeyHint("enter")})`),
+					theme.fg("accent", `  ${theme.nav.cursor} 使用 OAuth 登录 (${formatKeyHint("enter")})`),
 					width,
 				),
 			);
@@ -2747,7 +2747,7 @@ export class ModelHubComponent implements Component {
 		lines.push("");
 		const catalogCount = entry.catalogCount ?? 0;
 		if (catalogCount > 0) {
-			lines.push(truncateToWidth(theme.fg("dim", `  ${catalogCount} models in catalog:`), width));
+			lines.push(truncateToWidth(theme.fg("dim", `  目录中有 ${catalogCount} 个模型：`), width));
 			const preview = this.#scopedModels.length > 0 ? [] : this.#registry.getAll("all");
 			for (const model of preview) {
 				if (model.provider !== entry.providerId) continue;
@@ -2874,7 +2874,7 @@ export class ModelHubComponent implements Component {
 				const notice = compactionNotice(strip, this.#callbacks.previewCompactionPoint);
 				hint = theme.fg(notice.style, notice.text);
 			} else {
-				hint = theme.fg("dim", "(letters, digits, - and _)");
+				hint = theme.fg("dim", "(字母、数字、- 和 _)");
 			}
 			return truncateToWidth(`${label} ${inputLine} ${hint}`, width);
 		}
@@ -3118,7 +3118,7 @@ export class ModelHubComponent implements Component {
 				node(
 					"tabs",
 					{
-						items: ROLE_TABS.map(tab => ({ id: tab, label: tab === "kind" ? "kinds" : tab })),
+						items: ROLE_TABS.map(tab => ({ id: tab, label: tab === "kind" ? "类型" : tab })),
 						active: this.#roleTab,
 					},
 					undefined,
@@ -3292,7 +3292,7 @@ export class ModelHubComponent implements Component {
 		const lockedView = entry.kind === "provider" && entry.locked === true && this.#assigning === null;
 		const strip = this.#strip;
 		const props: TspPickerProps = {
-			title: "Models",
+			title: "模型",
 			subtitle: this.#pickerSubtitle(entry, rolesView),
 			icon: "cpu",
 			noun: rolesView ? "roles" : "models",
@@ -3317,7 +3317,7 @@ export class ModelHubComponent implements Component {
 					...props,
 					tabs: ROLE_TABS.map(tab => ({
 						id: tab,
-						label: tab === "all" ? "All" : tab === "chat" ? "Chat" : "Kinds",
+						label: tab === "all" ? "全部" : tab === "chat" ? "聊天" : "类型",
 						count: this.#visibleRoleIds().filter(
 							role => tab === "all" || this.#settings.getRoleInfo(role).section === tab,
 						).length,
@@ -3433,12 +3433,12 @@ export class ModelHubComponent implements Component {
 				case "separator":
 					break;
 				case "roles":
-					scopes.push({ id: entry.id, label: "Roles", icon: "sparkles", count: this.#visibleRoleIds().length });
+					scopes.push({ id: entry.id, label: "角色", icon: "sparkles", count: this.#visibleRoleIds().length });
 					break;
 				case "all":
 					scopes.push({
 						id: entry.id,
-						label: "All models",
+						label: "所有模型",
 						icon: "list",
 						count: counts ? this.#searchTotal : this.#availableItems.length,
 					});
@@ -3446,7 +3446,7 @@ export class ModelHubComponent implements Component {
 				case "recent":
 					scopes.push({
 						id: entry.id,
-						label: "Recent",
+						label: "最近",
 						icon: "clock",
 						count: counts ? this.#recentSearchCount : this.#recentItems.length,
 					});
@@ -3460,7 +3460,7 @@ export class ModelHubComponent implements Component {
 							id: entry.id,
 							label: entry.label,
 							mark,
-							group: "Not signed in",
+							group: "未登录",
 							disabled: oauthIds.has(providerId)
 								? "Sign in with /login"
 								: envVars.length > 0
@@ -3475,7 +3475,7 @@ export class ModelHubComponent implements Component {
 						id: entry.id,
 						label: entry.label,
 						mark,
-						group: "Providers",
+						group: "提供商",
 						count: counts ? (counts.get(providerId) ?? 0) : Number(entry.annotation ?? 0),
 						...(dot ? { dot } : {}),
 					});
@@ -3714,16 +3714,16 @@ export class ModelHubComponent implements Component {
 				case "separator":
 					return;
 				case "newRole":
-					items.push({ id, label: "New role…", icon: "plus", tone: "muted" });
+					items.push({ id, label: "新建角色…", icon: "plus", tone: "muted" });
 					return;
 				case "newFallback":
-					items.push({ id, label: "New fallback chain…", icon: "plus", tone: "muted" });
+					items.push({ id, label: "新建回退链…", icon: "plus", tone: "muted" });
 					return;
 				case "chainKey":
-					items.push({ id, label: row.role, mono: true, icon: "git-branch", detail: "fallback chain" });
+					items.push({ id, label: row.role, mono: true, icon: "git-branch", detail: "回退链" });
 					return;
 				case "fallback":
-					items.push({ id, label: row.selector, mono: true, depth: 1, detail: `fallback ${row.chainIndex + 1}` });
+					items.push({ id, label: row.selector, mono: true, depth: 1, detail: `回退 ${row.chainIndex + 1}` });
 					return;
 				case "role":
 					break;
@@ -3754,7 +3754,7 @@ export class ModelHubComponent implements Component {
 								{
 									text: `cycle ${cycleIndex + 1}`,
 									tone: "accent" as const,
-									title: `Stop ${cycleIndex + 1} of the quick-switch cycle`,
+									title: `停止快速切换循环中的第 ${cycleIndex + 1} 项`,
 								},
 							],
 						}

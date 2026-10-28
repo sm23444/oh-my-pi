@@ -9,19 +9,19 @@ import { runFindCommand } from "../cli/find-cli";
 export default class Find extends Command {
 	static description = commandHelp.description;
 	static args = {
-		query: Args.string({ description: "What to find, in plain language", required: false }),
-		path: Args.string({ description: "Directory or omp:// docs scope to search", required: false }),
+		query: Args.string({ description: "用自然语言描述要找什么", required: false }),
+		path: Args.string({ description: "要搜索的目录或 omp:// 文档范围", required: false }),
 	};
 
 	static flags = {
 		keyword: Flags.string({
 			char: "k",
-			description: "Extra lexical keyword (repeatable, or comma-separated)",
+			description: "额外的词法关键词(可重复,或用逗号分隔)",
 			multiple: true,
 		}),
-		hidden: Flags.boolean({ description: "Include dot-files and dot-folders" }),
-		json: Flags.boolean({ description: "Emit the full result as JSON" }),
-		quiet: Flags.boolean({ char: "q", description: "Suppress progress on stderr" }),
+		hidden: Flags.boolean({ description: "包含点文件和点文件夹" }),
+		json: Flags.boolean({ description: "以 JSON 输出完整结果" }),
+		quiet: Flags.boolean({ char: "q", description: "抑制 stderr 进度输出" }),
 	};
 
 	async run(): Promise<void> {

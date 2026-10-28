@@ -26,12 +26,12 @@ import type { SetupScene, SetupSceneController, SetupSceneHost } from "./types";
 type ThemeMode = "curated" | "all";
 
 const CURATED_ITEMS: readonly SelectItem[] = [
-	{ value: "auto", label: "Match terminal", description: "Titanium in dark terminals, Light in light terminals" },
-	{ value: "theme:titanium", label: "Titanium", description: "Default dark theme" },
-	{ value: "theme:light", label: "Light", description: "Default light theme" },
-	{ value: "colorblind", label: "Colorblind colors", description: "Adjust red/green contrast" },
-	{ value: "ansi", label: "ANSI-safe", description: "ASCII glyphs with the dark terminal theme" },
-	{ value: "browse", label: "Browse all…", description: "Show every built-in and custom theme" },
+	{ value: "auto", label: "跟随终端", description: "深色终端用 Titanium,浅色终端用 Light" },
+	{ value: "theme:titanium", label: "钛金", description: "默认深色主题" },
+	{ value: "theme:light", label: "浅色", description: "默认浅色主题" },
+	{ value: "colorblind", label: "色盲配色", description: "调整 red/green 对比度" },
+	{ value: "ansi", label: "ANSI 安全", description: "ASCII 字形 + 深色终端主题" },
+	{ value: "browse", label: "浏览全部…", description: "显示所有内置与自定义主题" },
 ];
 
 function fillStyledLine(content: string, width: number): string {
@@ -41,9 +41,9 @@ function fillStyledLine(content: string, width: number): string {
 function renderMockStatusLine(width: number): string {
 	const sep = theme.fg("statusLineSep", ` ${theme.sep.pipe} `);
 	const left = [
-		theme.fg("statusLineModel", `${theme.icon.model} sonnet`),
+		theme.fg("statusLineModel", `${theme.icon.model} sonnet 模型`),
 		theme.fg("statusLinePath", "~/project"),
-		theme.fg("statusLineGitDirty", `${theme.icon.git} main +2`),
+		theme.fg("statusLineGitDirty", `${theme.icon.git} main +2 分支`),
 	].join(sep);
 	const right = [
 		theme.fg("statusLineContext", `${theme.icon.context} 42%`),
@@ -62,10 +62,10 @@ function renderMockEditor(width: number): string[] {
 	const horizontal = box.horizontal.repeat(innerWidth);
 	const top = theme.fg("borderAccent", `${box.topLeft}${horizontal}${box.topRight}`);
 	const bottom = theme.fg("borderMuted", `${box.bottomLeft}${horizontal}${box.bottomRight}`);
-	const prompt = `${theme.fg("accent", ">")} ${theme.fg("text", "Ask anything, edit files, run tools")}${theme.inverse(" ")}`;
+	const prompt = `${theme.fg("accent", ">")} ${theme.fg("text", "问任何问题，编辑文件，运行工具")}${theme.inverse(" ")}`;
 	const hint = theme.fg(
 		"dim",
-		`${editorKey("tui.input.submit")} send · ${editorKey("tui.input.newLine")} newline · / commands`,
+		`${editorKey("tui.input.submit")} 发送 · ${editorKey("tui.input.newLine")} 换行 · / 命令`,
 	);
 	return [
 		top,
@@ -78,12 +78,12 @@ function renderMockEditor(width: number): string[] {
 function renderThemePreview(width: number): string[] {
 	const previewWidth = Math.max(24, Math.min(width, 88));
 	return [
-		theme.bold("Preview"),
-		`${theme.fg("success", `${theme.status.success} success`)}  ${theme.fg("warning", `${theme.status.warning} warning`)}  ${theme.fg("error", `${theme.status.error} error`)}  ${theme.fg("accent", "accent")}`,
+		theme.bold("预览"),
+		`${theme.fg("success", `${theme.status.success} 成功`)}  ${theme.fg("warning", `${theme.status.warning} 警告`)}  ${theme.fg("error", `${theme.status.error} 错误`)}  ${theme.fg("accent", "强调色")}`,
 		"",
-		theme.fg("muted", "Status line"),
+		theme.fg("muted", "状态栏"),
 		renderMockStatusLine(previewWidth),
-		theme.fg("muted", "Editor"),
+		theme.fg("muted", "编辑器"),
 		...renderMockEditor(previewWidth),
 	];
 }
@@ -194,7 +194,7 @@ class ThemeSceneController implements SetupSceneController {
 			new Text(
 				theme.fg(
 					"muted",
-					`Theme changes preview live. Nothing is saved until you press ${editorKey("tui.select.confirm")}.`,
+					`主题更改会实时预览。在按下 ${editorKey("tui.select.confirm")} 之前不会保存任何内容。`,
 				),
 				0,
 				0,
@@ -203,8 +203,8 @@ class ThemeSceneController implements SetupSceneController {
 		intro.addChild(
 			new Text(
 				this.#mode === "all"
-					? theme.fg("dim", `Browsing all themes · ${editorKey("tui.select.cancel")} returns to curated choices`)
-					: theme.fg("dim", `${editorKey("tui.select.cancel")} skips this step`),
+					? theme.fg("dim", `正在浏览所有主题 · 按 ${editorKey("tui.select.cancel")} 返回精选选项`)
+					: theme.fg("dim", `按 ${editorKey("tui.select.cancel")} 跳过此步骤`),
 				0,
 				0,
 			),
@@ -217,7 +217,7 @@ class ThemeSceneController implements SetupSceneController {
 		for (const line of renderThemePreview(width)) {
 			preview.addChild(new Text(line, 0, 0));
 		}
-		const loading = this.#loadingAllThemes ? new Text(theme.fg("dim", "Loading themes…"), 0, 0) : undefined;
+		const loading = this.#loadingAllThemes ? new Text(theme.fg("dim", "正在加载主题…"), 0, 0) : undefined;
 		const status = this.#message ? new Text(theme.fg("error", this.#message), 0, 0) : undefined;
 		if (!this.#step) {
 			this.#step = new WizardStep({
@@ -334,7 +334,7 @@ class ThemeSceneController implements SetupSceneController {
 			const items = themes.map(name => ({
 				value: `theme:${name}`,
 				label: name,
-				description: name === this.#originalTheme ? "current" : undefined,
+				description: name === this.#originalTheme ? "当前" : undefined,
 			}));
 			const selectedIndex = Math.max(0, themes.indexOf(this.#originalTheme ?? ""));
 			this.#mode = "all";
@@ -435,7 +435,7 @@ class ThemeSceneController implements SetupSceneController {
 /** Preview and persist the terminal color theme. */
 export const themeSetupScene: SetupScene = {
 	id: "theme",
-	title: "Pick a theme",
+	title: "选择主题",
 	minVersion: 1,
 	mount: host => new ThemeSceneController(host),
 };

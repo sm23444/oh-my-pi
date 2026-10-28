@@ -83,7 +83,7 @@ export async function runAuthGatewayStdio(): Promise<void> {
 		const selector = body.model;
 		const candidates = selectorCandidates(selector, settings, registry);
 		let response = Response.json(
-			{ error: { message: `No available model matches "${selector}"`, type: "invalid_request_error" } },
+			{ error: { message: `没有可用的模型匹配 "${selector}"`, type: "invalid_request_error" } },
 			{ status: 404 },
 		);
 		for (const model of candidates) {

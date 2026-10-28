@@ -120,7 +120,7 @@ export async function runGrepCommand(cmd: GrepCommandArgs): Promise<void> {
 				}
 				console.log("");
 			} else if (cmd.mode === GrepOutputMode.Count) {
-				console.log(`${chalk.cyan(displayPath)}: ${match.matchCount ?? 0} matches`);
+				console.log(`${chalk.cyan(displayPath)}：${match.matchCount ?? 0} 个匹配项`);
 			} else {
 				console.log(chalk.cyan(displayPath));
 			}
@@ -132,26 +132,26 @@ export async function runGrepCommand(cmd: GrepCommandArgs): Promise<void> {
 }
 
 export function printGrepHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} grep`)} - Test grep tool
+	console.log(`${chalk.bold(`${APP_NAME} grep`)} - 测试 grep 工具
 
 ${chalk.bold("Usage:")}
   ${APP_NAME} grep <pattern> [path] [options]
 
 ${chalk.bold("Arguments:")}
-  pattern   Regex pattern to search for
-  path      Directory or file to search (default: .)
+  pattern   要搜索的正则表达式模式
+  path      要搜索的目录或文件（默认：.）
 
 ${chalk.bold("Options:")}
-  -g, --glob <pattern>  Filter files by glob pattern
-  -l, --limit <n>       Max matches (default: 20)
-  -C, --context <n>     Context lines (default: 2)
-  -f, --files           Output file names only
-  -c, --count           Output match counts per file
-  -h, --help            Show this help
-  --no-gitignore        Include files excluded by .gitignore
+  -g, --glob <pattern>  按 glob 模式过滤文件
+  -l, --limit <n>       最大匹配数（默认：20）
+  -C, --context <n>     上下文行数（默认：2）
+  -f, --files           仅输出文件名
+  -c, --count           输出每个文件的匹配数
+  -h, --help            显示此帮助信息
+  --no-gitignore        包含被 .gitignore 排除的文件
 
 ${chalk.bold("Environment:")}
-  PI_WALK_WORKERS=N    Set filesystem walker workers (default 4, 0 = auto)
+  PI_WALK_WORKERS=N    设置文件系统遍历工作线程数（默认 4，0 = 自动）
 
 ${chalk.bold("Examples:")}
   ${APP_NAME} grep "import" src/

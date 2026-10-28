@@ -23,7 +23,7 @@ export class BorderedLoader extends Container {
 		);
 		this.addChild(this.#loader);
 		this.addChild(new Spacer(1));
-		this.addChild(new Text(theme.fg("muted", `${editorKey("tui.select.cancel")} cancel`), 1, 0));
+		this.addChild(new Text(theme.fg("muted", `${editorKey("tui.select.cancel")} 取消`), 1, 0));
 		this.addChild(new Spacer(1));
 		this.addChild(new DynamicBorder(borderColor));
 	}

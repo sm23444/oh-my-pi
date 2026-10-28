@@ -18,37 +18,37 @@ export default class Gallery extends Command {
 	static description = commandHelp.description;
 	static flags = {
 		surface: Flags.string({
-			description: "Render only tool, composer, or segment surfaces (repeatable; default: all)",
+			description: "仅渲染工具、输入框或片段界面（可重复；默认：全部）",
 			options: [...GALLERY_SURFACE_TOKENS],
 			multiple: true,
 		}),
-		tool: Flags.string({ char: "t", description: "Render a single tool by name" }),
-		composer: Flags.string({ description: "Render a single composer shape by name" }),
-		segment: Flags.string({ description: "Render a single status-line segment by name" }),
+		tool: Flags.string({ char: "t", description: "按名称渲染单个工具" }),
+		composer: Flags.string({ description: "按名称渲染单个输入框形状" }),
+		segment: Flags.string({ description: "按名称渲染单个状态栏片段" }),
 		state: Flags.string({
 			char: "s",
-			description: "Render only the given lifecycle state(s)",
+			description: "仅渲染给定的生命周期状态",
 			options: GALLERY_STATE_TOKENS,
 			multiple: true,
 		}),
-		width: Flags.integer({ char: "w", description: "Render width in columns" }),
+		width: Flags.integer({ char: "w", description: "渲染宽度(列数)" }),
 		expanded: Flags.boolean({
 			char: "e",
-			description: "Render the expanded variant of each renderer",
+			description: "渲染每个渲染器的展开变体",
 			default: false,
 		}),
-		plain: Flags.boolean({ description: "Strip ANSI styling from the output", default: false }),
+		plain: Flags.boolean({ description: "从输出中去掉 ANSI 样式", default: false }),
 		screenshot: Flags.boolean({
 			description:
-				"Capture the rendered output as PNG screenshot(s) via VHS instead of printing ANSI (requires vhs)",
+				"通过 VHS 将渲染输出捕获为 PNG 截图而不是打印 ANSI(需要 vhs)",
 			default: false,
 		}),
 		out: Flags.string({
 			char: "o",
-			description: "Screenshot output path (with --screenshot); suffixed per image when split across multiple",
+			description: "截图输出路径(与 --screenshot 搭配);拆分为多张时按图像添加后缀",
 		}),
-		font: Flags.string({ description: "Screenshot font family (default: JetBrainsMono Nerd Font)" }),
-		"font-size": Flags.integer({ description: "Screenshot font size in points (default: 18)" }),
+		font: Flags.string({ description: "截图字体族(默认:JetBrainsMono Nerd Font)" }),
+		"font-size": Flags.integer({ description: "截图字号(磅,默认:18)" }),
 	};
 
 	async run(): Promise<void> {

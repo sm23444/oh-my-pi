@@ -145,7 +145,7 @@ export async function addWorktree(options: AddWorktreeOptions): Promise<void> {
 			: detach
 				? `detached HEAD ${shortSha}`
 				: `checking out '${ref}'`;
-		console.log(`Preparing worktree (${preparation})`);
+		console.log(`正在准备工作树 (${preparation})`);
 	}
 	const result = await repository.worktreeAdd(worktreePath, ref, {
 		detach,
@@ -153,9 +153,9 @@ export async function addWorktree(options: AddWorktreeOptions): Promise<void> {
 		backend: parseIsolationBackend(cfgIsolationBackend.get(settings)),
 	});
 	if (!options.quiet) {
-		console.log(`HEAD is now at ${shortSha} ${subject}`);
+		console.log(`HEAD 目前位于 ${shortSha} ${subject}`);
 		if (result.clonedWith != null) {
-			console.log(`Cloned from ${repository.info().repoRoot} via ${formatIsolationBackend(result.clonedWith)}`);
+			console.log(`已从 ${repository.info().repoRoot} 克隆，通过 ${formatIsolationBackend(result.clonedWith)}`);
 		}
 	}
 	if (result.cloneError) {

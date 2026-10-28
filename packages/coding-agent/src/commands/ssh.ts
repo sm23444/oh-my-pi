@@ -13,26 +13,26 @@ export default class SSH extends Command {
 	static description = commandHelp.description;
 	static args = {
 		action: Args.string({
-			description: "SSH action",
+			description: "SSH 操作",
 			required: false,
 			options: ACTIONS,
 		}),
 		targets: Args.string({
-			description: "Host name or arguments",
+			description: "主机名或参数",
 			required: false,
 			multiple: true,
 		}),
 	};
 
 	static flags = {
-		json: Flags.boolean({ description: "Output JSON" }),
-		host: Flags.string({ description: "Host address" }),
-		user: Flags.string({ description: "Username" }),
-		port: Flags.string({ description: "Port number" }),
-		key: Flags.string({ description: "Identity key path" }),
-		desc: Flags.string({ description: "Host description" }),
-		compat: Flags.boolean({ description: "Enable compatibility mode" }),
-		scope: Flags.string({ description: "Config scope (project|user)", options: ["project", "user"] }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
+		host: Flags.string({ description: "主机地址" }),
+		user: Flags.string({ description: "用户名" }),
+		port: Flags.string({ description: "端口号" }),
+		key: Flags.string({ description: "身份密钥路径" }),
+		desc: Flags.string({ description: "主机描述" }),
+		compat: Flags.boolean({ description: "启用兼容模式" }),
+		scope: Flags.string({ description: "配置范围(project|user)", options: ["project", "user"] }),
 	};
 
 	async run(): Promise<void> {

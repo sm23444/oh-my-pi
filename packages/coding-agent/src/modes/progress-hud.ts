@@ -269,8 +269,8 @@ export class DownloadActivityHud implements Component {
 		if (activity.state === "done") {
 			return renderHudProgressRow(width, {
 				label: activity.label,
-				tail: theme.fg("success", "ready"),
-				fallback: theme.fg("success", `${activity.label} ready`),
+				tail: theme.fg("success", "就绪"),
+				fallback: theme.fg("success", `${activity.label} 就绪`),
 			});
 		}
 		const { loaded, total } = activity;

@@ -28,7 +28,7 @@ export async function pickCleanseTarget(checkers: readonly CleanseCheckerChoice[
 	const items: SelectItem[] = [
 		{
 			value: "all",
-			label: `Run all ${checkers.length} discovered checker${checkers.length === 1 ? "" : "s"}`,
+			label: `运行所有 ${checkers.length} 个已发现的检查器${checkers.length === 1 ? "" : "s"}`,
 		},
 		...checkers.map(checker => ({
 			value: `checker:${checker.id}`,
@@ -37,8 +37,8 @@ export async function pickCleanseTarget(checkers: readonly CleanseCheckerChoice[
 		})),
 		{
 			value: "request",
-			label: "Describe what to fix…",
-			description: "A discovery agent figures out the command to run",
+			label: "描述要修复的内容…",
+			description: "发现代理会找出要运行的命令",
 		},
 	];
 	const selection = await selectStandaloneItem("Select what to cleanse:", items, {
@@ -46,7 +46,7 @@ export async function pickCleanseTarget(checkers: readonly CleanseCheckerChoice[
 		picker: {
 			icon: "wand",
 			noun: "checkers",
-			subtitle: "Run the checkers, then repair what they find",
+			subtitle: "运行检查器，然后修复它们发现的问题",
 			confirm: "Cleanse",
 		},
 	});

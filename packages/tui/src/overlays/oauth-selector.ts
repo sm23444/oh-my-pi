@@ -250,16 +250,16 @@ export class OAuthSelectorComponent extends OverlayPanel {
 		if (state === "checking") {
 			const frameCount = theme.spinnerFrames.length;
 			const spinner = frameCount > 0 ? theme.spinnerFrames[this.#spinnerFrame % frameCount] : theme.status.pending;
-			return theme.fg("warning", ` ${spinner} checking`) + source;
+			return theme.fg("warning", ` ${spinner} 检查中`) + source;
 		}
 		if (state === "invalid") {
-			return theme.fg("error", ` ${theme.status.error} invalid`) + source;
+			return theme.fg("error", ` ${theme.status.error} 无效`) + source;
 		}
 		if (state === "valid") {
-			return theme.fg("success", ` ${theme.status.enabled} logged in`) + source;
+			return theme.fg("success", ` ${theme.status.enabled} 已登录`) + source;
 		}
 		return this.#hasSelectableAuth(providerId)
-			? theme.fg("success", ` ${theme.status.enabled} logged in`) + source
+			? theme.fg("success", ` ${theme.status.enabled} 已登录`) + source
 			: "";
 	}
 
@@ -273,9 +273,9 @@ export class OAuthSelectorComponent extends OverlayPanel {
 
 	#renderStatusLine(_total: number): string {
 		const query = this.#menu.query.trim();
-		if (!query) return theme.fg("muted", "Type to search");
+		if (!query) return theme.fg("muted", "输入搜索");
 		const width = visibleWidth(this.#search.getValue()) + 1;
-		return theme.fg("muted", "Search: ") + (this.#search.render(width)[0] ?? "");
+		return theme.fg("muted", "搜索： ") + (this.#search.render(width)[0] ?? "");
 	}
 
 	#getProviderSearchText(provider: OAuthProviderInfo): string {
@@ -505,8 +505,8 @@ export class OAuthSelectorComponent extends OverlayPanel {
 		const login = this.#mode === "login";
 		const search = this.#shouldRenderSearchStatus() ? pickerQuery(this.#search) : pickerQuery(null);
 		this.#pickerRoot = dockedPicker({
-			title: login ? "Sign in" : "Sign out",
-			subtitle: login ? "Pick a provider" : "Remove stored credentials",
+			title: login ? "登录" : "退出登录",
+			subtitle: login ? "选择提供商" : "移除已存储的凭据",
 			icon: "key-round",
 			noun: "providers",
 			size: "md",

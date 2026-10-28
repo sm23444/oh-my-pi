@@ -3,7 +3,7 @@ import type { GalleryFixture } from "./types";
 
 export const memoryFixtures: Record<string, GalleryFixture> = {
 	retain: {
-		label: "Retain",
+		label: "保留",
 		// Streaming: first item complete, second still arriving without a context.
 		streamingArgs: {
 			items: [{ content: "User prefers Bun over Node for all new scripts in this repo." }],
@@ -31,7 +31,7 @@ export const memoryFixtures: Record<string, GalleryFixture> = {
 	},
 
 	recall: {
-		label: "Recall",
+		label: "回忆",
 		// Streaming: query partially typed.
 		streamingArgs: { query: "bun vs node" },
 		args: { query: "Which runtime does the user prefer for scripts?" },
@@ -57,7 +57,7 @@ export const memoryFixtures: Record<string, GalleryFixture> = {
 	},
 
 	reflect: {
-		label: "Reflect",
+		label: "反思",
 		streamingArgs: { query: "what have we learned about the user's" },
 		args: { query: "What have we learned about the user's tooling preferences?" },
 		result: {

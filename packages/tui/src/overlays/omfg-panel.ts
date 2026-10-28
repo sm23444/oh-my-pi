@@ -156,13 +156,13 @@ export class OmfgPanelComponent extends OverlayPanel {
 	}
 
 	#describeFooter(): NativeNode {
-		const esc: NativeHint = { keys: boundKeys("app.interrupt", ["escape"]).slice(0, 1), label: "dismiss" };
+		const esc: NativeHint = { keys: boundKeys("app.interrupt", ["escape"]).slice(0, 1), label: "关闭" };
 		switch (this.#state) {
 			case "generating":
 			case "validating":
 			case "confirming":
 			case "saving":
-				return hintsRow([{ ...esc, label: "cancel /omfg" }]);
+				return hintsRow([{ ...esc, label: "取消 /omfg" }]);
 			case "saved":
 				return statusHintsRow(
 					[
@@ -195,18 +195,18 @@ export class OmfgPanelComponent extends OverlayPanel {
 			case "validating":
 			case "confirming":
 			case "saving":
-				return theme.fg("muted", `${esc} cancel /omfg`);
+				return theme.fg("muted", `${esc} 取消 /omfg`);
 			case "saved":
 				return theme.fg(
 					"success",
-					`${theme.status.success} Registered live · ${replaceTabs(this.#savedPath ?? "saved")} · ${esc} dismiss`,
+					`${theme.status.success} 已实时注册 · ${replaceTabs(this.#savedPath ?? "saved")} · ${esc} 关闭`,
 				);
 			case "rejected":
-				return theme.fg("warning", `${theme.status.warning} Not saved · ${esc} dismiss`);
+				return theme.fg("warning", `${theme.status.warning} 未保存 · ${esc} 关闭`);
 			case "aborted":
-				return theme.fg("warning", `${theme.status.warning} Cancelled · ${esc} dismiss`);
+				return theme.fg("warning", `${theme.status.warning} 已取消 · ${esc} 关闭`);
 			case "error":
-				return theme.fg("error", `${theme.status.error} Error · ${esc} dismiss`);
+				return theme.fg("error", `${theme.status.error} 错误 · ${esc} 关闭`);
 		}
 	}
 
@@ -216,7 +216,7 @@ export class OmfgPanelComponent extends OverlayPanel {
 		}
 		const text = replaceTabs(this.#preview).trim();
 		if (!text) {
-			return new Text(theme.fg("dim", `${theme.status.pending} Waiting for candidate rule…`), 0, 0);
+			return new Text(theme.fg("dim", `${theme.status.pending} 等待候选规则…`), 0, 0);
 		}
 		return new Markdown(text, 0, 0, getMarkdownTheme());
 	}

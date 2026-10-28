@@ -123,8 +123,8 @@ export function createDashboardController(): DashboardController {
 						card({ role: "omp.widget.autoresearch", head: describeTitle(runtime) }, [
 							...describeDashboard(runtime, 8, cx.supports("chart")),
 							hintsRow([
-								{ keys: ["ctrl+x"], label: "collapse" },
-								{ keys: ["ctrl+shift+x"], label: "overlay" },
+								{ keys: ["ctrl+x"], label: "折叠" },
+								{ keys: ["ctrl+shift+x"], label: "叠加层" },
 							]),
 						]),
 					);
@@ -270,7 +270,7 @@ function describeRunningOnly(runtime: AutoresearchDashboardRuntime, state: Exper
 /** One-line collapsed widget: run counts, best/baseline, confidence and mode. */
 function describeCollapsed(runtime: AutoresearchDashboardRuntime, state: ExperimentState): NativeNode {
 	const role = "omp.widget.autoresearch";
-	const hint = hintsRow([{ keys: ["ctrl+x"], label: "expand" }]);
+	const hint = hintsRow([{ keys: ["ctrl+x"], label: "展开" }]);
 	if (runtime.lastRunSummary) {
 		const spans = [
 			span("autoresearch", "accent"),
@@ -789,12 +789,12 @@ function describeStats(runtime: AutoresearchDashboardRuntime, current: readonly 
 				node("meter", {
 					value: current.length / total,
 					parts: [
-						{ value: counts.keep / total, token: "success", label: `${counts.keep} kept` },
-						{ value: counts.discard / total, token: "muted", label: `${counts.discard} discarded` },
+						{ value: counts.keep / total, token: "success", label: `${counts.keep} 个已保留` },
+						{ value: counts.discard / total, token: "muted", label: `${counts.discard} 个已丢弃` },
 						{
 							value: failed / total,
 							token: "error",
-							label: `${counts.crash} crashed · ${counts.checks_failed} checks failed`,
+							label: `${counts.crash} 个崩溃 · ${counts.checks_failed} 项检查失败`,
 						},
 					],
 					size: "sm",
@@ -939,7 +939,7 @@ function confidenceToken(confidence: number): string {
 // -- ANSI --------------------------------------------------------------------
 
 function renderRunningOnly(runtime: AutoresearchDashboardRuntime, state: ExperimentState, theme: Theme): string {
-	const parts = [theme.fg("accent", "autoresearch"), theme.fg("warning", " running...")];
+	const parts = [theme.fg("accent", "自动研究"), theme.fg("warning", " 运行中...")];
 	if (state.name) {
 		parts.push(theme.fg("dim", ` | ${replaceTabs(state.name)}`));
 	}
@@ -964,7 +964,7 @@ function renderExpandedHeader(runtime: AutoresearchDashboardRuntime, width: numb
 	const label = state.name ? ` autoresearch: ${replaceTabs(state.name)} ` : " autoresearch ";
 	const hint = theme.fg(
 		"dim",
-		` ${formatKeyHint("ctrl+x")} collapse  ${formatKeyHint("ctrl+shift+x")} overlay${status ? `  ${status}` : ""} `,
+		` ${formatKeyHint("ctrl+x")} 折叠  ${formatKeyHint("ctrl+shift+x")} 叠加${status ? `  ${status}` : ""} `,
 	);
 	const fillWidth = Math.max(0, width - visibleWidth(label) - visibleWidth(hint));
 	return truncateToWidth(theme.fg("accent", label) + theme.fg("borderMuted", "-".repeat(fillWidth)) + hint, width);
@@ -973,9 +973,9 @@ function renderExpandedHeader(runtime: AutoresearchDashboardRuntime, width: numb
 function renderCollapsedLine(runtime: AutoresearchDashboardRuntime, state: ExperimentState, theme: Theme): string {
 	if (runtime.lastRunSummary) {
 		const parts = [
-			theme.fg("accent", "autoresearch"),
-			theme.fg("warning", ` pending run #${runtime.lastRunSummary.runNumber}`),
-			theme.fg("dim", runtime.lastRunSummary.passed ? " pass" : " fail"),
+			theme.fg("accent", "自动研究"),
+			theme.fg("warning", ` 待运行 #${runtime.lastRunSummary.runNumber}`),
+			theme.fg("dim", runtime.lastRunSummary.passed ? " 通过" : " 失败"),
 		];
 		if (runtime.lastRunSummary.parsedPrimary !== null) {
 			parts.push(
@@ -985,20 +985,20 @@ function renderCollapsedLine(runtime: AutoresearchDashboardRuntime, state: Exper
 				),
 			);
 		}
-		parts.push(theme.fg("warning", " | log_experiment required"));
+		parts.push(theme.fg("warning", " | 需要 log_experiment"));
 		if (!runtime.autoresearchMode) {
-			parts.push(theme.fg("dim", " | mode off"));
+			parts.push(theme.fg("dim", " | 模式关闭"));
 		}
 		return parts.join("");
 	}
 	if (state.results.length === 0) {
 		const modeStatus = runtime.autoresearchMode ? "baseline pending" : "mode off";
-		const parts = [theme.fg("accent", "autoresearch"), theme.fg("warning", ` ${modeStatus}`)];
+		const parts = [theme.fg("accent", "自动研究"), theme.fg("warning", ` ${modeStatus}`)];
 		if (state.name) {
 			parts.push(theme.fg("dim", ` | ${replaceTabs(state.name)}`));
 		}
 		if (runtime.autoresearchMode) {
-			parts.push(theme.fg("dim", " | run the baseline"));
+			parts.push(theme.fg("dim", " | 运行基线"));
 		}
 		return parts.join("");
 	}
@@ -1009,33 +1009,33 @@ function renderCollapsedLine(runtime: AutoresearchDashboardRuntime, state: Exper
 	const best = findBestResult(state);
 	const archivedRuns = Math.max(0, state.results.length - current.length);
 	const parts = [
-		theme.fg("accent", "autoresearch"),
-		theme.fg("muted", ` ${current.length} runs`),
-		theme.fg("success", ` ${kept} kept`),
+		theme.fg("accent", "自动研究"),
+		theme.fg("muted", ` ${current.length} 次运行`),
+		theme.fg("success", ` ${kept} 保留`),
 	];
-	if (archivedRuns > 0) parts.push(theme.fg("dim", ` +${archivedRuns} archived`));
-	if (crashed > 0) parts.push(theme.fg("error", ` ${crashed} crash`));
-	if (checksFailed > 0) parts.push(theme.fg("error", ` ${checksFailed} checks_failed`));
+	if (archivedRuns > 0) parts.push(theme.fg("dim", ` +${archivedRuns} 已归档`));
+	if (crashed > 0) parts.push(theme.fg("error", ` ${crashed} 崩溃`));
+	if (checksFailed > 0) parts.push(theme.fg("error", ` ${checksFailed} 检查失败`));
 	parts.push(theme.fg("dim", " | "));
 	if (best && state.bestMetric !== null && best.result.metric !== state.bestMetric) {
-		parts.push(theme.fg("warning", `best ${formatNum(best.result.metric, state.metricUnit)}`));
-		parts.push(theme.fg("dim", ` baseline ${formatNum(state.bestMetric, state.metricUnit)}`));
+		parts.push(theme.fg("warning", `最佳 ${formatNum(best.result.metric, state.metricUnit)}`));
+		parts.push(theme.fg("dim", ` 基线 ${formatNum(state.bestMetric, state.metricUnit)}`));
 	} else if (state.bestMetric !== null) {
-		parts.push(theme.fg("warning", `baseline ${formatNum(state.bestMetric, state.metricUnit)}`));
+		parts.push(theme.fg("warning", `基线 ${formatNum(state.bestMetric, state.metricUnit)}`));
 	} else {
-		parts.push(theme.fg("warning", `no kept runs yet`));
+		parts.push(theme.fg("warning", `尚无保留的运行`));
 	}
 	if (state.confidence !== null) {
 		const confidenceColor = state.confidence >= 2 ? "success" : state.confidence >= 1 ? "warning" : "error";
 		parts.push(theme.fg("dim", " | "));
-		parts.push(theme.fg(confidenceColor, `conf ${state.confidence.toFixed(1)}x`));
+		parts.push(theme.fg(confidenceColor, `置信度 ${state.confidence.toFixed(1)}x`));
 	}
 	if (runtime.runningExperiment) {
-		parts.push(theme.fg("dim", ` | running ${formatElapsed(Date.now() - runtime.runningExperiment.startedAt)}`));
+		parts.push(theme.fg("dim", ` | 运行中 ${formatElapsed(Date.now() - runtime.runningExperiment.startedAt)}`));
 	} else if (!runtime.autoresearchMode) {
 		parts.push(theme.fg("dim", ` | ${renderModeStatus(runtime, state)}`));
 	}
-	parts.push(theme.fg("dim", ` | ${formatKeyHint("ctrl+x")} expand`));
+	parts.push(theme.fg("dim", ` | ${formatKeyHint("ctrl+x")} 展开`));
 	return parts.join("");
 }
 
@@ -1069,7 +1069,7 @@ export function renderDashboardLines(
 				truncateToWidth("Next action: run and log the baseline experiment.", width),
 			];
 		}
-		return [theme.fg("dim", "No experiments logged yet.")];
+		return [theme.fg("dim", "尚未记录任何实验。")];
 	}
 
 	const current = currentResults(state.results, state.currentSegment);
@@ -1142,7 +1142,7 @@ export function renderDashboardLines(
 
 	const visible = maxRows > 0 ? current.slice(-maxRows) : current;
 	if (visible.length < current.length) {
-		lines.push(theme.fg("dim", `... ${current.length - visible.length} earlier runs hidden ...`));
+		lines.push(theme.fg("dim", `... ${current.length - visible.length} 个更早的运行已隐藏 ...`));
 	}
 	for (const result of visible) {
 		lines.push(renderResultRow(result, state, baselineSecondary, columns, width, theme));
@@ -1241,7 +1241,7 @@ function renderOverlayRunningLine(
 	return truncateToWidth(
 		theme.fg(
 			"warning",
-			`${spinner} running ${formatElapsed(Date.now() - (runtime.runningExperiment?.startedAt ?? Date.now()))} ${replaceTabs(
+			`${spinner} 正在运行 ${formatElapsed(Date.now() - (runtime.runningExperiment?.startedAt ?? Date.now()))} ${replaceTabs(
 				runtime.runningExperiment?.command ?? "",
 			)}`,
 		),

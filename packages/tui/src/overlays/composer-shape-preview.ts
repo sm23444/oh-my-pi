@@ -159,6 +159,6 @@ export class ComposerShapePreview implements Component {
 
 	render(width: number): readonly string[] {
 		const lines = renderComposerShapePreview(this.#shape, width, this.#options.status);
-		return ["", theme.fg("muted", "Preview:"), ...lines];
+		return ["", theme.fg("muted", "预览："), ...lines];
 	}
 }

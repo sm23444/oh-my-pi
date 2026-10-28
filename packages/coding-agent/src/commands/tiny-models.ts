@@ -8,18 +8,18 @@ export default class TinyModels extends Command {
 	static description = commandHelp.description;
 	static args = {
 		action: Args.string({
-			description: "Action to perform",
+			description: "要执行的操作",
 			required: false,
 			options: ACTIONS,
 		}),
 		model: Args.string({
-			description: "Model key (`smollm` = word completion), or all",
+			description: "模型键（`smollm` = 单词补全），或 all",
 			required: false,
 		}),
 	};
 
 	static flags = {
-		json: Flags.boolean({ description: "Output JSON" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
 	};
 
 	async run(): Promise<void> {

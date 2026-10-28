@@ -9,17 +9,17 @@ export default class Images extends Command {
 	static aliases = ["img"];
 	static args = {
 		action: Args.string({
-			description: "status (default), doctor, probe, or purge",
+			description: "status（默认）、doctor、probe 或 purge",
 			required: false,
 			options: [...IMAGES_ACTIONS],
 		}),
 	};
 	static flags = {
-		json: Flags.boolean({ description: "Output one JSON document" }),
-		apply: Flags.boolean({ description: "Apply purge deletions (default is dry-run)" }),
-		all: Flags.boolean({ description: "Purge all entries instead of expired entries only" }),
-		dir: Flags.string({ description: "Project directory (default: current directory)" }),
-		timeout: Flags.integer({ description: "External health probe timeout in seconds" }),
+		json: Flags.boolean({ description: "输出一个 JSON 文档" }),
+		apply: Flags.boolean({ description: "应用 purge 删除操作（默认为 dry-run）" }),
+		all: Flags.boolean({ description: "清除所有条目，而非仅清除过期条目" }),
+		dir: Flags.string({ description: "项目目录（默认：当前目录）" }),
+		timeout: Flags.integer({ description: "外部健康探测超时时间（秒）" }),
 	};
 	static examples = [
 		"omp images",

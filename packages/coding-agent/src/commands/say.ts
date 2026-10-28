@@ -28,15 +28,15 @@ import { cfgTtsLocalSpeed, cfgTtsLocalVoice } from "../tts/settings";
 export default class Say extends Command {
 	static description = commandHelp.description;
 	static args = {
-		text: Args.string({ description: "Text to speak (or use --file)" }),
+		text: Args.string({ description: "要朗读的文本(或使用 --file)" }),
 	};
 
 	static flags = {
-		voice: Flags.string({ description: "Voice id", options: TTS_LOCAL_VOICE_VALUES }),
-		speed: Flags.string({ description: "Speaking rate, 0.5–2.5 (1 = normal; default: tts.localSpeed)" }),
-		model: Flags.string({ description: "Local TTS model key" }),
-		file: Flags.string({ char: "f", description: "Read the text to speak from this file" }),
-		out: Flags.string({ char: "o", description: "Write WAV to this path instead of playing" }),
+		voice: Flags.string({ description: "语音 id", options: TTS_LOCAL_VOICE_VALUES }),
+		speed: Flags.string({ description: "语速，范围为 0.5–2.5（1 = 正常；默认值：tts.localSpeed）" }),
+		model: Flags.string({ description: "本地 TTS 模型键" }),
+		file: Flags.string({ char: "f", description: "从该文件读取要朗读的文本" }),
+		out: Flags.string({ char: "o", description: "将 WAV 写入该路径而不是播放" }),
 	};
 
 	static examples = [

@@ -2330,23 +2330,23 @@ export async function runUpdateCommand(opts: {
  * Print update command help.
  */
 export function printUpdateHelp(): void {
-	console.log(`${chalk.bold(`${APP_NAME} update`)} - Check for and install updates
+	console.log(`${chalk.bold(`${APP_NAME} update`)} - 检查并安装更新
 
 ${chalk.bold("Usage:")}
   ${APP_NAME} update [options]
 
 ${chalk.bold("Options:")}
-  -c, --check     Check for updates without installing
-  -f, --force     Force reinstall even if up to date
-  -l, --plugins   Update installed plugins
-  --canary        Switch to the canary channel and update
-  --stable        Switch back to the stable channel
+  -c, --check     检查更新但不安装
+  -f, --force     即使是最新版本也强制重新安装
+  -l, --plugins   更新已安装的插件
+  --canary        切换到 canary 通道并更新
+  --stable        切换回 stable 通道
 
 ${chalk.bold("Examples:")}
-  ${APP_NAME} update              Update to latest version
-  ${APP_NAME} update --check      Check if updates are available
-  ${APP_NAME} update --force      Force reinstall
-  ${APP_NAME} update -l           Update installed plugins
-  ${APP_NAME} update --canary    Switch to the canary channel and update
+  ${APP_NAME} update              更新至最新版本
+  ${APP_NAME} update --check      检查是否有可用更新
+  ${APP_NAME} update --force      强制重新安装
+  ${APP_NAME} update -l           更新已安装的插件
+  ${APP_NAME} update --canary    切换到 canary 通道并更新
 `);
 }

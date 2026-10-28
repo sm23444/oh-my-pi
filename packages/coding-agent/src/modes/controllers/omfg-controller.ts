@@ -75,7 +75,7 @@ export class OmfgController {
 
 		const model = this.ctx.session.model;
 		if (!model) {
-			this.ctx.showError("No active model available for /omfg.");
+			this.ctx.showError("没有可用于 /omfg. 的活动模型。");
 			return;
 		}
 

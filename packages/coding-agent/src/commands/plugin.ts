@@ -27,31 +27,31 @@ export default class Plugin extends Command {
 	static aliases = ["plugins"];
 	static args = {
 		action: Args.string({
-			description: "Plugin action",
+			description: "插件操作",
 			required: false,
 			options: ACTIONS,
 		}),
 		targets: Args.string({
-			description: "Packages, paths, or plugin names",
+			description: "包、路径或插件名称",
 			required: false,
 			multiple: true,
 		}),
 	};
 
 	static flags = {
-		json: Flags.boolean({ description: "Output JSON" }),
-		fix: Flags.boolean({ description: "Attempt to fix issues (doctor)" }),
-		force: Flags.boolean({ description: "Force install" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
+		fix: Flags.boolean({ description: "尝试修复问题(doctor)" }),
+		force: Flags.boolean({ description: "强制安装" }),
 		"dry-run": Flags.boolean({
 			description:
-				"Show actions without applying changes (install, uninstall, link, upgrade of marketplace plugins)",
+				"仅显示操作而不实际应用更改（安装、卸载、链接、升级市场插件）",
 		}),
-		local: Flags.boolean({ char: "l", description: "Operate on local plugin directory" }),
-		enable: Flags.string({ description: "Enable a feature" }),
-		disable: Flags.string({ description: "Disable a feature" }),
-		set: Flags.string({ description: "Set plugin config (key=value)" }),
+		local: Flags.boolean({ char: "l", description: "操作本地插件目录" }),
+		enable: Flags.string({ description: "启用某个功能" }),
+		disable: Flags.string({ description: "禁用某个功能" }),
+		set: Flags.string({ description: "设置插件配置(key=value)" }),
 		scope: Flags.string({
-			description: 'Install scope: "user" (default) or "project"',
+			description: "安装范围:\"user\"(默认)或 \"project\"",
 			options: ["user", "project"],
 		}),
 	};

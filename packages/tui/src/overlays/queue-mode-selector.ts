@@ -22,10 +22,10 @@ export class QueueModeSelectorComponent extends OverlayPanel {
 		const queueModes: SelectItem[] = [
 			{
 				value: "one-at-a-time",
-				label: "one-at-a-time",
-				description: "Process queued messages one by one (recommended)",
+				label: "逐条处理",
+				description: "逐条处理排队的消息（推荐）",
 			},
-			{ value: "all", label: "all", description: "Process all queued messages at once" },
+			{ value: "all", label: "全部", description: "一次性处理所有排队的消息" },
 		];
 
 		// Create selector
@@ -47,8 +47,8 @@ export class QueueModeSelectorComponent extends OverlayPanel {
 
 		this.addChild(this.#selectList);
 		this.#sheet = new SelectListSheet(this.#selectList, {
-			title: "Queue mode",
-			subtitle: "How messages you send while omp works are delivered",
+			title: "队列模式",
+			subtitle: "omp 工作时发送消息的送达方式",
 			icon: "list",
 			noun: "modes",
 			current: [currentMode],
@@ -56,11 +56,11 @@ export class QueueModeSelectorComponent extends OverlayPanel {
 			decorate: item =>
 				item.value === "one-at-a-time"
 					? {
-							label: "One at a time",
-							detail: "Each queued message gets its own turn",
+							label: "一次一条",
+							detail: "每条排队消息各自占用一轮",
 							badges: [{ text: "recommended" }],
 						}
-					: { label: "All at once", detail: "Queued messages are sent together in one turn" },
+					: { label: "一次性全部发送", detail: "排队消息会在同一轮中一起发送" },
 		});
 	}
 

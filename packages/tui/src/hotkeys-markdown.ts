@@ -91,7 +91,7 @@ function hotkeyGroups(bindings: HotkeysMarkdownBindings): HotkeyGroup[] {
 	}
 	const groups: HotkeyGroup[] = [
 		{
-			title: "Navigation",
+			title: "导航",
 			rows: [
 				{
 					keys: [hints(["up", "down", "left", "right"])],
@@ -106,7 +106,7 @@ function hotkeyGroups(bindings: HotkeysMarkdownBindings): HotkeyGroup[] {
 			],
 		},
 		{
-			title: "Editing",
+			title: "编辑",
 			rows: [
 				{ keys: [hints(["enter"])], action: "Send message" },
 				{ keys: [hints(["shift+enter", "alt+enter"])], action: "New line" },
@@ -118,7 +118,7 @@ function hotkeyGroups(bindings: HotkeysMarkdownBindings): HotkeyGroup[] {
 			],
 		},
 		{
-			title: "Other",
+			title: "其他",
 			rows: [
 				{ keys: [hints(["tab"])], action: "Path completion / accept autocomplete" },
 				{ keys: [act("app.interrupt")], action: "Cancel autocomplete / interrupt active work" },

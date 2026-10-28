@@ -243,14 +243,14 @@ export class CleanseBoardModel {
 		const value = this.#repairDone / this.#repairTotal;
 		const label = `${this.#repairDone}/${this.#repairTotal}`;
 		const children: NativeNode[] = [
-			node("spinner", { label: "Repairing", tone: "accent" }),
+			node("spinner", { label: "正在修复", tone: "accent" }),
 			meter
 				? node("meter", {
 						value,
 						style: "bar",
 						size: "md",
-						label: `${label} lanes`,
-						title: `${this.#repairDone} of ${this.#repairTotal} repair lanes finished`,
+						label: `${label} 条通道`,
+						title: `修复通道已完成 ${this.#repairDone}/${this.#repairTotal} 条`,
 						role: "omp.cleanse.meter",
 					})
 				: node("progress", { value, label, tone: "accent" }),

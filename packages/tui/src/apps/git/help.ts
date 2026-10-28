@@ -24,44 +24,44 @@ interface Shortcut {
 
 const GROUPS: readonly { readonly title: string; readonly rows: readonly Shortcut[] }[] = [
 	{
-		title: "Move",
+		title: "移动",
 		rows: [
-			{ keys: ["up", "down"], label: "Move the selection" },
-			{ keys: ["left", "right"], label: "Fold or unfold a folder or section" },
-			{ keys: ["enter"], label: "Open the file in the diff" },
-			{ keys: ["tab"], label: "Switch between the diff and the changes" },
-			{ keys: ["]", "["], label: "Next or previous file" },
-			{ keys: ["alt+down", "alt+up"], label: "Next or previous change" },
-			{ keys: ["g", "shift+g"], label: "First or last row" },
+			{ keys: ["up", "down"], label: "移动所选内容" },
+			{ keys: ["left", "right"], label: "折叠或展开文件夹或部分" },
+			{ keys: ["enter"], label: "在差异中打开文件" },
+			{ keys: ["tab"], label: "在差异和更改之间切换" },
+			{ keys: ["]", "["], label: "下一个或上一个文件" },
+			{ keys: ["alt+down", "alt+up"], label: "下一个或上一个更改" },
+			{ keys: ["g", "shift+g"], label: "首行或末行" },
 		],
 	},
 	{
-		title: "Stage",
+		title: "暂存",
 		rows: [
-			{ keys: ["space"], label: "Stage or unstage the row" },
-			{ keys: ["s", "u"], label: "Stage or unstage (the hunk or selected lines in the diff)" },
-			{ keys: ["shift+up", "shift+down"], label: "Select lines in the diff" },
-			{ keys: ["x"], label: "Discard the hunk or selected lines (press twice)" },
-			{ keys: ["delete"], label: "Discard the file or folder (press twice)" },
+			{ keys: ["space"], label: "暂存或取消暂存该行" },
+			{ keys: ["s", "u"], label: "暂存或取消暂存（差异中的代码块或所选行）" },
+			{ keys: ["shift+up", "shift+down"], label: "在差异中选择行" },
+			{ keys: ["x"], label: "丢弃代码块或所选行（按两次）" },
+			{ keys: ["delete"], label: "丢弃文件或文件夹（按两次）" },
 		],
 	},
 	{
-		title: "View",
+		title: "只读",
 		rows: [
-			{ keys: ["v"], label: "Cycle the diff view" },
-			{ keys: ["1", "2", "3", "4"], label: "File, split, inline or hunk view" },
-			{ keys: ["w"], label: "Wrap long lines" },
-			{ keys: ["b"], label: "Ignore whitespace, then formatting" },
-			{ keys: ["t"], label: "Paths or folder tree" },
-			{ keys: ["r"], label: "Refresh" },
+			{ keys: ["v"], label: "循环切换差异视图" },
+			{ keys: ["1", "2", "3", "4"], label: "文件、拆分、内联或代码块视图" },
+			{ keys: ["w"], label: "自动换行" },
+			{ keys: ["b"], label: "忽略空白，然后格式化" },
+			{ keys: ["t"], label: "路径或文件夹树" },
+			{ keys: ["r"], label: "刷新" },
 		],
 	},
 	{
-		title: "Commit",
+		title: "提交",
 		rows: [
-			{ keys: ["c"], label: "Write the commit message (empty: generate one)" },
-			{ keys: ["escape"], label: "Leave the field" },
-			{ keys: ["q"], label: "Quit" },
+			{ keys: ["c"], label: "填写提交信息（留空：自动生成）" },
+			{ keys: ["escape"], label: "离开该字段" },
+			{ keys: ["q"], label: "退出" },
 		],
 	},
 ];
@@ -119,7 +119,7 @@ export class GitHelpSheet implements Component {
 		const keyWidth = Math.max(
 			...GROUPS.flatMap(group => group.rows.map(row => visibleWidth(row.keys.map(formatKeyHint).join(" ")))),
 		);
-		const lines = [truncateToWidth(` ${theme.bold("Keyboard shortcuts")}`, width), ""];
+		const lines = [truncateToWidth(` ${theme.bold("键盘快捷键")}`, width), ""];
 		for (const group of GROUPS) {
 			lines.push(truncateToWidth(` ${theme.fg("muted", group.title)}`, width));
 			for (const row of group.rows) {
@@ -129,7 +129,7 @@ export class GitHelpSheet implements Component {
 			}
 			lines.push("");
 		}
-		lines.push(truncateToWidth(` ${theme.fg("dim", `${formatKeyHint("escape")} close`)}`, width));
+		lines.push(truncateToWidth(` ${theme.fg("dim", `${formatKeyHint("escape")} 关闭`)}`, width));
 		return lines;
 	}
 

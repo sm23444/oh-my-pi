@@ -9,12 +9,12 @@ export default class Play extends Command {
 	static description = commandHelp.description;
 
 	static args = {
-		file: Args.string({ description: "Recording to play (default: the newest /record capture)" }),
+		file: Args.string({ description: "要播放的录制内容（默认：最新的 /record 捕获）" }),
 	};
 
 	static flags = {
-		speed: Flags.string({ char: "s", description: "Playback speed multiplier (default: 1)" }),
-		"idle-limit": Flags.string({ char: "i", description: "Cap pauses between frames to this many seconds" }),
+		speed: Flags.string({ char: "s", description: "播放速度倍数（默认：1）" }),
+		"idle-limit": Flags.string({ char: "i", description: "将帧之间的暂停限制为不超过指定秒数" }),
 	};
 
 	static examples = ["omp play", "omp play /tmp/omp-recordings/2026-09-22T10-00-00-1a2b3c4d.ompcast -s 2 -i 1"];

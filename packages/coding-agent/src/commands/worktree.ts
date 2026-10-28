@@ -15,17 +15,17 @@ export default class Worktree extends Command {
 	static args = {
 		// A positional action keeps `omp worktree` (the no-arg form) useful.
 		action: Args.string({
-			description: "list (default), clear, or add",
+			description: "列出（默认）、清除或添加",
 			required: false,
 			options: ["list", "clear", "add"],
 			default: "list",
 		}),
 		path: Args.string({
-			description: "Worktree path (add)",
+			description: "工作树路径（添加）",
 			required: false,
 		}),
 		commit: Args.string({
-			description: "Commit-ish to check out (add)",
+			description: "要检出的提交（添加）",
 			required: false,
 		}),
 	};
@@ -33,38 +33,38 @@ export default class Worktree extends Command {
 	static flags = {
 		cwd: Flags.string({
 			char: "C",
-			description: "Repository/base directory (add)",
+			description: "Repository/base 目录（添加）",
 		}),
 		branch: Flags.string({
 			char: "b",
-			description: "Create a new branch (add)",
+			description: "创建新分支 (add)",
 			exclusive: ["force-branch"],
 		}),
 		"force-branch": Flags.string({
 			char: "B",
-			description: "Create or reset a branch (add)",
+			description: "创建或重置分支 (add)",
 			exclusive: ["branch"],
 		}),
 		detach: Flags.boolean({
 			char: "d",
-			description: "Detach HEAD (add)",
+			description: "分离 HEAD (add)",
 			default: false,
 		}),
 		quiet: Flags.boolean({
 			char: "q",
-			description: "Suppress add output",
+			description: "隐藏 add 输出",
 			default: false,
 		}),
 		all: Flags.boolean({
-			description: "Clear every entry, including live PR-checkout worktrees (clear)",
+			description: "清除所有条目,包括正在使用的 PR 检出 worktree(clear)",
 			default: false,
 		}),
 		"dry-run": Flags.boolean({
 			char: "n",
-			description: "Print what would be removed without touching the filesystem (clear)",
+			description: "打印将被移除的内容而不触碰文件系统(clear)",
 			default: false,
 		}),
-		json: Flags.boolean({ char: "j", description: "Emit machine-readable JSON", default: false }),
+		json: Flags.boolean({ char: "j", description: "输出机器可读的 JSON", default: false }),
 	};
 
 	static examples = [
@@ -85,7 +85,7 @@ export default class Worktree extends Command {
 		// its worktrees under the configured base.
 		if (args.action === "add") {
 			if (!args.path) {
-				console.error("Error: Missing required argument: path");
+				console.error("错误：缺少必需参数：path");
 				process.exitCode = 1;
 				return;
 			}

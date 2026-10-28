@@ -439,7 +439,7 @@ export class SelectorController {
 			provider => authStorage.usage.providerFor(provider) !== undefined,
 		);
 		if (reports.length === 0 && accounts.length === 0) {
-			this.ctx.showWarning("No usage data available.");
+			this.ctx.showWarning("暂无使用数据。");
 			return;
 		}
 		const unavailableAccounts = collectUnreportedAccounts(reports, accounts).map(account => ({
@@ -495,7 +495,7 @@ export class SelectorController {
 			const dirs = { projectDir, agentDir };
 			const initialDoc = await loadWatchdogConfigFile(await resolveAdvisorConfigEditPath(initialScope, dirs));
 			if (initialDoc.warnings?.length) {
-				this.ctx.showWarning(`WATCHDOG.yml: ${sanitizeDisplayWarnings(initialDoc.warnings).join("; ")}`);
+				this.ctx.showWarning(`WATCHDOG.yml 文件：${sanitizeDisplayWarnings(initialDoc.warnings).join("; ")}`);
 			}
 			// Fullscreen editor on the alternate screen (the /settings idiom): the
 			// overlay holds the alt buffer + mouse tracking; the transcript stays put.
@@ -542,7 +542,7 @@ export class SelectorController {
 					);
 					this.ctx.statusLine.invalidate();
 					if (discovered.warnings.length > 0) {
-						this.ctx.showWarning(`WATCHDOG.yml: ${sanitizeDisplayWarnings(discovered.warnings).join("; ")}`);
+						this.ctx.showWarning(`警告：WATCHDOG.yml: ${sanitizeDisplayWarnings(discovered.warnings).join("; ")}`);
 					}
 					this.ctx.showStatus(
 						count > 0
@@ -1732,7 +1732,7 @@ export class SelectorController {
 	async #reanswerAsk(questions: AskToolInput["questions"]): Promise<AgentToolResult<AskToolDetails> | undefined> {
 		const uiContext = this.ctx.getToolUIContext();
 		if (!uiContext) {
-			this.ctx.showError("Ask tool UI is not ready");
+			this.ctx.showError("Ask 工具界面尚未就绪");
 			return undefined;
 		}
 		const toolSession: ToolSession = {
@@ -1760,7 +1760,7 @@ export class SelectorController {
 		// user's intent to chat (roboomp review on #5895).
 		if (result.details?.chatRedirect) {
 			this.ctx.showError(
-				"Chat about this isn't available when re-answering from the tree — pick an option or type a custom answer instead.",
+				"从树中重新回答时，无法就此聊天——请选择一个选项或输入自定义答案。",
 			);
 			return undefined;
 		}
@@ -1780,12 +1780,12 @@ export class SelectorController {
 				foreignSessions = await store.list();
 			} catch (error) {
 				this.ctx.showError(
-					`Failed to list ${sourceName} sessions: ${error instanceof Error ? error.message : String(error)}`,
+					`列出 ${sourceName} 会话失败：${error instanceof Error ? error.message : String(error)}`,
 				);
 				return;
 			}
 			if (foreignSessions.length === 0) {
-				this.ctx.showWarning(`No ${sourceName} sessions found`);
+				this.ctx.showWarning(`未找到 ${sourceName} 会话`);
 				return;
 			}
 			const foreignByPath = new Map(foreignSessions.map(session => [session.path, session]));
@@ -1795,7 +1795,7 @@ export class SelectorController {
 					await this.ctx.settings.flush();
 				} catch (error) {
 					this.ctx.showError(
-						`Failed to save pending settings: ${error instanceof Error ? error.message : String(error)}`,
+						`保存待处理设置失败：${error instanceof Error ? error.message : String(error)}`,
 					);
 					return false;
 				}
@@ -1811,7 +1811,7 @@ export class SelectorController {
 				return await this.handleResumeSession(sessionFile, { settingsFlushed: true });
 			};
 			selectorOptions = {
-				title: `Import ${sourceName} Session`,
+				title: `导入 ${sourceName} 会话`,
 				scopeLabel: false,
 				showCwd: true,
 			};
@@ -1849,9 +1849,42 @@ export class SelectorController {
 									);
 								}
 							},
+							onRename: async (session: SessionInfo, title: string): Promise<string | null> => {
+								if (this.ctx.sessionManager.getSessionFile() === session.path) {
+									// A session that has only been read does not hold
+									// its ownership lease, so another omp process can
+									// claim it; the live rename would then fork onto
+									// a sibling and still report success, leaving the
+									// row here pointing at the old path. Claim the
+									// lease up front and refuse while it is held by
+									// someone else.
+									const claim = new FileSessionStorage().claimSession(session.id, session.path);
+									if (!claim) {
+										throw new Error(
+											"Failed to rename session: it is currently in use by another omp process",
+										);
+									}
+									try {
+										const renamed = await this.ctx.sessionManager.setSessionName(title, "user");
+										return renamed ? (this.ctx.sessionManager.getSessionName() ?? null) : null;
+									} finally {
+										claim();
+									}
+								}
+								const renamed = await SessionManager.renameSessionTitle(session.path, title, {
+									cwd: session.cwd,
+								});
+								// The picker renders the failure itself; throwing
+								// hands it the reason so it can show one message
+								// instead of two.
+								if (!renamed) {
+									throw new Error("Failed to rename session: it is currently in use or no longer available");
+								}
+								return renamed;
+							},
 						}
 					: {
-							title: "Select a Session to Consult",
+							title: "选择要查阅的会话",
 							actionLabel: "Select",
 							scopeLabel: false,
 							showCwd: true,
@@ -1972,7 +2005,7 @@ export class SelectorController {
 			try {
 				await this.ctx.settings.flush();
 			} catch (err) {
-				this.ctx.showError(`Failed to save pending settings: ${err instanceof Error ? err.message : String(err)}`);
+				this.ctx.showError(`保存待处理设置失败：${err instanceof Error ? err.message : String(err)}`);
 				return false;
 			}
 		}
@@ -2043,7 +2076,7 @@ export class SelectorController {
 			return { sessionPath: movedPath, movedFrom: info.cwd };
 		} catch (error) {
 			this.ctx.showError(
-				`Could not move the session out of removed worktree ${shortenPath(info.cwd)}: ${error instanceof Error ? error.message : String(error)}`,
+				`无法将会话移出已移除的工作树 ${shortenPath(info.cwd)}：${error instanceof Error ? error.message : String(error)}`,
 			);
 			return undefined;
 		}
@@ -2052,7 +2085,7 @@ export class SelectorController {
 	async handleSessionDeleteCommand(): Promise<void> {
 		const sessionFile = this.ctx.sessionManager.getSessionFile();
 		if (!sessionFile) {
-			this.ctx.showError("No session file to delete (in-memory session)");
+			this.ctx.showError("无可删除的会话文件(内存会话)");
 			return;
 		}
 
@@ -2060,7 +2093,7 @@ export class SelectorController {
 		const storage = new FileSessionStorage();
 		const fileExists = await storage.exists(sessionFile);
 		if (!fileExists) {
-			this.ctx.showError("Session has not been saved yet");
+			this.ctx.showError("会话尚未保存");
 			return;
 		}
 
@@ -2171,13 +2204,13 @@ export class SelectorController {
 				new Text(
 					theme.fg(
 						"success",
-						`${theme.status.success} Successfully logged in to ${providerId}${who ? ` as ${who}` : ""}`,
+						`${theme.status.success} 成功登录到 ${providerId}${who ? ` as ${who}` : ""}`,
 					),
 					1,
 					0,
 				),
 			);
-			block.addChild(new Text(theme.fg("dim", `Credentials saved to ${getAgentDbPath()}`), 1, 0));
+			block.addChild(new Text(theme.fg("dim", `凭据已保存到 ${getAgentDbPath()}`), 1, 0));
 			this.ctx.present(block);
 			return true;
 		} catch (error: unknown) {
@@ -2186,7 +2219,7 @@ export class SelectorController {
 				// surfaced "Login cancelled".
 				return false;
 			}
-			this.ctx.showError(`Login failed: ${error instanceof Error ? error.message : String(error)}`);
+			this.ctx.showError(`登录失败：${error instanceof Error ? error.message : String(error)}`);
 			return false;
 		} finally {
 			restoreEditor();
@@ -2202,7 +2235,7 @@ export class SelectorController {
 				this.ctx.session.sessionId,
 			);
 			if (!removed) {
-				this.ctx.showError(`Logout skipped: ${account.label} is no longer stored for ${providerId}.`);
+				this.ctx.showError(`已跳过注销：${account.label} 不再由 ${providerId} 保存。`);
 				return;
 			}
 
@@ -2211,21 +2244,21 @@ export class SelectorController {
 				new Text(
 					theme.fg(
 						"success",
-						`${theme.status.success} Successfully logged out ${account.label} from ${providerId}`,
+						`${theme.status.success} 成功将 ${account.label} 从 ${providerId} 注销`,
 					),
 					1,
 					0,
 				),
 			);
-			block.addChild(new Text(theme.fg("dim", `Credential removed from ${getAgentDbPath()}`), 1, 0));
+			block.addChild(new Text(theme.fg("dim", `凭据已从 ${getAgentDbPath()} 移除`), 1, 0));
 			if (remainingSource) {
 				block.addChild(
-					new Text(theme.fg("warning", `${providerId} is still authenticated via ${remainingSource}`), 1, 0),
+					new Text(theme.fg("warning", `${providerId} 仍通过 ${remainingSource} 进行身份验证`), 1, 0),
 				);
 			}
 			this.ctx.present(block);
 		} catch (error: unknown) {
-			this.ctx.showError(`Logout failed: ${error instanceof Error ? error.message : String(error)}`);
+			this.ctx.showError(`注销失败：${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -2236,7 +2269,7 @@ export class SelectorController {
 			accounts = await listLogoutAccounts(authStorage, providerId, this.ctx.session.sessionId);
 		} catch (error: unknown) {
 			this.ctx.showError(
-				`Could not load stored credentials: ${error instanceof Error ? error.message : String(error)}`,
+				`无法加载已存储的凭据：${error instanceof Error ? error.message : String(error)}`,
 			);
 			return;
 		}
@@ -2248,7 +2281,7 @@ export class SelectorController {
 				this.ctx.session.sessionId,
 			);
 			const suffix = source ? ` Current auth comes from ${source}; remove that source to log out.` : "";
-			this.ctx.showError(`Logout skipped: no stored credentials for ${providerId}.${suffix}`);
+			this.ctx.showError(`已跳过注销：没有为 ${providerId} 存储的凭据。${suffix}`);
 			return;
 		}
 
@@ -2340,7 +2373,7 @@ export class SelectorController {
 			accountList = await session.listCurrentProviderOAuthAccounts();
 		} catch (error) {
 			this.ctx.showError(
-				`Could not load provider accounts: ${error instanceof Error ? error.message : String(error)}`,
+				`无法加载提供商账户：${error instanceof Error ? error.message : String(error)}`,
 			);
 			return;
 		}
@@ -2369,7 +2402,7 @@ export class SelectorController {
 				account => {
 					done();
 					if (!session.pinCurrentProviderOAuthAccount(account.credentialId)) {
-						this.ctx.showWarning(`${account.label} is no longer available to pin.`);
+						this.ctx.showWarning(`${account.label} 不再可用于固定。`);
 						return;
 					}
 					this.ctx.showStatus(`Pinned ${account.label} to this session for ${providerName}.`);

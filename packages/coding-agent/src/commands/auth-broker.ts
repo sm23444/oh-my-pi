@@ -16,42 +16,42 @@ export default class AuthBroker extends Command {
 	static description = commandHelp.description;
 	static args = {
 		action: Args.string({
-			description: "Sub-command",
+			description: "子命令",
 			required: false,
 			options: [...AUTH_BROKER_ACTIONS],
 		}),
 		// Second positional: provider id (login/logout) or filesystem path (import).
 		source: Args.string({
-			description: "OAuth provider id (login/logout) or path (import)",
+			description: "OAuth 提供商 id(login/logout)或路径(import)",
 			required: false,
 		}),
 	};
 
 	static flags = {
-		json: Flags.boolean({ description: "Output JSON" }),
-		bind: Flags.string({ description: "Bind address for `serve` (host:port)", char: "b" }),
-		regenerate: Flags.boolean({ description: "Regenerate the bearer token" }),
+		json: Flags.boolean({ description: "以 JSON 输出" }),
+		bind: Flags.string({ description: "`serve` 的绑定地址(host:port)", char: "b" }),
+		regenerate: Flags.boolean({ description: "重新生成 bearer token" }),
 		via: Flags.string({
-			description: "SSH user@host for remote login (login --via=user@host)",
+			description: "远程登录使用的 SSH user@host(login --via=user@host)",
 		}),
 		provider: Flags.string({
-			description: "Override provider id for `import` (e.g. when JSON `type` is unrecognized)",
+			description: "为 `import` 覆盖提供商 ID（e.g，当 JSON `type` 无法识别时）",
 		}),
 		"include-disabled": Flags.boolean({
-			description: "Import credentials whose JSON has `disabled: true` (import)",
+			description: "导入 JSON 中 `disabled: true` 的凭据(import)",
 		}),
 		"from-local": Flags.boolean({
-			description: "migrate source: local SQLite + env vars (required for `migrate`)",
+			description: "迁移来源:本地 SQLite + 环境变量(`migrate` 必需)",
 		}),
 		"include-env": Flags.boolean({
-			description: "Capture env-var API keys for providers not yet on broker (migrate)",
+			description: "捕获尚未接入 broker 的提供商的 env 环境变量 API 密钥(migrate)",
 		}),
 		"include-oauth": Flags.boolean({
-			description: "Also upload OAuth from local SQLite during migrate (default skips them)",
+			description: "migrate 期间同时上传本地 SQLite 中的 OAuth(默认跳过)",
 		}),
-		"dry-run": Flags.boolean({ description: "Print actions without executing (import / login --via / migrate)" }),
+		"dry-run": Flags.boolean({ description: "只打印操作而不执行(import / login --via / migrate)" }),
 		"trust-proxy-headers": Flags.boolean({
-			description: "Trust forwarded peer IP headers from a reverse proxy (serve); off by default.",
+			description: "信任来自反向代理（serve）的转发对等 IP 标头；默认关闭。",
 		}),
 	};
 

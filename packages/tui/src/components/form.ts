@@ -443,7 +443,7 @@ export class SelectFormField extends FormField {
 		this.#sheet = new SelectListSheet(
 			selectList,
 			options.picker ?? {
-				title: options.label ?? "Select",
+				title: options.label ?? "选择",
 				...(options.description ? { subtitle: options.description } : {}),
 				searchable: true,
 			},

@@ -522,7 +522,7 @@ export class HookSelectorComponent extends OverlayPanel {
 		}
 
 		if (total === 0) {
-			rows.push({ text: theme.fg("dim", "  No matching options"), highlight: false });
+			rows.push({ text: theme.fg("dim", "  无匹配选项"), highlight: false });
 		}
 
 		if (startIndex > 0 || endIndex < total || this.#shouldRenderSearchStatus(renderWidth, mdTheme)) {
@@ -588,9 +588,9 @@ export class HookSelectorComponent extends OverlayPanel {
 			this.#menu.query.trim() && total !== this.#options.length
 				? `${selectedCount}/${total} of ${this.#options.length}`
 				: `${selectedCount}/${total}`;
-		if (!this.#menu.query.trim()) return theme.fg("dim", `  (${count})  Type to search`);
+		if (!this.#menu.query.trim()) return theme.fg("dim", `  (${count})  输入搜索`);
 		const field = this.#search.render(visibleWidth(this.#search.getValue()) + 1)[0] ?? "";
-		return `${theme.fg("dim", `  (${count})  Search: `)}${field}`;
+		return `${theme.fg("dim", `  (${count})  搜索： `)}${field}`;
 	}
 
 	/** Applies the search field's value to the filter. */
@@ -647,9 +647,9 @@ export class HookSelectorComponent extends OverlayPanel {
 			return;
 		}
 
-		if (matchesSelectUp(keyData) || (!this.#isSearchEnabled() && matchesKey(keyData, "k"))) {
+		if (matchesSelectUp(keyData)) {
 			this.#moveSelection(-1);
-		} else if (matchesSelectDown(keyData) || (!this.#isSearchEnabled() && matchesKey(keyData, "j"))) {
+		} else if (matchesSelectDown(keyData)) {
 			this.#moveSelection(1);
 		} else if (matchesKey(keyData, "enter") || matchesKey(keyData, "return") || keyData === "\n") {
 			const selected = this.#menu.selectedItem;
@@ -861,7 +861,7 @@ export class HookSelectorComponent extends OverlayPanel {
 				? node("text", { spans: [span(plainText(this.#helpText), "dim")], wrap: "word" }, undefined, "hints")
 				: hintsRow([
 						actionHint(["tui.select.up", "tui.select.down"], "navigate"),
-						{ keys: ENTER_KEYS, label: "select" },
+						{ keys: ENTER_KEYS, label: "选择" },
 						actionHint("tui.select.cancel", "cancel"),
 					]);
 		this.#nativeStatic = { title: plainInline(this.#baseTitle, mdTheme), detail, hints };

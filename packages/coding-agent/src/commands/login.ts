@@ -11,7 +11,7 @@ export default class Login extends Command {
 	static description = commandHelp.description;
 	static args = {
 		provider: Args.string({
-			description: "OAuth provider id (e.g. anthropic, openai-codex); omit to pick interactively",
+			description: "OAuth 提供商 ID（e.g。anthropic、openai-codex）；省略则以交互方式选择",
 			required: false,
 		}),
 	};

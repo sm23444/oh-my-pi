@@ -12,9 +12,9 @@ export default class Stream extends Command {
 	static description = commandHelp.description;
 
 	static flags = {
-		title: Flags.string({ description: "Stream title (defaults to the current directory name)" }),
-		server: Flags.string({ description: "Stream server base URL (overrides stream.serverUrl)" }),
-		"no-tui": Flags.boolean({ description: "Use the line-oriented console instead of the interactive TUI" }),
+		title: Flags.string({ description: "直播标题（默认为当前目录名）" }),
+		server: Flags.string({ description: "直播服务器基础 URL（覆盖 stream.serverUrl）" }),
+		"no-tui": Flags.boolean({ description: "使用面向行的控制台，而不是交互式 TUI" }),
 	};
 
 	static examples = [

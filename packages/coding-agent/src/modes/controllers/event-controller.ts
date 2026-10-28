@@ -180,6 +180,12 @@ function formatAsyncWaitLabel(jobIds: readonly string[]): string {
 	return `Waiting for ${jobIds.length} background jobs: ${listed}${more}`;
 }
 
+/** Render args for a live card: the harness strips `i` from executed args, but the stored block keeps it. */
+function renderArgsWithIntent(args: unknown, intent: string | undefined): unknown {
+	if (intent === undefined || !isRecord(args) || INTENT_FIELD in args) return args;
+	return { ...args, [INTENT_FIELD]: intent };
+}
+
 export class EventController {
 	#lastReadGroup: ReadToolGroupComponent | undefined = undefined;
 	/** Timestamp of the current turn's user prompt; drives the usage row's prompt→yield delta. */
@@ -390,6 +396,9 @@ export class EventController {
 			tool_execution_end: e => this.#handleToolExecutionEnd(e),
 			auto_compaction_start: e => this.#handleAutoCompactionStart(e),
 			auto_compaction_end: e => this.#handleAutoCompactionEnd(e),
+			// `/compact` drives its own loader (command-controller); these exist for RPC hosts.
+			manual_compaction_start: async () => {},
+			manual_compaction_end: async () => {},
 			auto_retry_start: e => this.#handleAutoRetryStart(e),
 			auto_retry_end: e => this.#handleAutoRetryEnd(e),
 			cache_warming_start: async () => {},
@@ -444,11 +453,13 @@ export class EventController {
 				this.ctx.ui.requestRender(true);
 			},
 			goal_updated: async () => {},
-			// The TUI already refreshes the pending-messages bar at every queue
-			// mutation call site (`updatePendingMessagesDisplay()` in ui-helpers.ts);
-			// this event exists for RPC/ACP clients that have no equivalent local
-			// call site to hook, so there is nothing additional to do here.
-			queue_update: async () => {},
+			// The pending-messages bar mirrors the queue snapshot this event carries.
+			// Refreshing only at the TUI's own call sites left pills of messages the
+			// agent drained by itself (live steering, a queued batch it delivered)
+			// standing above the prompt after they were sent.
+			queue_update: async () => {
+				this.ctx.updatePendingMessagesDisplay();
+			},
 		} satisfies AgentSessionEventHandlers;
 	}
 
@@ -1914,7 +1925,7 @@ export class EventController {
 			this.#resetReadGroup();
 			const component = new ToolExecutionComponent(
 				renderToolName,
-				event.args,
+				renderArgsWithIntent(event.args, event.intent),
 				{
 					useBuiltInRenderer: this.ctx.viewSession.hasBuiltInTool(renderToolName),
 					showImages: cfgTerminalShowImages.get(settings),
@@ -1952,7 +1963,7 @@ export class EventController {
 			this.#toolArgsReveal.finish(event.toolCallId);
 			const component = this.ctx.pendingTools.get(event.toolCallId);
 			if (component && typeof component.updateArgs === "function") {
-				component.updateArgs(event.args, event.toolCallId);
+				component.updateArgs(renderArgsWithIntent(event.args, event.intent), event.toolCallId);
 				if (typeof component.setArgsComplete === "function") {
 					component.setArgsComplete(event.toolCallId);
 				}
@@ -2223,7 +2234,7 @@ export class EventController {
 			// error stays full-fidelity for the transcript and for replays.
 			const detail = textContent ? previewLine(sanitizeText(textContent), TRUNCATE_LENGTHS.LINE) : "";
 			this.ctx.showWarning(
-				`Todo update failed${detail ? `: ${detail}` : ". Progress may be stale until todo succeeds."}`,
+				`待办事项更新失败${detail ? `: ${detail}` : ". Progress may be stale until todo succeeds."}`,
 				{ hideWithToolActivity: true },
 			);
 		}
@@ -2421,6 +2432,9 @@ export class EventController {
 		this.#settleWatchEpoch = undefined;
 		const session = this.ctx.session;
 		try {
+			// Ending this wait means "stay quiet until I prompt"; latch before awaiting the
+			// abort so a job finishing in between cannot start a turn.
+			session.suppressAutoResumeUntilPrompt();
 			await session.abort({ reason: USER_INTERRUPT_LABEL });
 			await this.#runSerialized(async () => {
 				if (this.ctx.session !== session || session.isStreaming) return;
@@ -2668,11 +2682,11 @@ export class EventController {
 			// Benign skip: no model selected, no candidate models available, or nothing
 			// to compact yet. Not a failure — suppress the warning.
 		} else if (isSnapcompactAction) {
-			this.ctx.showWarning("Auto-snapcompact maintenance failed; continuing without maintenance");
+			this.ctx.showWarning("自动快照压缩维护失败；继续而不进行维护");
 		} else if (isRemoteAction) {
-			this.ctx.showWarning("Auto server compaction failed; continuing without maintenance");
+			this.ctx.showWarning("自动服务器压缩失败；继续而不进行维护");
 		} else {
-			this.ctx.showWarning("Auto context-full maintenance failed; continuing without maintenance");
+			this.ctx.showWarning("自动上下文全量维护失败；继续而不进行维护");
 		}
 		await this.ctx.flushCompactionQueue({ willRetry: event.willRetry });
 		this.#ensureWorkingLoaderWhileStreaming();
@@ -2718,7 +2732,7 @@ export class EventController {
 		);
 		this.ctx.retryLoader.setWorkingRow(
 			() => ({
-				label: `Retrying · attempt ${event.attempt} of ${event.maxAttempts}`,
+				label: `正在重试 · 第 ${event.attempt} 次，共 ${event.maxAttempts} 次`,
 				startedAt: retryStartMs,
 				variant: { kind: "retry", attempt: event.attempt, max: event.maxAttempts, delayMs: event.delayMs },
 				interruptKey: this.ctx.maintenanceInterruptKey(),
@@ -2779,7 +2793,7 @@ export class EventController {
 				if (terminalError) this.ctx.showPinnedError(terminalError);
 				this.#restorePinnedErrorInline = true;
 			} else {
-				this.ctx.showError(`Retry failed after ${event.attempt} attempts: ${event.finalError || "Unknown error"}`);
+				this.ctx.showError(`重试在 ${event.attempt} 次尝试后失败：${event.finalError || "Unknown error"}`);
 			}
 		}
 		this.#ensureWorkingLoaderWhileStreaming();
@@ -2792,7 +2806,7 @@ export class EventController {
 		const reason = event.reason
 			? `\n${previewLine(sanitizeText(event.reason), TRUNCATE_LENGTHS.LINE * PREVIEW_LIMITS.COLLAPSED_LINES)}`
 			: "";
-		this.ctx.showWarning(`Fallback: ${event.from} -> ${event.to}${reason}`);
+		this.ctx.showWarning(`回退：${event.from} -> ${event.to}${reason}`);
 	}
 
 	async #handleRetryFallbackSucceeded(

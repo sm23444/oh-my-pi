@@ -16,8 +16,8 @@ export class ShowImagesSelectorComponent extends OverlayPanel {
 		super("Show Images", "omp.overlay.show-images");
 
 		const items: SelectItem[] = [
-			{ value: "yes", label: "Yes", description: "Show images inline in terminal" },
-			{ value: "no", label: "No", description: "Show text placeholder instead" },
+			{ value: "yes", label: "是", description: "在终端内联显示图片" },
+			{ value: "no", label: "否", description: "改为显示文本占位符" },
 		];
 
 		// Create selector
@@ -36,7 +36,7 @@ export class ShowImagesSelectorComponent extends OverlayPanel {
 
 		this.addChild(this.#selectList);
 		this.#sheet = new SelectListSheet(this.#selectList, {
-			title: "Show images",
+			title: "显示图片",
 			icon: "image",
 			noun: "options",
 			current: [currentValue ? "yes" : "no"],

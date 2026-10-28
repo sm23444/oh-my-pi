@@ -168,14 +168,14 @@ export class ApprovalDialogComponent implements Component {
 		const grants = this.options.grants ?? [];
 		const glyph = this.#rememberAlways ? theme.checkbox.checked : theme.checkbox.unchecked;
 		return [
-			...(grants.length > 0 ? [{ label: `${glyph} Remember across sessions`, answer: "remember" as const }] : []),
+			...(grants.length > 0 ? [{ label: `${glyph} 跨会话记住`, answer: "remember" as const }] : []),
 			...grants.map((grant, index) => ({
 				label: this.#rememberAlways ? grant.alwaysLabel : grant.label,
 				answer: `grant${index}` as const,
 			})),
-			{ label: grants.length > 0 ? "Approve Once" : "Approve", answer: "once" },
+			{ label: grants.length > 0 ? "批准一次" : "批准", answer: "once" },
 			...(this.options.session ? [{ label: this.options.session.label, answer: "session" as const }] : []),
-			{ label: "Deny", answer: "deny" },
+			{ label: "拒绝", answer: "deny" },
 		];
 	}
 
@@ -335,19 +335,19 @@ export class ApprovalDialogComponent implements Component {
 		const deny = actionButton("Deny", "deny", {
 			...(cancelKey ? { keys: cancelKey } : {}),
 			tone: "error",
-			title: `Deny this call${cancelKey ? `  ${formatTooltipKey(cancelKey)}` : ""}`,
+			title: `拒绝此调用${cancelKey ? `  ${formatTooltipKey(cancelKey)}` : ""}`,
 		});
 		const approve = actionButton(this.options.grants?.length ? "Approve Once" : "Approve", "approve", {
 			...(approveKey ? { keys: approveKey } : {}),
 			tone: "accent",
-			title: `Approve this call${approveKey ? `  ${formatTooltipKey(approveKey)}` : ""}`,
+			title: `批准此调用${approveKey ? `  ${formatTooltipKey(approveKey)}` : ""}`,
 		});
 		const expandKey = appToolsExpandKey();
 		const expand = this.#full
 			? [
 					actionButton(this.#expanded ? "Less" : "Details", "expand", {
 						keys: expandKey,
-						title: `${this.#expanded ? "Summarize" : "Show every detail of"} this call  ${formatTooltipKey(expandKey)}`,
+						title: `${this.#expanded ? "Summarize" : "Show every detail of"} 此调用  ${formatTooltipKey(expandKey)}`,
 					}),
 				]
 			: [];

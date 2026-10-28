@@ -130,8 +130,8 @@ export function buildOverviewRows(
 			});
 	}
 	rows.push(
-		{ key: "buffer", id: "buffer", label: "Auto-Compact Buffer", tokens: data.breakdown.autoCompactBufferTokens },
-		{ key: "free", id: "free", label: "Free Space", tokens: data.breakdown.freeTokens },
+		{ key: "buffer", id: "buffer", label: "自动压缩缓冲区", tokens: data.breakdown.autoCompactBufferTokens },
+		{ key: "free", id: "free", label: "可用空间", tokens: data.breakdown.freeTokens },
 	);
 	const tokenWidth = Math.max(...rows.map(row => (row.tokens === undefined ? 1 : formatNumber(row.tokens).length)));
 	const shareWidth = Math.max(
@@ -306,19 +306,19 @@ function contextMeterParts(
 		.map(category => ({
 			value: category.tokens / window,
 			token: category.color,
-			label: `${category.label} · ${formatNumber(category.tokens)} tokens (${percentString(category.tokens, window)})`,
+			label: `${category.label} · ${formatNumber(category.tokens)} 个 token（${percentString(category.tokens, window)}）`,
 		}));
 	parts.push({
 		value: breakdown.freeTokens / window,
 		token: "track",
-		label: `Free space · ${formatNumber(breakdown.freeTokens)} tokens (${percentString(breakdown.freeTokens, window)})`,
+		label: `可用空间 · ${formatNumber(breakdown.freeTokens)} 个 token（${percentString(breakdown.freeTokens, window)}）`,
 	});
 	if (breakdown.autoCompactBufferTokens > 0) {
 		parts.push({
 			value: breakdown.autoCompactBufferTokens / window,
 			token: "warning",
 			hatch: true,
-			label: `Autocompact buffer · ${formatNumber(breakdown.autoCompactBufferTokens)} tokens (${percentString(breakdown.autoCompactBufferTokens, window)})`,
+			label: `自动压缩缓冲区 · ${formatNumber(breakdown.autoCompactBufferTokens)} 个 token（${percentString(breakdown.autoCompactBufferTokens, window)}）`,
 		});
 	}
 	return parts;
@@ -337,7 +337,7 @@ export function contextUsageSummary(
 				: `${formatNumber(thresholdTokens - usedTokens)} left before auto-compaction at ${percentString(thresholdTokens, window, 0)}`;
 	return {
 		used: formatNumber(usedTokens),
-		detail: ` of ${formatNumber(window)} tokens · ${percentString(usedTokens, window, 0)}`,
+		detail: ` 共 ${formatNumber(window)} 个令牌 · ${percentString(usedTokens, window, 0)}`,
 		room,
 	};
 }
@@ -367,7 +367,7 @@ export function describeContextMeter(breakdown: ContextMeterData): [NativeNode, 
 					{
 						at: thresholdTokens / window,
 						tone: "warning" as const,
-						title: `Auto-compaction at ${percentString(thresholdTokens, window, 0)} · ${formatNumber(thresholdTokens)} tokens`,
+						title: `在 ${percentString(thresholdTokens, window, 0)} 自动压缩 · ${formatNumber(thresholdTokens)} 个令牌`,
 					},
 				]
 			: undefined;

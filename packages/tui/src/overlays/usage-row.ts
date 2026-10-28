@@ -101,7 +101,7 @@ export function formatTurnUsage(summary: TurnUsageSummary): { text: string; titl
 	const text = [time, `${formatNumber(tokens)} tok`, cost].filter(part => part !== undefined).join(" · ");
 	const exact = `${tokens.toLocaleString("en-US")} tokens (${summary.input.toLocaleString("en-US")} in · ${summary.output.toLocaleString("en-US")} out)`;
 	const title = [time, exact, cost].filter(part => part !== undefined).join(" · ");
-	return { text: `${text} this turn`, title: `This turn: ${title}` };
+	return { text: `${text} this turn`, title: `本轮：${title}` };
 }
 
 /** Output tokens per second over the whole request; undefined when the duration is too short to mean anything. */

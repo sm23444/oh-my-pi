@@ -13,7 +13,7 @@ export default class Join extends Command {
 	static description = commandHelp.description;
 	static args = {
 		link: Args.string({
-			description: "Collab link shared by the host (/collab)",
+			description: "主机共享的协作链接(/collab)",
 			required: true,
 		}),
 	};

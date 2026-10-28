@@ -115,11 +115,11 @@ interface BtwHistoryNativeMemo {
 }
 
 const STATUS: Record<BtwHistoryRecord["status"], { label: string; color: ThemeColor }> = {
-	running: { label: "Running", color: "accent" },
-	complete: { label: "Complete", color: "success" },
-	cancelled: { label: "Cancelled", color: "warning" },
-	error: { label: "Error", color: "error" },
-	interrupted: { label: "Interrupted", color: "warning" },
+	running: { label: "运行中", color: "accent" },
+	complete: { label: "已完成", color: "success" },
+	cancelled: { label: "已取消", color: "warning" },
+	error: { label: "出错", color: "error" },
+	interrupted: { label: "已中断", color: "warning" },
 };
 
 const SHEET = { role: "omp.overlay.btwHistory", anchor: "center", size: "lg", head: "BTW history" } as const;
@@ -327,7 +327,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 
 	#openComposer(record: BtwHistoryRecord): void {
 		const input = new Input();
-		input.prompt = theme.fg("accent", "Follow up: ");
+		input.prompt = theme.fg("accent", "追问：");
 		input.placeholder = "Ask about this answer…";
 		if (this.#options.spaceHoldKeys !== undefined) input.spaceHold.keys = this.#options.spaceHoldKeys;
 		input.spaceHold.handler = this.#options.spaceHold?.(input);
@@ -791,7 +791,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 		const rowSpan = width < 36 && height >= 2 ? 2 : 1;
 		this.#listHeight = Math.max(1, Math.floor(height / rowSpan));
 		if (this.#records.length === 0) {
-			return new Text(theme.fg("muted", "No side questions yet.\n\nUse /btw QUESTION to start one."), 0, 0)
+			return new Text(theme.fg("muted", "还没有侧边提问。\n\n用 /btw QUESTION 开始一个。"), 0, 0)
 				.render(width)
 				.slice(0, height);
 		}
@@ -863,22 +863,22 @@ export class BtwHistoryPanel implements Component, Focusable {
 				width,
 			),
 			"",
-			theme.bold(theme.fg("accent", "Question")),
+			theme.bold(theme.fg("accent", "问题")),
 			...question.render(width),
 			"",
-			theme.bold(theme.fg("accent", "Answer")),
+			theme.bold(theme.fg("accent", "回答")),
 		];
 		if (turn.answer.trim()) lines.push(...answer.render(width));
 		else
 			lines.push(
 				...wrapTextWithAnsi(
-					theme.fg("dim", turn.status === "running" ? "Waiting for response…" : "No answer text."),
+					theme.fg("dim", turn.status === "running" ? "正在等待响应…" : "没有回答内容。"),
 					width,
 				),
 			);
 		if (turn.error) lines.push("", ...wrapTextWithAnsi(theme.fg("error", sanitizeErrorLine(turn.error)), width));
 		if (turn.status === "interrupted")
-			lines.push("", ...wrapTextWithAnsi(theme.fg("muted", "Not resumed in this view."), width));
+			lines.push("", ...wrapTextWithAnsi(theme.fg("muted", "未在此视图中恢复。"), width));
 		return {
 			turn: {
 				question: turn.question,
@@ -902,7 +902,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 			const inner = Math.max(1, width - 1);
 			const lines: string[] = [];
 			if (record && this.#isCopied(record)) {
-				lines.push(...wrapTextWithAnsi(theme.fg("success", "✓ Copied to clipboard"), inner), "");
+				lines.push(...wrapTextWithAnsi(theme.fg("success", "✓ 已复制到剪贴板"), inner), "");
 			}
 			if (record) {
 				const turns = getDisplayTurns(record);
@@ -915,7 +915,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 				this.#turns.length = turns.length;
 			} else {
 				lines.push(
-					...wrapTextWithAnsi(theme.fg("muted", "No side questions yet. Use /btw QUESTION to start one."), inner),
+					...wrapTextWithAnsi(theme.fg("muted", "还没有侧边提问。用 /btw QUESTION 开始一个。"), inner),
 				);
 			}
 			this.#detailRecord = record;
@@ -969,7 +969,7 @@ export class BtwHistoryPanel implements Component, Focusable {
 			if (record && this.#canFollowUp(record)) actions.push(rawKeyHint(["f", "enter"], "follow up"));
 			if (record && getBtwCopyText(record) !== undefined) {
 				if (this.#isCopied(record))
-					actions.push(theme.fg("success", `✓ copied · ${formatKeyHint("c")} to copy again`));
+					actions.push(theme.fg("success", `✓ 已复制 · 按 ${formatKeyHint("c")} 再次复制`));
 				else actions.push(rawKeyHint("c", inner < 40 ? "copy" : "copy answer"));
 			}
 		}

@@ -122,7 +122,7 @@ function renderReadGroupFixtureState(state: GalleryFixtureState, width: number, 
 
 export const fsFixtures: Record<string, GalleryFixture> = {
 	read: {
-		label: "Read",
+		label: "读取",
 		// Streaming: path still being typed, selector not yet appended.
 		streamingArgs: { path: "packages/coding-agent/src/tools/glob" },
 		args: { path: "packages/coding-agent/src/tools/glob.ts:437-448" },
@@ -168,7 +168,7 @@ export const fsFixtures: Record<string, GalleryFixture> = {
 	},
 
 	read_group: {
-		label: "Read Groups",
+		label: "读取组",
 		args: {},
 		result: textResult("Rendered grouped read calls."),
 		errorResult: textResult("Rendered grouped read errors.", undefined, true),
@@ -176,7 +176,7 @@ export const fsFixtures: Record<string, GalleryFixture> = {
 	},
 
 	write: {
-		label: "Write",
+		label: "写入",
 		// Streaming: path known, content still arriving (only the imports so far).
 		streamingArgs: {
 			path: "packages/coding-agent/test/parse-sel.test.ts",
@@ -207,7 +207,7 @@ export const fsFixtures: Record<string, GalleryFixture> = {
 	},
 
 	glob: {
-		label: "Glob",
+		label: "查找",
 		// Streaming: glob half-typed, no limit yet.
 		streamingArgs: { path: "packages/coding-agent/src/tools/*-render" },
 		args: { path: "packages/coding-agent/src/**/*.test.ts", limit: 50 },

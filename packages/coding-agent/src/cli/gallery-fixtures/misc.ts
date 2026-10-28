@@ -3,7 +3,7 @@ import type { GalleryFixture } from "./types";
 
 export const miscFixtures: Record<string, GalleryFixture> = {
 	ask: {
-		label: "Ask",
+		label: "询问",
 		streamingArgs: {
 			questions: [
 				{
@@ -19,9 +19,9 @@ export const miscFixtures: Record<string, GalleryFixture> = {
 					id: "db",
 					question: "Which database should the new service use?",
 					options: [
-						{ label: "Postgres", description: "Relational, strong consistency, JSONB support" },
-						{ label: "SQLite", description: "Embedded, zero-ops, great for single-node" },
-						{ label: "MongoDB", description: "Document store, flexible schema" },
+						{ label: "Postgres", description: "关系型、强一致性、支持 JSONB" },
+						{ label: "SQLite", description: "嵌入式、零运维，适合单节点" },
+						{ label: "MongoDB", description: "文档存储，架构灵活" },
 					],
 					recommended: 0,
 				},
@@ -29,10 +29,10 @@ export const miscFixtures: Record<string, GalleryFixture> = {
 					id: "features",
 					question: "Which auth flows should ship in v1?",
 					options: [
-						{ label: "Email + password" },
-						{ label: "OAuth (Google, GitHub)" },
-						{ label: "Magic links" },
-						{ label: "SAML SSO", description: "Enterprise; can be deferred" },
+						{ label: "电子邮件 + 密码" },
+						{ label: "OAuth（谷歌、GitHub）" },
+						{ label: "魔法链接" },
+						{ label: "SAML SSO", description: "企业版功能；可以延后处理" },
 					],
 					multi: true,
 				},
@@ -110,7 +110,7 @@ export const miscFixtures: Record<string, GalleryFixture> = {
 	// Built-in tool with no dedicated renderer — exercises the generic fallback
 	// (`#formatToolExecution`) path so its padded, state-tinted block is QA'd.
 	report_tool_issue: {
-		label: "Report Tool Issue",
+		label: "报告工具问题",
 		streamingArgs: { tool: "lsp" },
 		args: {
 			tool: "lsp",
@@ -126,7 +126,7 @@ export const miscFixtures: Record<string, GalleryFixture> = {
 	// Stand-in for a custom/extension tool that ships no renderer — same generic
 	// fallback path most MCP/extension tools take.
 	custom: {
-		label: "Custom Tool",
+		label: "自定义工具",
 		streamingArgs: { query: "weather" },
 		args: { query: "weather in Tokyo", units: "metric" },
 		result: { content: [{ type: "text", text: "Tokyo: 22°C, partly cloudy, humidity 64%." }] },

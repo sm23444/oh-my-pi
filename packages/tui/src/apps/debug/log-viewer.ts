@@ -678,7 +678,7 @@ export class DebugLogViewerComponent implements Component {
 		this.#onError = options.onError;
 		this.#onUpdate = options.onUpdate;
 		this.#frame = new DebugViewerFrame({
-			title: "Recent Logs",
+			title: "最近日志",
 			getHeight: () => process.stdout.rows || this.#terminalRows || 24,
 			headerRows: 2,
 			footerRows: 2,
@@ -883,11 +883,11 @@ export class DebugLogViewerComponent implements Component {
 				const needle = query.toLowerCase();
 				for (const viewerRow of model.rows) {
 					if (viewerRow.kind === "warning") {
-						order.push({ group: "session", label: "This session" });
+						order.push({ group: "会话", label: "本次会话" });
 						continue;
 					}
 					if (viewerRow.kind === "load-older") {
-						items.push({ id: OLDER_ITEM, label: "Load older entries", tone: "muted" });
+						items.push({ id: OLDER_ITEM, label: "加载更早条目", tone: "muted" });
 						order.push(OLDER_ITEM);
 						continue;
 					}
@@ -915,7 +915,7 @@ export class DebugLogViewerComponent implements Component {
 					.join(" · ");
 				return picker(
 					{
-						title: "Recent logs",
+						title: "最近日志",
 						subtitle,
 						noun: "entries",
 						size: "lg",
@@ -1015,7 +1015,7 @@ export class DebugLogViewerComponent implements Component {
 		let anchor: DebugViewerFrameContent["body"]["anchor"];
 
 		if (rendered.length === 0) {
-			lines.push(theme.fg("muted", "no matches"));
+			lines.push(theme.fg("muted", "无匹配项"));
 			mapping.push(undefined);
 		} else {
 			for (const entry of rendered) {
@@ -1041,8 +1041,8 @@ export class DebugLogViewerComponent implements Component {
 	#summaryText(): string {
 		const selected = this.#model.getSelectedCount();
 		const expanded = this.#model.expandedCount;
-		const limitText = this.#model.historyLimitReached ? `  ${theme.fg("warning", "history limit reached")}` : "";
-		return `${theme.fg("muted", "showing")} ${theme.fg("accent", `${this.#model.visibleLogCount}/${this.#model.logCount}`)}  ${theme.fg("muted", "selected")} ${theme.fg(selected > 0 ? "accent" : "muted", String(selected))}  ${theme.fg("muted", "expanded")} ${theme.fg(expanded > 0 ? "accent" : "muted", String(expanded))}${limitText}`;
+		const limitText = this.#model.historyLimitReached ? `  ${theme.fg("warning", "已达到历史记录上限")}` : "";
+		return `${theme.fg("muted", "显示")} ${theme.fg("accent", `${this.#model.visibleLogCount}/${this.#model.logCount}`)}  ${theme.fg("muted", "已选")} ${theme.fg(selected > 0 ? "accent" : "muted", String(selected))}  ${theme.fg("muted", "已展开")} ${theme.fg(expanded > 0 ? "accent" : "muted", String(expanded))}${limitText}`;
 	}
 
 	#controlsText(): string {
@@ -1052,18 +1052,18 @@ export class DebugLogViewerComponent implements Component {
 	#filterText(): string {
 		const value = this.#filter.getValue();
 		const [field = ""] = this.#filter.render(visibleWidth(value) + 1);
-		const query = value.length === 0 ? field + theme.fg("muted", "type to filter") : theme.fg("accent", field);
+		const query = value.length === 0 ? field + theme.fg("muted", "输入以筛选") : theme.fg("accent", field);
 		const pidStatus = this.#model.isProcessFilterEnabled()
-			? theme.fg("success", "pid on")
-			: theme.fg("muted", "pid off");
-		const loading = this.#loadingOlder ? `  ${theme.fg("warning", "loading older…")}` : "";
-		return `${theme.fg("muted", "filter")} ${query}  ${pidStatus}${loading}`;
+			? theme.fg("success", "pid 开")
+			: theme.fg("muted", "pid 关");
+		const loading = this.#loadingOlder ? `  ${theme.fg("warning", "正在加载较早日志…")}` : "";
+		return `${theme.fg("muted", "筛选")} ${query}  ${pidStatus}${loading}`;
 	}
 
 	#statusText(): string {
 		return this.#statusMessage
 			? theme.fg("success", this.#statusMessage)
-			: theme.fg("dim", `${formatKeyHint("enter")} loads older when highlighted; printable keys update filter`);
+			: theme.fg("dim", `${formatKeyHint("enter")} 高亮时加载较早日志；可打印字符键更新筛选条件`);
 	}
 
 	async #handleLoadOlder(additionalCount: number = LOAD_OLDER_CHUNK): Promise<void> {

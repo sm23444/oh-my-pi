@@ -127,7 +127,7 @@ export class SessionObserverRegistry {
 		this.#sessions.set("main", {
 			id: "main",
 			kind: "main",
-			label: "Main Session",
+			label: "主会话",
 			status: "active",
 			sessionFile: sessionFile ?? existing?.sessionFile,
 			lastUpdate: Date.now(),
@@ -234,7 +234,7 @@ export class SessionObserverRegistry {
 							this.#sessions.set(payload.id, {
 								id: payload.id,
 								kind: "subagent",
-								label: payload.description ?? `Subagent #${payload.index}`,
+								label: payload.description ?? `子代理 #${payload.index}`,
 								agent: payload.agent,
 								description: payload.description,
 								status,
@@ -275,7 +275,7 @@ export class SessionObserverRegistry {
 							this.#sessions.set(id, {
 								id,
 								kind: "subagent",
-								label: progress.description ?? `Subagent #${payload.index}`,
+								label: progress.description ?? `子代理 #${payload.index}`,
 								agent: payload.agent,
 								description: progress.description,
 								status: "active",

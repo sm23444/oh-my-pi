@@ -38,26 +38,26 @@ export async function runBrowserRelayCommand(args: BrowserRelayCommandArgs): Pro
 async function runInstall(dirOverride: string | undefined): Promise<void> {
 	const dir = dirOverride ? path.resolve(dirOverride) : defaultRelayExtensionDir();
 	await writeRelayExtension(dir, VERSION);
-	console.log(`Installed the OMP Browser Relay extension to ${dir}`);
+	console.log(`已将 OMP Browser Relay 扩展安装到 ${dir}`);
 	console.log("");
-	console.log("Finish setup in Chrome:");
-	console.log("  1. Open chrome://extensions and enable Developer mode.");
-	console.log(`  2. Click "Load unpacked" and select: ${dir}`);
-	console.log("  3. Enable the mode:  omp config set browser.relay true");
+	console.log("在 Chrome 浏览器中完成设置：");
+	console.log("  1. 打开 chrome://extensions 并启用开发者模式。");
+	console.log(`  2. 点击“加载已解压的扩展程序”并选择：${dir}`);
+	console.log("  3. 启用该模式：  omp config set browser.relay true");
 	console.log("");
-	console.log("omp starts the relay automatically when the browser prelude needs it;");
-	console.log("run `omp browser-relay` yourself only for --token or --no-group.");
-	console.log("The extension badge shows 'on' once it reaches a relay.");
-	if (!dirOverride) console.log("Newer omp versions update the extension in this folder and reload it on their own.");
+	console.log("omp 会在浏览器前置脚本需要时自动启动中继；");
+	console.log("仅在需要 --token 或 --no-group 时才需自行运行 `omp browser-relay`。");
+	console.log("一旦连接到中继，扩展程序徽章就会显示 'on'。");
+	if (!dirOverride) console.log("较新版本的 omp 会更新此文件夹中的扩展程序并自行重新加载。");
 	console.log(
-		"Old connection-refused entries in chrome://extensions > Errors may persist after reconnect; use Clear all.",
+		"chrome://extensions > Errors 中的旧 connection-refused 条目在重新连接后可能仍然存在；请使用 Clear all。",
 	);
 }
 
 async function runServe(args: BrowserRelayCommandArgs): Promise<void> {
 	const log = args.verbose
 		? (message: string, data?: Record<string, unknown>) => {
-				console.error(`[relay] ${message}${data ? ` ${JSON.stringify(data)}` : ""}`);
+				console.error(`[中继] ${message}${data ? ` ${JSON.stringify(data)}` : ""}`);
 			}
 		: undefined;
 	let relay: RelayServer;
@@ -68,34 +68,34 @@ async function runServe(args: BrowserRelayCommandArgs): Promise<void> {
 		// broker (or by hand): losing the bind to a live relay is success.
 		if (err instanceof Error && "code" in err && err.code === "EADDRINUSE") {
 			if (await probeRelayServer(`http://127.0.0.1:${args.port}`)) {
-				console.log(`omp browser relay already running on http://127.0.0.1:${args.port}; nothing to do.`);
+				console.log(`omp 浏览器中继已在 http://127.0.0.1:${args.port} 上运行；无需执行任何操作。`);
 				return;
 			}
-			console.error(`Port ${args.port} is in use by something that is not an omp browser relay.`);
+			console.error(`端口 ${args.port} 已被非 omp 浏览器中继程序占用。`);
 			process.exit(1);
 		}
 		throw err;
 	}
 
-	console.log(`omp browser relay listening on http://127.0.0.1:${args.port}`);
-	console.log(`  extension endpoint  ws://127.0.0.1:${args.port}/ext${args.token ? "?token=***" : ""}`);
+	console.log(`omp 浏览器中继正在监听 http://127.0.0.1:${args.port}`);
+	console.log(`  扩展端点  ws://127.0.0.1:${args.port}/ext${args.token ? "?token=***" : ""}`);
 	if (args.port === DEFAULT_RELAY_PORT) {
-		console.log("  enable with         omp config set browser.relay true");
+		console.log("  启用方式         omp config set browser.relay true");
 	} else {
 		console.log(
-			`  enable with         omp config set browser.relay true && omp config set browser.relayUrl http://127.0.0.1:${args.port}`,
+			`  使用以下命令启用         omp config set browser.relay true && omp config set browser.relayUrl http://127.0.0.1:${args.port}`,
 		);
 	}
-	console.log("Waiting for the OMP Browser Relay extension to connect (omp browser-relay install)...");
+	console.log("正在等待 OMP 浏览器中继扩展连接（omp browser-relay install）……");
 
 	let announced = false;
 	const readiness = setInterval(() => {
 		if (relay.bridge.ready && !announced) {
 			announced = true;
-			console.log("Extension connected. The omp browser prelude can now drive your tabs.");
+			console.log("扩展已连接。现在可以使用 omp 浏览器前置程序控制您的标签页。");
 		} else if (!relay.bridge.ready && announced) {
 			announced = false;
-			console.log("Extension disconnected; waiting for it to reconnect...");
+			console.log("扩展已断开连接；正在等待其重新连接……");
 		}
 	}, 500);
 

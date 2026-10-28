@@ -71,7 +71,7 @@ class ModelSceneController implements SetupSceneController {
 				? theme.fg(status.color, status.text)
 				: theme.fg(
 						"muted",
-						`Type to search. ${formatKeyHint("enter")} saves the highlighted model as your default.`,
+						`键入以搜索。${formatKeyHint("enter")} 将高亮显示的模型保存为默认模型。`,
 					),
 			0,
 			0,
@@ -163,7 +163,7 @@ class ModelSceneController implements SetupSceneController {
 /** Setup step that assigns one available model to the persisted default role. */
 export const modelSetupScene: SetupScene = {
 	id: "model",
-	title: "Choose your default model",
+	title: "选择默认模型",
 	minVersion: 1,
 	mount: host => new ModelSceneController(host),
 };

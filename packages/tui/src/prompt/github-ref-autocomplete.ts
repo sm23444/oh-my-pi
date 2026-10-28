@@ -17,8 +17,8 @@ import type { AutocompleteItem } from "../index";
 
 /** Candidate kinds, in default display order. */
 const GITHUB_REF_KINDS = [
-	{ qualifier: "pr", scheme: "pr", label: "PR", description: "GitHub pull request" },
-	{ qualifier: "issue", scheme: "issue", label: "Issue", description: "GitHub issue" },
+	{ qualifier: "pr", scheme: "pr", label: "PR", description: "GitHub 拉取请求" },
+	{ qualifier: "issue", scheme: "issue", label: "议题", description: "GitHub 议题" },
 ] as const;
 
 export interface GithubRefContext {

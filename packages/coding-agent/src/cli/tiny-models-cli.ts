@@ -88,7 +88,7 @@ async function listModels(json: boolean | undefined): Promise<void> {
 	const wordCompletion = {
 		key: SMOLLM_KEY,
 		label: SMOLLM_LABEL,
-		description: "Word completion (spelling.autocomplete auto/smollm)",
+		description: "单词补全 (spelling.autocomplete auto/smollm)",
 		bytes: SMOLLM_TOTAL_BYTES,
 		dir: getSmolLmModelDir(),
 		ready: await smolLmWeightsReady(),

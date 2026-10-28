@@ -32,7 +32,7 @@ export const interactionFixtures: Record<string, GalleryFixture> = {
 		},
 	},
 	todo: {
-		label: "Todo",
+		label: "任务",
 		streamingArgs: {
 			op: "init",
 			list: [{ phase: "Foundation", items: ["Scaffold crate"] }],

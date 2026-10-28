@@ -23,13 +23,13 @@ export default class Share extends Command {
 	static description = commandHelp.description;
 	static args = {
 		session: Args.string({
-			description: "Session id (prefix) or path to a session .jsonl",
+			description: "会话 ID（前缀）或会话 .jsonl 文件的路径",
 			required: true,
 		}),
 	};
 	static flags = {
 		gist: Flags.boolean({
-			description: "Upload to a secret GitHub gist instead of the share server",
+			description: "上传到私密 GitHub gist，而不是共享服务器",
 			default: false,
 		}),
 	};

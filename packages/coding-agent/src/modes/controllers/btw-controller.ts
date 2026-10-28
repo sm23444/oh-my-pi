@@ -433,7 +433,7 @@ export class BtwController {
 				return false;
 			}
 			if (!viewSession.model) {
-				this.ctx.showError("No active model available for /btw.");
+				this.ctx.showError("没有可用于 /btw. 的活动模型。");
 				return false;
 			}
 			await this.#sessionManager.ensureOnDisk();

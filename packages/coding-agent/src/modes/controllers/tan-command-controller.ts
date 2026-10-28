@@ -56,19 +56,19 @@ export class TanCommandController {
 
 		const model = session.model;
 		if (!model) {
-			this.ctx.showError("No active model available for /tan.");
+			this.ctx.showError("没有可用于 /tan. 的活动模型。");
 			return false;
 		}
 
 		const manager = session.asyncJobManager;
 		if (!manager) {
-			this.ctx.showError("Background jobs are disabled; enable async jobs to use /tan.");
+			this.ctx.showError("后台作业已禁用；请启用异步作业以使用 /tan.。");
 			return false;
 		}
 
 		const parentFile = this.ctx.sessionManager.getSessionFile();
 		if (!parentFile) {
-			this.ctx.showError("/tan requires a persisted session.");
+			this.ctx.showError("/tan 需要持久化会话。");
 			return false;
 		}
 

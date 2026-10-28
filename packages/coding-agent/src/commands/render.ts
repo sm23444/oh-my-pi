@@ -11,17 +11,17 @@ import { CliUsageError } from "../cli/usage-error";
 export default class Render extends Command {
 	static description = commandHelp.description;
 	static args = {
-		session: Args.string({ description: "Session file path or id prefix (default: most recent for cwd)" }),
+		session: Args.string({ description: "会话文件路径或 ID 前缀（默认：当前工作目录中最近的会话）" }),
 	};
 	static flags = {
-		width: Flags.integer({ char: "w", description: "Render width in columns (default: terminal width)" }),
-		height: Flags.integer({ description: "Viewport height in rows (default: terminal height)" }),
-		timing: Flags.boolean({ char: "t", description: "Print phase timings and emitted byte counts to stderr" }),
+		width: Flags.integer({ char: "w", description: "渲染宽度（列数；默认：终端宽度）" }),
+		height: Flags.integer({ description: "视口高度（行数，默认：终端高度）" }),
+		timing: Flags.boolean({ char: "t", description: "将各阶段耗时和输出字节数打印到 stderr" }),
 		repaint: Flags.integer({
-			description: "Benchmark N extra full clear-scrollback repaints (the /tree navigation frame)",
+			description: "基准测试额外执行 N 次完整清除滚动缓冲区重绘（/tree导航框架）",
 		}),
-		plain: Flags.boolean({ description: "Strip ANSI styling from the output", default: false }),
-		quiet: Flags.boolean({ char: "q", description: "Suppress transcript output (benchmark runs)", default: false }),
+		plain: Flags.boolean({ description: "从输出中去掉 ANSI 样式", default: false }),
+		quiet: Flags.boolean({ char: "q", description: "抑制转录输出（基准测试运行时）", default: false }),
 	};
 
 	static examples = [

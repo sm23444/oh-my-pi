@@ -12,7 +12,7 @@ export default class Read extends Command {
 	static args = {
 		path: Args.string({
 			description:
-				"Path, URL, or internal URI to read (append :sel for line ranges or raw mode, e.g. src/foo.ts:50-100)",
+				"要读取的路径、URL 或内部 URI（追加 :sel 以指定行范围或原始模式，e.g。src/foo.ts:50-100）",
 			required: true,
 		}),
 	};

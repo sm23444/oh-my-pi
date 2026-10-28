@@ -69,8 +69,8 @@ export function groupHeaderLine(group: ContextThinkingGroup, category: ContextCa
 export function previewHint(selected: boolean): string {
 	const confirm = selected ? editorKey("tui.select.confirm") : "";
 	return (
-		theme.fg("dim", "  … more") +
-		(confirm ? theme.fg("dim", " · ") + theme.fg("accent", `${confirm} View Content`) : "")
+		theme.fg("dim", "  … 更多") +
+		(confirm ? theme.fg("dim", " · ") + theme.fg("accent", `${confirm} 查看内容`) : "")
 	);
 }
 

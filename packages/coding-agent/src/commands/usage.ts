@@ -10,36 +10,36 @@ export default class Usage extends Command {
 	static description = commandHelp.description;
 	static args = {
 		action: Args.string({
-			description: "Optional subcommand to execute",
+			description: "要执行的可选子命令",
 			required: false,
 			options: ["invalidate", "clients", "accounts", "reset"],
 		}),
 		target: Args.string({
-			description: "Saved reset to spend with `reset`: <provider>/<credential id> as `omp usage reset` lists it",
+			description: "已保存的重置，可配合 `reset` 使用：<provider>/<credential id>，格式与 `omp usage reset` 列出的相同",
 			required: false,
 		}),
 	};
 
 	static flags = {
-		json: Flags.boolean({ char: "j", description: "Output usage reports as JSON", default: false }),
-		provider: Flags.string({ char: "p", description: "Only show usage for this provider id (e.g. anthropic)" }),
+		json: Flags.boolean({ char: "j", description: "以 JSON 输出用量报告", default: false }),
+		provider: Flags.string({ char: "p", description: "仅显示此提供商 ID 的用量（e.g. anthropic）" }),
 		redact: Flags.boolean({
 			char: "r",
-			description: "Redact account emails/ids (shortest unique prefix) for sharing screenshots",
+			description: "为共享屏幕截图脱敏账户 emails/ids（最短唯一前缀）",
 			default: false,
 		}),
 		history: Flags.boolean({
-			description: "Show recorded usage-limit history (hourly snapshots) instead of a live snapshot",
+			description: "显示记录的用量限额历史(每小时快照),而不是实时快照",
 			default: false,
 		}),
-		days: Flags.integer({ char: "d", description: "History window in days (with --history or clients)", default: 7 }),
+		days: Flags.integer({ char: "d", description: "历史窗口天数（与 --history 或客户端结合使用）", default: 7 }),
 		extension: Flags.string({
 			char: "e",
-			description: "Load an extension file before fetching usage (repeatable)",
+			description: "获取使用情况之前加载扩展文件（可重复）",
 			multiple: true,
 		}),
 		"no-extensions": Flags.boolean({
-			description: "Disable extension discovery (explicit -e paths still work)",
+			description: "禁用扩展发现（显式 -e 路径仍有效）",
 		}),
 	};
 

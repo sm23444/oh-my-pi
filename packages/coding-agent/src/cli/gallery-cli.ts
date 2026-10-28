@@ -253,7 +253,7 @@ async function renderGallerySections(
 			try {
 				for (const line of await renderGalleryState(name, fixture, state, width, expanded)) lines.push(line);
 			} catch (err) {
-				lines.push(theme.fg("error", `  render failed: ${String(err)}`));
+				lines.push(theme.fg("error", `  渲染失败：${String(err)}`));
 			}
 		}
 		sections.push({ heading, lines });
@@ -285,7 +285,7 @@ async function renderPreviewSections(
 			try {
 				for (const line of await variant.render(width, expanded)) lines.push(line);
 			} catch (err) {
-				lines.push(theme.fg("error", `  render failed: ${String(err)}`));
+				lines.push(theme.fg("error", `  渲染失败：${String(err)}`));
 			}
 		}
 		sections.push({ heading: entry.heading, lines });

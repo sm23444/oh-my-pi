@@ -11,19 +11,19 @@ export default class Collab extends Command {
 
 	static args = {
 		action: Args.string({
-			description: "list (default) or link",
+			description: "list（默认）或 link",
 			required: false,
 			options: ["list", "link"],
 		}),
-		selector: Args.string({ description: "Host instance ID or PID (link only)", required: false }),
+		selector: Args.string({ description: "宿主实例 ID 或 PID（仅 link 用）", required: false }),
 	};
 
 	static flags = {
 		view: Flags.boolean({
-			description: "Request a view-only link instead of control access (link only)",
+			description: "请求只读链接而非控制权限（仅 link 用）",
 			default: false,
 		}),
-		json: Flags.boolean({ char: "j", description: "Emit deterministic machine-readable JSON", default: false }),
+		json: Flags.boolean({ char: "j", description: "输出确定性的机器可读 JSON", default: false }),
 	};
 
 	static examples = [

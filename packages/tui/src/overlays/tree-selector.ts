@@ -193,11 +193,11 @@ interface TreePickerView {
 }
 
 const FILTER_TABS: readonly { id: TreeFilterMode; label: string }[] = [
-	{ id: "default", label: "Default" },
-	{ id: "no-tools", label: "No tools" },
-	{ id: "user-only", label: "User only" },
-	{ id: "labeled-only", label: "Labeled" },
-	{ id: "all", label: "All" },
+	{ id: "default", label: "默认" },
+	{ id: "no-tools", label: "无工具" },
+	{ id: "user-only", label: "仅用户" },
+	{ id: "labeled-only", label: "已标记" },
+	{ id: "all", label: "全部" },
 ];
 
 class TreeList implements Component {
@@ -256,7 +256,7 @@ class TreeList implements Component {
 		initialSelectedId?: string,
 	) {
 		this.#filterMode = initialFilterMode;
-		this.searchInput.prompt = `${theme.fg("muted", "Search:")} `;
+		this.searchInput.prompt = `${theme.fg("muted", "搜索：")} `;
 		this.searchInput.placeholder = "Type to search";
 		this.#multipleRoots = tree.length > 1;
 		this.#indexSession(tree);
@@ -907,19 +907,19 @@ class TreeList implements Component {
 			//    `model_change` + `thinking_level_change` (both hidden by the default filter)
 			//    read as "broken /tree" — see #1909.
 			if (totalCount === 0) {
-				lines.push(truncateToWidth(theme.fg("muted", "No entries found"), width));
+				lines.push(truncateToWidth(theme.fg("muted", "未找到条目"), width));
 				lines.push(truncateToWidth(theme.fg("muted", `(0/0)${this.#getFilterLabel()}`), width));
 			} else if (this.getSearchQuery().length > 0) {
-				lines.push(truncateToWidth(theme.fg("muted", `No entries match search "${this.getSearchQuery()}"`), width));
+				lines.push(truncateToWidth(theme.fg("muted", `没有符合搜索“${this.getSearchQuery()}”的条目`), width));
 				lines.push(
-					truncateToWidth(theme.fg("muted", `Press ${formatKeyHint("backspace")} to clear the search`), width),
+					truncateToWidth(theme.fg("muted", `按 ${formatKeyHint("backspace")} 清除搜索`), width),
 				);
 				lines.push(truncateToWidth(theme.fg("muted", `(0/${totalCount})${this.#getFilterLabel()}`), width));
 			} else {
 				const filterLabel = this.#getFilterLabel().trim() || "[default]";
 				lines.push(
 					truncateToWidth(
-						theme.fg("muted", `${totalCount} entries hidden by the current filter ${filterLabel}`),
+						theme.fg("muted", `${totalCount} 个条目被当前过滤器 ${filterLabel} 隐藏`),
 						width,
 					),
 				);
@@ -927,7 +927,7 @@ class TreeList implements Component {
 					truncateToWidth(
 						theme.fg(
 							"muted",
-							`Press ${formatKeyHint("alt+a")} to show all, ${formatKeyHint("alt+d")} for default`,
+							`按 ${formatKeyHint("alt+a")} 显示全部，按 ${formatKeyHint("alt+d")} 恢复默认`,
 						),
 						width,
 					),
@@ -1409,8 +1409,8 @@ class LabelInput implements Component {
 			text([span("Label (empty to remove):", "muted")]),
 			this.#input,
 			hintsRow([
-				{ keys: ["enter"], label: "save" },
-				{ keys: [boundKeys("app.interrupt", ["escape"])[0] ?? "escape"], label: "cancel" },
+				{ keys: ["enter"], label: "保存" },
+				{ keys: [boundKeys("app.interrupt", ["escape"])[0] ?? "escape"], label: "取消" },
 			]),
 		]);
 		return this.#native;
@@ -1434,10 +1434,10 @@ class LabelInput implements Component {
 
 	render(width: number): readonly string[] {
 		const lines: string[] = [];
-		lines.push(truncateToWidth(theme.fg("muted", "Label (empty to remove):"), width));
+		lines.push(truncateToWidth(theme.fg("muted", "标签（留空以移除）："), width));
 		lines.push(...this.#input.render(width));
 		const cancel = interruptKey();
-		lines.push(truncateToWidth(theme.fg("dim", `${formatKeyHint("enter")}: save  ${cancel}: cancel`), width));
+		lines.push(truncateToWidth(theme.fg("dim", `${formatKeyHint("enter")}：保存  ${cancel}：取消`), width));
 		return lines;
 	}
 
@@ -1573,7 +1573,7 @@ export class TreeSelectorComponent extends OverlayPanel {
 			return memo.node;
 		}
 		const props: TspPickerProps = {
-			title: "Session tree",
+			title: "会话树",
 			...(this.sessionName ? { subtitle: this.sessionName } : {}),
 			icon: "git-branch",
 			noun: "entries",
@@ -1594,7 +1594,7 @@ export class TreeSelectorComponent extends OverlayPanel {
 			actions: label
 				? [
 						pickerAction("label-save", "Save label", "enter", { primary: true }),
-						{ ...CLOSE_ACTION, label: "Cancel" },
+						{ ...CLOSE_ACTION, label: "取消" },
 					]
 				: [
 						pickerAction("switch", "Switch", "enter", { primary: true }),
@@ -1675,14 +1675,14 @@ export class TreeSelectorComponent extends OverlayPanel {
 			search,
 			content,
 			hintsRow([
-				{ keys: ["enter"], label: "switch" },
-				{ keys: ["alt+up", "alt+down"], label: "previous/next turn" },
+				{ keys: ["enter"], label: "切换" },
+				{ keys: ["alt+up", "alt+down"], label: "previous/next 轮次" },
 				actionHint(["app.tree.previousBranch", "app.tree.nextBranch"], "previous/next branch"),
 				actionHint(["tui.select.pageUp", "tui.select.pageDown"], "page"),
 				{ keys: ["home", "end"], label: "first/last" },
-				{ keys: ["shift+enter"], label: "summarize & switch" },
-				{ keys: ["shift+l"], label: "label" },
-				{ keys: ["ctrl+o"], label: "filter" },
+				{ keys: ["shift+enter"], label: "总结并切换" },
+				{ keys: ["shift+l"], label: "标签" },
+				{ keys: ["ctrl+o"], label: "筛选" },
 			]),
 		];
 		const result = overlayCard("omp.overlay.tree", "Session Tree", children);

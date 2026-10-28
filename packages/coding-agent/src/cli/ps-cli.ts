@@ -238,14 +238,14 @@ async function runAction(cmd: PsCommandArgs, name: string): Promise<void> {
 				}
 				const daemon = result.daemon;
 				console.log(daemonLabel(daemon));
-				console.log(`  command:  ${formatCommand(result.spec)}`);
-				console.log(`  cwd:      ${result.spec.cwd}`);
+				console.log(`  命令：    ${formatCommand(result.spec)}`);
+				console.log(`  工作目录：${result.spec.cwd}`);
 				if (!TERMINAL_STATES[daemon.state])
-					console.log(`  uptime:   ${formatDuration(Date.now() - daemon.startedAt)}`);
-				if (daemon.exitReason) console.log(`  exit:     ${daemon.exitReason}`);
-				console.log(`  restarts: ${daemon.restartCount} (policy: ${result.spec.restart})`);
+					console.log(`  运行时间：${formatDuration(Date.now() - daemon.startedAt)}`);
+				if (daemon.exitReason) console.log(`  退出状态：${daemon.exitReason}`);
+				console.log(`  重启次数：${daemon.restartCount}（策略：${result.spec.restart}）`);
 				console.log(
-					`  pty: ${result.spec.pty}  persist: ${result.spec.persist}  detached: ${result.spec.detached}  owner: ${daemon.owner ?? "-"}`,
+					`  pty: ${result.spec.pty}  persist: ${result.spec.persist}  detached: ${result.spec.detached}  所有者: ${daemon.owner ?? "-"}`,
 				);
 				return;
 			}

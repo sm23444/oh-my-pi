@@ -116,9 +116,9 @@ export function renderPauseScreen(
 			? centerLine(theme.bold(sessionName.replace(/\s+/g, " ").trim()), screenWidth).trimEnd()
 			: undefined;
 		const titleLine = centerLine(theme.bold(theme.fg("accent", `▌▌ ${TITLE}`)), screenWidth).trimEnd();
-		const clockLine = centerLine(theme.fg("dim", `paused for ${formatClock(elapsedMs)}`), screenWidth).trimEnd();
+		const clockLine = centerLine(theme.fg("dim", `已暂停 ${formatClock(elapsedMs)}`), screenWidth).trimEnd();
 		const statusLine = centerLine(theme.fg(outstanding ? "warning" : "success", status), screenWidth).trimEnd();
-		const resumeLine = centerLine(theme.fg("dim", `${esc} to resume`), screenWidth).trimEnd();
+		const resumeLine = centerLine(theme.fg("dim", `按 ${esc} 恢复`), screenWidth).trimEnd();
 		const fullContent: string[] = [];
 		if (sessionLine) fullContent.push(sessionLine);
 		fullContent.push(titleLine, "", clockLine, statusLine);
@@ -148,7 +148,7 @@ export function renderPauseScreen(
 				if (outstanding && screenHeight === 3) {
 					content.push(
 						centerLine(
-							theme.fg("muted", `Turns: ${workStatus.unsettledTurns} · Jobs: ${workStatus.unfinishedJobs}`),
+							theme.fg("muted", `轮次: ${workStatus.unsettledTurns} · 任务: ${workStatus.unfinishedJobs}`),
 							screenWidth,
 						).trimEnd(),
 					);
@@ -183,7 +183,7 @@ export function renderPauseScreen(
 			content.push(centerLine(theme.fg("muted", workCounts[0]!), screenWidth).trimEnd());
 			content.push(centerLine(theme.fg("muted", workCounts[1]!), screenWidth).trimEnd());
 		}
-		content.push(centerLine(theme.fg("dim", `paused for ${formatClock(elapsedMs)}`), screenWidth).trimEnd());
+		content.push(centerLine(theme.fg("dim", `已暂停 ${formatClock(elapsedMs)}`), screenWidth).trimEnd());
 		content.push("");
 		const resumeHint = `${esc} · ${formatKeyHint("enter")} · ${formatKeyHint("space")} — resume`;
 		content.push(centerLine(theme.fg("dim", resumeHint), screenWidth).trimEnd());
@@ -334,7 +334,7 @@ export class PauseScreenComponent implements Component, OverlayFocusOwner {
 								age: Date.now() - this.#startedAt,
 								format: "clock",
 								role: "omp.pause.clock",
-								title: "Paused for",
+								title: "已暂停",
 							},
 							undefined,
 							"clock",
@@ -383,7 +383,7 @@ export class PauseScreenComponent implements Component, OverlayFocusOwner {
 						keys: resumeKey,
 						tone: "accent",
 						// Each ` · ` clause ending in two spaces and a key is a keycap: `Resume [esc] · [⏎] · [space]`.
-						title: `Resume  ${formatTooltipKey(resumeKey)} ·   ${formatTooltipKey("enter")} ·   ${formatTooltipKey("space")}`,
+						title: `继续  ${formatTooltipKey(resumeKey)} ·   ${formatTooltipKey("enter")} ·   ${formatTooltipKey("space")}`,
 					}),
 				]),
 			],

@@ -413,7 +413,7 @@ export class PsTopComponent implements Component {
 				node("icon", {
 					name: "back",
 					role: "omp.app.ibtn",
-					title: "Back  esc",
+					title: "返回  esc",
 					aria: "Back",
 					actions: { click: "back" },
 				}),
@@ -440,10 +440,10 @@ export class PsTopComponent implements Component {
 								id: "current",
 								label:
 									this.#target.dir !== undefined || this.#target.global !== undefined
-										? "Target"
-										: "This project",
+										? "目标"
+										: "此项目",
 							},
-							{ id: "all", label: "All scopes" },
+							{ id: "all", label: "所有作用域" },
 						],
 						active: this.#all ? "all" : "current",
 						role: "omp.app.seg",
@@ -468,7 +468,7 @@ export class PsTopComponent implements Component {
 						align: "center",
 						role: "omp.app.fresh",
 					}),
-			node("icon", { name: "x", role: "omp.app.ibtn", title: "Quit  q", aria: "Quit", actions: { click: "quit" } }),
+			node("icon", { name: "x", role: "omp.app.ibtn", title: "退出  q", aria: "Quit", actions: { click: "quit" } }),
 		);
 		return keyed(
 			row(
@@ -522,7 +522,7 @@ export class PsTopComponent implements Component {
 			actionButton("Logs", "logs", { keys: "l" }),
 			actionButton("Restart", "restart", { keys: "r" }),
 			actionButton("Stop", "stop", { keys: "s" }),
-			actionButton("Kill", "kill", { keys: "x", tone: "error", title: "Kill the process (asks first)" }),
+			actionButton("Kill", "kill", { keys: "x", tone: "error", title: "终止进程（先询问）" }),
 			null,
 			actionButton("Quit", "quit", { keys: "q" }),
 		]);
@@ -724,14 +724,14 @@ export class PsTopComponent implements Component {
 			body.push(` ${chalk.bold(daemonLabel(daemon))}`);
 			body.push("");
 			const rows: KeyValueRow[] = [
-				{ label: "command:", value: collapseCommand(formatCommand(info.spec)) },
-				{ label: "cwd:", value: info.spec.cwd },
+				{ label: "命令：", value: collapseCommand(formatCommand(info.spec)) },
+				{ label: "工作目录：", value: info.spec.cwd },
 			];
 			if (!TERMINAL_STATES[daemon.state])
-				rows.push({ label: "uptime:", value: formatDuration(Date.now() - daemon.startedAt) });
-			if (daemon.exitReason) rows.push({ label: "exit:", value: daemon.exitReason });
-			rows.push({ label: "restarts:", value: `${daemon.restartCount} (policy: ${info.spec.restart})` });
-			rows.push({ label: "owner:", value: daemon.owner ?? "-" });
+				rows.push({ label: "运行时间：", value: formatDuration(Date.now() - daemon.startedAt) });
+			if (daemon.exitReason) rows.push({ label: "退出原因：", value: daemon.exitReason });
+			rows.push({ label: "重启次数：", value: `${daemon.restartCount} (policy: ${info.spec.restart})` });
+			rows.push({ label: "所有者：", value: daemon.owner ?? "-" });
 			this.#infoList.setRows(rows);
 			body.push(...this.#infoList.render(width));
 			body.push(`   pty: ${info.spec.pty}  persist: ${info.spec.persist}  detached: ${info.spec.detached}`);
