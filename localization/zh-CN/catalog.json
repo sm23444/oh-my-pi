@@ -1619,6 +1619,15 @@
     "translation": "按照 __OMP_TOKEN_0__ 的方式恢复会话，然后继续其上一个进程未完成的工作（被中断的轮次及当时正在运行的子代理）",
     "origin": "model"
   },
+  "1525b406e7a21704ba573328cb029d824ecdc5de39ff3c01f705df99508dc40c": {
+    "pkg": "tui",
+    "file": "src/autocomplete.ts",
+    "role": "field:description",
+    "source": "${skillCount} skill${skillCount === 1 ? \"\" : \"s\"}",
+    "text": "__OMP_TOKEN_0__ skill__OMP_TOKEN_1__",
+    "translation": "技能：__OMP_TOKEN_0__（skill__OMP_TOKEN_1__）",
+    "origin": "human"
+  },
   "159f9e61f8961f75853ee3fcb6ab01209786cdfea5da136f08bd65463cc26e94": {
     "pkg": "agent",
     "file": "src/commands/launch-help.ts",
@@ -2113,6 +2122,15 @@
     "text": "(no arguments)",
     "translation": "（无参数）",
     "origin": "model"
+  },
+  "1ab944ef214cdc52009fd11b9d01b078a0800b7e1f923915e15ac312ff1c355f": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "autocomplete:description",
+    "source": "Model: ${model.provider}/${model.id}",
+    "text": "Model: __OMP_TOKEN_0__/__OMP_TOKEN_1__",
+    "translation": "模型：__OMP_TOKEN_0__/__OMP_TOKEN_1__",
+    "origin": "human"
   },
   "1acdc39f539dd22d5aacd78ab6a51c17daa6f52d50f88feecfb1d9a565bc6e56": {
     "pkg": "agent",
@@ -4535,6 +4553,15 @@
     "translation": "10 秒",
     "origin": "seed"
   },
+  "386778f5dbbc76c7f4c55c8880935c97afc252eac7634ebfcbf4e58b4766630c": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-lifecycle.ts",
+    "role": "field:description",
+    "source": "Detect and fix project diagnostics with weighted parallel subagents",
+    "text": "Detect and fix project diagnostics with weighted parallel subagents",
+    "translation": "用加权并行子代理检测并修复项目诊断问题",
+    "origin": "seed"
+  },
   "387e8a008166f7883a043b7a7c4276a6f26a458a39b5e649cd1e57d49c10d02c": {
     "pkg": "agent",
     "file": "src/modes/controllers/command-controller.ts",
@@ -6704,6 +6731,15 @@
     "translation": "每个模式显示为单个紧凑字形",
     "origin": "seed"
   },
+  "538f5cc5fce0181d69b6adb2fe306a5376f42389ba62d2455b03a3cf331a648b": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "autocomplete:description",
+    "source": "Plan: blocked by goal mode",
+    "text": "Plan: blocked by goal mode",
+    "translation": "计划：因目标模式而不可用",
+    "origin": "human"
+  },
   "53972a998233dc73b2dda34eaa6680f27e7a882834cd40bdd37f53c42b2a26ea": {
     "pkg": "tui",
     "file": "src/components/form.ts",
@@ -6838,6 +6874,15 @@
     "text": "Paths or folder tree",
     "translation": "路径或文件夹树",
     "origin": "model"
+  },
+  "54836f5492e5c25e14aaa86f9a01df34edc0d48cc5eae008c845a99c98bf7179": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-session.ts",
+    "role": "field:description",
+    "source": "Launch the local stats dashboard",
+    "text": "Launch the local stats dashboard",
+    "translation": "打开本地统计面板",
+    "origin": "human"
   },
   "54895f3fc520dc8b5be88404b715d54d30c6e950c4ce6a36558ddda9ad2eb3a4": {
     "pkg": "tui",
@@ -7756,6 +7801,15 @@
     "text": "__OMP_TOKEN_0__ model for lightweight tasks (or __OMP_TOKEN_1__ env)",
     "translation": "__OMP_TOKEN_0__ 模型，用于轻量级任务（或 __OMP_TOKEN_1__ 环境变量）",
     "origin": "model"
+  },
+  "601db8b4492dd6dc8455c1d0f475362ac3de5ee2ca17b53753d89cbf2c7573ec": {
+    "pkg": "tui",
+    "file": "src/prompt/welcome.ts",
+    "role": "welcome:label",
+    "source": "Tip: ",
+    "text": "Tip: ",
+    "translation": "提示：",
+    "origin": "human"
   },
   "602cf008ea5b0ec6889845cf07042a8e7806ab76f13a66c7fd133b3386e77190": {
     "pkg": "agent",
@@ -8810,6 +8864,15 @@
     "translation": "__OMP_TOKEN_0__/__OMP_TOKEN_1__ 已计时",
     "origin": "model"
   },
+  "6d071861f2995d691c0c64912f8e0a9e89186e28f8e6a58636a24e336dfb47d6": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "field:description",
+    "source": "Open provider setup",
+    "text": "Open provider setup",
+    "translation": "打开供应商设置",
+    "origin": "human"
+  },
   "6d23a281b7a19f91a1c68544ed8256379535aba41f138632ca47fd8879fcea98": {
     "pkg": "agent",
     "file": "src/modes/interactive-mode.ts",
@@ -9763,6 +9826,15 @@
     "text": "Status line embedded in top border, compact 2-line prompt",
     "translation": "状态行嵌入上边框，紧凑两行提示符",
     "origin": "seed"
+  },
+  "77fe424669a43f036165309adcf00411d5ccb4f5922e782c2d2fb7b490ca77c4": {
+    "pkg": "tui",
+    "file": "src/prompt/welcome.ts",
+    "role": "welcome:label",
+    "source": "New",
+    "text": "New",
+    "translation": "新功能",
+    "origin": "human"
   },
   "7836df350cf640e7316d192c1e9ebca0a2880fe42c4b443dacb27a083cddfcaa": {
     "pkg": "agent",
@@ -12194,6 +12266,15 @@
     "translation": "扩展“__OMP_TOKEN_0__”错误：__OMP_TOKEN_1__",
     "origin": "model"
   },
+  "95e6935e72c1f7313b89fbf6c9a126f70604053ced70645137d4540ad1c16ad1": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "field:description",
+    "source": "Open settings menu",
+    "text": "Open settings menu",
+    "translation": "打开设置菜单",
+    "origin": "human"
+  },
   "95ebb4de77c579b4b766c5c975da80fb85873e47e3dc8774616d3365394ea051": {
     "pkg": "tui",
     "file": "src/overlays/advisor-config.ts",
@@ -12536,6 +12617,15 @@
     "translation": "逐条处理排队的消息（推荐）",
     "origin": "model"
   },
+  "9979ed89009e8ef36a66e7e67799e7d99c86fc5f7a117593a7247a5e2b419414": {
+    "pkg": "tui",
+    "file": "src/prompt/tips.txt",
+    "role": "welcome:tip",
+    "source": "[NO-TERN] Psst, omp has a natural habitat 🐦 [tern](https://scl.so/tern)",
+    "text": "__OMP_TOKEN_0__ Psst, omp has a natural habitat 🐦 [tern](__OMP_TOKEN_1__)",
+    "translation": "__OMP_TOKEN_0__ 嘿，omp 也有适合自己的终端 🐦 [tern](__OMP_TOKEN_1__)",
+    "origin": "human"
+  },
   "99b60f993957bd2a84098c48bab5c8f130ce0da8a5bca668fe193d7c5da8dbde": {
     "pkg": "tui",
     "file": "src/overlays/tree-selector.ts",
@@ -12841,6 +12931,15 @@
     "text": "All agents",
     "translation": "全部代理",
     "origin": "seed"
+  },
+  "9cf667c96de195c516d9998c907f8fd85509d62a1623dda781d7cfa080d9c837": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "autocomplete:description",
+    "source": "Plan: off",
+    "text": "Plan: off",
+    "translation": "计划：已关闭",
+    "origin": "human"
   },
   "9d132d07a5677f4768e20dae918cb195829270acaa8fc318d643f752fbf5c485": {
     "pkg": "agent",
@@ -13876,6 +13975,15 @@
     "text": "regenerate",
     "translation": "重新生成",
     "origin": "model"
+  },
+  "a881212176218c985afdd555699fdb9cd9beef2e4a5ac998f8be5661a8ad115c": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "autocomplete:description",
+    "source": "Model: none selected",
+    "text": "Model: none selected",
+    "translation": "模型：尚未选择",
+    "origin": "human"
   },
   "a88c5e5c8e46f5207b78e4981353a31b73abc73dc814eb39bd0c72d2b4795ab6": {
     "pkg": "agent",
@@ -16424,6 +16532,15 @@
     "translation": "  … 还有 __OMP_TOKEN_0__ 项（按 __OMP_TOKEN_1__ 展开）",
     "origin": "model"
   },
+  "c6bd9adeed4f633579eb1577017a738f651825bddb06c22032c4cc10fa41bc03": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "field:description",
+    "source": "Plan, run, inspect, import, and compare OMP-native security scans",
+    "text": "Plan, run, inspect, import, and compare __OMP_TOKEN_0__-native security scans",
+    "translation": "规划、运行、查看、导入和比较 __OMP_TOKEN_0__ 原生安全扫描",
+    "origin": "human"
+  },
   "c6d6d84f8ff950549a62e42e7c65b1203da7d99f645cdf3825b6bf6add4c69d1": {
     "pkg": "tui",
     "file": "src/apps/debug/raw-sse.ts",
@@ -17756,6 +17873,15 @@
     "translation": "  __OMP_TOKEN_0__ 使用 OAuth 登录 (__OMP_TOKEN_1__)",
     "origin": "model"
   },
+  "d715111965cbcaf5f36023bc633ac2d9a274a9f1433cc58b1c31b38cbfec99c8": {
+    "pkg": "tui",
+    "file": "src/prompt/tips.txt",
+    "role": "welcome:tip",
+    "source": "Log in to several accounts of the same provider — `/login` again — and omp load-balances across them automatically",
+    "text": "Log in to several accounts of the same provider — __OMP_TOKEN_0__ again — and omp load-balances across them automatically",
+    "translation": "再次运行 __OMP_TOKEN_0__，为同一供应商登录多个账号；omp 会自动在这些账号间分配请求",
+    "origin": "human"
+  },
   "d7157a389262c8b88ec8d8f707b226cbcdac099a4de5e2329c061e66e74332ac": {
     "pkg": "agent",
     "file": "src/modes/controllers/mcp-command-controller.ts",
@@ -18917,6 +19043,15 @@
     "translation": "同步积压：",
     "origin": "model"
   },
+  "e77ba4545d27caad906a00912a2aef6d7b13e8abccd412a3a9e916615f992c0c": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-session.ts",
+    "role": "field:description",
+    "source": "Session management commands",
+    "text": "Session management commands",
+    "translation": "会话管理命令",
+    "origin": "human"
+  },
   "e7a8c5d5abb71092529d2f8a8ce44eeb1b4fc6c6191a783aabe43fb00ef153a0": {
     "pkg": "agent",
     "file": "src/cli/command-help.ts",
@@ -19078,6 +19213,15 @@
     "text": "Comma-separated model patterns for __OMP_TOKEN_0__ cycling",
     "translation": "用于 __OMP_TOKEN_0__ 循环切换的逗号分隔模型模式",
     "origin": "model"
+  },
+  "e97973689ef5c5534e97c93b69f1bb6cc2768c0aa376ec495a7d87c07bb062cf": {
+    "pkg": "tui",
+    "file": "src/prompt/tips.txt",
+    "role": "welcome:tip",
+    "source": "Use /tan to fork the current conversation into a background agent",
+    "text": "Use __OMP_TOKEN_0__ to fork the current conversation into a background agent",
+    "translation": "使用 __OMP_TOKEN_0__ 将当前对话分支交给后台智能体",
+    "origin": "human"
   },
   "e98045013714d26ff97debe77fd4e0ac7dd4bdb630382d446ecf0bf96f6bd80a": {
     "pkg": "tui",
@@ -20150,6 +20294,15 @@
     "translation": "选择",
     "origin": "model"
   },
+  "f5d4f9434618ac7f347ff35043ef9587463fd1b1f26ae4afedd767e80b8a2e0f": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-session.ts",
+    "role": "field:description",
+    "source": "Open Extension Control Center dashboard",
+    "text": "Open Extension Control Center dashboard",
+    "translation": "打开扩展控制中心",
+    "origin": "human"
+  },
   "f5df62085a07c749f00f45c03cffadb589e4ff152682c8822f3a2cedfaa7ec0d": {
     "pkg": "agent",
     "file": "src/cli/gallery-fixtures/segments.ts",
@@ -20419,6 +20572,15 @@
     "text": "bun test __OMP_TOKEN_0__",
     "translation": "运行 bun test __OMP_TOKEN_0__",
     "origin": "model"
+  },
+  "f865b4f83150812db07c1bcaf2ce3936eb86403c8ac417b398bffdca6ae61525": {
+    "pkg": "tui",
+    "file": "src/prompt/welcome.ts",
+    "role": "welcome:tip",
+    "source": "Please use nerdfont 😭.",
+    "text": "Please use nerdfont 😭.",
+    "translation": "请使用 Nerd Font 字体 😭。",
+    "origin": "human"
   },
   "f88e1ea71f05fe015f7e72196998c10ed1af51fbfa587bd36ab55f4241e54b16": {
     "pkg": "agent",
@@ -20698,6 +20860,15 @@
     "text": "Viewport height in rows (default: terminal height)",
     "translation": "视口高度（行数，默认：终端高度）",
     "origin": "model"
+  },
+  "fb6c40ab0d08d3210b30eab036841054070d24d06563b327cafbbbd6b6ef9470": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "autocomplete:description",
+    "source": "Plan: disabled in settings",
+    "text": "Plan: disabled in settings",
+    "translation": "计划：已在设置中禁用",
+    "origin": "human"
   },
   "fb84c7549f46024d68aab0f68ff8ca39d3e17e9d474c4e8ee2b64141b40f894e": {
     "pkg": "agent",

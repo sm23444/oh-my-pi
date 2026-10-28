@@ -33,7 +33,7 @@ const files: SourceFile[] = [];
 const packages = Object.keys(packagePaths) as PackageId[];
 for (const pkg of packages) {
 	const base = layout === "npm" ? path.join(source, "node_modules", npmPackages[pkg]) : path.join(source, packagePaths[pkg]);
-	for await (const scannedFile of new Bun.Glob("src/**/*.{ts,tsx}").scan({ cwd: base, onlyFiles: true })) {
+	for await (const scannedFile of new Bun.Glob("src/**/*.{ts,tsx,txt}").scan({ cwd: base, onlyFiles: true })) {
 		const file = scannedFile.replaceAll("\\", "/");
 		if (!inScope(pkg, file)) continue;
 		const absolute = path.join(base, file);
