@@ -3,6 +3,7 @@ import {
 	translateAll,
 	translateBatch,
 	type TranslationConfig,
+	type TranslationFailure,
 	type TranslationRequest,
 	type TranslationResult,
 } from "./client";
@@ -110,7 +111,7 @@ describe("translation client", () => {
 	test("unparseable outer JSON is bounded to three attempts with a sanitized error", async () => {
 		const fetcher = mockedFetch(async () => new Response(`invalid-json ${config.apiKey}`));
 		await expect(translateBatch(items, config, fetcher)).rejects.toMatchObject({
-			message: "Translation request failed or returned invalid JSON.",
+			message: "Translation provider returned invalid structured output. Reason: provider-json.",
 		});
 		expect(fetcher).toHaveBeenCalledTimes(3);
 	});
@@ -243,7 +244,7 @@ describe("translation client", () => {
 		const saved: TranslationResult[] = [];
 		await expect(translateAll(source, { ...config, validateResult: item => {
 			toEntry(candidates.find(candidate => candidate.id === item.id)!, item.text, "model");
-		} }, async batch => { saved.push(...batch); })).rejects.toThrow("Translation request failed");
+		} }, async batch => { saved.push(...batch); })).rejects.toThrow("semantic-validation");
 		expect(saved).toEqual([neighbor]);
 		expect(requests).toBe(4);
 	});
@@ -261,5 +262,62 @@ describe("translation client", () => {
 		const result = await translateAll(items, config, async batch => { events.push(`checkpoint:${batch[0].id}`); });
 		expect(result).toEqual(translations);
 		expect(events).toEqual(["request:2", "request:2", "request:2", "request:1", "checkpoint:first", "request:1", "checkpoint:second"]);
+	});
+
+	test("defers an invalid singleton and still checkpoints the following valid translation", async () => {
+		const events: string[] = [];
+		const failures: TranslationFailure[] = [];
+		const saved: TranslationResult[] = [];
+		const fetcher = spyOn(globalThis, "fetch").mockImplementation(async (_input, init) => {
+			const body = request(init);
+			const contents = body.contents as { parts: { text: string }[] }[];
+			const requested = JSON.parse(contents[0].parts[0].text) as { items: TranslationRequest[] };
+			events.push(`request:${requested.items[0].id}`);
+			return response({ translations: requested.items.map(item => ({ id: item.id, text: item.id === "first" ? "未翻译 __OMP_TOKEN_0__" : "关闭" })) });
+		});
+		const result = await translateAll(items, {
+			...config, batchSize: 1,
+			validateResult: result => { if (result.id === "first") throw new Error("unaccepted translation"); },
+			onFailure: async failure => { failures.push(failure); events.push(`deferred:${failure.id}`); },
+		}, async batch => { saved.push(...batch); events.push(`checkpoint:${batch[0].id}`); });
+		expect(result).toEqual([translations[1]]);
+		expect(saved).toEqual([translations[1]]);
+		expect(failures).toEqual([{ id: "first", reason: "Translation provider returned invalid structured output. Reason: semantic-validation." }]);
+		expect(events.slice(-3)).toEqual(["deferred:first", "request:second", "checkpoint:second"]);
+		expect(fetcher).toHaveBeenCalledTimes(5);
+	});
+
+	test("defers malformed singleton output after splitting and preserves its valid neighbor", async () => {
+		const failures: TranslationFailure[] = [];
+		spyOn(globalThis, "fetch").mockImplementation(async (_input, init) => {
+			const body = request(init);
+			const contents = body.contents as { parts: { text: string }[] }[];
+			const requested = JSON.parse(contents[0].parts[0].text) as { items: TranslationRequest[] };
+			return response(requested.items.some(item => item.id === "first") ? "invalid JSON" : { translations: [translations[1]] });
+		});
+		expect(await translateAll(items, { ...config, onFailure: async failure => { failures.push(failure); } })).toEqual([translations[1]]);
+		expect(failures).toEqual([{ id: "first", reason: "Translation provider returned invalid structured output. Reason: invalid-json." }]);
+	});
+
+	test("authentication failure aborts immediately even when deferral is configured", async () => {
+		const onFailure = mock(async (_failure: TranslationFailure) => {});
+		const fetcher = spyOn(globalThis, "fetch").mockImplementation(async () => new Response("private auth response", { status: 401 }));
+		await expect(translateAll(items, { ...config, onFailure })).rejects.toThrow("HTTP 401");
+		expect(fetcher).toHaveBeenCalledTimes(1);
+		expect(onFailure).not.toHaveBeenCalled();
+	});
+
+	test("service failure exhausts retries without splitting or deferring entries", async () => {
+		const onFailure = mock(async (_failure: TranslationFailure) => {});
+		const fetcher = spyOn(globalThis, "fetch").mockImplementation(async () => new Response("private service response", { status: 503 }));
+		await expect(translateAll(items, { ...config, onFailure })).rejects.toThrow("HTTP 503");
+		expect(fetcher).toHaveBeenCalledTimes(3);
+		expect(onFailure).not.toHaveBeenCalled();
+	});
+
+	test("failure report persistence errors abort instead of silently losing rejected entries", async () => {
+		const fetcher = spyOn(globalThis, "fetch").mockImplementation(async () => response("invalid JSON"));
+		await expect(translateAll([items[0]], { ...config, onFailure: async () => { throw new Error("report write failed"); } })).rejects.toThrow("report write failed");
+		expect(fetcher).toHaveBeenCalledTimes(3);
 	});
 });

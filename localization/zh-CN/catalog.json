@@ -1,4 +1,13 @@
 {
+  "000fda564959d98e79cffdccbf2e3807e78a85f07918aa4a9da7130aea2fb158": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "images.urls.enabled is false",
+    "text": "__OMP_TOKEN_0__ is false",
+    "translation": "__OMP_TOKEN_0__ 为 false",
+    "origin": "model"
+  },
   "0018313fa25f6489ee707c03b1ce00299958c92ac96ea5f74a97f109cd2aab4c": {
     "pkg": "tui",
     "file": "src/overlays/agents-hub.ts",
@@ -25,6 +34,15 @@
     "text": "Include thinking blocks in print mode text output",
     "translation": "在打印模式的文本输出中包含思考块",
     "origin": "seed"
+  },
+  "015729419ba60fc9bcef66ddf690bfd053cdfab9e30b98edbb2a55a9a64e5416": {
+    "pkg": "agent",
+    "file": "src/cli/bench-cli.ts",
+    "role": "field:header",
+    "source": "prefill",
+    "text": "prefill",
+    "translation": "预填充",
+    "origin": "model"
   },
   "018c9591891b5224648683f8ed4cc75ea85d0b31a8f264e70697f26a9ffa3b8e": {
     "pkg": "agent",
@@ -106,6 +124,15 @@
     "text": "Loop condition __OMP_TOKEN_0__ no longer holds. Loop mode disabled.",
     "translation": "循环条件 __OMP_TOKEN_0__ 已不再成立。已停用循环模式。",
     "origin": "seed"
+  },
+  "04e52809ded64ddcf3a761b5afcce2662c51700a0f81339e2f83611c21df1f31": {
+    "pkg": "agent",
+    "file": "src/cli/models-cli.ts",
+    "role": "field:header",
+    "source": "model",
+    "text": "model",
+    "translation": "模型",
+    "origin": "model"
   },
   "05049cc092b9b00f91e1d065c0f32390e3fddeffabc24a066d6dd14a74ed6d21": {
     "pkg": "tui",
@@ -223,6 +250,15 @@
     "text": "eval code",
     "translation": "eval 代码",
     "origin": "seed"
+  },
+  "0aee4d1f6042667e77da7570707bf1778098849bc58fa361b57592cb685b3e9a": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Required configuration is present",
+    "text": "Required configuration is present",
+    "translation": "所需配置已存在",
+    "origin": "model"
   },
   "0b15ba5016c809b7b6a9dd1df2611f1c64cdbcd356a924afa0a909fda333456f": {
     "pkg": "agent",
@@ -485,6 +521,15 @@
     "translation": "以 __OMP_TOKEN_0__ 输出",
     "origin": "seed"
   },
+  "12f22c7eb9655a6cc706e9a07f7430abfbb05fab44b6a786c455f7088c98be3e": {
+    "pkg": "agent",
+    "file": "src/cli/setup-cli.ts",
+    "role": "console:0",
+    "source": "Valid components: ${VALID_COMPONENTS.join(\", \")}",
+    "text": "Valid components: __OMP_TOKEN_0__",
+    "translation": "有效组件：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "1319dda18325d398730fe060c26f2b63a884bdb2f6e4e0e283972b9e11784bee": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -539,6 +584,15 @@
     "translation": "启用顾问运行时(被动审查每一轮并注入建议)",
     "origin": "seed"
   },
+  "15b81c4092603e3f43d50f17cff6e8f8825f56dc1650d457be17bf494cde13bc": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Replay a /record session recording in the terminal (space pauses, q quits)",
+    "text": "Replay a __OMP_TOKEN_0__ session recording in the terminal (space pauses, q quits)",
+    "translation": "在终端中重播 __OMP_TOKEN_0__ 会话录像（空格键暂停，q 退出）",
+    "origin": "model"
+  },
   "15c76698aed5321dc427eac04c34449de99ff978943bd1a4bf916b28715fc7ff": {
     "pkg": "tui",
     "file": "src/setup/scenes/theme.ts",
@@ -556,6 +610,15 @@
     "text": "Stream server base __OMP_TOKEN_0__ (overrides __OMP_TOKEN_1__)",
     "translation": "直播服务器基础 __OMP_TOKEN_0__（覆盖 __OMP_TOKEN_1__）",
     "origin": "seed"
+  },
+  "1633192a3de01eb1dab54e03e946010dedd6914b8bf6b7f8a34d64b6d97c58f8": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "No image publication backends are configured",
+    "text": "No image publication backends are configured",
+    "translation": "未配置图像发布后端",
+    "origin": "model"
   },
   "17067327eb755f1837006869fee8480f86bfa64467ed91e13bb0b97b482330ee": {
     "pkg": "agent",
@@ -619,6 +682,15 @@
     "text": "running",
     "translation": "运行中",
     "origin": "seed"
+  },
+  "192acc9bb1adc038a8aa08cd3b83f0c2cb36e8652b4d7e7ec694aecd9c41c00f": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Cache directory is readable and writable: ${directory}",
+    "text": "Cache directory is readable and writable: __OMP_TOKEN_0__",
+    "translation": "缓存目录可读写：__OMP_TOKEN_0__",
+    "origin": "model"
   },
   "19eb473c427d46941bb4367da77e10c64ac5d56720b9475d5c7d9683047ac259": {
     "pkg": "agent",
@@ -845,6 +917,15 @@
     "translation": "已禁用",
     "origin": "seed"
   },
+  "20dc01cab48759f3b8d7024875486c7e6c3fff91fa75acd41ba9a6c671c65761": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "console:0",
+    "source": "  3. Enable the mode:  omp config set browser.relay true",
+    "text": "  3. Enable the mode:  omp config set __OMP_TOKEN_0__ true",
+    "translation": "  3. 启用该模式：  omp config set __OMP_TOKEN_0__ true",
+    "origin": "model"
+  },
   "215c9b7bc9aea2a4f0124e5dc70a4ec2f23eec9cd54c58864b1862b214bd3d41": {
     "pkg": "agent",
     "file": "src/commands/launch-help.ts",
@@ -1015,6 +1096,15 @@
     "text": "clear override",
     "translation": "清除覆盖",
     "origin": "seed"
+  },
+  "28a8bfca7aff46d15c55afccd63a64f083984efaa3f90e679a1c6c50ef210f20": {
+    "pkg": "agent",
+    "file": "src/cli/worktree-cli.ts",
+    "role": "console:0",
+    "source": "Cloned from ${repository.info().repoRoot} via ${formatIsolationBackend(result.clonedWith)}",
+    "text": "Cloned from __OMP_TOKEN_0__ via __OMP_TOKEN_1__",
+    "translation": "已从 __OMP_TOKEN_0__ 克隆，通过 __OMP_TOKEN_1__",
+    "origin": "model"
   },
   "29e136e1c5e8736da4544c89988dcad53173fc61f4f5a99c192bc5ffd62b11d6": {
     "pkg": "agent",
@@ -1340,6 +1430,15 @@
     "translation": "运行存储垃圾回收",
     "origin": "seed"
   },
+  "3675df1ede63bedcafa5b1e92c4666c26b7e7636d39b58da0eebc7b2c4ee5a55": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Cache directory is absent or not writable: ${directory}",
+    "text": "Cache directory is absent or not writable: __OMP_TOKEN_0__",
+    "translation": "缓存目录不存在或不可写：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "36a59c1939f0312a67e72ded1549885847c50be974ca354da5cc65204ba8d27b": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -1528,6 +1627,15 @@
     "text": "Smooth Streaming",
     "translation": "平滑流式输出",
     "origin": "seed"
+  },
+  "3be7df2bb889e746bce9ece0c999244d8e050a316feabbc7615527d7bc744404": {
+    "pkg": "agent",
+    "file": "src/cli/bench-cli.ts",
+    "role": "field:header",
+    "source": "scale",
+    "text": "scale",
+    "translation": "规模",
+    "origin": "model"
   },
   "3c0c18908af1030e095d91cf6b5b0a080f67a54bf3b76cd501786e5fea581858": {
     "pkg": "agent",
@@ -1808,6 +1916,15 @@
     "translation": "100 行",
     "origin": "seed"
   },
+  "4815b8d97a78284d3ec7e55a4e7daa4239e7d30201c6449d9d21c36aefe85b49": {
+    "pkg": "agent",
+    "file": "src/cli/bench-cli.ts",
+    "role": "field:header",
+    "source": "agg@${par}",
+    "text": "agg@__OMP_TOKEN_0__",
+    "translation": "聚合@__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "481b47900f02a24e2e378bd6a6f181032d72b772873afd4519aa19dfec865719": {
     "pkg": "agent",
     "file": "src/cli/gallery-fixtures/web.ts",
@@ -1897,6 +2014,15 @@
     "text": "Read the text to speak from this file",
     "translation": "从该文件读取要朗读的文本",
     "origin": "seed"
+  },
+  "4ddd761de15d2abce16ae26a4656501e26ceb62e2808c8aef6ff521759fd9d52": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Missing required fields: ${missing.join(\", \")}",
+    "text": "Missing required fields: __OMP_TOKEN_0__",
+    "translation": "缺少必填字段：__OMP_TOKEN_0__",
+    "origin": "model"
   },
   "4e3572161a31f719a06e9cd71432d237dcb3de3c20d3cff8c4e6b24c129e646a": {
     "pkg": "tui",
@@ -2087,6 +2213,15 @@
     "translation": "即使 OAuth token 未过期也强制刷新",
     "origin": "seed"
   },
+  "55faa9b1e481ca32ff6c3a28ffd5fb0ce4a8f333303a79773f9b3cb63dbecb0e": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "console:0",
+    "source": "Installed the OMP Browser Relay extension to ${dir}",
+    "text": "Installed the __OMP_TOKEN_0__ Browser Relay extension to __OMP_TOKEN_1__",
+    "translation": "已将 __OMP_TOKEN_0__ Browser Relay 扩展安装到 __OMP_TOKEN_1__",
+    "origin": "model"
+  },
   "56930b2677d68868805c27b50db3d51ca3139610618fa61577084d0d1ad097fe": {
     "pkg": "tui",
     "file": "src/overlays/show-images-selector.ts",
@@ -2104,6 +2239,15 @@
     "text": "Optional subcommand to execute",
     "translation": "要执行的可选子命令",
     "origin": "seed"
+  },
+  "582ed9923bd5931c706b078a76635e140c88be8e106248c320d8adb0ab981303": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Upload a /record recording to live.omp.sh as a public clip and print its URL",
+    "text": "Upload a __OMP_TOKEN_0__ recording to __OMP_TOKEN_1__ as a public clip and print its __OMP_TOKEN_2__",
+    "translation": "将 __OMP_TOKEN_0__ 录像作为公开片段上传至 __OMP_TOKEN_1__，并打印其 __OMP_TOKEN_2__",
+    "origin": "model"
   },
   "58843fa7b345b520ac75498d15b7f9efff0674e53448b06d069b0fa5cda3cc02": {
     "pkg": "agent",
@@ -2141,6 +2285,15 @@
     "translation": "__OMP_TOKEN_0__ 操作",
     "origin": "seed"
   },
+  "597121e15a1fc2d147e11d98c669121f1f7afc3fb79852dcf4ecd20f93332c35": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Type a prompt and compare every word-completion engine's ghost text live",
+    "text": "Type a prompt and compare every word-completion engine's ghost text live",
+    "translation": "输入提示词并实时比较各个单词补全引擎的幽灵文本",
+    "origin": "model"
+  },
   "59d403a4a97c8fb420ce7dfdc6d3365c99d138ae3808136ac017a340224c76c6": {
     "pkg": "agent",
     "file": "src/commands/bench.ts",
@@ -2167,6 +2320,15 @@
     "text": "Output status as __OMP_TOKEN_0__",
     "translation": "以 __OMP_TOKEN_0__ 输出状态",
     "origin": "seed"
+  },
+  "5b1dbdd21ab4121115513881c89074ee5bcef1f72b9466d9f209cd945727092a": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Provider authentication storage could not be inspected",
+    "text": "Provider authentication storage could not be inspected",
+    "translation": "无法检查提供商身份验证存储",
+    "origin": "model"
   },
   "5b58619e941f47ec417dde6bc6b5eb08061470785dcbde98f5546d13e7b50cfb": {
     "pkg": "agent",
@@ -2357,6 +2519,15 @@
     "translation": "上下文",
     "origin": "seed"
   },
+  "625e1c4af9ed21a1eeafb0f5f3282f7d422c713a28f9e7dfa5ded1334572891b": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Authentication is available for: ${authenticated.join(\", \")}",
+    "text": "Authentication is available for: __OMP_TOKEN_0__",
+    "translation": "身份验证可用于：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "6260c2f102dc997ee6c6df51fe5cbae88a7cec8b055d347a5697fff91f8e04a0": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -2483,6 +2654,15 @@
     "translation": "在终端标题的分隔符中显示代理运行状态——工作时为动画旋转指示器(__OMP_TOKEN_0__ 下是静态 ':'),轮到你时显示 '>',代理等待你时显示 '!'",
     "origin": "seed"
   },
+  "663879e8ccdd69cd2199e48a2d2669abb6dc14c896c807ba30a5a66fdd68f3c7": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Image daemon is stopped or unreachable",
+    "text": "Image daemon is stopped or unreachable",
+    "translation": "图像守护程序已停止或无法访问",
+    "origin": "model"
+  },
   "663d634a4df1c71f6a94a90d36202c32d2cf08c549c50b794e9cce1c6d6c2a41": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -2555,6 +2735,15 @@
     "translation": "主机描述",
     "origin": "seed"
   },
+  "694567290b17d5fbb40f52ea52da30e03e8593776cd1824c1d07d4048ad5aa1a": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Image publication is disabled",
+    "text": "Image publication is disabled",
+    "translation": "图像发布已禁用",
+    "origin": "model"
+  },
   "695176f8f638853ce4c3c4481f8df24c8975101d644a157766265245f5bbb5cd": {
     "pkg": "agent",
     "file": "src/commands/auth-gateway.ts",
@@ -2581,6 +2770,15 @@
     "text": "Show provider usage limits for every authenticated account",
     "translation": "显示每个已认证账户的提供商用量限额",
     "origin": "seed"
+  },
+  "6968e26c7ea9f6340968c774f5df20bf3fce5bca95895e07c0aa113c75934a3a": {
+    "pkg": "agent",
+    "file": "src/cli/gallery-cli.ts",
+    "role": "theme:fg",
+    "source": "  render failed: ${String(err)}",
+    "text": "  render failed: __OMP_TOKEN_0__",
+    "translation": "  渲染失败：__OMP_TOKEN_0__",
+    "origin": "model"
   },
   "6a044afd06b5daab10cf2e8adab13d334a1b949d9136b46e5ab003ac55350be4": {
     "pkg": "agent",
@@ -2816,6 +3014,15 @@
     "translation": "将中继流量摘要记录到 stderr",
     "origin": "seed"
   },
+  "74c71db04033f15f9a7e063e5858e9f0a908cb4558ff6be23cf3dd21b7546aad": {
+    "pkg": "agent",
+    "file": "src/cli/predict-cli.ts",
+    "role": "field:title",
+    "source": "Quit  esc",
+    "text": "Quit  esc",
+    "translation": "退出  esc",
+    "origin": "model"
+  },
   "74f393df9eb94c6454ee31c426c176d96edc22c64932532e4d4865d2a17f6f51": {
     "pkg": "agent",
     "file": "src/commands/ssh.ts",
@@ -2824,6 +3031,15 @@
     "text": "Username",
     "translation": "用户名",
     "origin": "seed"
+  },
+  "759e57460db73eaf67a371aee7ce8bae46045c99306a3c47eb7e9a2b7707ac49": {
+    "pkg": "agent",
+    "file": "src/cli/grep-cli.ts",
+    "role": "console:0",
+    "source": "${chalk.cyan(displayPath)}: ${match.matchCount ?? 0} matches",
+    "text": "__OMP_TOKEN_0__: __OMP_TOKEN_1__ matches",
+    "translation": "__OMP_TOKEN_0__：__OMP_TOKEN_1__ 个匹配项",
+    "origin": "model"
   },
   "75c792761769d5772284deb6c135be5bacf3f75ca629cb302fdb15f84bce0d6b": {
     "pkg": "tui",
@@ -2842,6 +3058,15 @@
     "text": "Always list every live agent",
     "translation": "始终列出全部活跃代理",
     "origin": "seed"
+  },
+  "763a25e79b68087afe2926814f87df9efec864b72d8f7496b23c1d639d0cbf53": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Image publication is enabled",
+    "text": "Image publication is enabled",
+    "translation": "图像发布已启用",
+    "origin": "model"
   },
   "764874293af4ded9118e175b447a25177f51745a409a617eab93d8fe2b4c9748": {
     "pkg": "agent",
@@ -2968,6 +3193,15 @@
     "text": "Also run configured project test suites",
     "translation": "同时运行已配置的项目测试套件",
     "origin": "seed"
+  },
+  "7a5392d8c36d7f464de01e45e5474e499ed15001536ae0885f88d56eb9f71e3e": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "${binary} is available",
+    "text": "__OMP_TOKEN_0__ is available",
+    "translation": "__OMP_TOKEN_0__ 可用",
+    "origin": "model"
   },
   "7a8bbdf339baf9e2eefa103e593244bb687732cd68a84f8c3cbc57f061a48383": {
     "pkg": "agent",
@@ -3131,6 +3365,15 @@
     "translation": "更新已安装的插件",
     "origin": "seed"
   },
+  "7fec03088be4e5391eb5be592956a3f7577a383bc615ec6146cd05e672547f4c": {
+    "pkg": "agent",
+    "file": "src/cli/bench-cli.ts",
+    "role": "field:header",
+    "source": "model",
+    "text": "model",
+    "translation": "模型",
+    "origin": "model"
+  },
   "811713f4f46f300911e88c32a6e8e3fff42d363d5ddd97adb310c3c2654cb35f": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -3167,6 +3410,15 @@
     "translation": "OAuth 提供商 id(__OMP_TOKEN_0__)或路径(import)",
     "origin": "seed"
   },
+  "82339b73706ef72733960616f0a14ca4dd01d41e7f7c07f7aa2334adb21f15c4": {
+    "pkg": "agent",
+    "file": "src/cli/models-cli.ts",
+    "role": "field:header",
+    "source": "context",
+    "text": "context",
+    "translation": "上下文",
+    "origin": "model"
+  },
   "8277b91b8889647de5d9dbae4370803b14620cba0f4fd1830f4bffa14142146d": {
     "pkg": "agent",
     "file": "src/commands/update.ts",
@@ -3175,6 +3427,15 @@
     "text": "Check for updates without installing",
     "translation": "检查更新而不安装",
     "origin": "seed"
+  },
+  "8290663cd208b13f371a7e5a7c516339727012fde6eebe45995f333c7fd763ac": {
+    "pkg": "agent",
+    "file": "src/cli/models-cli.ts",
+    "role": "field:header",
+    "source": "max-out",
+    "text": "max-out",
+    "translation": "最大输出",
+    "origin": "model"
   },
   "83128d7dc15d303fd726ed041955e8ecf30b10387b25adb75a29d096ec5a3f1a": {
     "pkg": "agent",
@@ -3283,6 +3544,15 @@
     "text": "Pick a theme",
     "translation": "选择主题",
     "origin": "seed"
+  },
+  "868e1b456e452d6e1abb06bebea1c8dc7871fac9c0f3356607c067a58fdbb69a": {
+    "pkg": "agent",
+    "file": "src/cli/models-cli.ts",
+    "role": "field:header",
+    "source": "images",
+    "text": "images",
+    "translation": "图像",
+    "origin": "model"
   },
   "86cd540a47cec3281f0b2a6ffcedce14abbe0c132d55029305abe612c7c0a25b": {
     "pkg": "agent",
@@ -3437,6 +3707,15 @@
     "translation": "循环条件 __OMP_TOKEN_0__ 执行失败（__OMP_TOKEN_1__）__OMP_TOKEN_2__。已停用循环模式。",
     "origin": "seed"
   },
+  "8ef65193ce0c94c904c708cf3e23c18443a2de9a6a4c435bb2c0098282d81c44": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Log in to a model provider (terminal counterpart of /login)",
+    "text": "Log in to a model provider (terminal counterpart of __OMP_TOKEN_0__)",
+    "translation": "登录到模型提供商（__OMP_TOKEN_0__ 的终端对应命令）",
+    "origin": "model"
+  },
   "8f7a39603b9c0c3ef1496e2269d5e20bf5dd8d24efffb6a35b030fd6d83c34fe": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -3473,6 +3752,24 @@
     "translation": "日志行数，最多 1000（logs）",
     "origin": "seed"
   },
+  "90e01d0fb540b2e19a8e9dde66dbd9bb05f7fa90dae66c1c88085ab76d0a50c5": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "No URL backend is configured",
+    "text": "No __OMP_TOKEN_0__ backend is configured",
+    "translation": "未配置 __OMP_TOKEN_0__ 后端",
+    "origin": "model"
+  },
+  "918e53b1e07a034c2c962a26b192d441acbc01c07ae8d1aa99ff80b0dc058ea3": {
+    "pkg": "agent",
+    "file": "src/cli/tiny-models-cli.ts",
+    "role": "field:description",
+    "source": "Word completion (spelling.autocomplete auto/smollm)",
+    "text": "Word completion (__OMP_TOKEN_0__ __OMP_TOKEN_1__)",
+    "translation": "单词补全 (__OMP_TOKEN_0__ __OMP_TOKEN_1__)",
+    "origin": "model"
+  },
   "925876a2329278c66bfaabfa132e64337cd12f2d9cba38e9725c1dfc10b415c1": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -3481,6 +3778,15 @@
     "text": "10 items",
     "translation": "10 项",
     "origin": "seed"
+  },
+  "9343407634f7c3a0366956199a0ae0e06e982ababa2910363704a086ab97f6ab": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "console:0",
+    "source": "  1. Open chrome://extensions and enable Developer mode.",
+    "text": "  1. Open chrome://extensions and enable Developer mode.",
+    "translation": "  1. 打开 chrome://extensions 并启用开发者模式。",
+    "origin": "model"
   },
   "93a2ce8b00d2898bb9583c9cd8a1679afca919f02d24e9b28d582d2667c1d955": {
     "pkg": "agent",
@@ -3923,6 +4229,15 @@
     "translation": "通知",
     "origin": "seed"
   },
+  "a3a34f361b63b29813a9b5343d594a31bb105f37010583a8cfc12a3110a73b3e": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Install, search, publish, and manage skills on the Skillshare registry (skills.omp.sh)",
+    "text": "Install, search, publish, and manage skills on the Skillshare registry (__OMP_TOKEN_0__)",
+    "translation": "在 Skillshare 注册表上安装、搜索、发布和管理技能 (__OMP_TOKEN_0__)",
+    "origin": "model"
+  },
   "a3c260a1e854b8168943aa1915bf132748ecbd03331bf25d75af8c899d6c302b": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -3941,6 +4256,15 @@
     "translation": "list(默认)、clean 或 push",
     "origin": "seed"
   },
+  "a3f4a6c58bce193060c506ae3af9a6d11391a79cfb1112af745f3ebe558a82e4": {
+    "pkg": "agent",
+    "file": "src/cli/setup-cli.ts",
+    "role": "console:0",
+    "source": "${chalk.bold(`${APP_NAME} setup`)} - Run onboarding or install dependencies for optional features\n\n${chalk.bold(\"Usage:\")}\n  ${APP_NAME} setup                     Run the onboarding wizard\n  ${APP_NAME} setup <component> [options]\n\n${chalk.bold(\"Components:\")}\n  python    Verify a Python 3 interpreter is reachable for code execution\n  speech    Pick and download speech-to-text and text-to-speech models\n\n${chalk.bold(\"Options:\")}\n  -c, --check   Check if dependencies are installed without installing\n  --json        Output status as JSON\n\n${chalk.bold(\"Examples:\")}\n  ${APP_NAME} setup                  Run the onboarding wizard\n  ${APP_NAME} setup python           Check Python execution dependencies\n  ${APP_NAME} setup speech           Pick and download the STT and TTS models\n  ${APP_NAME} setup speech --check   Check if speech dependencies are available\n  ${APP_NAME} setup python --check   Check if Python execution is available\n",
+    "text": "__OMP_TOKEN_0__ - Run onboarding or install dependencies for optional features__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ setup                     Run the onboarding wizard__OMP_TOKEN_6__  __OMP_TOKEN_7__ setup <component> [options]__OMP_TOKEN_8____OMP_TOKEN_9____OMP_TOKEN_10____OMP_TOKEN_11__  python    Verify a Python 3 interpreter is reachable for code execution__OMP_TOKEN_12__  speech    Pick and download speech-to-text and text-to-speech models__OMP_TOKEN_13____OMP_TOKEN_14____OMP_TOKEN_15____OMP_TOKEN_16__  -c, __OMP_TOKEN_17__   Check if dependencies are installed without installing__OMP_TOKEN_18__  __OMP_TOKEN_19__        Output status as __OMP_TOKEN_20____OMP_TOKEN_21____OMP_TOKEN_22____OMP_TOKEN_23____OMP_TOKEN_24__  __OMP_TOKEN_25__ setup                  Run the onboarding wizard__OMP_TOKEN_26__  __OMP_TOKEN_27__ setup python           Check Python execution dependencies__OMP_TOKEN_28__  __OMP_TOKEN_29__ setup speech           Pick and download the __OMP_TOKEN_30__ and __OMP_TOKEN_31__ models__OMP_TOKEN_32__  __OMP_TOKEN_33__ setup speech __OMP_TOKEN_34__   Check if speech dependencies are available__OMP_TOKEN_35__  __OMP_TOKEN_36__ setup python __OMP_TOKEN_37__   Check if Python execution is available__OMP_TOKEN_38__",
+    "translation": "__OMP_TOKEN_0__ - 运行入门引导或为可选功能安装依赖项__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ setup                     运行入门引导向导__OMP_TOKEN_6__  __OMP_TOKEN_7__ setup <component> [options]__OMP_TOKEN_8____OMP_TOKEN_9____OMP_TOKEN_10____OMP_TOKEN_11__  python    验证 Python 3 解释器是否可访问以执行代码__OMP_TOKEN_12__  speech    选择并下载语音转文本和文本转语音模型__OMP_TOKEN_13____OMP_TOKEN_14____OMP_TOKEN_15____OMP_TOKEN_16__  -c, __OMP_TOKEN_17__   检查是否已安装依赖项但不执行安装__OMP_TOKEN_18__  __OMP_TOKEN_19__        以 __OMP_TOKEN_20__ 格式输出状态__OMP_TOKEN_21____OMP_TOKEN_22____OMP_TOKEN_23____OMP_TOKEN_24__  __OMP_TOKEN_25__ setup                  运行入门引导向导__OMP_TOKEN_26__  __OMP_TOKEN_27__ setup python           检查 Python 执行依赖项__OMP_TOKEN_28__  __OMP_TOKEN_29__ setup speech           选择并下载 __OMP_TOKEN_30__ 和 __OMP_TOKEN_31__ 模型__OMP_TOKEN_32__  __OMP_TOKEN_33__ setup speech __OMP_TOKEN_34__   检查语音依赖项是否可用__OMP_TOKEN_35__  __OMP_TOKEN_36__ setup python __OMP_TOKEN_37__   检查 Python 执行是否可用__OMP_TOKEN_38__",
+    "origin": "model"
+  },
   "a5049a8cca25ecaa76cb91a6caabf27bbb80d9b504fd85699c188046cfa8a553": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -3958,6 +4282,15 @@
     "text": "Share Server",
     "translation": "分享服务器",
     "origin": "seed"
+  },
+  "a5c7131cf11128c5dc98e2ca4291d827b6f4f81f5b558db379e5de019c5eac10": {
+    "pkg": "agent",
+    "file": "src/cli/models-cli.ts",
+    "role": "field:header",
+    "source": "thinking",
+    "text": "thinking",
+    "translation": "思考",
+    "origin": "model"
   },
   "a5ebc7abf0767f7dc2eec950196ece045c6a367705a035fab33fc3823b55786b": {
     "pkg": "tui",
@@ -4157,6 +4490,15 @@
     "translation": "使用 Nerd Font 图标显示最多信息",
     "origin": "seed"
   },
+  "adfb497032b4415f77f499f1a1eb6a45955b7ed35a447c6ab45442ac623fe36e": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Add, list, or clear git worktrees (clone-first when enabled)",
+    "text": "Add, list, or clear git worktrees (clone-first when enabled)",
+    "translation": "添加、列出或清除 git 工作树（启用时优先克隆）",
+    "origin": "model"
+  },
   "ae43f7f31c1d96579dc08be70c0abdc127e15e83f21955ca32eeadea8fb2046d": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -4283,6 +4625,15 @@
     "translation": "当粘贴内容达到这么多行时,提供菜单将其包裹在代码块中、包裹在 __OMP_TOKEN_0__ 标签中,或保存到文件。0 禁用该菜单(大段粘贴仍会折叠为 [Paste] 标记)。",
     "origin": "seed"
   },
+  "b446fb5166e784092a663e074ac2614deca565407d7af7b3e873eb81f0e16b1c": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "No OpenAI, Anthropic, or Google authentication is available",
+    "text": "No OpenAI, Anthropic, or Google authentication is available",
+    "translation": "没有可用的 OpenAI、Google 或 Google 身份验证",
+    "origin": "model"
+  },
   "b449ea22b93ff54a531a17471afbc388f7b2f4df62be7758cb967c27ace62704": {
     "pkg": "tui",
     "file": "src/overlays/settings-selector.ts",
@@ -4319,6 +4670,15 @@
     "translation": "继续上一个会话",
     "origin": "seed"
   },
+  "b4e27c188668b57325422e1462d3535cb5fbfae2504415d21b1e3b5c58848507": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Hand a session to another machine: pack it, unpack it, or mark the local copy moved",
+    "text": "Hand a session to another machine: pack it, unpack it, or mark the local copy moved",
+    "translation": "将会话移交到另一台机器：打包、解包或将本地副本标记为已移动",
+    "origin": "model"
+  },
   "b510d72f4bb57d21e3b565b57f1261fc282578eb8b68f1e42c6c26b75c8bf890": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -4345,6 +4705,15 @@
     "text": "Glob",
     "translation": "查找",
     "origin": "seed"
+  },
+  "b60840153795ef22b0d3da4315e397c6dbea4cb3f20bbf40d4f80853fab72162": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "console:0",
+    "source": "Finish setup in Chrome:",
+    "text": "Finish setup in Chrome:",
+    "translation": "在 Chrome 浏览器中完成设置：",
+    "origin": "model"
   },
   "b6430cbe7012fe753414c179bdb7657423923783b0a4bd309850130e54e69deb": {
     "pkg": "tui",
@@ -4427,6 +4796,15 @@
     "translation": "交互式全屏 git 界面：分栏 diff 查看器、暂存侧栏与提交编辑器",
     "origin": "seed"
   },
+  "b8632a5d832970577c0097a28ee0885893396d79b0636552ab10cd95735cac95": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Export or import stored provider credentials (API keys and OAuth logins) as JSON",
+    "text": "Export or import stored provider credentials (__OMP_TOKEN_0__ keys and OAuth logins) as __OMP_TOKEN_1__",
+    "translation": "将存储的提供商凭据（__OMP_TOKEN_0__ 密钥和 OAuth 登录信息）导出或导入为 __OMP_TOKEN_1__",
+    "origin": "model"
+  },
   "b9959f4f3c79309982d9859850722f5be7863f102a95174de05490203f398056": {
     "pkg": "agent",
     "file": "src/commands/launch-help.ts",
@@ -4444,6 +4822,15 @@
     "text": "Erase all terminal scrollback, then replay one current-width transcript",
     "translation": "清空全部回滚缓冲，再以当前宽度重放一遍会话记录",
     "origin": "seed"
+  },
+  "badaad3c49f63b416ee68bfa0dafb27902ef6d743931d71c4149332d00835854": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Benchmark models: TTFT/prefill vs decode throughput with p50/p95, across chat, prefill, generation, and prompt-cache workloads, or single-user vs parallel load (--detailed)",
+    "text": "Benchmark models: __OMP_TOKEN_0__ vs decode throughput with __OMP_TOKEN_1__, across chat, prefill, generation, and prompt-cache workloads, or single-user vs parallel load (__OMP_TOKEN_2__)",
+    "translation": "基准测试模型：在聊天、预填充、生成和提示词缓存工作负载中，或在单用户与并行负载下，对比 __OMP_TOKEN_0__ 与解码吞吐量及 __OMP_TOKEN_1__ (__OMP_TOKEN_2__)",
+    "origin": "model"
   },
   "bb0ec6cd84a7a5d52545c36ce3ff9c150a3e928b568b790081d1478cee59676f": {
     "pkg": "agent",
@@ -4517,6 +4904,15 @@
     "translation": "__OMP_TOKEN_0__ 的 \\ | /（适用于不支持盲文点阵的字体）",
     "origin": "seed"
   },
+  "bedfa11d9fdad43d6b03812ca28d9861f3057488a8e34f0b59994369043141ad": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "Image daemon could not be started or reached",
+    "text": "Image daemon could not be started or reached",
+    "translation": "无法启动或连接到 Image daemon",
+    "origin": "model"
+  },
   "bf131d9d6ff2909aceea0498b36dab3030a36c57c7670b3fb5dc7332dd448dbf": {
     "pkg": "tui",
     "file": "src/overlays/model-hub.ts",
@@ -4552,6 +4948,15 @@
     "text": "Annotated",
     "translation": "带刻度",
     "origin": "seed"
+  },
+  "c17ed20b1866f503cc787848648ef83419064c8981c41efc58531744b403da64": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Count a file or text with every embedded offline tokenizer (OpenAI, Claude, Qwen, …)",
+    "text": "Count a file or text with every embedded offline tokenizer (OpenAI, Claude, Qwen, …)",
+    "translation": "使用每个内置的离线分词器（Google、Gemini、Gemini 等）统计文件或文本",
+    "origin": "model"
   },
   "c197296b64399b0289dc541642cc8a530222dd5b198cf031991917fcc041f1c6": {
     "pkg": "agent",
@@ -4895,6 +5300,15 @@
     "translation": "按 glob 模式过滤文件",
     "origin": "seed"
   },
+  "cc926d61a57b9ee41523efcd7df31e1fa73d0e53b5d3ee2b399767d182c3d38a": {
+    "pkg": "agent",
+    "file": "src/cli/update-cli.ts",
+    "role": "console:0",
+    "source": "${chalk.bold(`${APP_NAME} update`)} - Check for and install updates\n\n${chalk.bold(\"Usage:\")}\n  ${APP_NAME} update [options]\n\n${chalk.bold(\"Options:\")}\n  -c, --check     Check for updates without installing\n  -f, --force     Force reinstall even if up to date\n  -l, --plugins   Update installed plugins\n  --canary        Switch to the canary channel and update\n  --stable        Switch back to the stable channel\n\n${chalk.bold(\"Examples:\")}\n  ${APP_NAME} update              Update to latest version\n  ${APP_NAME} update --check      Check if updates are available\n  ${APP_NAME} update --force      Force reinstall\n  ${APP_NAME} update -l           Update installed plugins\n  ${APP_NAME} update --canary    Switch to the canary channel and update\n",
+    "text": "__OMP_TOKEN_0__ - Check for and install updates__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ update [options]__OMP_TOKEN_6____OMP_TOKEN_7____OMP_TOKEN_8____OMP_TOKEN_9__  -c, __OMP_TOKEN_10__     Check for updates without installing__OMP_TOKEN_11__  -f, __OMP_TOKEN_12__     Force reinstall even if up to date__OMP_TOKEN_13__  -l, __OMP_TOKEN_14__   Update installed plugins__OMP_TOKEN_15__  __OMP_TOKEN_16__        Switch to the canary channel and update__OMP_TOKEN_17__  __OMP_TOKEN_18__        Switch back to the stable channel__OMP_TOKEN_19____OMP_TOKEN_20____OMP_TOKEN_21____OMP_TOKEN_22__  __OMP_TOKEN_23__ update              Update to latest version__OMP_TOKEN_24__  __OMP_TOKEN_25__ update __OMP_TOKEN_26__      Check if updates are available__OMP_TOKEN_27__  __OMP_TOKEN_28__ update __OMP_TOKEN_29__      Force reinstall__OMP_TOKEN_30__  __OMP_TOKEN_31__ update -l           Update installed plugins__OMP_TOKEN_32__  __OMP_TOKEN_33__ update __OMP_TOKEN_34__    Switch to the canary channel and update__OMP_TOKEN_35__",
+    "translation": "__OMP_TOKEN_0__ - 检查并安装更新__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ update [options]__OMP_TOKEN_6____OMP_TOKEN_7____OMP_TOKEN_8____OMP_TOKEN_9__  -c, __OMP_TOKEN_10__     检查更新但不安装__OMP_TOKEN_11__  -f, __OMP_TOKEN_12__     即使是最新版本也强制重新安装__OMP_TOKEN_13__  -l, __OMP_TOKEN_14__   更新已安装的插件__OMP_TOKEN_15__  __OMP_TOKEN_16__        切换到 canary 通道并更新__OMP_TOKEN_17__  __OMP_TOKEN_18__        切换回 stable 通道__OMP_TOKEN_19____OMP_TOKEN_20____OMP_TOKEN_21____OMP_TOKEN_22__  __OMP_TOKEN_23__ update              更新至最新版本__OMP_TOKEN_24__  __OMP_TOKEN_25__ update __OMP_TOKEN_26__      检查是否有可用更新__OMP_TOKEN_27__  __OMP_TOKEN_28__ update __OMP_TOKEN_29__      强制重新安装__OMP_TOKEN_30__  __OMP_TOKEN_31__ update -l           更新已安装的插件__OMP_TOKEN_32__  __OMP_TOKEN_33__ update __OMP_TOKEN_34__    切换到 canary 通道并更新__OMP_TOKEN_35__",
+    "origin": "model"
+  },
   "cc946e8d6cc3a75b4ece3ba502698c6f4689102a7b27e6de6d2b85440554b7d4": {
     "pkg": "agent",
     "file": "src/modes/controllers/command-controller.ts",
@@ -4931,6 +5345,15 @@
     "translation": "插件市场自动更新",
     "origin": "seed"
   },
+  "cddfbbe4d47722d4fb4234fc7c8ebd791ebf781f6bb5923b5b4c366873ee0f13": {
+    "pkg": "agent",
+    "file": "src/cli/images-cli.ts",
+    "role": "field:detail",
+    "source": "${binary} is not on PATH",
+    "text": "__OMP_TOKEN_0__ is not on __OMP_TOKEN_1__",
+    "translation": "__OMP_TOKEN_0__ 不在 __OMP_TOKEN_1__ 中",
+    "origin": "model"
+  },
   "cde40299a97f99c03c3ae9e75476ec62e06bad02d378d1f8ff7619e5c1b6ab98": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -4966,6 +5389,15 @@
     "text": "Handing off to the normal __OMP_TOKEN_0__…",
     "translation": "正在移交到常规 __OMP_TOKEN_0__…",
     "origin": "seed"
+  },
+  "cf77a717cfdae852464ddef64bba422e42cbdbe21158d5ff2c8d78c18b9a0577": {
+    "pkg": "agent",
+    "file": "src/cli/browser-relay-cli.ts",
+    "role": "console:0",
+    "source": "  2. Click \"Load unpacked\" and select: ${dir}",
+    "text": "  2. Click \"Load unpacked\" and select: __OMP_TOKEN_0__",
+    "translation": "  2. 点击“加载已解压的扩展程序”并选择：__OMP_TOKEN_0__",
+    "origin": "model"
   },
   "cf8a7e9731dea792b072f2e80391ee295de5a49488e1f0a0fe915983294abf61": {
     "pkg": "agent",
@@ -5012,6 +5444,15 @@
     "translation": "命令:",
     "origin": "seed"
   },
+  "d016383f76524c30b730aad874c1834a8da79e885b9a5bf858f2a0ab84e2c3e4": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Run an auth-gateway: an HTTP forward proxy backed by the configured broker, or JSON lines on stdio with your own credentials",
+    "text": "Run an auth-gateway: an __OMP_TOKEN_0__ forward proxy backed by the configured broker, or __OMP_TOKEN_1__ lines on stdio with your own credentials",
+    "translation": "运行 auth-gateway：由配置的 broker 提供支持的 __OMP_TOKEN_0__ 正向代理，或者在 stdio 上使用您自己凭据的 __OMP_TOKEN_1__ 行",
+    "origin": "model"
+  },
   "d0c0b2494f680b1a41a04f06739bdc5220b822e4d556204068d9ca36499ce65b": {
     "pkg": "agent",
     "file": "src/cli/gallery-fixtures/interaction.ts",
@@ -5029,6 +5470,15 @@
     "text": "Disabled",
     "translation": "已禁用",
     "origin": "seed"
+  },
+  "d17c164bfa3d093952479d752ad16fb22c20f2ef0ea8c0ea9dc0f1fada402b4d": {
+    "pkg": "agent",
+    "file": "src/cli/worktree-cli.ts",
+    "role": "console:0",
+    "source": "Preparing worktree (${preparation})",
+    "text": "Preparing worktree (__OMP_TOKEN_0__)",
+    "translation": "正在准备工作树 (__OMP_TOKEN_0__)",
+    "origin": "model"
   },
   "d1e7fdd519804611894311dda34abf41bd3552701d992a78712ddde236846930": {
     "pkg": "agent",
@@ -5092,6 +5542,15 @@
     "text": "Pinned live-agent jump list above the editor (off hides it; collapsed shows a few rows with an expander; full lists all)",
     "translation": "编辑器上方的活跃代理固定跳转列表（关闭则隐藏；折叠时显示几行并带展开器；完整时全部列出）",
     "origin": "seed"
+  },
+  "d4454d854a7cc0c21498e5e9eb8d7b5040071b75e54da9cb934426b563c2c7c2": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Benchmark instruction following and working memory: one cached thread of glyph array actions with a moving cat-sound directive",
+    "text": "Benchmark instruction following and working memory: one cached thread of glyph array actions with a moving cat-sound directive",
+    "translation": "基准测试指令遵循和工作内存：一个包含字形数组操作和移动的猫叫声指令的已缓存线程",
+    "origin": "model"
   },
   "d4ef4b4a13def29f92ded148a99695937a82e07232b0e51883cdc2703274a9ac": {
     "pkg": "tui",
@@ -5363,6 +5822,15 @@
     "translation": "在助手消息用量行显示从提示到产出的总耗时（含工具调用）",
     "origin": "seed"
   },
+  "e07e78f4da3f88dc18f1634480c09a6b679df17b3f09318566bc0586dd0b1a9d": {
+    "pkg": "agent",
+    "file": "src/cli/worktree-cli.ts",
+    "role": "console:0",
+    "source": "HEAD is now at ${shortSha} ${subject}",
+    "text": "__OMP_TOKEN_0__ is now at __OMP_TOKEN_1__ __OMP_TOKEN_2__",
+    "translation": "__OMP_TOKEN_0__ 目前位于 __OMP_TOKEN_1__ __OMP_TOKEN_2__",
+    "origin": "model"
+  },
   "e092c6ad482d13b1f1a9ee1ecf8db15464eddfb37061b1c0d026329fef62ca9e": {
     "pkg": "agent",
     "file": "src/commands/auth-broker.ts",
@@ -5534,6 +6002,15 @@
     "translation": "脉动",
     "origin": "seed"
   },
+  "e7a8c5d5abb71092529d2f8a8ce44eeb1b4fc6c6191a783aabe43fb00ef153a0": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Draw a session's entire thread through the production transcript pipeline (with repaint timing)",
+    "text": "Draw a session's entire thread through the production transcript pipeline (with repaint timing)",
+    "translation": "通过生产环境转录流水线绘制会话的整个线程（包含重绘时序）",
+    "origin": "model"
+  },
   "e7c4660fea53e406c22463a4bcd4e62e995ee429b64781ed2d52f91d3894e7a1": {
     "pkg": "agent",
     "file": "src/cli/command-help.ts",
@@ -5597,6 +6074,15 @@
     "translation": "预览",
     "origin": "seed"
   },
+  "eb47c2a68b0a6782a8eb8767a1733b306b373be1875299064488686bc5deb55d": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Share a saved session via an encrypted link (same as /share)",
+    "text": "Share a saved session via an encrypted link (same as __OMP_TOKEN_0__)",
+    "translation": "通过加密链接分享已保存的会话（等同于 __OMP_TOKEN_0__）",
+    "origin": "model"
+  },
   "eb48a5c8c5cdac57fa45f26c94b4f51b1651e1fe760b7f705de5ccace729d68c": {
     "pkg": "agent",
     "file": "src/commands/web-search.ts",
@@ -5650,6 +6136,15 @@
     "text": "Project level",
     "translation": "项目级",
     "origin": "seed"
+  },
+  "ee1d8ef3572b8f2c462ff15e7152a6492115fe60405e649ccc7b8724af156a2d": {
+    "pkg": "agent",
+    "file": "src/cli/bench-cli.ts",
+    "role": "field:header",
+    "source": "decode",
+    "text": "decode",
+    "translation": "解码",
+    "origin": "model"
   },
   "eee03839cbba0cf88b399a04eab4278f701dccb152b256d8a519acdae823c886": {
     "pkg": "agent",
@@ -5723,6 +6218,15 @@
     "translation": "追问：",
     "origin": "seed"
   },
+  "f0cdc17f78a5a83be2199de9f5ae7e5ba7c0d54f2d46402724d8a1b8a370ed09": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Run omp as an ACP (Agent Client Protocol) server over stdio",
+    "text": "Run omp as an __OMP_TOKEN_0__ (Agent Client Protocol) server over stdio",
+    "translation": "通过 stdio 将 omp 作为 __OMP_TOKEN_0__（智能体客户端协议）服务器运行",
+    "origin": "model"
+  },
   "f10e3fd148ee7a361c8ee0c3ff04becf9602b154abe046f33799853725dbd880": {
     "pkg": "agent",
     "file": "src/commands/browser-relay.ts",
@@ -5731,6 +6235,15 @@
     "text": "Port to listen on",
     "translation": "监听的端口",
     "origin": "seed"
+  },
+  "f1330cdc9fdaf9c4b2f0f949ceb8b1a60ebc85da544a2019f3a2734f7761f51e": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Download tiny local models (session titles, memory, word completion)",
+    "text": "Download tiny local models (session titles, memory, word completion)",
+    "translation": "下载微型本地模型（会话标题、记忆、单词补全）",
+    "origin": "model"
   },
   "f14fd1fcb1bd961945e9539d5ad9800d2efdb43677e88f42e551bc949bf765b2": {
     "pkg": "agent",
@@ -5921,6 +6434,15 @@
     "translation": "空闲后等待多少秒再显示回顾",
     "origin": "seed"
   },
+  "f661c3b912a8f9532bb334d8d4e88030efb15532bd5c1134aaf312f7b7b245bc": {
+    "pkg": "agent",
+    "file": "src/cli/grep-cli.ts",
+    "role": "console:0",
+    "source": "${chalk.bold(`${APP_NAME} grep`)} - Test grep tool\n\n${chalk.bold(\"Usage:\")}\n  ${APP_NAME} grep <pattern> [path] [options]\n\n${chalk.bold(\"Arguments:\")}\n  pattern   Regex pattern to search for\n  path      Directory or file to search (default: .)\n\n${chalk.bold(\"Options:\")}\n  -g, --glob <pattern>  Filter files by glob pattern\n  -l, --limit <n>       Max matches (default: 20)\n  -C, --context <n>     Context lines (default: 2)\n  -f, --files           Output file names only\n  -c, --count           Output match counts per file\n  -h, --help            Show this help\n  --no-gitignore        Include files excluded by .gitignore\n\n${chalk.bold(\"Environment:\")}\n  PI_WALK_WORKERS=N    Set filesystem walker workers (default 4, 0 = auto)\n\n${chalk.bold(\"Examples:\")}\n  ${APP_NAME} grep \"import\" src/\n  ${APP_NAME} grep \"TODO\" . --glob \"*.ts\"\n  ${APP_NAME} grep \"function\" --files\n",
+    "text": "__OMP_TOKEN_0__ - Test grep tool__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ grep <pattern> [path] [options]__OMP_TOKEN_6____OMP_TOKEN_7____OMP_TOKEN_8____OMP_TOKEN_9__  pattern   Regex pattern to search for__OMP_TOKEN_10__  path      Directory or file to search (default: .)__OMP_TOKEN_11____OMP_TOKEN_12____OMP_TOKEN_13____OMP_TOKEN_14__  -g, __OMP_TOKEN_15__ <pattern>  Filter files by glob pattern__OMP_TOKEN_16__  -l, __OMP_TOKEN_17__ <n>       Max matches (default: 20)__OMP_TOKEN_18__  -C, __OMP_TOKEN_19__ <n>     Context lines (default: 2)__OMP_TOKEN_20__  -f, __OMP_TOKEN_21__           Output file names only__OMP_TOKEN_22__  -c, __OMP_TOKEN_23__           Output match counts per file__OMP_TOKEN_24__  -h, __OMP_TOKEN_25__            Show this help__OMP_TOKEN_26__  __OMP_TOKEN_27__        Include files excluded by .gitignore__OMP_TOKEN_28____OMP_TOKEN_29____OMP_TOKEN_30____OMP_TOKEN_31__  __OMP_TOKEN_32__=N    Set filesystem walker workers (default 4, 0 = auto)__OMP_TOKEN_33____OMP_TOKEN_34____OMP_TOKEN_35____OMP_TOKEN_36__  __OMP_TOKEN_37__ grep \"import\" src/__OMP_TOKEN_38__  __OMP_TOKEN_39__ grep \"__OMP_TOKEN_40__\" . __OMP_TOKEN_41__ \"*.ts\"__OMP_TOKEN_42__  __OMP_TOKEN_43__ grep \"function\" __OMP_TOKEN_44____OMP_TOKEN_45__",
+    "translation": "__OMP_TOKEN_0__ - 测试 grep 工具__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ grep <pattern> [path] [options]__OMP_TOKEN_6____OMP_TOKEN_7____OMP_TOKEN_8____OMP_TOKEN_9__  pattern   要搜索的正则表达式模式__OMP_TOKEN_10__  path      要搜索的目录或文件（默认：.）__OMP_TOKEN_11____OMP_TOKEN_12____OMP_TOKEN_13____OMP_TOKEN_14__  -g, __OMP_TOKEN_15__ <pattern>  按 glob 模式过滤文件__OMP_TOKEN_16__  -l, __OMP_TOKEN_17__ <n>       最大匹配数（默认：20）__OMP_TOKEN_18__  -C, __OMP_TOKEN_19__ <n>     上下文行数（默认：2）__OMP_TOKEN_20__  -f, __OMP_TOKEN_21__           仅输出文件名__OMP_TOKEN_22__  -c, __OMP_TOKEN_23__           输出每个文件的匹配数__OMP_TOKEN_24__  -h, __OMP_TOKEN_25__            显示此帮助信息__OMP_TOKEN_26__  __OMP_TOKEN_27__        包含被 .gitignore 排除的文件__OMP_TOKEN_28____OMP_TOKEN_29____OMP_TOKEN_30____OMP_TOKEN_31__  __OMP_TOKEN_32__=N    设置文件系统遍历工作线程数（默认 4，0 = 自动）__OMP_TOKEN_33____OMP_TOKEN_34____OMP_TOKEN_35____OMP_TOKEN_36__  __OMP_TOKEN_37__ grep \"import\" src/__OMP_TOKEN_38__  __OMP_TOKEN_39__ grep \"__OMP_TOKEN_40__\" . __OMP_TOKEN_41__ \"*.ts\"__OMP_TOKEN_42__  __OMP_TOKEN_43__ grep \"function\" __OMP_TOKEN_44____OMP_TOKEN_45__",
+    "origin": "model"
+  },
   "f6dcc2242a7ccd37071361bb91169b48f93dd667a84b67082ee0e9baeb977b3e": {
     "pkg": "agent",
     "file": "src/commands/ttsr.ts",
@@ -5956,6 +6478,15 @@
     "text": "Include dot-files and dot-folders",
     "translation": "包含点文件和点文件夹",
     "origin": "seed"
+  },
+  "f793ba5d826fcc0e4de3aad4542c17e26429cec82bba9a76e3b698bc30ecb397": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Write a shareable copy of a session and its subagents: turn contents redacted, metadata kept, paths and literals replaced by consistent mock tokens",
+    "text": "Write a shareable copy of a session and its subagents: turn contents redacted, metadata kept, paths and literals replaced by consistent mock tokens",
+    "translation": "写入会话及其子智能体的可共享副本：轮次内容已脱敏，元数据保留，路径和字面量替换为一致的模拟令牌",
+    "origin": "model"
   },
   "f79d3daf73ef5e798c5bb81e7f455e9655b2b3a49be223b0e84568c086d33a2a": {
     "pkg": "agent",

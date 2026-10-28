@@ -11,6 +11,11 @@ export interface TranslationResult {
 	text: string;
 }
 
+export interface TranslationFailure {
+	id: string;
+	reason: string;
+}
+
 export interface TranslationConfig {
 	provider: "google" | "openai";
 	model: string;
@@ -18,6 +23,7 @@ export interface TranslationConfig {
 	apiKey: string;
 	batchSize?: number;
 	validateResult?: (result: TranslationResult) => void;
+	onFailure?: (failure: TranslationFailure) => Promise<void>;
 }
 
 const MAX_ATTEMPTS = 3;
@@ -34,7 +40,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-type OutputFailure = "provider-shape" | "openai-choices" | "openai-content" | "google-candidates" | "google-content" | "google-part" | "json-code-fence" | "invalid-json" | "translations-shape" | "translation-count" | "entry-shape" | "entry-id" | "entry-placeholders" | "output-truncated";
+type OutputFailure = "provider-shape" | "provider-json" | "openai-choices" | "openai-content" | "google-candidates" | "google-content" | "google-part" | "json-code-fence" | "invalid-json" | "translations-shape" | "translation-count" | "entry-shape" | "entry-id" | "entry-placeholders" | "output-truncated" | "semantic-validation";
 
 function invalidOutput(reason: OutputFailure): never {
 	throw new TranslationError(`Translation provider returned invalid structured output. Reason: ${reason}.`, true, true);
@@ -205,9 +211,14 @@ async function attempt(
 					response.status === 408 || response.status === 429 || response.status >= 500,
 				);
 			}
-			const body: unknown = await response.json();
+			let body: unknown;
+			try { body = await response.json(); }
+			catch { return invalidOutput("provider-json"); }
 			const results = validateOutput(outputText(body, config.provider), items);
-			for (const result of results) config.validateResult?.(result);
+			for (const result of results) {
+				try { config.validateResult?.(result); }
+				catch { return invalidOutput("semantic-validation"); }
+			}
 			return results;
 		};
 		return await Promise.race([operation(), deadline.promise]);
@@ -255,12 +266,17 @@ export async function translateAll(
 		if (onBatch) await onBatch(batch);
 		for (const result of batch) results.set(result.id, result);
 	};
+	const defer = async (request: TranslationRequest, error: unknown): Promise<void> => {
+		if (!(error instanceof TranslationError) || !error.invalidOutput || !config.onFailure) throw error;
+		await config.onFailure({ id: request.id, reason: error.message });
+	};
 	const processBatch = async (requests: TranslationRequest[]): Promise<void> => {
 		let batch: TranslationResult[];
 		try {
 			batch = await translateBatch(requests, { ...config, validateResult: undefined });
 		} catch (error: unknown) {
-			if (!(error instanceof TranslationError) || !error.invalidOutput || requests.length === 1) throw error;
+			if (!(error instanceof TranslationError) || !error.invalidOutput) throw error;
+			if (requests.length === 1) { await defer(requests[0], error); return; }
 			const middle = Math.floor(requests.length / 2);
 			await processBatch(requests.slice(0, middle));
 			await processBatch(requests.slice(middle));
@@ -280,11 +296,14 @@ export async function translateAll(
 		await checkpoint(accepted);
 		for (const request of requests) {
 			if (!rejected.has(request.id)) continue;
-			await checkpoint(await translateBatch([request], config));
+			let retry: TranslationResult[];
+			try { retry = await translateBatch([request], config); }
+			catch (error: unknown) { await defer(request, error); continue; }
+			await checkpoint(retry);
 		}
 	};
 	for (let index = 0; index < items.length; index += batchSize) {
 		await processBatch(items.slice(index, index + batchSize));
 	}
-	return items.map(item => results.get(item.id)!);
+	return items.flatMap(item => { const result = results.get(item.id); return result ? [result] : []; });
 }

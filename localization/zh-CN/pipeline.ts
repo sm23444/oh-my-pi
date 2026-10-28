@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import { applyCatalog, extractCandidates, fromSeed, inScope, npmPackages, packagePaths, toEntry, type Candidate, type Catalog, type PackageId, type SeedEntry } from "./core";
-import { translateAll, type TranslationConfig } from "./client";
+import { translateAll, type TranslationConfig, type TranslationFailure } from "./client";
 
 interface Settings {
 	model: string;
@@ -54,8 +54,16 @@ const saveCatalog = async () => {
 	await Bun.write(catalogFile, JSON.stringify(sorted, null, 2) + "\n");
 };
 let translated = 0;
+const deferred: TranslationFailure[] = [];
+const validationReasons = new Map<string, string>();
 const missing = () => candidates.filter(candidate => !catalog[candidate.id]);
 const byId = new Map(candidates.map(candidate => [candidate.id, candidate]));
+const saveDeferred = async () => {
+	await Bun.write(path.join(reportDir, "deferred.json"), JSON.stringify(deferred.map(failure => {
+		const candidate = byId.get(failure.id)!;
+		return { ...failure, pkg: candidate.pkg, file: candidate.file, line: candidate.line, source: candidate.source };
+	}), null, 2) + "\n");
+};
 const writeReport = async () => {
 	const pending = missing();
 	const active = new Set(candidates.map(candidate => candidate.id));
@@ -63,13 +71,14 @@ const writeReport = async () => {
 		version: option("version"), model: Bun.env.TRANSLATION_MODEL || settings.model,
 		scannedFiles: files.length, detectedDisplayStrings: candidates.length,
 		translatedDisplayStrings: candidates.length - pending.length, pendingDisplayStrings: pending.length,
-		seededThisRun: seeded, modelTranslatedThisRun: translated,
+		seededThisRun: seeded, modelTranslatedThisRun: translated, deferredThisRun: deferred.length,
 		retainedInactiveTranslations: Object.keys(catalog).filter(id => !active.has(id)).length,
 		completeWithinScannerScope: pending.length === 0,
 	};
 	await Bun.write(path.join(reportDir, "summary.json"), JSON.stringify(summary, null, 2) + "\n");
 	await Bun.write(path.join(reportDir, "pending.json"), JSON.stringify(pending.map(({ id, pkg, file, line, source, role, text }) => ({ id, pkg, file, line, source, role, text })), null, 2) + "\n");
-	const markdown = `## OMP 中文自动化\n\n- 官方版本：${summary.version || "local"}\n- 翻译模型：${summary.model}\n- 扫描文件：${summary.scannedFiles}\n- 已识别显示文案：${summary.detectedDisplayStrings}\n- 已有翻译：${summary.translatedDisplayStrings}\n- 待翻译：${summary.pendingDisplayStrings}\n- 本次复用种子译文：${seeded}\n- 本次模型补译：${translated}\n\n此统计仅覆盖扫描器识别的界面字段和显示调用，不代表整个产品 100% 汉化。\n`;
+	await saveDeferred();
+	const markdown = `## OMP 中文自动化\n\n- 官方版本：${summary.version || "local"}\n- 翻译模型：${summary.model}\n- 扫描文件：${summary.scannedFiles}\n- 已识别显示文案：${summary.detectedDisplayStrings}\n- 已有翻译：${summary.translatedDisplayStrings}\n- 待翻译：${summary.pendingDisplayStrings}\n- 本次复用种子译文：${seeded}\n- 本次模型补译：${translated}\n- 本次暂缓条目：${deferred.length}（详见 deferred.json）\n\n${pending.length ? "当前仅保存翻译进度，未满足正式发布条件。\n\n" : ""}此统计仅覆盖扫描器识别的界面字段和显示调用，不代表整个产品 100% 汉化。\n`;
 	await Bun.write(path.join(reportDir, "summary.md"), markdown);
 	if (Bun.env.GITHUB_STEP_SUMMARY) {
 		const existing = await Bun.file(Bun.env.GITHUB_STEP_SUMMARY).text().catch(() => "");
@@ -90,7 +99,18 @@ try {
 			validateResult: result => {
 				const candidate = byId.get(result.id);
 				if (!candidate) throw new Error("Translation returned an unknown entry ID");
-				toEntry(candidate, result.text, "model");
+				try { toEntry(candidate, result.text, "model"); }
+				catch (error: unknown) {
+					if (error instanceof Error) validationReasons.set(result.id, error.message);
+					throw error;
+				}
+			},
+			onFailure: async failure => {
+				const detail = validationReasons.get(failure.id);
+				const entry = { ...failure, reason: detail ? `${failure.reason} Last validation: ${detail}` : failure.reason };
+				deferred.push(entry);
+				console.warn(`Deferred translation ${entry.id}: ${entry.reason}`);
+				await saveDeferred();
 			},
 		};
 		const requestedMax = Number(Bun.env.TRANSLATION_MAX_ENTRIES || 0);
@@ -109,6 +129,7 @@ try {
 			await saveCatalog();
 			console.log(`Checkpoint: ${translated} translated, ${missing().length} pending.`);
 		});
+		if (deferred.length && translated === 0) throw new Error("No acceptable translations were returned; see deferred.json for rejected entries");
 	}
 	if (command === "apply") {
 		const allowMissing = args.includes("--allow-missing");

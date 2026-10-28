@@ -84,6 +84,7 @@ jobs:
           key: zh-${{ steps.detect.outputs.version }}-${{ steps.detect.outputs.fingerprint }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             zh-${{ steps.detect.outputs.version }}-${{ steps.detect.outputs.fingerprint }}-
+            zh-${{ steps.detect.outputs.version }}-
       - name: Merge checkpoint with committed translations
         if: steps.detect.outputs.needed == 'true'
         run: |
@@ -116,7 +117,7 @@ jobs:
         env:
           AUDIT_ONLY: ${{ inputs.audit_only || false }}
         run: |
-          bun -e 'const s=await Bun.file(process.env.RUNNER_TEMP+"/zh-report/summary.json").json(); const ready=s.completeWithinScannerScope && process.env.AUDIT_ONLY!=="true"; const p=process.env.GITHUB_OUTPUT; await Bun.write(p,(await Bun.file(p).text())+"ready="+ready+"\n");'
+          bun -e 'const s=await Bun.file(process.env.RUNNER_TEMP+"/zh-report/summary.json").json(); const ready=s.completeWithinScannerScope && process.env.AUDIT_ONLY!=="true"; if(s.deferredThisRun) console.log("::warning::"+s.deferredThisRun+" translations failed validation; progress is saved, publication remains blocked. See deferred.json."); const p=process.env.GITHUB_OUTPUT; await Bun.write(p,(await Bun.file(p).text())+"ready="+ready+"\n");'
       - name: Save successful translation batches, including after API failure
         if: always() && steps.detect.outputs.needed == 'true'
         run: |
