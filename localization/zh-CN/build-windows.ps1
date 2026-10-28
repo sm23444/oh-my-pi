@@ -21,8 +21,10 @@ $taskPackage = @{
     }
 } | ConvertTo-Json -Depth 5
 [IO.File]::WriteAllText((Join-Path $Destination 'package.json'), $taskPackage, [Text.UTF8Encoding]::new($false))
-& $taskBun install --cwd $Destination --ignore-scripts --omit optional
+$taskCacheDir = Join-Path $Destination '.install-cache'
+& $taskBun install --cwd $Destination --ignore-scripts --omit optional --backend copyfile --cache-dir $taskCacheDir
 if ($LASTEXITCODE -ne 0) { throw 'Portable dependency installation failed' }
+Remove-Item -LiteralPath $taskCacheDir -Recurse -Force
 $taskApply = @('apply', '--source', $Destination, '--layout', 'npm', '--version', $Version, '--report', (Join-Path $Destination 'translation-report'))
 if ($Preview) { $taskApply += '--allow-missing' }
 & $taskBun (Join-Path $taskRoot 'pipeline.ts') @taskApply

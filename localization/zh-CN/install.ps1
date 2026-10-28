@@ -38,7 +38,14 @@ try {
         if ((Get-FileHash -LiteralPath $PackagePath -Algorithm SHA256).Hash -ne $taskExpected) { throw 'CLI archive checksum mismatch' }
     }
     $taskExtracted = Join-Path $taskTemp 'package'
-    Expand-Archive -LiteralPath $PackagePath -DestinationPath $taskExtracted
+    $taskTar = Get-Command tar.exe -ErrorAction SilentlyContinue
+    if ($taskTar) {
+        New-Item -ItemType Directory -Path $taskExtracted | Out-Null
+        & $taskTar.Source -xf $PackagePath -C $taskExtracted
+        if ($LASTEXITCODE -ne 0) { throw 'CLI archive extraction failed' }
+    } else {
+        Expand-Archive -LiteralPath $PackagePath -DestinationPath $taskExtracted
+    }
     $taskMetadata = Get-Content -LiteralPath (Join-Path $taskExtracted 'omp-zh.json') -Raw | ConvertFrom-Json
     if ($taskMetadata.version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid CLI package metadata' }
     if ($taskRelease -and ($taskRelease.tag_name -replace '-r\d+\.\d+$', '') -ne ('zh-v' + $taskMetadata.version)) { throw 'CLI package version mismatch' }

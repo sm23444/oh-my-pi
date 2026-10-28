@@ -167,7 +167,8 @@ jobs:
           if ($env:READY -ne 'true') { $options.Preview=$true }
           & ./localization/zh-CN/build-windows.ps1 @options
           New-Item -ItemType Directory -Path cli-assets | Out-Null
-          Compress-Archive -Path (Join-Path $env:RUNNER_TEMP 'omp-zh-cli/*') -DestinationPath cli-assets/omp-zh-cli-windows-x64.zip
+          tar.exe -a -cf cli-assets/omp-zh-cli-windows-x64.zip -C (Join-Path $env:RUNNER_TEMP 'omp-zh-cli') .
+          if ($LASTEXITCODE -ne 0) { throw 'CLI packaging failed' }
           $hash = (Get-FileHash cli-assets/omp-zh-cli-windows-x64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
           [IO.File]::WriteAllText((Join-Path $PWD 'cli-assets/SHA256SUMS.txt'), "$hash  omp-zh-cli-windows-x64.zip`n", [Text.UTF8Encoding]::new($false))
       - name: Verify CLI installation and registered omp command
