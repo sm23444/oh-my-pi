@@ -50,6 +50,22 @@ for (const candidate of candidates) {
 	const translation = fromSeed(candidate, seeds);
 	if (translation) { catalog[candidate.id] = toEntry(candidate, translation, "seed"); seeded++; }
 }
+let reused = 0;
+const reusable = new Map<string, Map<string, Catalog[keyof Catalog]>>();
+for (const entry of Object.values(catalog)) {
+	const key = JSON.stringify([entry.source, entry.text]);
+	const variants = reusable.get(key) ?? new Map<string, Catalog[keyof Catalog]>();
+	variants.set(entry.translation, entry);
+	reusable.set(key, variants);
+}
+for (const candidate of candidates) {
+	if (catalog[candidate.id]) continue;
+	const variants = reusable.get(JSON.stringify([candidate.source, candidate.text]));
+	if (variants?.size !== 1) continue;
+	const entry = [...variants.values()][0];
+	try { catalog[candidate.id] = toEntry(candidate, entry.translation, entry.origin); reused++; }
+	catch { /* A translation with different expression semantics must be translated separately. */ }
+}
 const saveCatalog = async () => {
 	const sorted = Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));
 	await Bun.write(catalogFile, JSON.stringify(sorted, null, 2) + "\n");
@@ -72,7 +88,7 @@ const writeReport = async () => {
 		version: option("version"), model: Bun.env.TRANSLATION_MODEL || settings.model,
 		scannedFiles: files.length, detectedDisplayStrings: candidates.length,
 		translatedDisplayStrings: candidates.length - pending.length, pendingDisplayStrings: pending.length,
-		seededThisRun: seeded, modelTranslatedThisRun: translated, deferredThisRun: deferred.length,
+		seededThisRun: seeded, reusedThisRun: reused, modelTranslatedThisRun: translated, deferredThisRun: deferred.length,
 		retainedInactiveTranslations: Object.keys(catalog).filter(id => !active.has(id)).length,
 		completeWithinScannerScope: pending.length === 0,
 	};
