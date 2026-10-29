@@ -27,7 +27,8 @@ import {
 } from "../keybinding-matchers";
 import { CountdownTimer } from "../chrome/countdown-timer";
 import { editorKey, editorKeys } from "../chrome/keybinding-hints";
-import { formatKeyHint } from "../app-keybindings";
+import { formatKeyHint, formatKeyHintText, type Keybinding } from "../app-keybindings";
+import { getKeybindings } from "../keybindings";
 import { OverlayPanel } from "../chrome/overlay-box";
 import { renderSegmentTrack } from "../chrome/segment-track";
 import { Input } from "../components/input";
@@ -251,7 +252,7 @@ export class HookSelectorComponent extends OverlayPanel {
 			this.#options.map((option, index) => ({ option, index })),
 			{
 				getKey: filtered => String(filtered.index),
-				getSearchText: filtered => `${filtered.option.label} ${filtered.option.description ?? ""}`,
+				getSearchText: filtered => `${this.#__ompZhOptionLabel(filtered.option)} ${filtered.option.description ?? ""}`,
 				isDisabled: filtered => this.#disabledIndices.has(filtered.index),
 			},
 		);
@@ -320,11 +321,16 @@ export class HookSelectorComponent extends OverlayPanel {
 		this.addChild(new Spacer(1));
 		const controlsHint =
 			opts?.helpText ??
-			`${editorKeys("tui.select.up", "tui.select.down")} navigate  ${formatKeyHint("enter")} select  ${editorKey("tui.select.cancel")} cancel`;
+			`${__ompZhFooterKeys("tui.select.up", "tui.select.down")} 移动 · ${formatKeyHintText("enter")} 确认 · ${__ompZhFooterKey("tui.select.cancel")} 取消`;
 		this.addChild(new Text(theme.fg("dim", controlsHint), 0, 0));
 		this.addChild(new Spacer(1));
 
 		this.#updateList();
+	}
+
+	#__ompZhOptionLabel(option: HookSelectorOption): string {
+		const confirmation = this.#options.length === 2 && this.#options.some(item => item.label === "Yes") && this.#options.some(item => item.label === "No");
+		return confirmation ? (option.label === "Yes" ? "是" : "否") : option.label;
 	}
 
 	#isDisabled(index: number): boolean {
@@ -350,7 +356,7 @@ export class HookSelectorComponent extends OverlayPanel {
 	): string[] {
 		const textColor = isDisabled ? "dim" : isSelected ? "accent" : "text";
 		const prefixColor = isDisabled ? "dim" : "accent";
-		const label = renderInlineMarkdown(option.label, mdTheme, t => theme.fg(textColor, t));
+		const label = renderInlineMarkdown(this.#__ompZhOptionLabel(option), mdTheme, t => theme.fg(textColor, t));
 		const marker = index !== undefined ? this.#renderMarkerPrefix(index, isSelected, isDisabled) : undefined;
 		const prefix = marker ?? (isSelected ? theme.fg(prefixColor, `${theme.nav.cursor} `) : "  ");
 		const lines = [prefix + label];
@@ -706,7 +712,7 @@ export class HookSelectorComponent extends OverlayPanel {
 		const fixed = this.#describeStatic(mdTheme);
 		this.#pickerItems ??= this.#options.map((option, index) => ({
 			id: String(index),
-			label: plainInline(option.label, mdTheme),
+			label: plainInline(this.#__ompZhOptionLabel(option), mdTheme),
 			...(option.description ? { detail: plainInline(option.description, mdTheme) } : {}),
 			...(this.#isDisabled(index) ? { disabled: true as const } : {}),
 		}));
@@ -725,7 +731,7 @@ export class HookSelectorComponent extends OverlayPanel {
 			...(checkbox ? { current: [...this.#checkedIndices].map(String) } : {}),
 			total: this.#options.length,
 			empty: "No matching options",
-			actions: [pickerAction("confirm", "Select", "enter", { primary: true }), CLOSE_ACTION],
+			actions: [pickerAction("confirm", "确认", "enter", { primary: true }), { ...CLOSE_ACTION, label: "取消" }],
 		});
 		this.#pickerMemo = { items, selected, query, cursor, node: result };
 		return result;
@@ -860,9 +866,9 @@ export class HookSelectorComponent extends OverlayPanel {
 			this.#helpText !== undefined
 				? node("text", { spans: [span(plainText(this.#helpText), "dim")], wrap: "word" }, undefined, "hints")
 				: hintsRow([
-						actionHint(["tui.select.up", "tui.select.down"], "navigate"),
+						actionHint(["tui.select.up", "tui.select.down"], "移动"),
 						{ keys: ENTER_KEYS, label: "选择" },
-						actionHint("tui.select.cancel", "cancel"),
+						actionHint("tui.select.cancel", "取消"),
 					]);
 		this.#nativeStatic = { title: plainInline(this.#baseTitle, mdTheme), detail, hints };
 		return this.#nativeStatic;
@@ -908,7 +914,7 @@ export class HookSelectorComponent extends OverlayPanel {
 		if (cached && cached.marker === marker) return cached.node;
 
 		const disabled = this.#isDisabled(index);
-		const label = plainInline(option.label, mdTheme);
+		const label = plainInline(this.#__ompZhOptionLabel(option), mdTheme);
 		let glyph: string | undefined;
 		let glyphColor = "dim";
 		if (radio) {
@@ -932,4 +938,16 @@ export class HookSelectorComponent extends OverlayPanel {
 		this.#nativeItems.set(index, { marker, node: described });
 		return described;
 	}
+}
+
+
+function __ompZhFooterKey(action: Keybinding): string {
+	const [key] = getKeybindings().getKeys(action);
+	return key ? formatKeyHintText(key) : "";
+}
+function __ompZhFooterKeys(...actions: Keybinding[]): string {
+	return actions.map(__ompZhFooterKey).join("/");
+}
+function __ompZhFooterHints(keys: readonly KeyName[]): string {
+	return keys.map(formatKeyHintText).join("/");
 }

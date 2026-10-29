@@ -175,3 +175,18 @@ test("device table scaffolding retains addresses while missing-description fallb
 	expect(render({name:"test-device",summary:""},(value: string)=>value)).toBe("| `xd://test-device` | 未提供说明。 |");
 	expect(render({name:"test-device",summary:"Custom summary"},(value: string)=>value)).toBe("| `xd://test-device` | Custom summary |");
 });
+
+test("feedback consent variants translate without changing answer values or unrelated private data", () => {
+	const source = `class Feedback {
+		static #AUTOQA_CONSENT_PROMPTS = [["A tool behaved unexpectedly.", "Send its name and issue?"], ["A tool needs attention.", "Report the problem?"]];
+		static #CHOICES = ["Yes", "No"];
+		static prompt(index) { return [...this.#AUTOQA_CONSENT_PROMPTS[index], ...this.#CHOICES]; }
+		static accepted(choice) { return choice === "Yes"; }
+	}`;
+	const code = translate(source, "agent", "src/modes/interactive-mode.ts", {
+		"A tool behaved unexpectedly.": "工具出现了意料之外的情况。", "Send its name and issue?": "要发送工具名称和问题吗？",
+		"A tool needs attention.": "工具需要检查。", "Report the problem?": "要反馈问题吗？",
+	});
+	const result = new Function(`${code}; return [Feedback.prompt(0), Feedback.prompt(1), Feedback.accepted("Yes"), Feedback.accepted("No")];`)();
+	expect(result).toEqual([["工具出现了意料之外的情况。", "要发送工具名称和问题吗？", "Yes", "No"], ["工具需要检查。", "要反馈问题吗？", "Yes", "No"], true, false]);
+});

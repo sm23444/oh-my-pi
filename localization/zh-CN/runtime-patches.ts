@@ -105,6 +105,23 @@ export function patchDisplayBoundaries(pkg: PackageId, file: string, code: strin
 			["value: v, label: v", "value: v, label: __ompZhSettingLabel(v, def.path)"],
 			['return value === undefined || value === null ? "" : String(value);', 'return value === undefined || value === null ? "" : __ompZhSettingLabel(String(value), def.path);'],
 		];
+	} else if (pkg === "tui" && normalized === "src/overlays/hook-selector.ts") {
+		const hint = code.match(/const controlsHint =[\s\S]*?;\n/)?.[0];
+		helpers = hint ? footerSource : "";
+		replacements = [
+			['import { formatKeyHint } from "../app-keybindings";', 'import { formatKeyHint, formatKeyHintText, type Keybinding } from "../app-keybindings";\nimport { getKeybindings } from "../keybindings";'],
+			...(hint ? [[hint, hint.replaceAll("editorKeys(", "__ompZhFooterKeys(").replaceAll("editorKey(", "__ompZhFooterKey(").replaceAll("formatKeyHint(", "formatKeyHintText(")]] as const : []),
+			["renderInlineMarkdown(option.label,", "renderInlineMarkdown(this.#__ompZhOptionLabel(option),"],
+			["plainInline(option.label,", "plainInline(this.#__ompZhOptionLabel(option),"],
+			["${filtered.option.label} ${filtered.option.description", "${this.#__ompZhOptionLabel(filtered.option)} ${filtered.option.description"],
+			[", CLOSE_ACTION],", ', { ...CLOSE_ACTION, label: "取消" }],'],
+			...(!code.includes("#__ompZhOptionLabel(option:") ? [["\t#isDisabled(index: number): boolean {", `	#__ompZhOptionLabel(option: HookSelectorOption): string {
+		const confirmation = this.#options.length === 2 && this.#options.some(item => item.label === "Yes") && this.#options.some(item => item.label === "No");
+		return confirmation ? (option.label === "Yes" ? "是" : "否") : option.label;
+	}
+
+	#isDisabled(index: number): boolean {`]] as const : []),
+		];
 	} else if (pkg === "tui" && normalized === "src/key-hint-format.ts") {
 		helpers = keyTextSource;
 		replacements = code.includes("export function formatKeyHintText(") ? [] : [

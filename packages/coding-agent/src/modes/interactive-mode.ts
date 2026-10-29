@@ -7579,41 +7579,41 @@ export class InteractiveMode implements InteractiveModeContext {
 	 */
 	static #AUTOQA_CONSENT_PROMPTS: ReadonlyArray<readonly [string, string]> = [
 		[
-			"🧾 Your agent drafted a strongly worded letter to one of its tools.",
-			"Mail it to the devs? Just the tool name + the grievance, nothing personal.",
+			"🧾 智能体给一个工具写了封措辞强硬的投诉信。",
+			"要转交给开发者吗？只发送工具名称和问题描述，不包含个人信息。",
 		],
 		[
-			"🕵️ Your agent caught a tool acting suspicious.",
-			"Tip off the devs? Tool name + the evidence, no personal info.",
+			"🕵️ 智能体发现一个工具的行为有些可疑。",
+			"要向开发者报告吗？只发送工具名称和问题线索，不包含个人信息。",
 		],
 		[
-			"👻 Your agent swears one of its tools is haunted.",
-			"Call in the devs for an exorcism? Tool name + the spooky bit, nothing personal.",
+			"👻 智能体觉得一个工具像是闹鬼了。",
+			"要请开发者来排查吗？只发送工具名称和异常情况，不包含个人信息。",
 		],
-		["🫖 Your agent has tea about a tool.", "Spill it to the devs? Tool name + the tea, never anything personal."],
+		["🫖 智能体有个关于工具的小道消息。", "要告诉开发者吗？只发送工具名称和问题详情，不包含个人信息。"],
 		[
-			"🦆 Your agent explained a tool to its rubber duck. The duck is also confused.",
-			"Escalate past the duck to the devs? Tool name + the confusion, no personal info.",
-		],
-		[
-			"📟 Your agent is asking to speak to a tool's manager.",
-			"Put the call through to the devs? Tool name + the complaint, nothing personal.",
+			"🦆 智能体向小黄鸭解释了一个工具，小黄鸭也没搞懂。",
+			"要越过小黄鸭，请开发者帮忙吗？只发送工具名称和困惑之处，不包含个人信息。",
 		],
 		[
-			"🧂 Your agent is extremely salty about a tool.",
-			"Let it salt the devs' inbox? Tool name + what soured it, no personal info.",
+			"📟 智能体想找一个工具的负责人聊聊。",
+			"要联系开发者吗？只发送工具名称和投诉内容，不包含个人信息。",
 		],
 		[
-			"🐛 Your agent found a bug. A real one. In a tool.",
-			"Hand the specimen to the devs? Tool name + where it crawled out, nothing personal.",
+			"🧂 智能体对一个工具有一肚子槽要吐。",
+			"要把吐槽发给开发者吗？只发送工具名称和不满的原因，不包含个人信息。",
 		],
 		[
-			"🍿 Your agent just watched a tool pull a plot twist nobody asked for.",
-			"Send the devs a spoiler? Tool name + what happened, never anything personal.",
+			"🐛 智能体在一个工具里发现了缺陷，这次是认真的。",
+			"要交给开发者排查吗？只发送工具名称和发现问题的位置，不包含个人信息。",
 		],
 		[
-			"📉 Your agent's opinion of a tool just crashed.",
-			"Send the post-mortem to the devs? Tool name + what tanked it, no personal info.",
+			"🍿 智能体发现一个工具突然上演了意料之外的剧情。",
+			"要向开发者反馈吗？只发送工具名称和发生的情况，不包含个人信息。",
+		],
+		[
+			"📉 智能体对一个工具的评价刚刚跌到了谷底。",
+			"要把问题分析发给开发者吗？只发送工具名称和出错原因，不包含个人信息。",
 		],
 	];
 
