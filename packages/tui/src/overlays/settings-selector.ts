@@ -56,7 +56,7 @@ import type { SelectPickerOptions } from "../native/picker";
 import { getPreset } from "../status-line/presets";
 import { FormField, SelectFormField, TextFormField } from "../components/form";
 import { formTheme } from "../chrome/form-theme";
-import { formatKeyHint, formatKeyHints } from "../app-keybindings";
+import { formatKeyHint, formatKeyHints, formatKeyHintText, type Keybinding } from "../app-keybindings";
 import { editorKey, editorKeys } from "../chrome/keybinding-hints";
 import type { DescribeContext, NativeChild, NativeNode, NativeUiEvent } from "../native/node";
 import { col, node, span, text } from "../native/describe";
@@ -700,10 +700,10 @@ export class SettingsSelectorComponent implements Component {
 	}
 
 	#footerHintText(): string {
-		const confirm = editorKey("tui.select.confirm");
-		const cancel = editorKey("tui.select.cancel");
-		const tab = formatKeyHint("tab");
-		const switchTabs = `${formatKeyHints(["left", "right"])} 切换标签页`;
+		const confirm = __ompZhFooterKey("tui.select.confirm");
+		const cancel = __ompZhFooterKey("tui.select.cancel");
+		const tab = formatKeyHintText("tab");
+		const switchTabs = `${__ompZhFooterHints(["left", "right"])} 切换标签页`;
 		if (this.#searchList) {
 			return `${confirm} 修改 · ${tab} 切换标签页 · ${cancel} 退出搜索`;
 		}
@@ -711,10 +711,10 @@ export class SettingsSelectorComponent implements Component {
 			return `${tab} 切换标签页 · ${cancel} 关闭`;
 		}
 		if (this.#currentList?.sectionFocused) {
-			return `${editorKeys("tui.select.up", "tui.select.down")} 切换分组 · ${tab}/${confirm} 进入设置项 · ${switchTabs} · ${cancel} 关闭`;
+			return `${__ompZhFooterKeys("tui.select.up", "tui.select.down")} 切换分组 · ${tab}/${confirm} 进入设置项 · ${switchTabs} · ${cancel} 关闭`;
 		}
 		const nav = this.#hasSectionJump ? `${tab} 切换分组 · ${switchTabs}` : `${tab} 切换标签页`;
-		return `${confirm}/${formatKeyHint("space")} 修改 · ${nav} · 输入以搜索 · ${cancel} 关闭`;
+		return `${confirm}/${formatKeyHintText("space")} 修改 · ${nav} · 直接输入搜索 · ${cancel} 关闭`;
 	}
 
 	/** Single-line search banner: accent icon, editable query with live cursor, right-aligned match count. */
@@ -2015,4 +2015,15 @@ function __ompZhSettingLabel(value: string, id: string): string {
 	// Provider/model IDs, paths, commands, and protocols are technical text.
 	if (/(provider|model|path|directory|endpoint|command|protocol|url|host|(?:^|\.)id$)/i.test(id)) return value;
 	return __ompZhValue(value);
+}
+
+function __ompZhFooterKey(action: Keybinding): string {
+	const [key] = getKeybindings().getKeys(action);
+	return key ? formatKeyHintText(key) : "";
+}
+function __ompZhFooterKeys(...actions: Keybinding[]): string {
+	return actions.map(__ompZhFooterKey).join("/");
+}
+function __ompZhFooterHints(keys: readonly KeyName[]): string {
+	return keys.map(formatKeyHintText).join("/");
 }

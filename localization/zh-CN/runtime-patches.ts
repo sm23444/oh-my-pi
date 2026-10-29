@@ -64,6 +64,19 @@ function __ompZhThinking(display: string, level: string | undefined): string {
 	return display.replace(/\\b(?:minimal|min|low|medium|med|high|xhigh|max|off|auto)$/, () => __ompZhValue(level));
 }
 `;
+const footerSource = `
+function __ompZhFooterKey(action: Keybinding): string {
+	const [key] = getKeybindings().getKeys(action);
+	return key ? formatKeyHintText(key) : "";
+}
+function __ompZhFooterKeys(...actions: Keybinding[]): string {
+	return actions.map(__ompZhFooterKey).join("/");
+}
+function __ompZhFooterHints(keys: readonly KeyName[]): string {
+	return keys.map(formatKeyHintText).join("/");
+}
+`;
+const keyTextSource = 'const __ompZhKeyLabels: Partial<Record<SymbolKey, string>> = { "key.space": "空格", "key.up": "↑", "key.down": "↓", "key.left": "←", "key.right": "→" };\n';
 
 type Replacement = readonly [before: string | RegExp, after: string];
 
@@ -78,12 +91,24 @@ export function patchDisplayBoundaries(pkg: PackageId, file: string, code: strin
 	let helpers: string;
 	const normalized = file.replaceAll("\\", "/");
 	if (pkg === "tui" && normalized === "src/overlays/settings-selector.ts") {
-		helpers = groupSource + settingSource;
+		const footer = code.match(/#footerHintText\(\): string \{[\s\S]*?\n\t\}/)?.[0];
+		helpers = groupSource + settingSource + (footer ? footerSource : "");
 		replacements = [
+			['import { formatKeyHint, formatKeyHints } from "../app-keybindings";', 'import { formatKeyHint, formatKeyHints, formatKeyHintText, type Keybinding } from "../app-keybindings";'],
+			...(footer ? [[footer, footer
+				.replaceAll("editorKey(", "__ompZhFooterKey(")
+				.replaceAll("editorKeys(", "__ompZhFooterKeys(")
+				.replaceAll("formatKeyHints(", "__ompZhFooterHints(")
+				.replaceAll("formatKeyHint(", "formatKeyHintText(")]] as const : []),
 			["visibleWidth(def.group)", "visibleWidth(__ompZhGroup(def.group))"],
 			["title: group", "title: __ompZhGroup(group)"],
 			["value: v, label: v", "value: v, label: __ompZhSettingLabel(v, def.path)"],
 			['return value === undefined || value === null ? "" : String(value);', 'return value === undefined || value === null ? "" : __ompZhSettingLabel(String(value), def.path);'],
+		];
+	} else if (pkg === "tui" && normalized === "src/key-hint-format.ts") {
+		helpers = keyTextSource;
+		replacements = code.includes("export function formatKeyHintText(") ? [] : [
+			['export function formatKeyHint(key: KeyName): string {', 'export function formatKeyHintText(key: KeyName): string {\n\treturn formatKey(key, symbol => __ompZhKeyLabels[symbol] ?? SYMBOL_PRESETS.ascii[symbol]);\n}\n\nexport function formatKeyHint(key: KeyName): string {'],
 		];
 	} else if (pkg === "tui" && normalized === "src/components/settings-list.ts") {
 		helpers = groupSource + itemSource;

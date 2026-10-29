@@ -87,6 +87,10 @@ export type KeyName = KeyId | ModifierName;
  * A bare letter stays lowercase (`q`) since `Q` would read as ⇧Q; in a chord it
  * is capitalized. Other keys are capitalized (`f5` → `F5`).
  */
+export function formatKeyHintText(key: KeyName): string {
+	return formatKey(key, symbol => __ompZhKeyLabels[symbol] ?? SYMBOL_PRESETS.ascii[symbol]);
+}
+
 export function formatKeyHint(key: KeyName): string {
 	return formatKey(key, activeThemeSymbol);
 }
@@ -135,3 +139,5 @@ export function formatDoubleTap(key: KeyName): string {
 	const label = formatKeyHint(key);
 	return `${label}${HAS_LETTER.test(label) ? " " : activeThemeSymbol("key.joiner")}${label}`;
 }
+
+const __ompZhKeyLabels: Partial<Record<SymbolKey, string>> = { "key.space": "空格", "key.up": "↑", "key.down": "↓", "key.left": "←", "key.right": "→" };

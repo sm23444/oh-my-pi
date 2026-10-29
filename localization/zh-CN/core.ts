@@ -59,7 +59,7 @@ export function inScope(pkg: PackageId, file: string): boolean {
 	if (file.startsWith("src/") && /(?:^|\/)[^/]*settings\.ts$/.test(file)) return true;
 	if (/(?:^|\/)(?:test|(?:[\w-]+-)?fixtures|prompts|export|protocol|rpc|acp)(?:\/|$)/.test(file)) return false;
 	if (pkg === "utils") return file.startsWith("src/cli/") || file === "src/cli.ts";
-	if (pkg === "tui") return isUiModule(pkg, file);
+	if (pkg === "tui") return file === "src/key-hint-format.ts" || isUiModule(pkg, file);
 	return file.startsWith("src/");
 }
 

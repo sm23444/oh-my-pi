@@ -30164,7 +30164,7 @@
     "role": "display:return",
     "source": "${confirm}/${formatKeyHint(\"space\")} to change · ${nav} · Type to search · ${cancel} to close",
     "text": "__OMP_TOKEN_0__/__OMP_TOKEN_1__ to change · __OMP_TOKEN_2__ · Type to search · __OMP_TOKEN_3__ to close",
-    "translation": "__OMP_TOKEN_0__/__OMP_TOKEN_1__ 修改 · __OMP_TOKEN_2__ · 输入以搜索 · __OMP_TOKEN_3__ 关闭",
+    "translation": "__OMP_TOKEN_0__/__OMP_TOKEN_1__ 修改 · __OMP_TOKEN_2__ · 直接输入搜索 · __OMP_TOKEN_3__ 关闭",
     "origin": "human"
   },
   "79ecf1fce77618bdde7d710c687d546837994a1fbea41d71ac3520a7f6c7ae9e": {
