@@ -6,10 +6,10 @@ import { Settings } from "./node_modules/@oh-my-pi/pi-coding-agent/src/config/se
 import type { SlashCommandRuntime, TuiSlashCommandRuntime } from "./node_modules/@oh-my-pi/pi-coding-agent/src/slash-commands/types";
 import { CombinedAutocompleteProvider } from "./node_modules/@oh-my-pi/pi-tui/src/autocomplete";
 import { WelcomeComponent, renderWelcomeTip } from "./node_modules/@oh-my-pi/pi-tui/src/prompt/welcome";
-import { getSettingsListTheme, initTheme, theme } from "./node_modules/@oh-my-pi/pi-tui/src/theme/theme";
+import { getSettingsListTheme, initTheme, setSymbolPreset, theme } from "./node_modules/@oh-my-pi/pi-tui/src/theme/theme";
 import { orderedSettings } from "./node_modules/@oh-my-pi/pi-coding-agent/src/config/all-settings";
 import { BUILTIN_MODE_SLASH_COMMANDS } from "./node_modules/@oh-my-pi/pi-coding-agent/src/slash-commands/builtin-modes";
-import { KeybindingsManager } from "./node_modules/@oh-my-pi/pi-tui/src/app-keybindings";
+import { formatKeyHint, KeybindingsManager } from "./node_modules/@oh-my-pi/pi-tui/src/app-keybindings";
 import { SettingsList, type SettingItem } from "./node_modules/@oh-my-pi/pi-tui/src/components/settings-list";
 import { buildHotkeysMarkdown } from "./node_modules/@oh-my-pi/pi-tui/src/hotkeys-markdown";
 import type { DescribeContext } from "./node_modules/@oh-my-pi/pi-tui/src/native/node";
@@ -19,6 +19,7 @@ import { thinkingLevelToken } from "./node_modules/@oh-my-pi/pi-tui/src/theme/th
 import { CLI_THINKING_LEVELS, getConfiguredThinkingLevelMetadata, parseCliThinkingLevel, parseConfiguredThinkingLevel, parseThinkingLevel } from "./node_modules/@oh-my-pi/pi-tui/src/thinking";
 import { SettingsSelectorComponent, type SettingsRuntimeContext } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/settings-selector";
 import type { SettingsHost } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/settings-defs";
+import { getKeybindings, setKeybindings } from "./node_modules/@oh-my-pi/pi-tui/src/keybindings";
 
 function requireChinese(value: string | undefined, surface: string): void {
 	if (!value || !/[\u3400-\u9fff]/.test(value)) throw new Error(`Chinese UI check failed for ${surface}: ${value ?? "missing"}`);
@@ -236,7 +237,8 @@ const navigationSelector = new SettingsSelectorComponent({
 }, { onChange: () => { throw new Error("Footer navigation must not change settings"); }, onCancel: () => {} });
 navigationSelector.handleNativeEvent({ type: "action", key: "", act: "page", value: "interaction" });
 const navigationFooter = navigationSelector.render(160).at(-2) ?? "";
-if (!navigationFooter.includes("切换分组") || !navigationFooter.includes("输入以搜索") || /to change|to jump sections|to switch tabs|Type to search|to close/.test(navigationFooter)) throw new Error("Settings navigation footer remains English");
+if (!navigationFooter.includes("Enter/空格 修改") || !navigationFooter.includes("Tab 切换分组") || !navigationFooter.includes("←/→ 切换标签页") || !navigationFooter.includes("直接输入搜索") || !navigationFooter.includes("Esc 关闭")) throw new Error("Settings footer must name Enter, Space, Tab and Escape clearly");
+process.stdout.write(`Settings footer: ${navigationFooter}\n`);
 navigationSelector.handleInput("\t");
 const sectionFooter = navigationSelector.render(160).at(-2) ?? "";
 if (!sectionFooter.includes("进入设置项") || !sectionFooter.includes("切换标签页") || /to jump sections|to settings|to close/.test(sectionFooter)) throw new Error("Section focus footer remains English");
@@ -245,7 +247,24 @@ navigationSelector.handleInput("审批");
 const searchFooter = navigationSelector.render(160).at(-2) ?? "";
 if (!searchFooter.includes("退出搜索") || !searchFooter.includes("切换标签页") || /to change|to jump tabs|to exit search/.test(searchFooter)) throw new Error("Settings search footer remains English");
 navigationSelector.handleInput("\x1b");
-if (!(navigationSelector.render(160).at(-2) ?? "").includes("输入以搜索")) throw new Error("Closing search must restore the settings navigation footer");
+if (!(navigationSelector.render(160).at(-2) ?? "").includes("直接输入搜索")) throw new Error("Closing search must restore the settings navigation footer");
+const previousBindings = getKeybindings();
+const previousSymbolPreset = theme.getSymbolPreset();
+try {
+	setKeybindings(KeybindingsManager.inMemory({ "tui.select.confirm": "ctrl+enter", "tui.select.cancel": "shift+escape" }));
+	for (const preset of ["ascii", "unicode", "nerd"] as const) {
+		await setSymbolPreset(preset);
+		const customFooter = navigationSelector.render(160).at(-2) ?? "";
+		if (!customFooter.includes("Ctrl+Enter/空格 修改") || !customFooter.includes("Shift+Esc 关闭") || !customFooter.includes("Tab 切换分组")) throw new Error(`Settings footer must honor custom keys with readable names in ${preset}`);
+		if (formatKeyHint("enter") !== theme.symbol("key.enter")) throw new Error("Key hints outside the settings footer must retain the active theme's symbols");
+	}
+	setKeybindings(KeybindingsManager.inMemory({ "tui.select.confirm": [], "tui.select.cancel": [] }));
+	const unboundFooter = navigationSelector.render(160).at(-2) ?? "";
+	if (/Enter|Esc/.test(unboundFooter)) throw new Error("Settings footer must not advertise unbound confirmation or cancel keys");
+} finally {
+	setKeybindings(previousBindings);
+	await setSymbolPreset(previousSymbolPreset);
+}
 approvalSelector.handleNativeEvent({ type: "change", key: "", item: "tools.approval", value: "{prompt}" });
 await Bun.sleep(0);
 const approvalError = approvalSelector.render(140).join("\n");
