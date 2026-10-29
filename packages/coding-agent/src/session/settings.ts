@@ -21,7 +21,7 @@ import {
 } from "../tiny/dtype";
 import { DEFAULT_WEB_SEARCH_TIMEOUT_SECONDS, MAX_WEB_SEARCH_TIMEOUT_SECONDS } from "../web/search/types";
 import { DEFAULT_USAGE_RESERVE_PCT } from "@oh-my-pi/pi-ai/auth-storage";
-import { configureProviderStoreResponses } from "@oh-my-pi/pi-ai/providers/openai-responses";
+import { configureProviderStoreResponses } from "@oh-my-pi/pi-ai/providers/openai-responses-state";
 import { configureProviderMaxInFlightRequests } from "@oh-my-pi/pi-ai/stream";
 import { THINKING_EFFORTS } from "@oh-my-pi/pi-catalog/effort";
 import { formatKeyHint } from "@oh-my-pi/pi-tui/app-keybindings";
@@ -98,6 +98,31 @@ export const cfgPrewalkEnabled = register({
 		label: "启用 Prewalk",
 		description:
 			"从活动模型开始，然后在计划提示的待办列表存在后的首次 edit/write 时切换到 fast/cheap 模型（默认 'smol' 角色）——强模型负责规划、提交待办事项并开始实现，然后交接。可在每个会话中用 --prewalk / --no-prewalk 覆盖。",
+	},
+});
+
+export const cfgPrewalkFrom = register({
+	id: "prewalk.from",
+	type: "string",
+	default: "@default",
+	ui: {
+		tab: "model",
+		group: "Prewalk",
+		label: "Prewalk 规划模型",
+		description: "/prewalk restart 返回用于规划的模型或角色（默认 “@default”）。",
+	},
+});
+
+export const cfgPrewalkInto = register({
+	id: "prewalk.into",
+	type: "string",
+	default: "@smol",
+	ui: {
+		tab: "model",
+		group: "Prewalk",
+		label: "Prewalk 目标",
+		description:
+			"Prewalk 在首次edit/write时移交的模型或角色（默认 “@smol”）：/prewalk、/prewalk restart、“启用 Prewalk” 和 --prewalk。自动 Prewalk 使用其自身的目标。",
 	},
 });
 
@@ -1148,7 +1173,7 @@ export const cfgProvidersOpenaiWebsockets = register({
 export const cfgProvidersOpenaiLiveSteering = register({
 	id: "providers.openaiLiveSteering",
 	type: "boolean",
-	default: true,
+	default: false,
 	ui: {
 		tab: "providers",
 		group: "Protocol",

@@ -40,7 +40,7 @@ import {
 	cfgComputerMaxWidth,
 	cfgRatchetEnabled,
 } from "../tools/settings";
-import { cfgSkillful } from "../session/settings";
+import { cfgPrewalkFrom, cfgPrewalkInto, cfgSkillful } from "../session/settings";
 import { formatSlowModeResetClock } from "../session/anthropic-slow-mode";
 import { cfgExtendedContext } from "../session/context-settings";
 import { cfgGoalEnabled } from "../goals/settings";
@@ -728,15 +728,24 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		description: "准备、重启或取消一次性模型交接",
 		allowArgs: true,
 		acpDescription: "Arm, restart, or cancel prewalk",
-		acpInputHint: "[restart|off]",
+		acpInputHint: "[into] | restart [from] [into] | off",
 		subcommands: [
-			{ name: "restart", description: "返回 @default 并重新准备交接给 @smol" },
+			{
+				name: "restart",
+				description: "返回规划模型并重新启用移交（默认 prewalk.from → prewalk.into）",
+				usage: "[from] [into]",
+			},
 			{ name: "off", description: "取消此会话的交接，而不更改当前模型" },
 		],
 		handle: async (command, runtime) => {
-			const arg = command.args.trim().toLowerCase();
-			if (arg && arg !== "restart" && arg !== "off") return usage("用法：/prewalk [restart|off]", runtime);
-			if (arg === "off") {
+			const [verb, ...rest] = command.args.trim().split(/\s+/).filter(Boolean);
+			const keyword = verb?.toLowerCase();
+			const restart = keyword === "restart";
+			const args = restart || keyword === "off" ? rest : verb ? [verb, ...rest] : [];
+			if (args.length > (restart ? 2 : keyword === "off" ? 0 : 1)) {
+				return usage("用法：/prewalk [into] | restart [from] [into] | off", runtime);
+			}
+			if (keyword === "off") {
 				const armed = runtime.session.getPrewalkState() !== undefined;
 				runtime.session.disarmPrewalk();
 				await runtime.output(
@@ -746,17 +755,20 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 				);
 				return commandConsumed();
 			}
-			const target = resolveSessionModelSelector("@smol", runtime.session, runtime.settings);
+			const into = (restart ? args[1] : args[0]) ?? cfgPrewalkInto.get(runtime.settings);
+			const target = resolveSessionModelSelector(into, runtime.session, runtime.settings);
 			if (target.error || !target.model) {
-				return usage(target.error ?? "未找到模型“@smol”", runtime);
+				return usage(target.error ?? `未找到模型“${into}”`, runtime);
 			}
 			if (!runtime.session.modelRegistry.hasConfiguredAuth(target.model)) {
 				return usage(`缺少 API 密钥：${target.model.provider}/${target.model.id}`, runtime);
 			}
-			if (arg === "restart") {
-				const source = resolveSessionModelSelector("@default", runtime.session, runtime.settings);
+			const targetLabel = `${into} (${target.model.provider}/${target.model.id})`;
+			if (restart) {
+				const from = args[0] ?? cfgPrewalkFrom.get(runtime.settings);
+				const source = resolveSessionModelSelector(from, runtime.session, runtime.settings);
 				if (source.error || !source.model) {
-					return usage(source.error ?? "未找到模型 \"@default\"", runtime);
+					return usage(source.error ?? `未找到模型“${from}”`, runtime);
 				}
 				if (!runtime.session.modelRegistry.hasConfiguredAuth(source.model)) {
 					return usage(`缺少 API 密钥：${source.model.provider}/${source.model.id}`, runtime);
@@ -768,11 +780,11 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 					target.thinkingLevel,
 				);
 				if (result === "rejected") return commandConsumed();
-				const restartSource = `${source.model.provider}/${source.model.id}`;
+				const sourceLabel = `${from} (${source.model.provider}/${source.model.id})`;
 				await runtime.output(
 					result === "armed"
-						? `Prewalk 已重启：使用 @default（${restartSource}）进行规划，切换到 @smol（${target.model.provider}/${target.model.id}）将在下次 edit/write 时进行（由待办事项控制）。`
-						: `Prewalk 已重置：使用 @default（${restartSource}）；@smol 解析为相同的模型和思考级别，因此未启用交接。`,
+						? `Prewalk 已重启：使用 ${sourceLabel} 进行规划，然后在下一次 edit/write 时切换至 ${targetLabel}（基于待办门禁）。`
+						: `Prewalk 已重置：使用 ${sourceLabel}；${into} 解析为相同的模型和思考级别，因此未激活移交。`,
 				);
 				return commandConsumed();
 			}

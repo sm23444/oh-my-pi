@@ -135,6 +135,7 @@ function hotkeyGroups(bindings: HotkeysMarkdownBindings): HotkeyGroup[] {
 				{ keys: [act("app.history.search")], action: "搜索提示词历史" },
 				{ keys: [act("app.tools.expand")], action: "展开或折叠工具输出" },
 				{ keys: [act("app.tools.toggleVisibility")], action: "显示或隐藏工具活动" },
+				{ keys: [act("app.links.hint")], action: "按标签选择屏幕上的扩展链接" },
 				{ keys: [act("app.ask.hide")], action: "隐藏或显示待回答的问题" },
 				{ keys: [act("app.approval.approve")], action: "批准待处理的工具调用" },
 				{ keys: [act("app.thinking.toggle")], action: "显示或隐藏思考内容" },

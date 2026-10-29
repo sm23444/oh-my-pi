@@ -867,6 +867,19 @@ export const cfgAskEnabled = register({
 	},
 });
 
+export const cfgOutEnabled = register({
+	id: "out.enabled",
+	type: "boolean",
+	default: true,
+	ui: {
+		tab: "tools",
+		group: "Available Tools",
+		label: "输出",
+		description:
+			"允许智能体在任务执行中通过写入 out:// 进行回复，显示为响应且不结束当前轮次。未设置时：在交互式 TUI 中开启，在 print、RPC 和 ACP 中关闭",
+	},
+});
+
 // Tool execution
 export const cfgToolsIntentTracing = register({
 	id: "tools.intentTracing",

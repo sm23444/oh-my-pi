@@ -469,8 +469,8 @@ export const cfgTuiRenderSvg = register({
 export const cfgTuiAutoGraph = register({
 	id: "tui.autoGraph",
 	type: "enum",
-	values: ["smart", "always", "off"] as const,
-	default: "always",
+	values: ["auto", "smart", "always", "off"] as const,
+	default: "auto",
 	ui: {
 		tab: "appearance",
 		group: "Display",
@@ -478,6 +478,11 @@ export const cfgTuiAutoGraph = register({
 		description:
 			"在智能体回答中的数值表格下方，使用你的主题颜色绘制图表，并在支持图形显示的终端上显示。",
 		options: [
+			{
+				value: "auto",
+				label: "自动",
+				description: "当裁决者角色解析为原生 TypeSafe jev 模型时为智能，否则为始终",
+			},
 			{
 				value: "smart",
 				label: "智能",
@@ -580,7 +585,7 @@ export const cfgTuiMouse = register({
 		label: "鼠标点击聚焦",
 		get description() {
 			const shift = formatKeyHint("shift");
-			return `Capture mouse clicks in the main session so live subagent cards and HUD rows focus on click, with a hover highlight on the target. Native text selection becomes ${shift}+drag and wheel scroll becomes ${shift}+wheel while on`;
+			return `Capture mouse clicks in the main session so live subagent cards and HUD rows focus on click, with a hover highlight on the target, and clicks on extension-owned links reach their extension (the link-hint key picks them without the mouse). Native text selection becomes ${shift}+drag and wheel scroll becomes ${shift}+wheel while on`;
 		},
 	},
 });

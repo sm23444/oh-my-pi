@@ -146,12 +146,12 @@ ${chalk.bold("选项:")}
   -l, --limit <n>       最大匹配数（默认：20）
   -C, --context <n>     上下文行数（默认：2）
   -f, --files           仅输出文件名
-  -c, --count           输出每个文件的匹配数
+  -c, --count           输出每个文件的匹配计数
   -h, --help            显示此帮助信息
   --no-gitignore        包含被 .gitignore 排除的文件
 
 ${chalk.bold("环境变量:")}
-  PI_WALK_WORKERS=N    设置文件系统遍历工作线程数（默认 4，0 = 自动）
+  PI_WALK_WORKERS=N    遍历线程数（macOS 默认：4，Linux 默认：8；0 = 默认值）
 
 ${chalk.bold("示例:")}
   ${APP_NAME} grep "import" src/

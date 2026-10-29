@@ -59,10 +59,13 @@ interface AppKeybindings {
 	"app.session.rename": true;
 	"app.session.delete": true;
 	"app.session.deleteNoninvasive": true;
+	"app.session.pin": true;
+	"app.session.unpin": true;
 	"app.tree.previousBranch": true;
 	"app.tree.nextBranch": true;
 	"app.plan.toggle": true;
 	"app.history.search": true;
+	"app.links.hint": true;
 	"app.stt.pushToTalk": true;
 	"app.stt.toggle": true;
 	"app.live.toggle": true;
@@ -239,6 +242,14 @@ export const KEYBINDINGS = {
 		defaultKeys: "ctrl+backspace",
 		description: "删除会话（非侵入式）",
 	},
+	"app.session.pin": {
+		defaultKeys: "alt+k",
+		description: "在恢复选择器中置顶所选会话",
+	},
+	"app.session.unpin": {
+		defaultKeys: "alt+shift+k",
+		description: "在恢复选择器中取消置顶所选会话",
+	},
 	"app.tree.previousBranch": {
 		defaultKeys: [],
 		description: "跳转到 /tree 中的上一个分支",
@@ -254,6 +265,10 @@ export const KEYBINDINGS = {
 	"app.history.search": {
 		defaultKeys: "ctrl+r",
 		description: "搜索历史记录",
+	},
+	"app.links.hint": {
+		defaultKeys: "alt+o",
+		description: "按提示标签选择屏幕上的扩展链接",
 	},
 	"app.stt.pushToTalk": {
 		defaultKeys: "space",

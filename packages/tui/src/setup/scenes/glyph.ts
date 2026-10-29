@@ -136,7 +136,9 @@ class GlyphSceneController implements SetupSceneController {
 export const glyphSetupScene: SetupScene = {
 	id: "glyph-mode",
 	title: "选择字形模式",
+	step: "Symbols",
 	minVersion: 1,
+	ansiOnly: true,
 	shouldRun: () => !TERMINAL.glyphProtocol,
 	mount: host => new GlyphSceneController(host),
 };

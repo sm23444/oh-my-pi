@@ -436,6 +436,8 @@ class ThemeSceneController implements SetupSceneController {
 export const themeSetupScene: SetupScene = {
 	id: "theme",
 	title: "选择主题",
+	step: "Theme",
 	minVersion: 1,
+	ansiOnly: true,
 	mount: host => new ThemeSceneController(host),
 };
