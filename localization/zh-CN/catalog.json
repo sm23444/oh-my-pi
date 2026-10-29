@@ -2879,6 +2879,15 @@
     "translation": "未做任何更改__OMP_TOKEN_0__。",
     "origin": "model"
   },
+  "0c9245b15418854f3ae67bad3bb743e1a125d708bd5aa60622726383d0d3e558": {
+    "pkg": "agent",
+    "file": "src/exec/settings.ts",
+    "role": "field:description",
+    "source": "Refuse git commands that discard or move shared work in a repository's main checkout: stash, reset --hard or to another commit, and checkout/switch/restore outside a merge or rebase conflict. In a linked worktree they run, saving uncommitted changes they discard first",
+    "text": "Refuse git commands that discard or move shared work in a repository's main checkout: stash, reset __OMP_TOKEN_0__ or to another commit, and __OMP_TOKEN_1__ outside a merge or rebase conflict. In a linked worktree they run, saving uncommitted changes they discard first",
+    "translation": "拒绝在仓库主检出中丢弃或移动共享工作的 git 命令：stash、reset __OMP_TOKEN_0__ 或重置到其他提交，以及在合并或变基冲突之外执行 __OMP_TOKEN_1__。在关联的工作树中它们可以运行，但会先保存它们丢弃的未提交更改",
+    "origin": "model"
+  },
   "0c9473f90ef0af04a92501a74c69ee1800d1d9a12d3c07a27e1df5b5dcd97aac": {
     "pkg": "tui",
     "file": "src/overlays/context-viewer.ts",
@@ -3599,6 +3608,15 @@
     "translation": "检索(语义 grep)",
     "origin": "seed"
   },
+  "0f49826495457233116a1f6e999eeec2eb83e4ca7d90d7259eda59a838f6bdff": {
+    "pkg": "agent",
+    "file": "src/task/settings.ts",
+    "role": "field:description",
+    "source": "Let the task tool read subagent instructions from a file (taskFile), recording its path and SHA-256.",
+    "text": "Let the task tool read subagent instructions from a file (taskFile), recording its path and __OMP_TOKEN_0__-256.",
+    "translation": "允许任务工具从文件 (taskFile) 读取子智能体指令，并记录其路径和 __OMP_TOKEN_0__-256。",
+    "origin": "model"
+  },
   "0f51e85e1562596500a93c22d6ccee41079b22e421cf09dcb3fc3786e9ab5480": {
     "pkg": "agent",
     "file": "src/session/context-settings.ts",
@@ -4202,6 +4220,15 @@
     "translation": "标注文本",
     "origin": "model"
   },
+  "11f345fe28bf091d5636f36c904aeed321b6a55541fa692cc2542861e86427ab": {
+    "pkg": "agent",
+    "file": "src/commands/launch-help.ts",
+    "role": "field:description",
+    "source": "Model to use (fuzzy match: \"opus\", \"gpt-5.2\"; exact with a provider: \"openai/gpt-5.2\")",
+    "text": "Model to use (fuzzy match: \"opus\", \"gpt-5.2\"; exact with a provider: \"__OMP_TOKEN_0__\")",
+    "translation": "要使用的模型（模糊匹配：\"opus\"、\"gpt-5.2\"；包含提供商的精确匹配：\"__OMP_TOKEN_0__\"）",
+    "origin": "model"
+  },
   "11f398fc22db2d49e591b784c80d08050565d38118548801e2268d48cfb311e1": {
     "pkg": "tui",
     "file": "src/overlays/settings-selector.ts",
@@ -4534,6 +4561,15 @@
     "text": "~50K tokens",
     "translation": "约 50K tokens",
     "origin": "seed"
+  },
+  "134c397abbf17c2c4551f369c0d3ebbb03a902a9b6a7f681bc23ada5a8db8c9e": {
+    "pkg": "agent",
+    "file": "src/tools/settings.ts",
+    "role": "field:label",
+    "source": "Out",
+    "text": "Out",
+    "translation": "输出",
+    "origin": "model"
   },
   "13505261fa365b6a297f59a059138bc551b133cedfbc4125e0b56808c33c294f": {
     "pkg": "tui",
@@ -7280,6 +7316,15 @@
     "translation": "用于 serve 的作用域客户端令牌 __OMP_TOKEN_0__ 文件，每个令牌仅限访问自己的模型和代理账户；服务运行期间会重新读取",
     "origin": "model"
   },
+  "1e6368812e954ce3cda06cfcfe30206d64c81778833741e1005f66bd0c629456": {
+    "pkg": "tui",
+    "file": "src/chat/background-tan-message.ts",
+    "role": "display:span",
+    "source": "Tangent dispatched",
+    "text": "Tangent dispatched",
+    "translation": "分支任务已分派",
+    "origin": "model"
+  },
   "1e654d40966d8150f676724b5f9c7481799e04034f5134a5e551c96f7863ce28": {
     "pkg": "tui",
     "file": "src/overlays/agent-hub.ts",
@@ -7602,6 +7647,15 @@
     "source": "Detach HEAD (add)",
     "text": "Detach __OMP_TOKEN_0__ (add)",
     "translation": "分离 __OMP_TOKEN_0__ (add)",
+    "origin": "model"
+  },
+  "1fb6456acb007886a09044f568b98190c3f9d46602580c47a35d84d05d16246b": {
+    "pkg": "tui",
+    "file": "src/setup/wizard-overlay.ts",
+    "role": "display:span",
+    "source": "Setup",
+    "text": "Setup",
+    "translation": "设置",
     "origin": "model"
   },
   "1fbda53b273d05402e18663681cc9d74008ee5e34ff06469464a20650d384d22": {
@@ -8943,6 +8997,15 @@
     "source": "Toggle listing available skills in the system prompt (session only)",
     "text": "Toggle listing available skills in the system prompt (session only)",
     "translation": "切换在系统提示中列出可用技能（仅限当前会话）",
+    "origin": "model"
+  },
+  "24de839d1754da630305d3779d069de452f36233431c324484054611799ef277": {
+    "pkg": "agent",
+    "file": "src/extensibility/settings.ts",
+    "role": "field:label",
+    "source": "Extension Reply Renderers",
+    "text": "Extension Reply Renderers",
+    "translation": "扩展回复渲染器",
     "origin": "model"
   },
   "24e6bae3df2e190d17e0f30654fbee2c0af8cc18b21e737adeb3d45bf2744138": {
@@ -11213,6 +11276,15 @@
     "translation": " · 于 __OMP_TOKEN_0__ 前获取",
     "origin": "model"
   },
+  "2d2f01128c43b3b11c3dc4403b4903e0e83f629a19ff4c66d3c1b55fdf2a90fd": {
+    "pkg": "tui",
+    "file": "src/chat/transcript-render-helpers.ts",
+    "role": "display:variable",
+    "source": "Supervised process completed",
+    "text": "Supervised process completed",
+    "translation": "受监管进程已完成",
+    "origin": "model"
+  },
   "2d33dd776597aaa83dd87366a40c3cf0e9e2927f0f1e6e355b71d7dc89bb5820": {
     "pkg": "tui",
     "file": "src/overlays/model-picker.ts",
@@ -11455,6 +11527,15 @@
     "text": "Auto-approve read-only and write tools; require confirmation for exec tools such as bash, eval, browser, and task.",
     "translation": "自动批准只读和写入工具;bash、eval、browser、task 等执行工具需要确认。",
     "origin": "seed"
+  },
+  "2debce16b97663026d67aab0895b3833b7023c66c91e7b21f57212e8cc08b8d7": {
+    "pkg": "agent",
+    "file": "src/stt/stt-controller.ts",
+    "role": "call:showWarning",
+    "source": "Dictation model ${qualified} not found; using the built-in local model",
+    "text": "Dictation model __OMP_TOKEN_0__ not found; using the built-in local model",
+    "translation": "未找到听写模型 __OMP_TOKEN_0__；改用内置本地模型",
+    "origin": "model"
   },
   "2df0fcdd3bef79512ca83f0b4a06d7ac34e929afce6e751ee2bb1ad00a8064b9": {
     "pkg": "agent",
@@ -11850,6 +11931,15 @@
     "source": "integrity ${pack.integrity}",
     "text": "integrity __OMP_TOKEN_0__",
     "translation": "完整性 __OMP_TOKEN_0__",
+    "origin": "model"
+  },
+  "2f591c58faff811fc24369854f76595cc1c6ecfb78b35691fb1ce4410b537fbe": {
+    "pkg": "tui",
+    "file": "src/setup/wizard-overlay.ts",
+    "role": "display:button",
+    "source": "Exit setup",
+    "text": "Exit setup",
+    "translation": "退出设置",
     "origin": "model"
   },
   "2f594bd0c51ac277ef90c1c6d431a64436d101a0f0bf080209aa4c02f2172348": {
@@ -12554,6 +12644,15 @@
     "translation": "__OMP_TOKEN_0__ 已取消 · __OMP_TOKEN_1__ 关闭",
     "origin": "model"
   },
+  "3250202d032a4af5dd7f58fbed585ea23a09e2ad16bd6fc175a645c6bc6b502b": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/model.ts",
+    "role": "display:span",
+    "source": "Saving ",
+    "text": "Saving ",
+    "translation": "正在保存 ",
+    "origin": "model"
+  },
   "32509dc74894cc20119eda45c515f50309027af280ffbd5ef149af3bd7b2b655": {
     "pkg": "tui",
     "file": "src/overlays/approval-dialog.ts",
@@ -13218,6 +13317,15 @@
     "source": "Nothing to retry.",
     "text": "Nothing to retry.",
     "translation": "无可重试的内容。",
+    "origin": "model"
+  },
+  "358f7fd3ea4e1edc5af03c18235778451d62001cc1b049a89d9c1132502b1a5a": {
+    "pkg": "tui",
+    "file": "src/chat/transcript-render-helpers.ts",
+    "role": "display:span",
+    "source": "Background job completed",
+    "text": "Background job completed",
+    "translation": "后台作业已完成",
     "origin": "model"
   },
   "35912f247f8cb5d1bcd5ca8f3f4d140c0e7a4fb9e2bd3f1422418608db50115b": {
@@ -14947,6 +15055,15 @@
     "text": "Smooth Streaming",
     "translation": "平滑流式输出",
     "origin": "seed"
+  },
+  "3be1dfd4fff6b1f8a4bdcbb081fbb7571ce69e2f3a8eddcb367c3a4b8a09e08f": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "display:span",
+    "source": " Add another provider or continue.",
+    "text": " Add another provider or continue.",
+    "translation": " 添加其他提供商或继续。",
+    "origin": "model"
   },
   "3be7df2bb889e746bce9ece0c999244d8e050a316feabbc7615527d7bc744404": {
     "pkg": "agent",
@@ -17279,6 +17396,15 @@
     "translation": "样式 (__OMP_TOKEN_0__)",
     "origin": "model"
   },
+  "45dbb23ac150a6a4876a86943d1b57f182cc92a0947eb8519c74291504f1268e": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "field:text",
+    "source": "Login failed: ${outcome.message}",
+    "text": "Login failed: __OMP_TOKEN_0__",
+    "translation": "登录失败：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "45dd9d2bb0d9b05ed9059dc803a956288f4225b5257f5d4e8d6c695caea3f02b": {
     "pkg": "tui",
     "file": "src/hotkeys-markdown.ts",
@@ -18908,6 +19034,15 @@
     "translation": "__OMP_TOKEN_0__  __OMP_TOKEN_1__  __OMP_TOKEN_2__  创建于 __OMP_TOKEN_3__  到期于 __OMP_TOKEN_4__  上次使用 __OMP_TOKEN_5____OMP_TOKEN_6__",
     "origin": "model"
   },
+  "4bd8c81568d406d277ec2490c7658f5ac1afe89a0cd5b73d1c6589ede3d41962": {
+    "pkg": "agent",
+    "file": "src/cli/grep-cli.ts",
+    "role": "console:0",
+    "source": "${chalk.bold(`${APP_NAME} grep`)} - Test grep tool\n\n${chalk.bold(\"Usage:\")}\n  ${APP_NAME} grep <pattern> [path] [options]\n\n${chalk.bold(\"Arguments:\")}\n  pattern   Regex pattern to search for\n  path      Directory or file to search (default: .)\n\n${chalk.bold(\"Options:\")}\n  -g, --glob <pattern>  Filter files by glob pattern\n  -l, --limit <n>       Max matches (default: 20)\n  -C, --context <n>     Context lines (default: 2)\n  -f, --files           Output file names only\n  -c, --count           Output match counts per file\n  -h, --help            Show this help\n  --no-gitignore        Include files excluded by .gitignore\n\n${chalk.bold(\"Environment:\")}\n  PI_WALK_WORKERS=N    Walker threads (default: 4 on macOS, 8 on Linux; 0 = default)\n\n${chalk.bold(\"Examples:\")}\n  ${APP_NAME} grep \"import\" src/\n  ${APP_NAME} grep \"TODO\" . --glob \"*.ts\"\n  ${APP_NAME} grep \"function\" --files\n",
+    "text": "__OMP_TOKEN_0__ - Test grep tool__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ grep <pattern> [path] [options]__OMP_TOKEN_6____OMP_TOKEN_7____OMP_TOKEN_8____OMP_TOKEN_9__  pattern   Regex pattern to search for__OMP_TOKEN_10__  path      Directory or file to search (default: .)__OMP_TOKEN_11____OMP_TOKEN_12____OMP_TOKEN_13____OMP_TOKEN_14__  -g, __OMP_TOKEN_15__ <pattern>  Filter files by glob pattern__OMP_TOKEN_16__  -l, __OMP_TOKEN_17__ <n>       Max matches (default: 20)__OMP_TOKEN_18__  -C, __OMP_TOKEN_19__ <n>     Context lines (default: 2)__OMP_TOKEN_20__  -f, __OMP_TOKEN_21__           Output file names only__OMP_TOKEN_22__  -c, __OMP_TOKEN_23__           Output match counts per file__OMP_TOKEN_24__  -h, __OMP_TOKEN_25__            Show this help__OMP_TOKEN_26__  __OMP_TOKEN_27__        Include files excluded by .gitignore__OMP_TOKEN_28____OMP_TOKEN_29____OMP_TOKEN_30____OMP_TOKEN_31__  __OMP_TOKEN_32__=N    Walker threads (default: 4 on macOS, 8 on Linux; 0 = default)__OMP_TOKEN_33____OMP_TOKEN_34____OMP_TOKEN_35____OMP_TOKEN_36__  __OMP_TOKEN_37__ grep \"import\" src/__OMP_TOKEN_38__  __OMP_TOKEN_39__ grep \"__OMP_TOKEN_40__\" . __OMP_TOKEN_41__ \"*.ts\"__OMP_TOKEN_42__  __OMP_TOKEN_43__ grep \"function\" __OMP_TOKEN_44____OMP_TOKEN_45__",
+    "translation": "__OMP_TOKEN_0__ - 测试 grep 工具__OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3____OMP_TOKEN_4__  __OMP_TOKEN_5__ grep <pattern> [path] [options]__OMP_TOKEN_6____OMP_TOKEN_7____OMP_TOKEN_8____OMP_TOKEN_9__  pattern   要搜索的正则表达式模式__OMP_TOKEN_10__  path      要搜索的目录或文件（默认：.）__OMP_TOKEN_11____OMP_TOKEN_12____OMP_TOKEN_13____OMP_TOKEN_14__  -g, __OMP_TOKEN_15__ <pattern>  按 glob 模式过滤文件__OMP_TOKEN_16__  -l, __OMP_TOKEN_17__ <n>       最大匹配数（默认：20）__OMP_TOKEN_18__  -C, __OMP_TOKEN_19__ <n>     上下文行数（默认：2）__OMP_TOKEN_20__  -f, __OMP_TOKEN_21__           仅输出文件名__OMP_TOKEN_22__  -c, __OMP_TOKEN_23__           输出每个文件的匹配计数__OMP_TOKEN_24__  -h, __OMP_TOKEN_25__            显示此帮助信息__OMP_TOKEN_26__  __OMP_TOKEN_27__        包含被 .gitignore 排除的文件__OMP_TOKEN_28____OMP_TOKEN_29____OMP_TOKEN_30____OMP_TOKEN_31__  __OMP_TOKEN_32__=N    遍历线程数（macOS 默认：4，Linux 默认：8；0 = 默认值）__OMP_TOKEN_33____OMP_TOKEN_34____OMP_TOKEN_35____OMP_TOKEN_36__  __OMP_TOKEN_37__ grep \"import\" src/__OMP_TOKEN_38__  __OMP_TOKEN_39__ grep \"__OMP_TOKEN_40__\" . __OMP_TOKEN_41__ \"*.ts\"__OMP_TOKEN_42__  __OMP_TOKEN_43__ grep \"function\" __OMP_TOKEN_44____OMP_TOKEN_45__",
+    "origin": "model"
+  },
   "4bdef737f865208f8823c25dc0774733f8a3395d4dc627aded48639e5501748a": {
     "pkg": "tui",
     "file": "src/overlays/btw-history-panel.ts",
@@ -19131,6 +19266,15 @@
     "source": "Copy",
     "text": "Copy",
     "translation": "复制",
+    "origin": "model"
+  },
+  "4cd0c2333c9b08a9064b5a931c0722bb288bbeccd69b64b1ffa301c879f7bb2d": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "display:span",
+    "source": "Signed in to ${outcome.provider}.",
+    "text": "Signed in to __OMP_TOKEN_0__.",
+    "translation": "已登录到 __OMP_TOKEN_0__。",
     "origin": "model"
   },
   "4d058736a044688413a2541e179c1c96725cf39d3fe382e41f1662b336d3432f": {
@@ -21320,6 +21464,15 @@
     "translation": "反思失败",
     "origin": "seed"
   },
+  "5569a55bd7afcc915b1248ceb1dc537bf818505114fe0248252d84eff549ae03": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/outro.ts",
+    "role": "display:span",
+    "source": "You're all set",
+    "text": "You're all set",
+    "translation": "一切准备就绪",
+    "origin": "model"
+  },
   "558c448d08d35d489a15ff698740a58a88f1bcf5c61a71be1783c421672e086a": {
     "pkg": "agent",
     "file": "src/modes/settings.ts",
@@ -21399,6 +21552,15 @@
     "source": "  ${catalogCount} models in catalog:",
     "text": "  __OMP_TOKEN_0__ models in catalog:",
     "translation": "  目录中有 __OMP_TOKEN_0__ 个模型：",
+    "origin": "model"
+  },
+  "55eba7c75bb22f823efd93a4f13321c131446b4eaebaad0426dd0d65b57adc3b": {
+    "pkg": "agent",
+    "file": "src/session/settings.ts",
+    "role": "field:description",
+    "source": "Model or role (default '@default') that /prewalk restart returns to for planning.",
+    "text": "Model or role (default '@default') that __OMP_TOKEN_0__ restart returns to for planning.",
+    "translation": "__OMP_TOKEN_0__ restart 返回用于规划的模型或角色（默认 “@default”）。",
     "origin": "model"
   },
   "55f169e4d14f358921df9e05e4b2446cfc5544610846e1d9fa70dce7858d8e23": {
@@ -21858,6 +22020,15 @@
     "source": "compress skipped: ${compress.probeFailure}",
     "text": "compress skipped: __OMP_TOKEN_0__",
     "translation": "压缩跳过：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
+  "57c54cc049326422a6b9b4dcd08d0865f64fabf45638985a1d9c2106a46df957": {
+    "pkg": "tui",
+    "file": "src/app-keybindings.ts",
+    "role": "field:description",
+    "source": "Pin the selected session in the resume picker",
+    "text": "Pin the selected session in the resume picker",
+    "translation": "在恢复选择器中置顶所选会话",
     "origin": "model"
   },
   "57c85b32bfc53b0aa5cc6edc28dcb10748555ab9b0e1585ac3cbb2c6b118a560": {
@@ -24442,6 +24613,15 @@
     "text": "s",
     "translation": "",
     "origin": "seed"
+  },
+  "61d156bd69071dd7b60c525b913983113140b62dacaed8c6af4b0a23740c5d11": {
+    "pkg": "agent",
+    "file": "src/session/settings.ts",
+    "role": "field:label",
+    "source": "Prewalk target",
+    "text": "Prewalk target",
+    "translation": "Prewalk 目标",
+    "origin": "model"
   },
   "61d9f01bfe1dfc987cdd66b64d1c06d39a4c0d648f4890542643ea6ac984bfd3": {
     "pkg": "agent",
@@ -28403,6 +28583,15 @@
     "translation": "无动画;静态弱化文本",
     "origin": "seed"
   },
+  "72ff48152db4ad0a4430953307963c7cba404b3b0b2741e7f9f202d4e0abf20e": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/model.ts",
+    "role": "display:span",
+    "source": "Couldn't save the default model: ${this.#saveError}",
+    "text": "Couldn't save the default model: __OMP_TOKEN_0__",
+    "translation": "无法保存默认模型：__OMP_TOKEN_0__",
+    "origin": "model"
+  },
   "72ff7927ca74dde43a38233e158c4652ab6368b5b37c0bceeb14f23fb3365891": {
     "pkg": "tui",
     "file": "src/prompt/prompt-action-autocomplete.ts",
@@ -30779,6 +30968,15 @@
     "translation": "一旦会话支出达到这么多 __OMP_TOKEN_0__，就停止向模型发送请求；已在途的请求可在此之后完成（打印模式退出 3）",
     "origin": "model"
   },
+  "7bf77877711e1b03a80efbe64547b3a28337b0508f607a34e2e63df744893307": {
+    "pkg": "agent",
+    "file": "src/session/settings.ts",
+    "role": "field:description",
+    "source": "Model or role (default '@smol') that prewalk hands off to at the first edit/write: /prewalk, /prewalk restart, Enable Prewalk, and --prewalk. Auto-prewalk uses its own target.",
+    "text": "Model or role (default '@smol') that prewalk hands off to at the first __OMP_TOKEN_0__: __OMP_TOKEN_1__, __OMP_TOKEN_2__ restart, Enable Prewalk, and __OMP_TOKEN_3__. Auto-prewalk uses its own target.",
+    "translation": "Prewalk 在首次__OMP_TOKEN_0__时移交的模型或角色（默认 “@smol”）：__OMP_TOKEN_1__、__OMP_TOKEN_2__ restart、“启用 Prewalk” 和 __OMP_TOKEN_3__。自动 Prewalk 使用其自身的目标。",
+    "origin": "model"
+  },
   "7c01199bef5f9c5072e048b6085d1d6f3a87e6e9f253d67c80ede98c9596f34c": {
     "pkg": "tui",
     "file": "src/overlays/agent-hub.ts",
@@ -32622,6 +32820,15 @@
     "source": "job",
     "text": "job",
     "translation": "任务",
+    "origin": "model"
+  },
+  "83117dee1e6415f7d75f06df468899e60fff2e33c7a2f0f60ac75139e870bcf0": {
+    "pkg": "tui",
+    "file": "src/setup/wizard-overlay.ts",
+    "role": "theme:fg",
+    "source": "Setup step ${current + 1} of ${steps.length}",
+    "text": "Setup step __OMP_TOKEN_0__ of __OMP_TOKEN_1__",
+    "translation": "设置步骤 __OMP_TOKEN_0__ / __OMP_TOKEN_1__",
     "origin": "model"
   },
   "83128d7dc15d303fd726ed041955e8ecf30b10387b25adb75a29d096ec5a3f1a": {
@@ -35081,6 +35288,15 @@
     "translation": "在消息中说 __OMP_TOKEN_0__，即可用并行子代理驱动多阶段任务——输入时它会发光",
     "origin": "model"
   },
+  "8bb97528c06f76c01525217db20e6e6258f35611cff6270e10f4b3b61e714d49": {
+    "pkg": "agent",
+    "file": "src/modes/settings.ts",
+    "role": "field:description",
+    "source": "Smart when the judge role resolves to a native TypeSafe jev model, else Always",
+    "text": "Smart when the judge role resolves to a native TypeSafe jev model, else Always",
+    "translation": "当裁决者角色解析为原生 TypeSafe jev 模型时为智能，否则为始终",
+    "origin": "model"
+  },
   "8bbea8ed5c0c130ee20b997f3b844adcac0663efc547119abfb66319fcb9bf9b": {
     "pkg": "agent",
     "file": "src/slash-commands/builtin-collaboration.ts",
@@ -35216,6 +35432,15 @@
     "translation": "工具",
     "origin": "seed"
   },
+  "8c262d31d4881ecefd9b62bb781f088658bf01dd7753cb375e81910dbbfcfef2": {
+    "pkg": "tui",
+    "file": "src/hotkeys-markdown.ts",
+    "role": "hotkey:action",
+    "source": "Pick an extension link on screen by its tag",
+    "text": "Pick an extension link on screen by its tag",
+    "translation": "按标签选择屏幕上的扩展链接",
+    "origin": "model"
+  },
   "8c2e66b4109bf939e61e5a7733e6ab767f8bb00243d03f9b425f7c4098c99da5": {
     "pkg": "agent",
     "file": "src/modes/controllers/command-controller.ts",
@@ -35223,6 +35448,15 @@
     "source": "Failed to roll back move: ${rollbackError instanceof Error ? rollbackError.message : String(rollbackError)} (workspace remains at ${actual})",
     "text": "Failed to roll back move: __OMP_TOKEN_0__ (workspace remains at __OMP_TOKEN_1__)",
     "translation": "回退移动失败：__OMP_TOKEN_0__（工作区仍位于 __OMP_TOKEN_1__）",
+    "origin": "model"
+  },
+  "8c40d5cf0c59635936544c2fe05bff0cca3985a64f7706ab8322cd89ca48ae61": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "field:description",
+    "source": "Return to the planning model and re-arm the handoff (default prewalk.from → prewalk.into)",
+    "text": "Return to the planning model and re-arm the handoff (default __OMP_TOKEN_0__ → __OMP_TOKEN_1__)",
+    "translation": "返回规划模型并重新启用移交（默认 __OMP_TOKEN_0__ → __OMP_TOKEN_1__）",
     "origin": "model"
   },
   "8c520650b67386bb62a49ea9ca7fa9f692d8b8a48ba9a6284c0e8df87ab65ef6": {
@@ -35423,6 +35657,15 @@
     "translation": "__OMP_TOKEN_0__ 关闭",
     "origin": "model"
   },
+  "8d4182d78052a7eddfcbfa50f026a7bb55808058a1bac0844db18194db38caa7": {
+    "pkg": "agent",
+    "file": "src/tools/settings.ts",
+    "role": "field:description",
+    "source": "Let the agent reply mid-task by writing to out://, shown like a response without ending its turn. Unset: on in the interactive TUI, off in print, RPC, and ACP",
+    "text": "Let the agent reply mid-task by writing to out://, shown like a response without ending its turn. Unset: on in the interactive __OMP_TOKEN_0__, off in print, __OMP_TOKEN_1__, and __OMP_TOKEN_2__",
+    "translation": "允许智能体在任务执行中通过写入 out:// 进行回复，显示为响应且不结束当前轮次。未设置时：在交互式 __OMP_TOKEN_0__ 中开启，在 print、__OMP_TOKEN_1__ 和 __OMP_TOKEN_2__ 中关闭",
+    "origin": "model"
+  },
   "8d42332feb5b25df74f3c7ed92324d4e6b493e00f0ec234f468243bc60f95234": {
     "pkg": "tui",
     "file": "src/overlays/composer-shape-registry.ts",
@@ -35583,6 +35826,15 @@
     "source": "\nRun with --fix to attempt automatic repair",
     "text": "__OMP_TOKEN_0__Run with __OMP_TOKEN_1__ to attempt automatic repair",
     "translation": "__OMP_TOKEN_0__运行 __OMP_TOKEN_1__ 以尝试自动修复",
+    "origin": "model"
+  },
+  "8de234953de96e686c84375ef0066fd427aee956d51bbbe2ae16be07382685bb": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "display:usage",
+    "source": "Model \"${into}\" not found",
+    "text": "Model \"__OMP_TOKEN_0__\" not found",
+    "translation": "未找到模型“__OMP_TOKEN_0__”",
     "origin": "model"
   },
   "8de9275c40af64db77fd7d15d738252c3cb2ed0a47df970508116ea07bbe3481": {
@@ -36366,6 +36618,15 @@
     "source": "Toggle slow mode: flex tier on OpenAI/Google; on Anthropic, continue at low priority after the Claude session limit",
     "text": "Toggle slow mode: flex tier on __OMP_TOKEN_0__; on Anthropic, continue at low priority after the Claude session limit",
     "translation": "切换慢速模式：在 __OMP_TOKEN_0__ 上使用 Flex 层级；在 Anthropic 上，达到 Claude 会话限制后以低优先级继续",
+    "origin": "model"
+  },
+  "91dd9b2addb3efae5536bd8e006645d8e891a33fa444f5935f6955303ed89620": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/splash.ts",
+    "role": "display:span",
+    "source": "Press",
+    "text": "Press",
+    "translation": "按",
     "origin": "model"
   },
   "91f34a1d5817abdf929f6c5d2defd8867e99fbfd9b48598fd3f46bf02333d91e": {
@@ -37257,6 +37518,15 @@
     "source": "This text is empty",
     "text": "This text is empty",
     "translation": "此文本为空",
+    "origin": "model"
+  },
+  "9563a26be23e334eced8bbbb4738335e96545f558ae8fcaed98ae233c5a28b2e": {
+    "pkg": "tui",
+    "file": "src/chat/background-tan-message.ts",
+    "role": "display:span",
+    "source": "task ${jobId}",
+    "text": "task __OMP_TOKEN_0__",
+    "translation": "任务 __OMP_TOKEN_0__",
     "origin": "model"
   },
   "957862934abf8a5de31fb7b7a3463107c7ad2ffb8c8c87093220b668bb991a77": {
@@ -39356,6 +39626,15 @@
     "translation": " ◌ 未激活",
     "origin": "model"
   },
+  "9d24a0431dab54edd106107ffcf96bc335831df3ab1f2a7723abf853b0e42667": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "display:variable",
+    "source": "Sign in to your providers",
+    "text": "Sign in to your providers",
+    "translation": "登录你的提供商",
+    "origin": "model"
+  },
   "9d31e6bf7e1f3c7501aa658abd225476b4e92b52d6014621e4321d7a5fe7f189": {
     "pkg": "tui",
     "file": "src/chat/execution-shared.ts",
@@ -39372,6 +39651,15 @@
     "source": "resets in ${formatDuration(resetMs)}",
     "text": "resets in __OMP_TOKEN_0__",
     "translation": "__OMP_TOKEN_0__ 后重置",
+    "origin": "model"
+  },
+  "9d4681bc64e5e1c2e7284d41bfb09500df53de4fa083b32e5c2961e1440f472d": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/model.ts",
+    "role": "display:span",
+    "source": " as your default model…",
+    "text": " as your default model…",
+    "translation": " 为默认模型…",
     "origin": "model"
   },
   "9d475fa3a0929e8f14c39bc368e8f6cd8327d3acd4f483250da1a9d56962db45": {
@@ -41273,6 +41561,24 @@
     "translation": "  仍为 __OMP_TOKEN_0__：更高优先级的层覆盖了已保存的值",
     "origin": "model"
   },
+  "a559424c2a7afb341b37aea7d78405cbd65a88a467412428e6a80446cbf5766f": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "call:showStatus",
+    "source": "Too many extension links on one row to tag; widen the terminal",
+    "text": "Too many extension links on one row to tag; widen the terminal",
+    "translation": "单行中的扩展链接过多无法标记；请加宽终端窗口",
+    "origin": "model"
+  },
+  "a55aee0869b0cec41788bf4d610a732db8e09927d7432e4beb7afb5736fb29f5": {
+    "pkg": "agent",
+    "file": "src/stt/stt-controller.ts",
+    "role": "call:showWarning",
+    "source": "Dictation model ${first.replaces} not found; using ${first.model.provider}/${first.model.id}",
+    "text": "Dictation model __OMP_TOKEN_0__ not found; using __OMP_TOKEN_1__/__OMP_TOKEN_2__",
+    "translation": "未找到听写模型 __OMP_TOKEN_0__；改用 __OMP_TOKEN_1__/__OMP_TOKEN_2__",
+    "origin": "model"
+  },
   "a56318fa31b1038a14545fbb37ad045ffb8fd01d31c0cf3f304d5409ce9992ac": {
     "pkg": "agent",
     "file": "src/modes/interactive-mode.ts",
@@ -41515,6 +41821,15 @@
     "text": "Animation style for __OMP_TOKEN_0__ messages",
     "translation": "用于 __OMP_TOKEN_0__ 消息的动画样式",
     "origin": "model"
+  },
+  "a680290dcf0ef2ff629b1f640c01fc6cfa19370f34dcd9e6ac34fa646e36739b": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/model.ts",
+    "role": "display:variable",
+    "source": "Choose your default model",
+    "text": "Choose your default model",
+    "translation": "选择默认模型",
+    "origin": "seed"
   },
   "a689ae247e51889aa3f48ae5f8548661b0f64c53ef0d5057793662c9aa894432": {
     "pkg": "tui",
@@ -42515,6 +42830,15 @@
     "translation": "广泛",
     "origin": "seed"
   },
+  "aa7397694a203f8ea39e13f54b6b011aedfe392b4700764c15c6d1bc6365f0cb": {
+    "pkg": "agent",
+    "file": "src/session/settings.ts",
+    "role": "field:label",
+    "source": "Prewalk planning model",
+    "text": "Prewalk planning model",
+    "translation": "Prewalk 规划模型",
+    "origin": "model"
+  },
   "aa7b30a9b2e4ec1c9a2d11520ad64a824af204d0f01d07f36a43e1964fe81804": {
     "pkg": "agent",
     "file": "src/modes/controllers/command-controller.ts",
@@ -42846,6 +43170,15 @@
     "source": "Cannot move while streaming.",
     "text": "Cannot move while streaming.",
     "translation": "流式传输时无法移动。",
+    "origin": "model"
+  },
+  "ab9e0732cf8d2ee57440be1e6511e29c365ea4dc9135ae4e574536cb1bce6bf1": {
+    "pkg": "agent",
+    "file": "src/extensibility/settings.ts",
+    "role": "field:description",
+    "source": "Let extensions change how assistant replies are drawn, redraw a reply in place, and receive clicks on their own links; the session, exports and model context keep the reply as written",
+    "text": "Let extensions change how assistant replies are drawn, redraw a reply in place, and receive clicks on their own links; the session, exports and model context keep the reply as written",
+    "translation": "允许扩展更改助手回复的绘制方式、就地重绘回复，并接收其自身链接的点击；会话、导出和模型上下文仍保留回复的原始内容",
     "origin": "model"
   },
   "aba0c0f3e18c53cdf9b85b8f1da482f6bbad8e7a0d6089bf7f1dfed0e799e20d": {
@@ -48959,6 +49292,15 @@
     "translation": "使用 MiniMax 自有方言。",
     "origin": "seed"
   },
+  "c3e13f4b1e89488acb6b7768c5a01e2daaef0a8edb5e94fec12524c679b0f885": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "display:span",
+    "source": "Couldn't sign in to ${outcome.provider}: ${outcome.message}",
+    "text": "Couldn't sign in to __OMP_TOKEN_0__: __OMP_TOKEN_1__",
+    "translation": "无法登录到 __OMP_TOKEN_0__：__OMP_TOKEN_1__",
+    "origin": "model"
+  },
   "c3ec906a82be21ba785a563d77d4dc59038b96546d0941bc9801517d9eaa7d4f": {
     "pkg": "agent",
     "file": "src/task/settings.ts",
@@ -51749,6 +52091,15 @@
     "translation": "反向切换角色模型",
     "origin": "human"
   },
+  "ced5d0fbbcdb4de5c09d81dd2fb63e7961fbcfbde6fb700bb9a5f80670ef8664": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "field:label",
+    "source": "Continue",
+    "text": "Continue",
+    "translation": "继续",
+    "origin": "model"
+  },
   "ced9907f2062157e06f921a6b16a66bd352b1492db83911eaa131bc4da65952a": {
     "pkg": "tui",
     "file": "src/overlays/mcp-add-wizard.ts",
@@ -52036,6 +52387,15 @@
     "text": "Use the line-oriented console instead of the interactive __OMP_TOKEN_0__",
     "translation": "使用面向行的控制台，而不是交互式 __OMP_TOKEN_0__",
     "origin": "seed"
+  },
+  "cfbb453225da19601c61b5a6969dee8037810bf236e5d8a6b3c64f7fda65aa16": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/outro.ts",
+    "role": "display:span",
+    "source": "Starting ${APP_NAME}…",
+    "text": "Starting __OMP_TOKEN_0__…",
+    "translation": "正在启动 __OMP_TOKEN_0__…",
+    "origin": "model"
   },
   "cfc7d811a0361e6d94ad99a617056d0adc40b44e06d8d85f050ddbed9480d539": {
     "pkg": "agent",
@@ -53494,6 +53854,24 @@
     "text": "Extension error (__OMP_TOKEN_0__): __OMP_TOKEN_1____OMP_TOKEN_2__",
     "translation": "扩展错误 (__OMP_TOKEN_0__): __OMP_TOKEN_1____OMP_TOKEN_2__",
     "origin": "model"
+  },
+  "d56e6eaf520c2fd55afa7c92222848b41678876c8aafec56b8589367c3fb2f65": {
+    "pkg": "tui",
+    "file": "src/chat/transcript-render-helpers.ts",
+    "role": "display:variable",
+    "source": "Supervised process failed",
+    "text": "Supervised process failed",
+    "translation": "受监管进程失败",
+    "origin": "model"
+  },
+  "d56f636ee5338f31029ede2997fca73b16beb3278645c8dde24a19c36307372f": {
+    "pkg": "tui",
+    "file": "src/chat/transcript-render-helpers.ts",
+    "role": "display:span",
+    "source": "Read",
+    "text": "Read",
+    "translation": "读取",
+    "origin": "seed"
   },
   "d579db4d421c5c66cc5b2eb45a3a0a06920a311840cff87c8c844bee8a0113dd": {
     "pkg": "agent",
@@ -55358,6 +55736,15 @@
     "translation": "加载中…",
     "origin": "human"
   },
+  "dc9026dcb04d472ca2ab661fccf1e9b75ce5c3bbb6dade1f36c62957bcced3be": {
+    "pkg": "agent",
+    "file": "src/task/settings.ts",
+    "role": "field:label",
+    "source": "Task Instructions from Files",
+    "text": "Task Instructions from Files",
+    "translation": "来自文件的任务指令",
+    "origin": "model"
+  },
   "dc9284e6492e6b8785c8a03afe4de67fa132a8be0abbcb3d80ac47be0765d22e": {
     "pkg": "tui",
     "file": "src/tools/vibe.ts",
@@ -56213,6 +56600,15 @@
     "translation": "Python 解释器",
     "origin": "seed"
   },
+  "dfd32e446decbc823b718b4b304b702b5e9d801f429d15cd7217fc4491eab612": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "field:label",
+    "source": "Skip",
+    "text": "Skip",
+    "translation": "跳过",
+    "origin": "model"
+  },
   "dfd6d15d663bedbfe31fb6e2194b40e1cf5e270a5060cc874bb5557b79142557": {
     "pkg": "agent",
     "file": "src/commands/launch-help.ts",
@@ -56337,6 +56733,15 @@
     "source": "Memory data cleared and system prompt refreshed.",
     "text": "Memory data cleared and system prompt refreshed.",
     "translation": "记忆数据已清除，系统提示已刷新。",
+    "origin": "model"
+  },
+  "e035a2f35929611dd5585b5249b79475a3bf628843eed0eef49d63d6a81c448e": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "call:showStatus",
+    "source": "No extension links on screen",
+    "text": "No extension links on screen",
+    "translation": "屏幕上没有扩展链接",
     "origin": "model"
   },
   "e040f89b11a8aef845cfdf4eb7f672ea5177339154bbd08b00e5fa442aa50544": {
@@ -56672,6 +57077,15 @@
     "translation": "在差异中选择行",
     "origin": "model"
   },
+  "e1a45cd6e83455be59bcbf0143848e01086dd2d902d4f304de695dab5ad24cc1": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/model.ts",
+    "role": "field:text",
+    "source": "Saving ${this.#saving} as the default model…",
+    "text": "Saving __OMP_TOKEN_0__ as the default model…",
+    "translation": "正在将 __OMP_TOKEN_0__ 保存为默认模型…",
+    "origin": "model"
+  },
   "e1a6cee2902dceba80dc7d8905da3673ee544efc1d20d9cd40891ef4048ffee8": {
     "pkg": "tui",
     "file": "src/tools/vibe.ts",
@@ -56824,6 +57238,15 @@
     "text": "Built-in Rules",
     "translation": "内置规则",
     "origin": "seed"
+  },
+  "e23bd11f5151512bbd74f158b82f18a0849e5aa2cd9f3cb61bbe077db451baa7": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/sign-in.ts",
+    "role": "field:text",
+    "source": "${theme.status.success} Signed in to ${outcome.provider}",
+    "text": "__OMP_TOKEN_0__ Signed in to __OMP_TOKEN_1__",
+    "translation": "__OMP_TOKEN_0__ 已登录到 __OMP_TOKEN_1__",
+    "origin": "model"
   },
   "e2566e9e44f452a0113d9e119770278b4f8dd7cf27d64a19e4ba5e59c5543cfb": {
     "pkg": "agent",
@@ -57140,6 +57563,15 @@
     "translation": "启动更新日志",
     "origin": "seed"
   },
+  "e39f845cc568308bfebcbc03b430cec047018be7159eb8f019adf62da5e61ab1": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "call:output",
+    "source": "Prewalk restarted: using ${sourceLabel} for planning, then switching to ${targetLabel} at the next edit/write (todo-gated).",
+    "text": "Prewalk restarted: using __OMP_TOKEN_0__ for planning, then switching to __OMP_TOKEN_1__ at the next __OMP_TOKEN_2__ (todo-gated).",
+    "translation": "Prewalk 已重启：使用 __OMP_TOKEN_0__ 进行规划，然后在下一次 __OMP_TOKEN_2__ 时切换至 __OMP_TOKEN_1__（基于待办门禁）。",
+    "origin": "model"
+  },
   "e39ff45e590997ce530507f7f859598374ba2dac55600ed1e080874df45c9ca4": {
     "pkg": "agent",
     "file": "src/cli/browser-relay-cli.ts",
@@ -57320,6 +57752,15 @@
     "translation": "关闭失败：__OMP_TOKEN_0__",
     "origin": "seed"
   },
+  "e4409631ae8d30bea3b540989a6b4b526b0ca27e74c517a5685d27a527de2ec3": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "display:usage",
+    "source": "Model \"${from}\" not found",
+    "text": "Model \"__OMP_TOKEN_0__\" not found",
+    "translation": "未找到模型“__OMP_TOKEN_0__”",
+    "origin": "model"
+  },
   "e4412603c79aea69cb722d570313a11604493ed7b5869d6689c3040da71ad9d3": {
     "pkg": "agent",
     "file": "src/session/settings.ts",
@@ -57372,6 +57813,15 @@
     "source": "Ask",
     "text": "Ask",
     "translation": "询问",
+    "origin": "model"
+  },
+  "e488ccac6db7137c1295bf11ef5eb099cd4b128dcbfa905d5cec8b6ac58b7539": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "call:output",
+    "source": "Prewalk reset: using ${sourceLabel}; ${into} resolves to the same model and thinking level, so no handoff was armed.",
+    "text": "Prewalk reset: using __OMP_TOKEN_0__; __OMP_TOKEN_1__ resolves to the same model and thinking level, so no handoff was armed.",
+    "translation": "Prewalk 已重置：使用 __OMP_TOKEN_0__；__OMP_TOKEN_1__ 解析为相同的模型和思考级别，因此未激活移交。",
     "origin": "model"
   },
   "e492d76bc034b4f60a79a1250f575356c911a9f91583258db92cef3c23c71fb3": {
@@ -57517,6 +57967,15 @@
     "text": "Lines of context after each grep match",
     "translation": "每个 grep 匹配之后的上下文行数",
     "origin": "seed"
+  },
+  "e560102d76cc65d9f65eabd8c341dfa864adf436b41cee5cc70bf5e77792802f": {
+    "pkg": "tui",
+    "file": "src/overlays/session-selector.ts",
+    "role": "theme:fg",
+    "source": "[${this.#onDelete ? `${formatKeyHints([\"delete\", \"backspace\"])} delete · ` : \"\"}${this.#onRename ? `${formatKeyHint(\"f2\")} rename · ` : \"\"}${pinKey ? `${formatKeyHint(pinKey)} ${pin.label} · ` : \"\"}${formatKeyHint(\"enter\")} select · ${formatKeyHint(\"tab\")} ${scopeHint} · ${cancel} cancel]",
+    "text": "[__OMP_TOKEN_0____OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3__ select · __OMP_TOKEN_4__ __OMP_TOKEN_5__ · __OMP_TOKEN_6__ cancel]",
+    "translation": "[__OMP_TOKEN_0____OMP_TOKEN_1____OMP_TOKEN_2____OMP_TOKEN_3__ 选择 · __OMP_TOKEN_4__ __OMP_TOKEN_5__ · __OMP_TOKEN_6__ 取消]",
+    "origin": "model"
   },
   "e569722dada680fabe4043e9f6cafb27a92e2d2e9019e24bb0ca19c3e43511a2": {
     "pkg": "agent",
@@ -58787,6 +59246,15 @@
     "translation": "已将最后一条排队消息恢复到编辑器",
     "origin": "seed"
   },
+  "eab2ae3356b8107f89206227fe24fb853e88cda7dfc0cd5c601eabf813561904": {
+    "pkg": "tui",
+    "file": "src/overlays/session-selector.ts",
+    "role": "field:label",
+    "source": "unpin",
+    "text": "unpin",
+    "translation": "取消置顶",
+    "origin": "model"
+  },
   "eacaf470b772e675ac629b5bd32ea6aed5f6939d1a8844ac90b835e6bcf93565": {
     "pkg": "agent",
     "file": "src/modes/controllers/command-controller.ts",
@@ -59154,6 +59622,15 @@
     "source": "${theme.status.disabled} context ${formatNumber(this.#currentContextTokens).toLowerCase()} exceeds ${formatNumber(model.contextWindow ?? 0).toLowerCase()} limit · compacts with current model, then switches",
     "text": "__OMP_TOKEN_0__ context __OMP_TOKEN_1__ exceeds __OMP_TOKEN_2__ limit · compacts with current model, then switches",
     "translation": "__OMP_TOKEN_0__ 上下文 __OMP_TOKEN_1__ 超出 __OMP_TOKEN_2__ 限制 · 使用当前模型压缩，然后切换",
+    "origin": "model"
+  },
+  "ec1c555037f2bf94bb04ce844a8baf48963fc7123d5bbfda9dd04ce6e082939e": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/model.ts",
+    "role": "field:noun",
+    "source": "models",
+    "text": "models",
+    "translation": "模型",
     "origin": "model"
   },
   "ec29ec4e66667170c7b0a5e58250c0041b5d0be099531bda5ae0e9e226f623f3": {
@@ -60101,6 +60578,15 @@
     "translation": "慢速模式：关闭",
     "origin": "model"
   },
+  "efdb6a929439315a2da858bc2b279584e80414afaee9fdd5d3a605d3f9d96a4a": {
+    "pkg": "tui",
+    "file": "src/app-keybindings.ts",
+    "role": "field:description",
+    "source": "Unpin the selected session in the resume picker",
+    "text": "Unpin the selected session in the resume picker",
+    "translation": "在恢复选择器中取消置顶所选会话",
+    "origin": "model"
+  },
   "efdeb679e56b3f164ee56f5f6c89978e881f78e9683a36ee0aa7d47c94b38b7a": {
     "pkg": "agent",
     "file": "src/modes/controllers/command-controller.ts",
@@ -60280,6 +60766,15 @@
     "text": "Advisor",
     "translation": "顾问",
     "origin": "seed"
+  },
+  "f04c506e5f24da005721b917689e4b9de814d9ecce3bb6d11dab92c5a7c28cc2": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/outro.ts",
+    "role": "display:span",
+    "source": "Default model",
+    "text": "Default model",
+    "translation": "默认模型",
+    "origin": "model"
   },
   "f04c653096711f2d1e38fdd1d6a7fc5387b89dcbc656da7287968fe2991618a3": {
     "pkg": "agent",
@@ -60542,6 +61037,15 @@
     "translation": " 通过",
     "origin": "model"
   },
+  "f1314011567deea2addfcbdc0e10e9328ee19a8e140213c2bccaeee41fe5adfc": {
+    "pkg": "tui",
+    "file": "src/overlays/session-selector.ts",
+    "role": "field:label",
+    "source": "pin",
+    "text": "pin",
+    "translation": "置顶",
+    "origin": "model"
+  },
   "f131b12eb58c350ee1ae5f96cb6b9fc93c80cf9722da435a49be20ae438ae584": {
     "pkg": "tui",
     "file": "src/tools/grouped-file-output.ts",
@@ -60567,6 +61071,15 @@
     "source": "Approve",
     "text": "Approve",
     "translation": "批准",
+    "origin": "model"
+  },
+  "f1398f34434741f9c917ee74881baa982daa799e73e804cdd7b7320026f464ce": {
+    "pkg": "tui",
+    "file": "src/setup/scenes/splash.ts",
+    "role": "display:span",
+    "source": "to begin",
+    "text": "to begin",
+    "translation": "开始",
     "origin": "model"
   },
   "f13ccf92878ab87349a0b19315356e0b413d3f3c9caf635ef2f591154095e3af": {
@@ -61513,6 +62026,15 @@
     "text": "Examples:",
     "translation": "示例:",
     "origin": "seed"
+  },
+  "f4f5e2b63285890451db776b3b22db63ac84a68578326c005fe2a141ef80a833": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-modes.ts",
+    "role": "display:usage",
+    "source": "Usage: /prewalk [into] | restart [from] [into] | off",
+    "text": "Usage: __OMP_TOKEN_0__ [into] | restart [from] [into] | off",
+    "translation": "用法：__OMP_TOKEN_0__ [into] | restart [from] [into] | off",
+    "origin": "model"
   },
   "f4f800e0e5d3c55c7bce61d15fecd399b4e456a09d82a40bd85300b4139424be": {
     "pkg": "tui",
@@ -63834,6 +64356,15 @@
     "source": "Publish even when credential-shaped strings are found",
     "text": "Publish even when credential-shaped strings are found",
     "translation": "即使发现凭据形状的字符串也继续发布",
+    "origin": "model"
+  },
+  "fd82f911a60eb2070efe4e1907f8e9154525025d4100fbef6a92310fa38cae1b": {
+    "pkg": "tui",
+    "file": "src/app-keybindings.ts",
+    "role": "field:description",
+    "source": "Pick an extension link on screen by its hint tag",
+    "text": "Pick an extension link on screen by its hint tag",
+    "translation": "按提示标签选择屏幕上的扩展链接",
     "origin": "model"
   },
   "fd85dc6f6ae49b811b206073a6fe149fed07aac7c7ac48987252a2713bfbac8a": {
