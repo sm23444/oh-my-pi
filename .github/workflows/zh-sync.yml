@@ -44,6 +44,7 @@ jobs:
       fingerprint: ${{ steps.detect.outputs.fingerprint }}
       needed: ${{ steps.detect.outputs.needed }}
       ready: ${{ steps.status.outputs.ready }}
+      catalog_artifact_id: ${{ steps.upload_catalog.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -131,10 +132,11 @@ jobs:
           path: .zh-checkpoint
           key: zh-${{ steps.detect.outputs.version }}-${{ steps.detect.outputs.fingerprint }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Upload translation catalog and diagnostic report
+        id: upload_catalog
         if: always() && steps.detect.outputs.needed == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: zh-translations
+          name: zh-translations-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 7
           path: |
             localization/zh-CN/catalog.json
@@ -145,6 +147,8 @@ jobs:
     if: needs.translate.outputs.needed == 'true' && (needs.translate.outputs.ready == 'true' || inputs.audit_only)
     runs-on: windows-latest
     timeout-minutes: 30
+    outputs:
+      cli_artifact_id: ${{ steps.upload_cli.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -157,7 +161,8 @@ jobs:
         run: ./localization/zh-CN/test-install.ps1
       - uses: actions/download-artifact@v4
         with:
-          name: zh-translations
+          artifact-ids: ${{ needs.translate.outputs.catalog_artifact_id }}
+          merge-multiple: true
           path: incoming
       - name: Load candidate translation catalog
         shell: pwsh
@@ -194,8 +199,9 @@ jobs:
           & (Join-Path $env:USERPROFILE '.local/bin/omp.cmd') plugin --help
           if ($LASTEXITCODE -ne 0) { throw 'CLI argument forwarding failed' }
       - uses: actions/upload-artifact@v4
+        id: upload_cli
         with:
-          name: windows-cli-${{ needs.translate.outputs.version }}
+          name: windows-cli-${{ needs.translate.outputs.version }}-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 3
           path: cli-assets/
 
@@ -232,11 +238,13 @@ jobs:
           bun-version: ${{ env.BUN_VERSION }}
       - uses: actions/download-artifact@v4
         with:
-          name: zh-translations
+          artifact-ids: ${{ needs.translate.outputs.catalog_artifact_id }}
+          merge-multiple: true
           path: incoming
       - uses: actions/download-artifact@v4
         with:
-          name: windows-cli-${{ needs.translate.outputs.version }}
+          artifact-ids: ${{ needs.windows-cli.outputs.cli_artifact_id }}
+          merge-multiple: true
           path: cli-assets
       - name: Validate and apply catalog to official source
         run: |
