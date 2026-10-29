@@ -68,6 +68,8 @@ export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: Packag
 			if (ui && ["text", "tooltip", "emptyText", "errorText", "explanation", "noMatchText", "statusText", "head", "lead", "noun", "note", "subhead"].includes(field)) return `field:${field}`;
 			if (pkg === "tui" && file === "src/hotkeys-markdown.ts" && field === "action") return "hotkey:action";
 		}
+		if (pkg === "agent" && file === "src/modes/interactive-mode.ts" && parent.type === "ClassPrivateProperty" && parent.value === child && name(parent.key) === "AUTOQA_CONSENT_PROMPTS") return "feedback:consent";
+		if (pkg === "tui" && file === "src/overlays/hook-selector.ts" && parent.type === "VariableDeclarator" && parent.init === child && name(parent.id) === "controlsHint") return "selector:hint";
 		if (parent.type === "ReturnStatement" && parent.argument === child) return displayFunction(ancestors.slice(0, index), pkg, file) ? "display:return" : undefined;
 		if (parent.type === "ArrowFunctionExpression" && parent.body === child) return displayFunction(ancestors.slice(0, index + 1), pkg, file) ? "display:return" : undefined;
 		if (parent.type === "VariableDeclarator" && parent.init === child && ui && file !== "src/chat/messages.ts" && displayVariable(name(parent.id))) return "display:variable";
@@ -88,6 +90,7 @@ export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: Packag
 			if (ui && callee.type === "Identifier") {
 				const method = callee.name;
 				if (pkg === "tui" && file === "src/overlays/settings-selector.ts" && position === 1 && ["topBorder", "overlayCard", "actionHint"].includes(method)) return `settings:${method}`;
+				if (pkg === "tui" && file === "src/overlays/hook-selector.ts" && ["actionHint", "pickerAction"].includes(method) && position === 1) return "selector:action";
 				if (pkg === "tui" && position === 0 && ["text", "span", "plainText", "styledSpans", "compactText", "muted", "heading", "labelled", "toolHead", "noteText", "formatEmptyMessage", "formatErrorMessage", "actionHint"].includes(method)) return `display:${method}`;
 				if (pkg === "tui" && method === "button" && [1, 3].includes(position)) return "display:button";
 				if (pkg === "tui" && method === "actionButton" && position === 0) return "display:button";

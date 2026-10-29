@@ -14057,6 +14057,15 @@
     "translation": "调试",
     "origin": "seed"
   },
+  "38a448f9a820a79f6fc0830701e4b01f6e34938e8710f1cd7116eef5d400b3c3": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Hand the specimen to the devs? Tool name + where it crawled out, nothing personal.",
+    "text": "Hand the specimen to the devs? Tool name + where it crawled out, nothing personal.",
+    "translation": "要交给开发者排查吗？只发送工具名称和发现问题的位置，不包含个人信息。",
+    "origin": "human"
+  },
   "38adf827dd1a7219a095c8cb7647817ac0457898f7096c8dfd0b7c73958d49e7": {
     "pkg": "agent",
     "file": "src/modes/interactive-mode.ts",
@@ -14281,6 +14290,15 @@
     "text": "Copied todos as Markdown to clipboard.",
     "translation": "已将待办事项以 Markdown 格式复制到剪贴板。",
     "origin": "model"
+  },
+  "397f228c391089773dfe33dc0c7b55d28804bb1c01136705b90cfa032586cbfc": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "🧾 Your agent drafted a strongly worded letter to one of its tools.",
+    "text": "🧾 Your agent drafted a strongly worded letter to one of its tools.",
+    "translation": "🧾 智能体给一个工具写了封措辞强硬的投诉信。",
+    "origin": "human"
   },
   "3981702420122802dec4a88c10cb89b24a4a2b897937ff25af898dce36532b18": {
     "pkg": "agent",
@@ -14830,6 +14848,15 @@
     "text": "No per-line cap",
     "translation": "无每行上限",
     "origin": "seed"
+  },
+  "3b9a3e9fde00027f9c2d783dd67f0b3acb950a2aa096ab3b4c078c31945c80eb": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "🧂 Your agent is extremely salty about a tool.",
+    "text": "🧂 Your agent is extremely salty about a tool.",
+    "translation": "🧂 智能体对一个工具有一肚子槽要吐。",
+    "origin": "human"
   },
   "3ba4f782c66400e4b405bab2802fa2d563f10964787b36e875e8d747371eb098": {
     "pkg": "agent",
@@ -17783,6 +17810,15 @@
     "translation": "未找到预设：__OMP_TOKEN_0__",
     "origin": "model"
   },
+  "479b4d4013ecb8f473397e1c146fa6bc2a38f0ebcf573434527fb120f2a0e4aa": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Tip off the devs? Tool name + the evidence, no personal info.",
+    "text": "Tip off the devs? Tool name + the evidence, no personal info.",
+    "translation": "要向开发者报告吗？只发送工具名称和问题线索，不包含个人信息。",
+    "origin": "human"
+  },
   "47ac5d6969a50bcbed33f8f18c19282530a5ff297cfc493909ab7f4decba31c7": {
     "pkg": "agent",
     "file": "src/tools/settings.ts",
@@ -19420,6 +19456,15 @@
     "text": "Settings for __OMP_TOKEN_0__:__OMP_TOKEN_1__",
     "translation": "__OMP_TOKEN_0__ 的设置：__OMP_TOKEN_1__",
     "origin": "model"
+  },
+  "4e03088adf68db23ab6ae2ed88bbae77b5011bc501a61c9d4085d0f23e36ddc0": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "🦆 Your agent explained a tool to its rubber duck. The duck is also confused.",
+    "text": "🦆 Your agent explained a tool to its rubber duck. The duck is also confused.",
+    "translation": "🦆 智能体向小黄鸭解释了一个工具，小黄鸭也没搞懂。",
+    "origin": "human"
   },
   "4e13cfde53b5cc139610460ae05adfce1a3ceb44fa38705e3de301d1abd044da": {
     "pkg": "agent",
@@ -21193,6 +21238,15 @@
     "text": "Firecrawl",
     "translation": "Firecrawl 提取器",
     "origin": "model"
+  },
+  "5518b0eb5747f6dbd592678d908b14c46b02008e366bb47f72a5db53f1b65d05": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "📉 Your agent's opinion of a tool just crashed.",
+    "text": "📉 Your agent's opinion of a tool just crashed.",
+    "translation": "📉 智能体对一个工具的评价刚刚跌到了谷底。",
+    "origin": "human"
   },
   "551a33047d49629ec47a0706513dde64b520ff62b1c51973b8c5a47362880c68": {
     "pkg": "tui",
@@ -28178,6 +28232,15 @@
     "translation": "写入一个 zip，包含主会话记录、__OMP_TOKEN_0__ 请求 __OMP_TOKEN_1__ 以及每个子代理各一个文件",
     "origin": "model"
   },
+  "72307b88c976669ace18ba2a506ea052dd83d65bfc68bcd4aae067729cb40087": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Send the devs a spoiler? Tool name + what happened, never anything personal.",
+    "text": "Send the devs a spoiler? Tool name + what happened, never anything personal.",
+    "translation": "要向开发者反馈吗？只发送工具名称和发生的情况，不包含个人信息。",
+    "origin": "human"
+  },
   "723def0394b118b4b22a2b7d88290c7cd1ae7771c3fb2a56baedc740273c6ab3": {
     "pkg": "agent",
     "file": "src/session/settings.ts",
@@ -29573,6 +29636,15 @@
     "translation": "登录以继续",
     "origin": "model"
   },
+  "77e06f15125c0f5e5afd0bf8b3d5e93205280c5fb7ccdfcb47eba5ef99f916db": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Let it salt the devs' inbox? Tool name + what soured it, no personal info.",
+    "text": "Let it salt the devs' inbox? Tool name + what soured it, no personal info.",
+    "translation": "要把吐槽发给开发者吗？只发送工具名称和不满的原因，不包含个人信息。",
+    "origin": "human"
+  },
   "77f4413507cbcfb7a82ec79191d337a8d560ec319fa340caf1a35a8f1c762c1e": {
     "pkg": "agent",
     "file": "src/slash-commands/builtin-lifecycle.ts",
@@ -29680,6 +29752,15 @@
     "text": "Usage: __OMP_TOKEN_0__ [full|kill <id>|kill all]",
     "translation": "用法：__OMP_TOKEN_0__ [full|kill <id>|kill all]",
     "origin": "model"
+  },
+  "788e2ee86a4afa3d059c281fed3e07c219abdf75a193aec16c169879b66a140a": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "📟 Your agent is asking to speak to a tool's manager.",
+    "text": "📟 Your agent is asking to speak to a tool's manager.",
+    "translation": "📟 智能体想找一个工具的负责人聊聊。",
+    "origin": "human"
   },
   "7898d43727d379c71e3409edf6d83b04292e54b876978ea74bf099196020c037": {
     "pkg": "agent",
@@ -30229,6 +30310,15 @@
     "text": "Ctx",
     "translation": "上下文",
     "origin": "model"
+  },
+  "7a29767e5e21500ead38464a33f568fa16c0c27bbfeafcca8f8a24df0d806fcd": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "🕵️ Your agent caught a tool acting suspicious.",
+    "text": "🕵️ Your agent caught a tool acting suspicious.",
+    "translation": "🕵️ 智能体发现一个工具的行为有些可疑。",
+    "origin": "human"
   },
   "7a432027cfc6e76605dcd86b0a9c3de7e63881390fcbe5fac8454b4fc14aed43": {
     "pkg": "tui",
@@ -35251,6 +35341,15 @@
     "text": "Set or replace the goal",
     "translation": "设置或替换目标",
     "origin": "model"
+  },
+  "8ccbffb4b2fb9e0f8a82a44a47b29567bc0383aa24490042477f07a5d37efd8e": {
+    "pkg": "tui",
+    "file": "src/overlays/hook-selector.ts",
+    "role": "selector:action",
+    "source": "navigate",
+    "text": "navigate",
+    "translation": "移动",
+    "origin": "human"
   },
   "8ccf4848971f44d20582dd8943327beb407921e402921843a50b8a0c63ae2365": {
     "pkg": "agent",
@@ -40535,6 +40634,15 @@
     "translation": "强制终止前的宽限期秒数（stop）",
     "origin": "seed"
   },
+  "a2e9ddf4b0c656aee86aefbdaf4b12082bd5a50ae6fa1c70240d6c2b55783b05": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Put the call through to the devs? Tool name + the complaint, nothing personal.",
+    "text": "Put the call through to the devs? Tool name + the complaint, nothing personal.",
+    "translation": "要联系开发者吗？只发送工具名称和投诉内容，不包含个人信息。",
+    "origin": "human"
+  },
   "a2f1ac06ed67a019a654c86c6546c53682f520ff64895894f03581108d572a39": {
     "pkg": "agent",
     "file": "src/commands/browser-relay.ts",
@@ -41164,6 +41272,15 @@
     "text": "  still __OMP_TOKEN_0__: a higher-precedence layer overrides the saved value",
     "translation": "  仍为 __OMP_TOKEN_0__：更高优先级的层覆盖了已保存的值",
     "origin": "model"
+  },
+  "a56318fa31b1038a14545fbb37ad045ffb8fd01d31c0cf3f304d5409ce9992ac": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Call in the devs for an exorcism? Tool name + the spooky bit, nothing personal.",
+    "text": "Call in the devs for an exorcism? Tool name + the spooky bit, nothing personal.",
+    "translation": "要请开发者来排查吗？只发送工具名称和异常情况，不包含个人信息。",
+    "origin": "human"
   },
   "a56ffa8dfd3857aea47c911ed88645e4d3255f3e03ddfd6e6ed1c304db600a3d": {
     "pkg": "agent",
@@ -47519,6 +47636,15 @@
     "translation": "__OMP_TOKEN_0__ 提交  __OMP_TOKEN_1__ 取消  __OMP_TOKEN_2__ 外部编辑器",
     "origin": "model"
   },
+  "bea46f03d1aa3de91950f9c61351a3525008a17fbe619c47132edd7d3749b38b": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "👻 Your agent swears one of its tools is haunted.",
+    "text": "👻 Your agent swears one of its tools is haunted.",
+    "translation": "👻 智能体觉得一个工具像是闹鬼了。",
+    "origin": "human"
+  },
   "beb0f93100f3300e04a8c1b1a94428f9f8360486c4734edb9b6bfa7e2f9a21bc": {
     "pkg": "tui",
     "file": "src/tools/todo.ts",
@@ -48751,6 +48877,15 @@
     "text": "Recall",
     "translation": "回忆",
     "origin": "seed"
+  },
+  "c3a252d60385dab02b492a198f4368e5640be6bcc2c151708ff4ee7b7e5364c5": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "🫖 Your agent has tea about a tool.",
+    "text": "🫖 Your agent has tea about a tool.",
+    "translation": "🫖 智能体有个关于工具的小道消息。",
+    "origin": "human"
   },
   "c3a2ba53492c8eef0e37230ba25157276f5d387f1a6bc2a4bf6831be10aef5d5": {
     "pkg": "agent",
@@ -50354,6 +50489,15 @@
     "translation": "Clear：流式传输期间不可用",
     "origin": "model"
   },
+  "c9f8bcb1efad76ed652bdcdf8ee79408c9a206bc491dda73668f4651583c029f": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Escalate past the duck to the devs? Tool name + the confusion, no personal info.",
+    "text": "Escalate past the duck to the devs? Tool name + the confusion, no personal info.",
+    "translation": "要越过小黄鸭，请开发者帮忙吗？只发送工具名称和困惑之处，不包含个人信息。",
+    "origin": "human"
+  },
   "ca1610ff982b34d958c440362461fc4da8f10c4906ad9ef18bf93a5ed83aa258": {
     "pkg": "agent",
     "file": "src/tools/settings.ts",
@@ -51334,6 +51478,15 @@
     "text": "Append-Only:",
     "translation": "仅追加：",
     "origin": "model"
+  },
+  "cdbd61cbb839f5fa4fac168ee4de56005454747fc2934b3d314666c5e31ed4e2": {
+    "pkg": "tui",
+    "file": "src/overlays/hook-selector.ts",
+    "role": "selector:hint",
+    "source": "${editorKeys(\"tui.select.up\", \"tui.select.down\")} navigate  ${formatKeyHint(\"enter\")} select  ${editorKey(\"tui.select.cancel\")} cancel",
+    "text": "__OMP_TOKEN_0__ navigate  __OMP_TOKEN_1__ select  __OMP_TOKEN_2__ cancel",
+    "translation": "__OMP_TOKEN_0__ 移动 · __OMP_TOKEN_1__ 确认 · __OMP_TOKEN_2__ 取消",
+    "origin": "human"
   },
   "cdcb4492e2e53edca1d37bbda762ff133dbbfe85afa37586285432b8782b0637": {
     "pkg": "agent",
@@ -53090,6 +53243,15 @@
     "translation": "… 还有 __OMP_TOKEN_0__ 项",
     "origin": "model"
   },
+  "d463d9cdd9940e9f0335e4cc7ffa3d7d151d775978477024ab5d265f502756b3": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Spill it to the devs? Tool name + the tea, never anything personal.",
+    "text": "Spill it to the devs? Tool name + the tea, never anything personal.",
+    "translation": "要告诉开发者吗？只发送工具名称和问题详情，不包含个人信息。",
+    "origin": "human"
+  },
   "d46f90819c028d8b2b341065411b34ff4731a4a8efc7c21e05f4648bb3a0b382": {
     "pkg": "agent",
     "file": "src/cli/args.ts",
@@ -53530,6 +53692,15 @@
     "text": "Show all",
     "translation": "显示全部",
     "origin": "model"
+  },
+  "d648e65bfb40057c286671d877da2e9e6b7b5c865da2bfaaf3bec7490a47d025": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "🍿 Your agent just watched a tool pull a plot twist nobody asked for.",
+    "text": "🍿 Your agent just watched a tool pull a plot twist nobody asked for.",
+    "translation": "🍿 智能体发现一个工具突然上演了意料之外的剧情。",
+    "origin": "human"
   },
   "d64ef2cdfcb947ca462f332d8cbd0426efc6ca0f058cd2b3a4c7eeee3993b361": {
     "pkg": "agent",
@@ -54232,6 +54403,15 @@
     "text": "Credential removed from __OMP_TOKEN_0__",
     "translation": "凭据已从 __OMP_TOKEN_0__ 移除",
     "origin": "model"
+  },
+  "d8c98bcfbfbab8d59af9db0f340ba81551a214a1d407338d3c672c33009c65a8": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Send the post-mortem to the devs? Tool name + what tanked it, no personal info.",
+    "text": "Send the post-mortem to the devs? Tool name + what tanked it, no personal info.",
+    "translation": "要把问题分析发给开发者吗？只发送工具名称和出错原因，不包含个人信息。",
+    "origin": "human"
   },
   "d8cbb8c2bd9a33693db464f61c27e1ef1c1de53993938b92be6f6fb22e66f173": {
     "pkg": "agent",
@@ -57040,6 +57220,15 @@
     "text": "Let standalone jevify append its hidden bulk-judge classification notice",
     "translation": "让独立的 jevify 附加其隐藏的批量评判分类提示",
     "origin": "seed"
+  },
+  "e40c7346f1949ddc0dd9951921459d773eaf01569a9cd553083dfe90ecf8ef2e": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "🐛 Your agent found a bug. A real one. In a tool.",
+    "text": "🐛 Your agent found a bug. A real one. In a tool.",
+    "translation": "🐛 智能体在一个工具里发现了缺陷，这次是认真的。",
+    "origin": "human"
   },
   "e4135890419764fdd52105933c404e544126c9547dd873ec91306e48f0b3176a": {
     "pkg": "agent",
@@ -60146,6 +60335,15 @@
     "translation": "包含被 .gitignore 排除的文件(ttsr scan)",
     "origin": "seed"
   },
+  "f07b8be61182db49ca648c94d4f8895a522a3bf0aac4440a8046ad680ef6084d": {
+    "pkg": "tui",
+    "file": "src/overlays/hook-selector.ts",
+    "role": "selector:action",
+    "source": "cancel",
+    "text": "cancel",
+    "translation": "取消",
+    "origin": "human"
+  },
   "f0902c0057ecf0026308f0ccd4f331cb4045c31d39526bdf519b2dff9c4b7fcc": {
     "pkg": "tui",
     "file": "src/overlays/btw-history-panel.ts",
@@ -60253,6 +60451,15 @@
     "text": "Early protection",
     "translation": "早期保护",
     "origin": "seed"
+  },
+  "f0f23f0bcccd8cd0d2b9b10dd27cc398b23153c6eb54c70e2c6881d51303cd6c": {
+    "pkg": "agent",
+    "file": "src/modes/interactive-mode.ts",
+    "role": "feedback:consent",
+    "source": "Mail it to the devs? Just the tool name + the grievance, nothing personal.",
+    "text": "Mail it to the devs? Just the tool name + the grievance, nothing personal.",
+    "translation": "要转交给开发者吗？只发送工具名称和问题描述，不包含个人信息。",
+    "origin": "human"
   },
   "f0fb884c74df7c5c092f532172051bd9d04faebd9cc61349906ccd01d67682cf": {
     "pkg": "tui",
@@ -60676,6 +60883,15 @@
     "text": "Dist-tag for the published version",
     "translation": "已发布版本的 Dist-tag",
     "origin": "model"
+  },
+  "f2dbc013e243cb839dd8dcbfd49e384c3254813ab3eff7dff803002be0ab2993": {
+    "pkg": "tui",
+    "file": "src/overlays/hook-selector.ts",
+    "role": "selector:action",
+    "source": "Select",
+    "text": "Select",
+    "translation": "确认",
+    "origin": "human"
   },
   "f2deb89f63d80656f0cdcc710412c9d2c6bee461475e83180bdcd41e943e8ad7": {
     "pkg": "agent",

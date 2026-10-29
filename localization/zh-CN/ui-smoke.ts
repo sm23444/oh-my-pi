@@ -20,6 +20,7 @@ import { CLI_THINKING_LEVELS, getConfiguredThinkingLevelMetadata, parseCliThinki
 import { SettingsSelectorComponent, type SettingsRuntimeContext } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/settings-selector";
 import type { SettingsHost } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/settings-defs";
 import { getKeybindings, setKeybindings } from "./node_modules/@oh-my-pi/pi-tui/src/keybindings";
+import { HookSelectorComponent } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/hook-selector";
 
 function requireChinese(value: string | undefined, surface: string): void {
 	if (!value || !/[\u3400-\u9fff]/.test(value)) throw new Error(`Chinese UI check failed for ${surface}: ${value ?? "missing"}`);
@@ -276,3 +277,35 @@ approvalSelector.handleNativeEvent({ type: "change", key: "", item: "tools.appro
 await Bun.sleep(0);
 if (approvalValues.size || approvalChanges.length !== 2) throw new Error("Clearing approval policies must retain upstream unset behavior");
 process.stdout.write("Settings editor verified: Chinese frame, footer and JSON errors; invalid input rejected; raw policy values saved; clearing unsets.\n");
+
+const consentAnswers: string[] = [];
+let consentCancellations = 0;
+const consentSelector = new HookSelectorComponent(
+	"🍿 智能体发现工具出现了意料之外的情况。\n要向开发者反馈吗？只发送工具名称和问题描述，不包含个人信息。",
+	["Yes", "No"], answer => { consentAnswers.push(answer); }, () => { consentCancellations++; },
+);
+try {
+	const consentFrame = consentSelector.render(160).join("\n");
+	if (/\b(?:Yes|No|navigate|select|cancel)\b/.test(consentFrame) || !consentFrame.includes("是") || !consentFrame.includes("否") || !consentFrame.includes("Enter 确认") || !consentFrame.includes("Esc 取消")) throw new Error("Feedback consent options or keyboard hints remain English");
+	process.stdout.write(`Feedback consent footer: ${consentFrame.split("\n").find(line => line.includes("Enter 确认"))}\n`);
+	for (const picker of [false, true]) {
+		const nativeConsent = JSON.stringify(consentSelector.describe({ supports: (kind: string) => picker && kind === "picker" } as unknown as DescribeContext));
+		if (!/"(?:t|label)":"是"/.test(nativeConsent) || !/"(?:t|label)":"否"/.test(nativeConsent) || /"(?:t|label)":"(?:Yes|No|navigate|select|Select|cancel|Close)"/.test(nativeConsent)) throw new Error("Native feedback consent options or hints remain English");
+	}
+	consentSelector.handleInput("\r");
+	consentSelector.handleInput("\x1b[B");
+	consentSelector.handleInput("\r");
+	consentSelector.handleNativeEvent({ type: "activate", key: "list", item: "0" });
+	consentSelector.handleInput("\x1b");
+	if (JSON.stringify(consentAnswers) !== JSON.stringify(["Yes", "No", "Yes"]) || consentCancellations !== 1) throw new Error("Chinese consent labels must retain original keyboard/pointer answer values and cancel behavior");
+} finally {
+	consentSelector.dispose();
+}
+const customSelector = new HookSelectorComponent("自定义选项", ["Yes", "No", "Later"], () => {}, () => {}, { helpText: "自定义操作说明" });
+try {
+	const customFrame = customSelector.render(100).join("\n");
+	if (!customFrame.includes("Yes") || !customFrame.includes("No") || !customFrame.includes("Later") || !customFrame.includes("自定义操作说明")) throw new Error("Custom selector labels and help must remain unchanged");
+} finally {
+	customSelector.dispose();
+}
+process.stdout.write("Feedback consent verified: Chinese terminal/card/picker labels and hints; original Yes/No callbacks; Escape cancels; custom options preserved.\n");
