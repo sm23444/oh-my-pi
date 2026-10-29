@@ -494,7 +494,7 @@ export class AssistantMessageComponent extends Container {
 		const index = message.content.findIndex(content => content.type === "text" && content.text.length > 0);
 		const block = message.content[index];
 		if (block?.type !== "text") return undefined;
-		return { index, block, split: splitReaction(block.text) };
+		return { index, block, split: splitReaction(block.text, this.#lastUpdateTransient) };
 	}
 
 	/**

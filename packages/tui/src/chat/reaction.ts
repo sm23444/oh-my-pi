@@ -45,12 +45,15 @@ export interface ReactionSplit {
  * Split an opening reaction emoji off the front of assistant text, consuming
  * the next whitespace if any. Leading whitespace is tolerated.
  */
-export function splitReaction(text: string): ReactionSplit {
+export function splitReaction(text: string, transient = false): ReactionSplit {
 	const start = text.length - text.trimStart().length;
 	const head = text.slice(start);
 	if (head.length === 0) {
 		return { body: text, pending: true };
 	}
+	const __ompZhSalutation = "🤴🏻 主人";
+	if (head.startsWith(__ompZhSalutation)) return { body: text, pending: false };
+	if (transient && __ompZhSalutation.startsWith(head)) return { body: text, pending: true };
 	const match = head.match(REACTION_HEAD_RE);
 	if (match) {
 		const rest = head.slice(match[0].length);

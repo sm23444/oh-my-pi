@@ -136,6 +136,18 @@ export function patchDisplayBoundaries(pkg: PackageId, file: string, code: strin
 			["headingStyle(item.label, dimmed)", "headingStyle(__ompZhGroup(item.label), dimmed)"],
 			[/sections\.map\(section => section\.name \|\| ("(?:[^"\\]|\\.)*")\)/g, "sections.map(section => __ompZhGroup(section.name) || $1)"],
 		];
+	} else if (pkg === "tui" && normalized === "src/chat/reaction.ts") {
+		helpers = "";
+		replacements = code.includes("const __ompZhSalutation =") ? [] : [
+			["export function splitReaction(text: string): ReactionSplit {", "export function splitReaction(text: string, transient = false): ReactionSplit {"],
+			["const match = head.match(REACTION_HEAD_RE);", `const __ompZhSalutation = "🤴🏻 主人";
+	if (head.startsWith(__ompZhSalutation)) return { body: text, pending: false };
+	if (transient && __ompZhSalutation.startsWith(head)) return { body: text, pending: true };
+	const match = head.match(REACTION_HEAD_RE);`],
+		];
+	} else if (pkg === "tui" && normalized === "src/chat/assistant-message.ts") {
+		helpers = "";
+		replacements = [["split: splitReaction(block.text)", "split: splitReaction(block.text, this.#lastUpdateTransient)"]];
 	} else if (pkg === "tui" && normalized === "src/status-line/segments.ts") {
 		helpers = thinkingSource;
 		replacements = [

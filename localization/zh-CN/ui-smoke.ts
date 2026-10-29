@@ -21,6 +21,10 @@ import { SettingsSelectorComponent, type SettingsRuntimeContext } from "./node_m
 import type { SettingsHost } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/settings-defs";
 import { getKeybindings, setKeybindings } from "./node_modules/@oh-my-pi/pi-tui/src/keybindings";
 import { HookSelectorComponent } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/hook-selector";
+import type { AssistantMessage } from "@oh-my-pi/pi-ai";
+import { AssistantMessageComponent } from "./node_modules/@oh-my-pi/pi-tui/src/chat/assistant-message";
+import { UserMessageComponent } from "./node_modules/@oh-my-pi/pi-tui/src/chat/user-message";
+import { splitReaction } from "./node_modules/@oh-my-pi/pi-tui/src/chat/reaction";
 
 function requireChinese(value: string | undefined, surface: string): void {
 	if (!value || !/[\u3400-\u9fff]/.test(value)) throw new Error(`Chinese UI check failed for ${surface}: ${value ?? "missing"}`);
@@ -309,3 +313,39 @@ try {
 	customSelector.dispose();
 }
 process.stdout.write("Feedback consent verified: Chinese terminal/card/picker labels and hints; original Yes/No callbacks; Escape cancels; custom options preserved.\n");
+
+function salutationMessage(text: string): AssistantMessage {
+	return {
+		role: "assistant", content: [{ type: "text", text }], api: "anthropic-messages", provider: "ui-smoke", model: "ui-smoke",
+		usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } },
+		stopReason: "stop", timestamp: 0,
+	};
+}
+const salutation = "🤴🏻 主人";
+const salutationReply = `${salutation}，你好！`;
+const salutationUser = new UserMessageComponent("你好");
+const salutationAssistant = new AssistantMessageComponent();
+salutationAssistant.pickReactionTarget([salutationUser]);
+for (let end = 1; end < salutation.length; end++) {
+	const prefix = salutation.slice(0, end);
+	const split = splitReaction(prefix, true);
+	if (split.emoji !== undefined || !split.pending) throw new Error("Streaming salutation must wait for the complete prefix without emitting a reaction");
+	salutationAssistant.updateContent(salutationMessage(prefix), { transient: true });
+	if (Bun.stripANSI(salutationUser.render(100).join("\n")).includes("🤴") || JSON.stringify(salutationUser.describe()).includes("omp.reaction")) throw new Error("Partial salutation must not add a reaction badge to the user message");
+}
+salutationAssistant.updateContent(salutationMessage(salutationReply), { transient: true });
+salutationAssistant.updateContent(salutationMessage(salutationReply));
+if (!Bun.stripANSI(salutationAssistant.render(100).join("\n")).includes(salutationReply) || !JSON.stringify(salutationAssistant.describe()).includes(salutationReply) || JSON.stringify(salutationUser.describe()).includes("omp.reaction")) throw new Error("Full salutation must stay in the assistant's terminal and native reply");
+const replayUser = new UserMessageComponent("历史消息");
+const replayAssistant = new AssistantMessageComponent(salutationMessage(salutationReply));
+replayAssistant.pickReactionTarget([replayUser]);
+if (!Bun.stripANSI(replayAssistant.render(100).join("\n")).includes(salutationReply) || JSON.stringify(replayUser.describe()).includes("omp.reaction")) throw new Error("Rebuilt history must retain the salutation in the reply without a user badge");
+const ordinaryUser = new UserMessageComponent("普通表情回应");
+const ordinaryAssistant = new AssistantMessageComponent();
+ordinaryAssistant.pickReactionTarget([ordinaryUser]);
+ordinaryAssistant.updateContent(salutationMessage("🍿 好的"));
+if (!Bun.stripANSI(ordinaryUser.render(100).join("\n")).includes("🍿") || Bun.stripANSI(ordinaryAssistant.render(100).join("\n")).includes("🍿")) throw new Error("Other opening emoji must retain the original reaction behavior");
+if (splitReaction("🤴🏻").emoji !== "🤴🏻" || splitReaction("🤴🏻 好的", true).emoji !== "🤴🏻") throw new Error("A prince emoji outside the complete salutation must remain a normal reaction");
+const spacedSalutation = ` \n${salutationReply}`;
+if (splitReaction(spacedSalutation).body !== spacedSalutation || splitReaction(spacedSalutation).emoji !== undefined) throw new Error("Leading whitespace must not strip the salutation or alter the original text");
+process.stdout.write("Salutation verified: 🤴🏻 主人 stays in streaming/final/native/rebuilt replies; no user badge; other emoji reactions preserved.\n");
