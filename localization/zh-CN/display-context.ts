@@ -31,6 +31,7 @@ function displayFunction(ancestors: Node[], pkg: PackageId, file: string): boole
 	const identifier = functionName(fn, ancestors[index - 1]);
 	// Parsers, lookup helpers and persisted sentinels are not return sinks.
 	if (file === "src/chat/messages.ts") return identifier === "resolveAbortLabel";
+	if (pkg === "tui" && file === "src/overlays/settings-selector.ts" && identifier === "footerHintText") return true;
 	return /^(?:format|describe|render|build).*(?:Label|Message|Status|Summary|Report|Help|Usage|Text|Description|Title|Hint|Notice|Tooltip|Result|Outcome|Line)$/.test(identifier)
 		|| /^(?:thoughtLabel|noThinkingMessage|runFastCommand|runSlowCommand|applyExtendedContextCommand|applyComputerUseToggle)$/.test(identifier)
 		|| (pkg === "tui" && /^(?:render|describe)(?:[A-Z]|$)/.test(identifier));
@@ -70,6 +71,8 @@ export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: Packag
 		if (parent.type === "ReturnStatement" && parent.argument === child) return displayFunction(ancestors.slice(0, index), pkg, file) ? "display:return" : undefined;
 		if (parent.type === "ArrowFunctionExpression" && parent.body === child) return displayFunction(ancestors.slice(0, index + 1), pkg, file) ? "display:return" : undefined;
 		if (parent.type === "VariableDeclarator" && parent.init === child && ui && file !== "src/chat/messages.ts" && displayVariable(name(parent.id))) return "display:variable";
+		if (parent.type === "VariableDeclarator" && parent.init === child && pkg === "tui" && file === "src/overlays/settings-selector.ts" && ["switchTabs", "nav"].includes(name(parent.id)) && displayFunction(ancestors.slice(0, index), pkg, file)) return "display:variable";
+		if (pkg === "tui" && file === "src/overlays/settings-selector.ts" && parent.type === "NewExpression" && parent.callee.type === "Identifier" && parent.callee.name === "Error" && parent.arguments[0] === child && node.type === "TemplateLiteral" && /^Invalid (?:array|record) JSON for /.test(node.quasis[0].value.cooked ?? "")) return "settings:validation";
 		if (parent.type === "CallExpression" && parent.arguments.some(argument => argument === child)) {
 			const position = parent.arguments.findIndex(argument => argument === child);
 			const callee = parent.callee;
@@ -84,6 +87,7 @@ export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: Packag
 			}
 			if (ui && callee.type === "Identifier") {
 				const method = callee.name;
+				if (pkg === "tui" && file === "src/overlays/settings-selector.ts" && position === 1 && ["topBorder", "overlayCard", "actionHint"].includes(method)) return `settings:${method}`;
 				if (pkg === "tui" && position === 0 && ["text", "span", "plainText", "styledSpans", "compactText", "muted", "heading", "labelled", "toolHead", "noteText", "formatEmptyMessage", "formatErrorMessage", "actionHint"].includes(method)) return `display:${method}`;
 				if (pkg === "tui" && method === "button" && [1, 3].includes(position)) return "display:button";
 				if (pkg === "tui" && method === "actionButton" && position === 0) return "display:button";

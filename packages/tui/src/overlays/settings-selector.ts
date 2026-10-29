@@ -107,15 +107,15 @@ function settingsTabsNode(tabs: readonly Tab[], active: string | undefined): Nat
 /** Footer hints for `mode`, mirroring the ANSI footer line. */
 function settingsHintsNode(mode: SettingsHintMode): NativeNode {
 	const confirmKeys: readonly KeyName[] = actionHint("tui.select.confirm", "")?.keys ?? [];
-	const close = actionHint("tui.select.cancel", "close");
+	const close = actionHint("tui.select.cancel", "关闭");
 	const switchTabs: NativeHint = { keys: ["left", "right"], label: "切换标签页" };
 	let hints: (NativeHint | undefined)[];
 	switch (mode) {
 		case "search":
 			hints = [
-				actionHint("tui.select.confirm", "change"),
+				actionHint("tui.select.confirm", "修改"),
 				{ keys: ["tab"], label: "跳转标签页" },
-				actionHint("tui.select.cancel", "exit search"),
+				actionHint("tui.select.cancel", "退出搜索"),
 			];
 			break;
 		case "plugins":
@@ -123,7 +123,7 @@ function settingsHintsNode(mode: SettingsHintMode): NativeNode {
 			break;
 		case "sections":
 			hints = [
-				actionHint(["tui.select.up", "tui.select.down"], "jump sections"),
+				actionHint(["tui.select.up", "tui.select.down"], "切换分组"),
 				{ keys: ["tab", ...confirmKeys], label: "前往设置" },
 				switchTabs,
 				close,
@@ -703,18 +703,18 @@ export class SettingsSelectorComponent implements Component {
 		const confirm = editorKey("tui.select.confirm");
 		const cancel = editorKey("tui.select.cancel");
 		const tab = formatKeyHint("tab");
-		const switchTabs = `${formatKeyHints(["left", "right"])} to switch tabs`;
+		const switchTabs = `${formatKeyHints(["left", "right"])} 切换标签页`;
 		if (this.#searchList) {
-			return `${confirm} to change · ${tab} to jump tabs · ${cancel} to exit search`;
+			return `${confirm} 修改 · ${tab} 切换标签页 · ${cancel} 退出搜索`;
 		}
 		if (this.#currentTabId === "plugins") {
-			return `${tab} to switch tabs · ${cancel} to close`;
+			return `${tab} 切换标签页 · ${cancel} 关闭`;
 		}
 		if (this.#currentList?.sectionFocused) {
-			return `${editorKeys("tui.select.up", "tui.select.down")} to jump sections · ${tab}/${confirm} to settings · ${switchTabs} · ${cancel} to close`;
+			return `${editorKeys("tui.select.up", "tui.select.down")} 切换分组 · ${tab}/${confirm} 进入设置项 · ${switchTabs} · ${cancel} 关闭`;
 		}
-		const nav = this.#hasSectionJump ? `${tab} to jump sections · ${switchTabs}` : `${tab} to switch tabs`;
-		return `${confirm}/${formatKeyHint("space")} to change · ${nav} · Type to search · ${cancel} to close`;
+		const nav = this.#hasSectionJump ? `${tab} 切换分组 · ${switchTabs}` : `${tab} 切换标签页`;
+		return `${confirm}/${formatKeyHint("space")} 修改 · ${nav} · 输入以搜索 · ${cancel} 关闭`;
 	}
 
 	/** Single-line search banner: accent icon, editable query with live cursor, right-aligned match count. */
@@ -761,7 +761,7 @@ export class SettingsSelectorComponent implements Component {
 		}
 
 		const out: string[] = [];
-		out.push(topBorder(width, "Settings"));
+		out.push(topBorder(width, "设置"));
 		this.#tabRowStart = out.length;
 		this.#tabRowCount = tabLines.length;
 		for (const line of tabLines) {
@@ -1201,7 +1201,7 @@ export class SettingsSelectorComponent implements Component {
 		children.push(memo.hints[mode]);
 
 		if (memo.root && sameItems(memo.root.children, children)) return memo.root.node;
-		const root = overlayCard("omp.overlay.settings", "Settings", children);
+		const root = overlayCard("omp.overlay.settings", "设置", children);
 		memo.root = { children, node: root };
 		return root;
 	}
@@ -1774,19 +1774,19 @@ export class SettingsSelectorComponent implements Component {
 			try {
 				parsed = JSON.parse(value);
 			} catch {
-				throw new Error(`Invalid array JSON for ${path}`);
+				throw new Error(`${path}：请输入有效的 JSON 数组`);
 			}
-			if (!Array.isArray(parsed)) throw new Error(`Invalid array JSON for ${path}`);
+			if (!Array.isArray(parsed)) throw new Error(`${path}：请输入有效的 JSON 数组`);
 			this.#context.settings.set(path, parsed);
 		} else if (schemaType === "record") {
 			let parsed: unknown;
 			try {
 				parsed = JSON.parse(value || "{}");
 			} catch {
-				throw new Error(`Invalid record JSON for ${path}`);
+				throw new Error(`${path}：请输入有效的 JSON 对象（键名需要双引号）`);
 			}
 			if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-				throw new Error(`Invalid record JSON for ${path}`);
+				throw new Error(`${path}：请输入有效的 JSON 对象（键名需要双引号）`);
 			}
 			if (path === "providers.maxInFlightRequests") {
 				parsed = this.#context.settings.validateProviderLimits(parsed);

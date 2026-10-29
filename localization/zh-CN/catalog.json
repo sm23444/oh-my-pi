@@ -6821,6 +6821,15 @@
     "translation": "已截断",
     "origin": "seed"
   },
+  "1c7e8eb67f5d745f20676f5c3417bc2e5eb40c60e8805f71eec81ca89233cb55": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "display:return",
+    "source": "${editorKeys(\"tui.select.up\", \"tui.select.down\")} to jump sections · ${tab}/${confirm} to settings · ${switchTabs} · ${cancel} to close",
+    "text": "__OMP_TOKEN_0__ to jump sections · __OMP_TOKEN_1__/__OMP_TOKEN_2__ to settings · __OMP_TOKEN_3__ · __OMP_TOKEN_4__ to close",
+    "translation": "__OMP_TOKEN_0__ 切换分组 · __OMP_TOKEN_1__/__OMP_TOKEN_2__ 进入设置项 · __OMP_TOKEN_3__ · __OMP_TOKEN_4__ 关闭",
+    "origin": "human"
+  },
   "1c821ac58ebdb9082e2d0b57b0dbb2025242295629ded053bdf3740340e98b67": {
     "pkg": "tui",
     "file": "src/tools/task.ts",
@@ -7826,8 +7835,8 @@
     "role": "field:description",
     "source": "Per-tool approval policies. Set to 'allow' to auto-approve, 'prompt' to require confirmation, or 'deny' to block. Overrides are honored in every approval mode.",
     "text": "Per-tool approval policies. Set to 'allow' to auto-approve, 'prompt' to require confirmation, or 'deny' to block. Overrides are honored in every approval mode.",
-    "translation": "按工具设置的审批策略。设为 'allow' 自动批准,'prompt' 要求确认,或 'deny' 阻止。覆盖在每种审批模式下都生效。",
-    "origin": "seed"
+    "translation": "按工具填写对象，例如 {\"bash\":\"prompt\"} 表示 Bash 每次询问；不要填写 {prompt}。策略值：allow 自动批准、prompt 要求确认、deny 阻止。覆盖值在每种审批模式下均生效。",
+    "origin": "human"
   },
   "20bf841cce7da24d7397feffa2599ad0999680f41cb07fe728babf2d977fb1f8": {
     "pkg": "tui",
@@ -13490,6 +13499,15 @@
     "translation": "高",
     "origin": "seed"
   },
+  "36aae6d84d59c8c7ee913c3699a15bd6da502d2d8c3b2a83ab82ca1d084df51c": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:actionHint",
+    "source": "change",
+    "text": "change",
+    "translation": "修改",
+    "origin": "human"
+  },
   "36b2207dc4948f61a9ec54417afa4648f0b5cd7c11e35af842309273001b4fdb": {
     "pkg": "agent",
     "file": "src/commands/ps.ts",
@@ -13759,6 +13777,15 @@
     "text": "⚠ Server added but not yet connected",
     "translation": "⚠ 服务器已添加，但尚未连接",
     "origin": "model"
+  },
+  "37a26c81f6577aff990d88431676715b3483a5d25a0c7895f1a8657686ecec78": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "display:variable",
+    "source": "${tab} to switch tabs",
+    "text": "__OMP_TOKEN_0__ to switch tabs",
+    "translation": "__OMP_TOKEN_0__ 切换标签页",
+    "origin": "human"
   },
   "37a5fb628f238cb12eca1dfefe99d0d4b51ac40993ef76c1069dcefc50d52c2e": {
     "pkg": "tui",
@@ -21752,6 +21779,15 @@
     "translation": "广播",
     "origin": "seed"
   },
+  "57baea55a203fdc36bb8d8fd5cd13926b865ab3c168005138571df1d642350bc": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:actionHint",
+    "source": "jump sections",
+    "text": "jump sections",
+    "translation": "切换分组",
+    "origin": "human"
+  },
   "57c0b40ddcdd961e73087811da9db320dc8aefad2142fe9d9ebdb54056fe698b": {
     "pkg": "agent",
     "file": "src/cli/ttsr-cli.ts",
@@ -23722,6 +23758,15 @@
     "text": "Enable or disable this marketplace plugin",
     "translation": "启用或禁用此市场插件",
     "origin": "model"
+  },
+  "5f1ee7f0f6200d2d86697d4e40d5565b0b4b1ed2bd1a1bcdf4ee418c5b57da49": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:actionHint",
+    "source": "exit search",
+    "text": "exit search",
+    "translation": "退出搜索",
+    "origin": "human"
   },
   "5f32d4b88946362c7a062e748ed876dbc799b3fb1edea8b40d63466bf92c781d": {
     "pkg": "agent",
@@ -26054,6 +26099,15 @@
     "translation": "  正在渲染示例…",
     "origin": "model"
   },
+  "692675347f043444a58eb7ffcc55e27be272330fc90a35513d475cd68688963f": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:actionHint",
+    "source": "close",
+    "text": "close",
+    "translation": "关闭",
+    "origin": "human"
+  },
   "692ef693e85bdffd3ca106518ef71b463a6a06a5aef9269b3f8c909487c04c86": {
     "pkg": "agent",
     "file": "src/session/settings.ts",
@@ -27439,6 +27493,15 @@
     "text": "Delete word backward",
     "translation": "向后删除单词",
     "origin": "model"
+  },
+  "6f2cd4c00ef516b21b11705a06503087814b25ac5b35e522ec0fa51f4040f113": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "display:return",
+    "source": "${tab} to switch tabs · ${cancel} to close",
+    "text": "__OMP_TOKEN_0__ to switch tabs · __OMP_TOKEN_1__ to close",
+    "translation": "__OMP_TOKEN_0__ 切换标签页 · __OMP_TOKEN_1__ 关闭",
+    "origin": "human"
   },
   "6f3b656cf9abc742bcfa05c30d9bec859699d935df5aed5cc72113f0be3baf2c": {
     "pkg": "tui",
@@ -29222,6 +29285,15 @@
     "translation": "__OMP_TOKEN_0__（当前）",
     "origin": "model"
   },
+  "76968e5902b3c6873f58a435799611520d8b134d15c04ec6d7ae65ba68706a48": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:overlayCard",
+    "source": "Settings",
+    "text": "Settings",
+    "translation": "设置",
+    "origin": "human"
+  },
   "76accf70a292bff8ae3a02d7aae0ff4febba7887b254621c754465f2efb7232b": {
     "pkg": "tui",
     "file": "src/apps/git/sidebar.ts",
@@ -30085,6 +30157,15 @@
     "text": "Plan mode: the __OMP_TOKEN_0__ tool is provided by an extension and cannot submit plans. Disable it to use plan mode.",
     "translation": "计划模式：__OMP_TOKEN_0__ 工具由扩展提供，无法提交计划。请禁用该工具以使用计划模式。",
     "origin": "model"
+  },
+  "79ea2cd9c324163cd9d28bfd6c72964e51cecead9fde5fcead50bfdbbfacc129": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "display:return",
+    "source": "${confirm}/${formatKeyHint(\"space\")} to change · ${nav} · Type to search · ${cancel} to close",
+    "text": "__OMP_TOKEN_0__/__OMP_TOKEN_1__ to change · __OMP_TOKEN_2__ · Type to search · __OMP_TOKEN_3__ to close",
+    "translation": "__OMP_TOKEN_0__/__OMP_TOKEN_1__ 修改 · __OMP_TOKEN_2__ · 输入以搜索 · __OMP_TOKEN_3__ 关闭",
+    "origin": "human"
   },
   "79ecf1fce77618bdde7d710c687d546837994a1fbea41d71ac3520a7f6c7ae9e": {
     "pkg": "tui",
@@ -35440,6 +35521,15 @@
     "text": "Try again",
     "translation": "重试",
     "origin": "model"
+  },
+  "8e07ac55c1fea1a01667313296e18031a01b852d5d2f7deb90595e7ac01b1b4a": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:topBorder",
+    "source": "Settings",
+    "text": "Settings",
+    "translation": "设置",
+    "origin": "human"
   },
   "8e1c7731cdb5399cd7a89b235ef1fb31dc51c59892453881608261b4db80e742": {
     "pkg": "agent",
@@ -49148,6 +49238,15 @@
     "translation": "市场：__OMP_TOKEN_0____OMP_TOKEN_1__",
     "origin": "model"
   },
+  "c58847b15c8e01e25c03cdf11b013abfb166d52e521cd68d9420493a9f4b0c0e": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "display:variable",
+    "source": "${tab} to jump sections · ${switchTabs}",
+    "text": "__OMP_TOKEN_0__ to jump sections · __OMP_TOKEN_1__",
+    "translation": "__OMP_TOKEN_0__ 切换分组 · __OMP_TOKEN_1__",
+    "origin": "human"
+  },
   "c589862c4c029d8ad44d320e364690dd8bea20b8aaea5609f94193586fa3894a": {
     "pkg": "agent",
     "file": "src/modes/controllers/command-controller.ts",
@@ -49687,6 +49786,15 @@
     "text": "The provider didn't finish signing you in.",
     "translation": "提供商未完成您的登录。",
     "origin": "model"
+  },
+  "c754e4f1251eb7873faa23e9a4b6e14a3f740d623dee465355e5babe9d455805": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:validation",
+    "source": "Invalid array JSON for ${path}",
+    "text": "Invalid array __OMP_TOKEN_0__ for __OMP_TOKEN_1__",
+    "translation": "__OMP_TOKEN_1__：请输入有效的 __OMP_TOKEN_0__ 数组",
+    "origin": "human"
   },
   "c75e744c7b2b006332b8dc07fe78365a27f8c5443c4474bfea5331c5251ce23b": {
     "pkg": "agent",
@@ -51064,6 +51172,15 @@
     "text": "Skill listing __OMP_TOKEN_0__ for this session.",
     "translation": "本会话的技能列表已__OMP_TOKEN_0__。",
     "origin": "model"
+  },
+  "cd0f1af0ff8a1a26e4b6fd19fe656ecbbb8dc4b7e64e42457179c32afa323989": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "display:variable",
+    "source": "${formatKeyHints([\"left\", \"right\"])} to switch tabs",
+    "text": "__OMP_TOKEN_0__ to switch tabs",
+    "translation": "__OMP_TOKEN_0__ 切换标签页",
+    "origin": "human"
   },
   "cd0fc5c3e05296a0f35ddea810eeb90aceb2a423ccf71e586f282928497587ce": {
     "pkg": "agent",
@@ -54367,6 +54484,15 @@
     "text": "filter",
     "translation": "筛选",
     "origin": "model"
+  },
+  "d9b2550e0374f9d24f3fcc792ab4da82beee1da35754c0bd4a1abedee4cf38b2": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "display:return",
+    "source": "${confirm} to change · ${tab} to jump tabs · ${cancel} to exit search",
+    "text": "__OMP_TOKEN_0__ to change · __OMP_TOKEN_1__ to jump tabs · __OMP_TOKEN_2__ to exit search",
+    "translation": "__OMP_TOKEN_0__ 修改 · __OMP_TOKEN_1__ 切换标签页 · __OMP_TOKEN_2__ 退出搜索",
+    "origin": "human"
   },
   "d9c6dc7e9a1fbd0130f9f2e0b3a76d0b3401ccd5d5874575197c2e23882b31dd": {
     "pkg": "agent",
@@ -63303,6 +63429,15 @@
     "source": "Cancel autocomplete / interrupt active work",
     "text": "Cancel autocomplete / interrupt active work",
     "translation": "取消自动补全／中断当前任务",
+    "origin": "human"
+  },
+  "fcb2dd5203a66aedde52a04ad4c1a5e0bcddcaae0a301d4cd8de4f28ffb43a92": {
+    "pkg": "tui",
+    "file": "src/overlays/settings-selector.ts",
+    "role": "settings:validation",
+    "source": "Invalid record JSON for ${path}",
+    "text": "Invalid record __OMP_TOKEN_0__ for __OMP_TOKEN_1__",
+    "translation": "__OMP_TOKEN_1__：请输入有效的 __OMP_TOKEN_0__ 对象（键名需要双引号）",
     "origin": "human"
   },
   "fcb5bb8b6285e0f5737bc65eccaca0e1bda84f3ea441241124c01dca9a9cfc8b": {

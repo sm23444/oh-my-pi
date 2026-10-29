@@ -300,7 +300,7 @@ export const cfgToolsApproval = register({
 		group: "Approvals",
 		label: "工具审批策略",
 		description:
-			"按工具设置的审批策略。设为 'allow' 自动批准,'prompt' 要求确认,或 'deny' 阻止。覆盖在每种审批模式下都生效。",
+			"按工具填写对象，例如 {\"bash\":\"prompt\"} 表示 Bash 每次询问；不要填写 {prompt}。策略值：allow 自动批准、prompt 要求确认、deny 阻止。覆盖值在每种审批模式下均生效。",
 	},
 });
 

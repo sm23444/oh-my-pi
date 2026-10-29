@@ -17,6 +17,8 @@ import { getAllSettingDefs, getSettingsForTab, SETTING_TABS, TAB_GROUPS, type Se
 import { describeSegment, renderSegment, thinkingLevelWord, type SegmentContext } from "./node_modules/@oh-my-pi/pi-tui/src/status-line/segments";
 import { thinkingLevelToken } from "./node_modules/@oh-my-pi/pi-tui/src/theme/theme-class";
 import { CLI_THINKING_LEVELS, getConfiguredThinkingLevelMetadata, parseCliThinkingLevel, parseConfiguredThinkingLevel, parseThinkingLevel } from "./node_modules/@oh-my-pi/pi-tui/src/thinking";
+import { SettingsSelectorComponent, type SettingsRuntimeContext } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/settings-selector";
+import type { SettingsHost } from "./node_modules/@oh-my-pi/pi-tui/src/overlays/settings-defs";
 
 function requireChinese(value: string | undefined, surface: string): void {
 	if (!value || !/[\u3400-\u9fff]/.test(value)) throw new Error(`Chinese UI check failed for ${surface}: ${value ?? "missing"}`);
@@ -207,3 +209,51 @@ const zshCompletion = generateCompletion("zsh",completionSpec);
 if (!zshCompletion.includes("[显示帮助]") || !zshCompletion.includes("[显示版本]")) throw new Error("Generated zsh help descriptions remain English");
 if (!generateCompletion("bash",completionSpec).includes("session")) throw new Error("Generated bash command completion changed");
 process.stdout.write("Shell completion verified: executable fish keywords, command tokens and Chinese descriptions.\n");
+
+// Exercise the complete settings overlay, including the text editor from the reported screenshot.
+const approvalValues = new Map<string, unknown>();
+const approvalChanges: [string, unknown][] = [];
+const approvalHost: SettingsHost = {
+	entries: entries.filter(entry => entry.path === "tools.approval"),
+	get: path => approvalValues.get(path) ?? {},
+	set: (path, value) => { approvalValues.set(path, value); },
+	unset: path => { approvalValues.delete(path); },
+	normalizeProviderLimits: () => ({}),
+	validateProviderLimits: () => ({}),
+};
+const approvalContext = {
+	settings: approvalHost, plugins: {}, availableThinkingLevels: [], thinkingLevel: undefined, availableThemes: [], providers: [],
+} as unknown as SettingsRuntimeContext;
+const approvalSelector = new SettingsSelectorComponent(approvalContext, { onChange: (path, value) => { approvalChanges.push([path, value]); }, onCancel: () => {} });
+approvalSelector.handleNativeEvent({ type: "action", key: "", act: "page", value: "interaction" });
+const approvalFrame = approvalSelector.render(140).join("\n");
+if (!approvalFrame.includes("设置") || !approvalFrame.includes("切换标签页") || /Settings|to change|to jump sections|to switch tabs|Type to search|to close/.test(approvalFrame)) throw new Error("Settings frame title or footer remains English");
+const approvalNative = JSON.stringify(approvalSelector.describe({ supports: () => false } as unknown as DescribeContext));
+if (approvalNative.includes('"Settings"')) throw new Error("Native settings frame title remains English");
+const navigationSelector = new SettingsSelectorComponent({
+	...approvalContext,
+	settings: { ...approvalHost, entries, get: path => entries.find(entry => entry.path === path)?.defaultValue },
+}, { onChange: () => { throw new Error("Footer navigation must not change settings"); }, onCancel: () => {} });
+navigationSelector.handleNativeEvent({ type: "action", key: "", act: "page", value: "interaction" });
+const navigationFooter = navigationSelector.render(160).at(-2) ?? "";
+if (!navigationFooter.includes("切换分组") || !navigationFooter.includes("输入以搜索") || /to change|to jump sections|to switch tabs|Type to search|to close/.test(navigationFooter)) throw new Error("Settings navigation footer remains English");
+navigationSelector.handleInput("\t");
+const sectionFooter = navigationSelector.render(160).at(-2) ?? "";
+if (!sectionFooter.includes("进入设置项") || !sectionFooter.includes("切换标签页") || /to jump sections|to settings|to close/.test(sectionFooter)) throw new Error("Section focus footer remains English");
+navigationSelector.handleInput("\t");
+navigationSelector.handleInput("审批");
+const searchFooter = navigationSelector.render(160).at(-2) ?? "";
+if (!searchFooter.includes("退出搜索") || !searchFooter.includes("切换标签页") || /to change|to jump tabs|to exit search/.test(searchFooter)) throw new Error("Settings search footer remains English");
+navigationSelector.handleInput("\x1b");
+if (!(navigationSelector.render(160).at(-2) ?? "").includes("输入以搜索")) throw new Error("Closing search must restore the settings navigation footer");
+approvalSelector.handleNativeEvent({ type: "change", key: "", item: "tools.approval", value: "{prompt}" });
+await Bun.sleep(0);
+const approvalError = approvalSelector.render(140).join("\n");
+if (!approvalError.includes("请输入有效的 JSON 对象") || !approvalError.includes("tools.approval") || !approvalError.includes('{"bash":"prompt"}') || approvalChanges.length || approvalValues.size) throw new Error("Invalid approval JSON must show Chinese guidance without persisting changes");
+approvalSelector.handleNativeEvent({ type: "change", key: "", item: "tools.approval", value: '{"bash":"prompt","edit":"deny","read":"allow"}' });
+await Bun.sleep(0);
+if (JSON.stringify(approvalValues.get("tools.approval")) !== JSON.stringify({ bash: "prompt", edit: "deny", read: "allow" }) || approvalChanges.length !== 1) throw new Error("Approval policy JSON values changed during persistence");
+approvalSelector.handleNativeEvent({ type: "change", key: "", item: "tools.approval", value: "" });
+await Bun.sleep(0);
+if (approvalValues.size || approvalChanges.length !== 2) throw new Error("Clearing approval policies must retain upstream unset behavior");
+process.stdout.write("Settings editor verified: Chinese frame, footer and JSON errors; invalid input rejected; raw policy values saved; clearing unsets.\n");
