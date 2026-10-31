@@ -190,3 +190,14 @@ test("feedback consent variants translate without changing answer values or unre
 	const result = new Function(`${code}; return [Feedback.prompt(0), Feedback.prompt(1), Feedback.accepted("Yes"), Feedback.accepted("No")];`)();
 	expect(result).toEqual([["工具出现了意料之外的情况。", "要发送工具名称和问题吗？", "Yes", "No"], ["工具需要检查。", "要反馈问题吗？", "Yes", "No"], true, false]);
 });
+
+test("session lease stdout keeps tab-separated status keys while stderr and help translate", () => {
+	const source = 'const command={description:"Inspect session ownership"};function run(report){for(const id of report.held)process.stdout.write(`held\\t${id}\\n`);for(const id of report.unknown)process.stdout.write(`unknown\\t${id}\\n`);process.stderr.write("Session inspection failed");}';
+	const code = translate(source, "agent", "src/commands/session.ts", {"Inspect session ownership":"检查会话归属","Session inspection failed":"会话检查失败"});
+	const stdout: string[] = [];
+	const stderr: string[] = [];
+	const description = new Function("process", "report", `${code};run(report);return command.description;`)({stdout:{write:(text: string)=>stdout.push(text)},stderr:{write:(text: string)=>stderr.push(text)}},{held:["session-a"],unknown:["session-b"]});
+	expect(stdout.join("")).toBe("held\tsession-a\nunknown\tsession-b\n");
+	expect(stderr).toEqual(["会话检查失败"]);
+	expect(description).toBe("检查会话归属");
+});

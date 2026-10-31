@@ -1,6 +1,7 @@
 /**
  * Automatic session-title settings: which generator names a session, how its
- * card icon shows, and whether a todo replan refreshes it.
+ * card icon shows, and what refreshes it: a todo replan, or the judge finding
+ * it stale after a run of operator prompts since it last changed.
  */
 import { register } from "../config/registry";
 
@@ -62,5 +63,25 @@ export const cfgTitleRefreshOnReplan = register({
 		group: "Modes",
 		label: "重新规划时刷新标题",
 		description: "在 todo init 重新规划后刷新生成的会话标题,除非标题由用户设置",
+	},
+});
+
+export const cfgTitleRefreshAfterPrompts = register({
+	id: "title.refreshAfterPrompts",
+	type: "number",
+	default: 0,
+	ui: {
+		tab: "tasks",
+		group: "Modes",
+		label: "按提问次数刷新标题",
+		description:
+			"每收到指定次数的用户提问后，请评判模型检查自动生成的会话标题是否仍符合对话内容；若不符合，则重新生成",
+		options: [
+			{ value: "0", label: "关闭", description: "默认" },
+			{ value: "1", label: "每次提问后" },
+			{ value: "3", label: "每 3 次提问后" },
+			{ value: "5", label: "每 5 次提问后" },
+			{ value: "10", label: "每 10 次提问后" },
+		],
 	},
 });

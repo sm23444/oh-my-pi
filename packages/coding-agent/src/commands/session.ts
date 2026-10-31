@@ -1,17 +1,20 @@
 /**
- * Hand a session to another machine.
+ * Hand a session to another machine, or check who owns it.
  *
  * `omp session pack <session> <out.tar>` writes a self-contained archive,
  * `omp session unpack <archive.tar> --cwd <dir>` lands it in `<dir>`'s session
- * directory (printing the session file path as the only stdout line), and
+ * directory (printing the session file path as the only stdout line),
  * `omp session moved <session> --to <label>` marks the copy left behind stale
- * so resuming it forks instead of continuing it.
+ * so resuming it forks instead of continuing it, and
+ * `omp session lease --json -- <id>...` reports which sessions a running omp owns
+ * without taking their ownership leases.
  */
 import chalk from "@oh-my-pi/pi-utils/chalk";
 import { Args, CliUsageError, Command, Flags } from "@oh-my-pi/pi-utils/cli";
 import { sessionHelp as commandHelp } from "../cli/command-help";
 import { resolveSessionFileArg } from "../cli/session-arg";
 import { SessionMoveRefusedError } from "../session/session-manager";
+import { probeSessionLeases } from "../session/session-storage";
 import {
 	markSessionMoved,
 	packSession,
@@ -20,13 +23,14 @@ import {
 	type UnpackMode,
 } from "../session/session-transfer";
 
-const ACTIONS = ["pack", "unpack", "moved"] as const;
+const ACTIONS = ["pack", "unpack", "moved", "lease"] as const;
 type SessionAction = (typeof ACTIONS)[number];
 
 const USAGE: Record<SessionAction, string> = {
 	pack: "omp session pack <session> <out.tar>",
 	unpack: "omp session unpack <archive.tar> --cwd <dir>",
 	moved: "omp session moved <session> --to <label>",
+	lease: "omp session lease [--json] -- <session-id>...",
 };
 
 const UNPACK_NOTE: Record<UnpackMode, string> = {
@@ -39,17 +43,32 @@ function isSessionAction(value: string): value is SessionAction {
 	return ACTIONS.some(action => action === value);
 }
 
+/**
+ * Probe each id's ownership lease without taking it. JSON consumers (omp-web)
+ * get `{held, unknown}`; ids in neither list are free, including ids that name
+ * no session.
+ */
+function printSessionLeases(sessionIds: string[], json: boolean): void {
+	const report = probeSessionLeases(sessionIds);
+	if (json) {
+		process.stdout.write(`${JSON.stringify(report)}\n`);
+		return;
+	}
+	for (const id of report.held) process.stdout.write(`held\t${id}\n`);
+	for (const id of report.unknown) process.stdout.write(`unknown\t${id}\n`);
+}
+
 export default class Session extends Command {
 	static description = commandHelp.description;
 
 	static args = {
 		action: Args.string({
-			description: "pack、unpack 或 moved",
+			description: "操作：pack、unpack、moved 或 lease",
 			required: true,
 			options: ACTIONS,
 		}),
 		source: Args.string({
-			description: "会话 .jsonl 路径或 ID（pack、moved）；归档路径（unpack）",
+			description: "会话 .jsonl 路径或 ID（pack、moved）；归档路径（unpack）；会话 ID（lease）",
 			required: false,
 		}),
 		output: Args.string({
@@ -61,12 +80,14 @@ export default class Session extends Command {
 	static flags = {
 		cwd: Flags.string({ description: "此计算机上会话继续所在的目录（unpack）" }),
 		to: Flags.string({ description: "会话去了哪里，e.g。机器名称（已移动）" }),
+		json: Flags.boolean({ description: "以 JSON 格式输出 {held, unknown} 会话 ID 列表（lease）" }),
 	};
 
 	static examples = [
 		"# Pack a session with its artifacts and image blobs\n  omp session pack ~/.omp/agent/sessions/<project>/<file>.jsonl /tmp/session.tar",
 		"# Unpack it on another machine; prints the session file path\n  omp session unpack /tmp/session.tar --cwd ~/src/project",
 		"# Mark the local copy stale; resuming it later forks it\n  omp session moved <file>.jsonl --to cloud",
+		"# List which of these sessions a running omp owns, without taking ownership (`--` keeps ids starting with `-` from parsing as options)\n  omp session lease --json -- <id> <id>",
 	];
 
 	async run(): Promise<void> {
@@ -74,6 +95,16 @@ export default class Session extends Command {
 		const action = args.action ?? "";
 		if (!isSessionAction(action)) throw new CliUsageError(`Unknown action: ${action}`);
 		const usage = USAGE[action];
+		if (action === "lease") {
+			if (flags.cwd !== undefined || flags.to !== undefined) {
+				throw new CliUsageError(`--cwd and --to do not apply to lease. Usage: ${usage}`);
+			}
+			const sessionIds = argv.slice(1);
+			if (sessionIds.length === 0) throw new CliUsageError(`Missing session id. Usage: ${usage}`);
+			printSessionLeases(sessionIds, flags.json === true);
+			return;
+		}
+		if (flags.json) throw new CliUsageError(`--json only applies to lease. Usage: ${usage}`);
 		if (argv.length > (action === "pack" ? 3 : 2)) {
 			throw new CliUsageError(`Unexpected argument "${argv.at(-1)}". Usage: ${usage}`);
 		}

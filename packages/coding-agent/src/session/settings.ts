@@ -22,6 +22,7 @@ import {
 import { DEFAULT_WEB_SEARCH_TIMEOUT_SECONDS, MAX_WEB_SEARCH_TIMEOUT_SECONDS } from "../web/search/types";
 import { DEFAULT_USAGE_RESERVE_PCT } from "@oh-my-pi/pi-ai/auth-storage";
 import { configureProviderStoreResponses } from "@oh-my-pi/pi-ai/providers/openai-responses-state";
+import { configureCodexAccessPrograms } from "@oh-my-pi/pi-ai/providers/openai-codex/access-programs";
 import { configureProviderMaxInFlightRequests } from "@oh-my-pi/pi-ai/stream";
 import { THINKING_EFFORTS } from "@oh-my-pi/pi-catalog/effort";
 import { formatKeyHint } from "@oh-my-pi/pi-tui/app-keybindings";
@@ -1199,6 +1200,22 @@ export const cfgProvidersMuseCodeStoreResponses = register({
 // Process-wide too, so side requests that call `completeSimple`/`streamSimple`
 // directly (titles, commit messages, memories) follow the setting.
 effect(cfgProvidersMuseCodeStoreResponses, enabled => configureProviderStoreResponses({ "muse-code": enabled }));
+
+export const cfgProvidersOpenaiCodexDaybreak = register({
+	id: "providers.openai-codex.daybreak",
+	type: "boolean",
+	default: true,
+	ui: {
+		tab: "providers",
+		group: "Protocol",
+		label: "Codex Daybreak Blue 计划",
+		description:
+			"为符合条件的 ChatGPT 账号自动申请 Daybreak Blue 网络安全访问计划。OpenAI 可能使用 Daybreak Blue 会话中的内容改进模型。此设置不适用于专用 Daybreak Blue 模型（gpt-daybreak-blue-*），这些模型仍可能以 Daybreak 会话运行。",
+	},
+});
+// Sessions pass their own value per request; this process-wide default covers
+// callers without a session stream function (titles, commit messages, memories).
+effect(cfgProvidersOpenaiCodexDaybreak, enabled => configureCodexAccessPrograms(enabled));
 
 export const cfgProvidersCacheRetention = register({
 	id: "providers.cacheRetention",

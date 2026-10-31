@@ -131,7 +131,8 @@ export const sayHelp = {
 export const searchHelp = { description: "测试网页搜索提供商" } satisfies CommandMetadata;
 
 export const sessionHelp = {
-	description: "将会话移交到另一台机器：打包、解包或将本地副本标记为已移动",
+	description:
+		"将会话移交给另一台机器（pack、unpack、moved），或检查运行中的 omp 持有哪些会话（lease）",
 } satisfies CommandMetadata;
 
 export const shareHelp = {
