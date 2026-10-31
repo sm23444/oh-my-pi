@@ -2366,6 +2366,15 @@
     "translation": "(未命名)",
     "origin": "model"
   },
+  "0aa17f8baaaed8bea9ab49ed80c0bc8471f25fda22f6e0329c57c249653e2f7d": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:label",
+    "source": "Refresh Title After Prompts",
+    "text": "Refresh Title After Prompts",
+    "translation": "按提问次数刷新标题",
+    "origin": "human"
+  },
   "0aa77b07a0b2f341aac3114c616e0141118088b5a90a8ece06ab1b37bd697410": {
     "pkg": "tui",
     "file": "src/tools/vibe.ts",
@@ -2662,6 +2671,15 @@
     "text": "GitHub Gist",
     "translation": "GitHub Gist 代码片段",
     "origin": "model"
+  },
+  "0baf48b894f4349bf38778c70808745b2ca71fce831d729ae5d20bb5d2f4bfae": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:label",
+    "source": "Every 3 prompts",
+    "text": "Every 3 prompts",
+    "translation": "每 3 次提问后",
+    "origin": "human"
   },
   "0bb77c923d10f4e3ebfcd659f0bd1e1cfa5c776c2c3b2277e12118f61940b4ec": {
     "pkg": "agent",
@@ -6605,6 +6623,15 @@
     "translation": "退出 __OMP_TOKEN_0__",
     "origin": "model"
   },
+  "1b8aa45cdf2c264122234eee69ac4fbef5a474a64a491f3a12cf88d60e8f938a": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:label",
+    "source": "Every 10 prompts",
+    "text": "Every 10 prompts",
+    "translation": "每 10 次提问后",
+    "origin": "human"
+  },
   "1b8dd3c517cee73e5941884a66d4acdf063ad640b1269a80adc41a894c72e070": {
     "pkg": "agent",
     "file": "src/session/settings.ts",
@@ -7116,6 +7143,15 @@
     "source": "Config",
     "text": "Config",
     "translation": "配置",
+    "origin": "human"
+  },
+  "1da33520021a86dfd9069b78c222d16621b74f9dd65bca555160aa2389faab93": {
+    "pkg": "agent",
+    "file": "src/commands/session.ts",
+    "role": "field:description",
+    "source": "Print {held, unknown} session id lists as JSON (lease)",
+    "text": "Print {held, unknown} session id lists as __OMP_TOKEN_0__ (lease)",
+    "translation": "以 __OMP_TOKEN_0__ 格式输出 {held, unknown} 会话 ID 列表（lease）",
     "origin": "human"
   },
   "1da7477dda6b190964bddd769c47dfd1a64c951224a7a82b0780e26ace2cbef6": {
@@ -9854,6 +9890,15 @@
     "translation": " | 运行基线",
     "origin": "model"
   },
+  "282094ba5d3a97eef9108caf5d493f98bf9e5172a8128926610b3a44a376bed7": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:label",
+    "source": "Every prompt",
+    "text": "Every prompt",
+    "translation": "每次提问后",
+    "origin": "human"
+  },
   "282219b6482b3c48ce7a25096b3b7dac9563263a415ddb266ac707992bc82482": {
     "pkg": "agent",
     "file": "src/modes/controllers/mcp-command-controller.ts",
@@ -10465,6 +10510,15 @@
     "text": "Skip welcome screen and startup status messages",
     "translation": "跳过欢迎界面和启动状态消息",
     "origin": "seed"
+  },
+  "2a6224f89117872cb0af4cc5a7288ef20a998320cf97d66eece92c2fe6637678": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:description",
+    "source": "Every this many operator prompts, ask the judge model whether a generated session title still fits the conversation, and regenerate it if not",
+    "text": "Every this many operator prompts, ask the judge model whether a generated session title still fits the conversation, and regenerate it if not",
+    "translation": "每收到指定次数的用户提问后，请评判模型检查自动生成的会话标题是否仍符合对话内容；若不符合，则重新生成",
+    "origin": "human"
   },
   "2a676f038e544fd2af6c20a14d57838636483d5855dff95225172ae588388439": {
     "pkg": "tui",
@@ -28295,6 +28349,15 @@
     "translation": "已达到限制；请缩小路径范围或使用跳过",
     "origin": "model"
   },
+  "717d2777c58898917089d88c1431d32f17a761c6e5224bd4b68d70467b85e3ff": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:description",
+    "source": "Default",
+    "text": "Default",
+    "translation": "默认",
+    "origin": "seed"
+  },
   "71956b891ef7f6f8e43df7a5ebf8f323c238c335df0f53fd34380c675bb0a5bb": {
     "pkg": "tui",
     "file": "src/overlays/settings-selector.ts",
@@ -34757,6 +34820,15 @@
     "translation": "审阅生成的智能体",
     "origin": "model"
   },
+  "89fe0c3fe0840500d97bcfedd0b5c12d86335d069fe7a587406715b27c6af8cc": {
+    "pkg": "agent",
+    "file": "src/commands/session.ts",
+    "role": "field:description",
+    "source": "Session .jsonl path or id (pack, moved); archive path (unpack); session ids (lease)",
+    "text": "Session .jsonl path or id (pack, moved); archive path (unpack); session ids (lease)",
+    "translation": "会话 .jsonl 路径或 ID（pack、moved）；归档路径（unpack）；会话 ID（lease）",
+    "origin": "human"
+  },
   "89fe3baec82aaf4c02345e8d5ea145e535c715a7837acba50607756e191c8fbc": {
     "pkg": "agent",
     "file": "src/slash-commands/helpers/usage-report.ts",
@@ -35899,6 +35971,15 @@
     "text": "## Jobs",
     "translation": "## 作业",
     "origin": "model"
+  },
+  "8e6266de4700a14266bc9188aaa3874721888627270a4044fbc6a89072280acc": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:label",
+    "source": "Every 5 prompts",
+    "text": "Every 5 prompts",
+    "translation": "每 5 次提问后",
+    "origin": "human"
   },
   "8e7cc41fc9ebe6436cccdfd807bcd3839831f11b05976d9d2930618ee0e46972": {
     "pkg": "agent",
@@ -37844,6 +37925,15 @@
     "translation": "2 行",
     "origin": "seed"
   },
+  "96790e6064e04dc04cb2d01e0fdbc3cdef5023239f13eb549d079eb41d3cbe65": {
+    "pkg": "agent",
+    "file": "src/session/settings.ts",
+    "role": "field:label",
+    "source": "Codex Daybreak Blue",
+    "text": "Codex Daybreak Blue",
+    "translation": "Codex Daybreak Blue 计划",
+    "origin": "human"
+  },
   "9691edd2c9cf2eb78e8d9c85d64b507764725d346a77eb47be8c4f9425802a8c": {
     "pkg": "agent",
     "file": "src/cli/command-help.ts",
@@ -38517,6 +38607,15 @@
     "source": "Report",
     "text": "Report",
     "translation": "报告",
+    "origin": "human"
+  },
+  "9934bada314c5ef3b135ccb4ffd58877099bd2cc7d3c8c9f20a3fda3a62dceef": {
+    "pkg": "agent",
+    "file": "src/session/settings.ts",
+    "role": "field:description",
+    "source": "Automatically request the Daybreak Blue cyber access program on ChatGPT accounts eligible for it. OpenAI may use content from Daybreak Blue sessions to improve its models. Does not cover dedicated Daybreak Blue models (gpt-daybreak-blue-*), which may still run as Daybreak sessions.",
+    "text": "Automatically request the Daybreak Blue cyber access program on ChatGPT accounts eligible for it. OpenAI may use content from Daybreak Blue sessions to improve its models. Does not cover dedicated Daybreak Blue models (gpt-daybreak-blue-*), which may still run as Daybreak sessions.",
+    "translation": "为符合条件的 ChatGPT 账号自动申请 Daybreak Blue 网络安全访问计划。OpenAI 可能使用 Daybreak Blue 会话中的内容改进模型。此设置不适用于专用 Daybreak Blue 模型（gpt-daybreak-blue-*），这些模型仍可能以 Daybreak 会话运行。",
     "origin": "human"
   },
   "99368334a04dd63ef98e68145892ba1b83ec227d906016b8628217407c1b8368": {
@@ -44333,6 +44432,15 @@
     "translation": "网页搜索",
     "origin": "seed"
   },
+  "b072421559f5e306f17bd02789fe276aa80a4cab73ad8e06763a5233ccd7ec7b": {
+    "pkg": "agent",
+    "file": "src/commands/session.ts",
+    "role": "field:description",
+    "source": "pack, unpack, moved, or lease",
+    "text": "pack, unpack, moved, or lease",
+    "translation": "操作：pack、unpack、moved 或 lease",
+    "origin": "human"
+  },
   "b0745402a8a38fd7c1b9ef5ca47b808de518556446e5db32dc9b6c1c264232ce": {
     "pkg": "agent",
     "file": "src/advisor/settings.ts",
@@ -45646,6 +45754,15 @@
     "text": "Path: ",
     "translation": "路径：",
     "origin": "model"
+  },
+  "b5b65f357acfa5e8a6e73a65592a2be7d740cbffff537894c40c9e32d7664c3d": {
+    "pkg": "agent",
+    "file": "src/cli/command-help.ts",
+    "role": "field:description",
+    "source": "Hand a session to another machine (pack, unpack, moved) or check which sessions a running omp owns (lease)",
+    "text": "Hand a session to another machine (pack, unpack, moved) or check which sessions a running omp owns (lease)",
+    "translation": "将会话移交给另一台机器（pack、unpack、moved），或检查运行中的 omp 持有哪些会话（lease）",
+    "origin": "human"
   },
   "b5be325bfd87910443291c6e456505388c0ac87fc965dccb26591214c5cee405": {
     "pkg": "agent",
@@ -49247,6 +49364,15 @@
     "translation": "启用 __OMP_TOKEN_0__ 服务器",
     "origin": "model"
   },
+  "c3bf530dcaeac1b12f289930aeb6c768bcfcea2dffdc7d9b35361dc951c31d45": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-lifecycle.ts",
+    "role": "call:showWarning",
+    "source": "Conversation changed before /compact ran; returned it to the editor",
+    "text": "Conversation changed before __OMP_TOKEN_0__ ran; returned it to the editor",
+    "translation": "执行 __OMP_TOKEN_0__ 前对话已发生变化，命令已放回编辑器",
+    "origin": "human"
+  },
   "c3c09dcc9d13a3b476cd96e2ce8a70e8ada09df7d68d402b0dd16106866329c7": {
     "pkg": "agent",
     "file": "src/cli/setup-cli.ts",
@@ -52766,6 +52892,15 @@
     "translation": "输入以筛选",
     "origin": "human"
   },
+  "d1114fa1e9a26d7a8b0f508cf995ee99f23c612f03a6f4b4c511da59a7bb3403": {
+    "pkg": "agent",
+    "file": "src/slash-commands/builtin-lifecycle.ts",
+    "role": "call:showStatus",
+    "source": "Queued compaction for when the agent yields",
+    "text": "Queued compaction for when the agent yields",
+    "translation": "已将上下文压缩加入队列，将在智能体交出控制权时执行",
+    "origin": "human"
+  },
   "d115885339c49ab1334a58b7ef9f325b36397722952900e8b70b6e04c07bd480": {
     "pkg": "agent",
     "file": "src/task/settings.ts",
@@ -53350,6 +53485,15 @@
     "text": "Unknown subcommand: __OMP_TOKEN_0__. Type __OMP_TOKEN_1__ help for usage.",
     "translation": "未知子命令：__OMP_TOKEN_0__。请输入 __OMP_TOKEN_1__ help 查看用法。",
     "origin": "model"
+  },
+  "d37d7a7ce8d8ece770b60112ff86650a14afd2a7ec1bb9a5aa66c17a66c48ee5": {
+    "pkg": "agent",
+    "file": "src/utils/title-settings.ts",
+    "role": "field:label",
+    "source": "Off",
+    "text": "Off",
+    "translation": "关闭",
+    "origin": "seed"
   },
   "d3821cab433647fcd51c7ce2cb9ee84600f5de8af3bb11f2cd66235692a8ee94": {
     "pkg": "tui",
@@ -61297,6 +61441,15 @@
     "text": "Leave collab: not in collab",
     "translation": "离开协作：不在协作中",
     "origin": "model"
+  },
+  "f24e09f37f027aec70ebbe85baecf27df72357d1026aeabc4fb691f94ec46334": {
+    "pkg": "agent",
+    "file": "src/modes/controllers/command-controller.ts",
+    "role": "call:showStatus",
+    "source": "Skipped queued compaction: context is already compacting",
+    "text": "Skipped queued compaction: context is already compacting",
+    "translation": "已跳过队列中的压缩请求：上下文正在压缩",
+    "origin": "human"
   },
   "f26fdd81c09a21f96363414809183516eefd024fe61345efdb78daf431486935": {
     "pkg": "agent",

@@ -82,7 +82,9 @@ export function additionalDisplayRole(node: Node, ancestors: Node[], pkg: Packag
 				const method = name(callee.property);
 				const owner = name(callee.object);
 				if (ui && ((["fg", "bg"].includes(method) && position === 1) || (["bold", "italic", "dim", "strikethrough"].includes(method) && position === 0)) && (pkg === "tui" || /theme|chalk/i.test(owner))) return `theme:${method}`;
-				if (ui && callee.object.type === "MemberExpression" && !callee.object.computed && ["stdout", "stderr"].includes(name(callee.object.property)) && method === "write" && position === 0) return "display:stream";
+				// Session stdout is a machine-readable path or lease report; stderr remains display text.
+				const sessionStdout = pkg === "agent" && file === "src/commands/session.ts" && callee.object.type === "MemberExpression" && name(callee.object.property) === "stdout";
+				if (ui && !sessionStdout && callee.object.type === "MemberExpression" && !callee.object.computed && ["stdout", "stderr"].includes(name(callee.object.property)) && method === "write" && position === 0) return "display:stream";
 				if (position === 0 && ["showStatus", "showInfo", "showWarning", "showError", "showSuccess"].includes(method)) return `call:${method}`;
 				if (position === 0 && method === "output" && owner === "runtime" && file.startsWith("src/slash-commands/")) return "call:output";
 				if (ui && method === "push" && /^(?:lines|rows|sections|messages|body|bodyLines|extraLines|remainder|meta|statsParts)$/.test(owner)) return "display:line";
