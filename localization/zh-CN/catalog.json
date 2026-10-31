@@ -28952,15 +28952,6 @@
     "translation": "编辑注释对象：",
     "origin": "model"
   },
-  "740e54542df8dac7a6e2441cc7deb9af734e18cb82f4498ca8bc5d92cd7a1533": {
-    "pkg": "tui",
-    "file": "src/prompt/composer-attachments.ts",
-    "role": "display:expression",
-    "source": "Image",
-    "text": "Image",
-    "translation": "图片",
-    "origin": "model"
-  },
   "74160d00db7d38a446f46e0599444ed940d4ac2a60b58ef2dfbf2d03256427a2": {
     "pkg": "tui",
     "file": "src/apps/git/help.ts",
@@ -53143,15 +53134,6 @@
     "text": "Discard",
     "translation": "放弃",
     "origin": "seed"
-  },
-  "d23542a327d12d7cc0aeb9b441468f7e49a9071e119b2fa782b56c90604eb6b3": {
-    "pkg": "tui",
-    "file": "src/prompt/composer-attachments.ts",
-    "role": "display:expression",
-    "source": "Video",
-    "text": "Video",
-    "translation": "视频",
-    "origin": "model"
   },
   "d237ccbdc3a85a885cc48b6e3ea281aca742ab95571a3f12ef6ea35a2f0b041e": {
     "pkg": "agent",
