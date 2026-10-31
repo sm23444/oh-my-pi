@@ -48,13 +48,15 @@ if ($LASTEXITCODE -ne 0 -or ($taskHelpOutput -join "`n") -notmatch '[\u3400-\u9f
 & $taskLauncherPath --smoke-test
 if ($LASTEXITCODE -ne 0) { throw 'Portable worker smoke test failed' }
 if (-not $Preview) {
-    $taskUiProbe = Join-Path $Destination 'ui-smoke.ts'
-    Copy-Item -LiteralPath (Join-Path $taskRoot 'ui-smoke.ts') -Destination $taskUiProbe
-    try {
-        & $taskBun $taskUiProbe
-        if ($LASTEXITCODE -ne 0) { throw 'Portable Chinese menu and welcome UI check failed' }
-    } finally {
-        Remove-Item -LiteralPath $taskUiProbe -Force
+    foreach ($taskProbeName in @('ui-smoke.ts', 'attachment-smoke.ts')) {
+        $taskUiProbe = Join-Path $Destination $taskProbeName
+        Copy-Item -LiteralPath (Join-Path $taskRoot $taskProbeName) -Destination $taskUiProbe
+        try {
+            & $taskBun $taskUiProbe
+            if ($LASTEXITCODE -ne 0) { throw "Portable UI check failed: $taskProbeName" }
+        } finally {
+            Remove-Item -LiteralPath $taskUiProbe -Force
+        }
     }
 }
 Write-Output "CLI package verified: $Version"

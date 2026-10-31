@@ -164,6 +164,8 @@ export function extractCandidates(code: string, pkg: PackageId, file: string): C
 	if (!inScope(pkg, file)) return [];
 	// Generated shell programs are executable source; their descriptions come from the command registry.
 	if (pkg === "agent" && file === "src/cli/completion-gen.ts") return [];
+	// Composer markers are parsed attachment references, including the Image/Video labels.
+	if (pkg === "tui" && file === "src/prompt/composer-attachments.ts") return [];
 	if (pkg === "tui" && file === "src/prompt/tips.txt") {
 		return [...code.matchAll(/[^\r\n]+/g)].flatMap(match => {
 			const source = match[0];
